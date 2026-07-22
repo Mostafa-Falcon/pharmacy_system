@@ -465,19 +465,12 @@ class _SaleCard extends StatelessWidget {
                       (r) => RadioListTile<String>(
 
                         title: Text(r),
-
                         value: r,
-
                         // ignore: deprecated_member_use
-
                         groupValue: reasons.contains(reasonCtrl.text)
-
                             ? reasonCtrl.text
-
                             : (reasonCtrl.text.isEmpty ? null : 'أخرى'),
-
                         // ignore: deprecated_member_use
-
                         onChanged: (v) => setState(() => reasonCtrl.text = v ?? ''),
 
                         contentPadding: EdgeInsets.zero,

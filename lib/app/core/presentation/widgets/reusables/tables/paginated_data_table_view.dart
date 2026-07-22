@@ -146,7 +146,7 @@ class PaginatedDataTableView<T> extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (header != null) header!,
+        ?header,
         Expanded(
           child: ReusableTable<T>(
             columns: columns,
