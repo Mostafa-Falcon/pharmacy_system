@@ -1,0 +1,10 @@
+- [x] تحديث موديل (عميل/ مورد) `CustomerSupplierModel` لإضافة `branchId`
+- [x] تحديث خدمة (عميل/ مورد) `CustomerSupplierService` لربطها بالمزامنة
+- [x] إضافة `customer_suppliers` لجداول السحب (Pull) في `SyncEngine`
+- [x] تحديث `SyncPullService` لإضافة الـ Mapping لجدول (عميل/ مورد)
+- [x] تحسين معالجة الأخطاء في `SyncPushService` لفك حشرة الطابور
+- [x] التحقق النهائي من حالة المزامنة
+- [x] إضافة تقارير التقدم في `SyncPushService`
+- [x] ربط تقارير الدفع (Push) في `SyncEngine`
+- [x] إعادة تصميم واجهة `SyncStatusView` (Executive Dashboard)
+- [x] تحديث `SyncStatusBloc` لضمان سلاسة تحديث العداد

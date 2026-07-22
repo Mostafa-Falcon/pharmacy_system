@@ -1,0 +1,112 @@
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\bloc\import_data_bloc.dart : needs imports for InventoryStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\services\print_service.dart : needs imports for ExportStrings, GeneralStrings, PurchasesStrings, HomeStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\services\auth\auth_device_lock.dart : needs imports for AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\services\auth\auth_session.dart : needs imports for AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\services\customer\customer_ledger_service.dart : needs imports for AccountingStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\services\operations\export_service.dart : needs imports for ExportStrings, GeneralStrings, CustomersStrings, SuppliersStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\services\supplier\supplier_ledger_service.dart : needs imports for AccountingStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\utils\app_snackbar.dart : needs imports for GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\views\import_data_view.dart : needs imports for InventoryStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\widgets\reusables\reusable_sale_details_dialog.dart : needs imports for GeneralStrings, SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\widgets\shareds\home_navbar.dart : needs imports for GeneralStrings, AuthStrings, NotificationsStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\widgets\shareds\home_shell.dart : needs imports for GeneralStrings, AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\widgets\shareds\sidebar.dart : needs imports for GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\accounting\views\accounting_shell_view.dart : needs imports for AccountingStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\accounting\views\accounts_view.dart : needs imports for GeneralStrings, AccountingStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\accounting\views\expenses_view.dart : needs imports for GeneralStrings, AccountingStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\accounting\views\journal_view.dart : needs imports for GeneralStrings, AccountingStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\accounting\views\party_payments_view.dart : needs imports for GeneralStrings, AccountingStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\activity_log\views\activity_log_view.dart : needs imports for ActivityLogStrings, GeneralStrings, ReportsStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\data\settings_tabs_data.dart : needs imports for AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\admin_dashboard.dart : needs imports for AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\branches_management.dart : needs imports for AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\document_control_view.dart : needs imports for AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\employees_management.dart : needs imports for AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\permissions_management.dart : needs imports for AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\settings_view.dart : needs imports for AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\user_profile_view.dart : needs imports for AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\tabs\email_settings_tab.dart : needs imports for AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\tabs\extra_units_settings_tab.dart : needs imports for AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\tabs\items_settings_tab.dart : needs imports for AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\tabs\project_settings_tab.dart : needs imports for AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\tabs\rewards_settings_tab.dart : needs imports for AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\tabs\sales_settings_tab.dart : needs imports for AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\tabs\shortcuts_settings_tab.dart : needs imports for AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\tabs\sms_settings_tab.dart : needs imports for AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\tabs\system_settings_tab.dart : needs imports for AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\tabs\tax_settings_tab.dart : needs imports for AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\archive\views\archive_dashboard_view.dart : needs imports for GeneralStrings, ArchiveStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\auth\bloc\auth_bloc.dart : needs imports for AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\auth\views\auth_callback_view.dart : needs imports for AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\auth\views\widgets\forgot_password_form.dart : needs imports for AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\auth\views\widgets\login_form.dart : needs imports for AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\auth\views\widgets\login_promo_panel.dart : needs imports for AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\auth\views\widgets\signup_form.dart : needs imports for AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\auth\views\widgets\signup_promo_panel.dart : needs imports for AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\contacts\customers\views\add_customer_view.dart : needs imports for GeneralStrings, AuthStrings, CustomersStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\contacts\customers\views\customers_list_view.dart : needs imports for AuthStrings, CustomersStrings, ExportStrings, SuppliersStrings, GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\contacts\customer_groups\views\customer_groups_view.dart : needs imports for GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\contacts\customer_suppliers\bloc\customer_suppliers_bloc.dart : needs imports for CrmStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\contacts\customer_suppliers\views\add_customer_supplier_view.dart : needs imports for CrmStrings, GeneralStrings, AuthStrings, CustomersStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\contacts\customer_suppliers\views\customer_suppliers_list_view.dart : needs imports for AuthStrings, CrmStrings, CustomersStrings, ExportStrings, SuppliersStrings, GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\contacts\suppliers\views\add_supplier_view.dart : needs imports for GeneralStrings, SuppliersStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\contacts\suppliers\views\suppliers_list_view.dart : needs imports for CrmStrings, CustomersStrings, HomeStrings, SuppliersStrings, GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\crm\views\crm_view.dart : needs imports for AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\employee\views\employee_dashboard.dart : needs imports for HomeStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\home\views\dashboard_view.dart : needs imports for GeneralStrings, AuthStrings, HomeStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\home\views\home_view.dart : needs imports for HomeStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\home\views\main_page_view.dart : needs imports for HomeStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\home\widgets\home_welcome_banner.dart : needs imports for GeneralStrings, HomeStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\home\widgets\monitoring_chart_card.dart : needs imports for GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\home\widgets\monitoring_table_card.dart : needs imports for GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\hr\views\departments_view.dart : needs imports for GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\hr\views\employees_view.dart : needs imports for AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\bloc\import_medicines_bloc.dart : needs imports for InventoryStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\add_medicine_unit_card.dart : needs imports for InventoryStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\add_medicine_view.dart : needs imports for AuthStrings, GeneralStrings, InventoryStrings, SuppliersStrings, SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\barcode_label_view.dart : needs imports for GeneralStrings, InventoryStrings, SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\barcode_settings_view.dart : needs imports for InventoryStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\brands_view.dart : needs imports for GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\edit_medicine_view.dart : needs imports for GeneralStrings, InventoryStrings, SalesStrings, SuppliersStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\import_medicines_view.dart : needs imports for InventoryStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\inventory_health_view.dart : needs imports for GeneralStrings, InventoryStrings, SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\medicines_list_view.dart : needs imports for GeneralStrings, InventoryStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\price_groups_view.dart : needs imports for GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\stock_adjustment_view.dart : needs imports for GeneralStrings, InventoryStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\variants_view.dart : needs imports for GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\notifications\views\notifications_center_view.dart : needs imports for AdminStrings, NotificationsStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\purchases\views\add_purchase_view.dart : needs imports for GeneralStrings, AccountingStrings, PurchasesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\purchases\views\purchases_list_view.dart : needs imports for GeneralStrings, SalesStrings, PurchasesStrings, InventoryStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\quotes\views\quotes_list_view.dart : needs imports for GeneralStrings, SalesStrings, HomeStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\quotes\views\widgets\create_quote_dialog.dart : needs imports for AdminStrings, SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\reports\views\advanced_ledger_report_view.dart : needs imports for GeneralStrings, CustomersStrings, ReportsStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\reports\views\contacts_report_view.dart : needs imports for GeneralStrings, ReportsStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\reports\views\extra_reports_view.dart : needs imports for GeneralStrings, HomeStrings, ReportsStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\reports\views\profit_report_view.dart : needs imports for GeneralStrings, ReportsStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\reports\views\purchase_report_view.dart : needs imports for GeneralStrings, ReportsStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\reports\views\sales_report_view.dart : needs imports for GeneralStrings, ReportsStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\returns\views\purchase_return_list_view.dart : needs imports for GeneralStrings, InventoryStrings, SalesStrings, PurchasesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\returns\views\sales_return_view.dart : needs imports for GeneralStrings, SalesStrings, PurchasesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\bloc\sales_bloc.dart : needs imports for CrmStrings, GeneralStrings, SalesStrings, PurchasesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\views\cashier_shift_view.dart : needs imports for GeneralStrings, SalesStrings, PurchasesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\views\open_shift_view.dart : needs imports for SalesStrings, CustomersStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\views\sales_list_view.dart : needs imports for GeneralStrings, SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\views\sections_pos\desktop_layout\desktop_cart_table.dart : needs imports for SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\views\sections_pos\desktop_layout\desktop_dialogs.dart : needs imports for GeneralStrings, CustomersStrings, HomeStrings, SuppliersStrings, SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\views\sections_pos\desktop_layout\desktop_layout.dart : needs imports for GeneralStrings, SalesStrings, HomeStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\views\sections_pos\desktop_layout\desktop_toolbar.dart : needs imports for SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\views\sections_pos\mobile_layout\mobile_layout.dart : needs imports for GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\widgets\pos_cart_panel.dart : needs imports for SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\widgets\pos_discount_dialog.dart : needs imports for GeneralStrings, SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\splash\splash_view.dart : needs imports for AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\stocktaking\views\stocktaking_detail_view.dart : needs imports for StocktakingStrings, GeneralStrings, SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\stocktaking\views\stocktaking_list_view.dart : needs imports for StocktakingStrings, GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sync\models\sync_table_meta.dart : needs imports for SyncStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sync\views\sync_status_view.dart : needs imports for SyncStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sync\views\widgets\sync_pending_list.dart : needs imports for SyncStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sync\views\widgets\sync_summary_card.dart : needs imports for SyncStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sync\views\widgets\sync_table_tile.dart : needs imports for SyncStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\tasks\views\messages_tab_view.dart : needs imports for GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\tasks\views\notes_tab_view.dart : needs imports for GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\tasks\views\reminders_tab_view.dart : needs imports for GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\void_operations\views\void_operations_view.dart : needs imports for GeneralStrings, SalesStrings, VoidOperationsStrings

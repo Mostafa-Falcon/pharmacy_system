@@ -1,0 +1,112 @@
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\bloc\import_data_bloc.dart: 4 replacements, classes: InventoryStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\services\print_service.dart: 96 replacements, classes: ExportStrings, GeneralStrings, PurchasesStrings, HomeStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\services\auth\auth_device_lock.dart: 4 replacements, classes: AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\services\auth\auth_session.dart: 27 replacements, classes: AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\services\customer\customer_ledger_service.dart: 7 replacements, classes: AccountingStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\services\operations\export_service.dart: 87 replacements, classes: ExportStrings, GeneralStrings, CustomersStrings, SuppliersStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\services\supplier\supplier_ledger_service.dart: 7 replacements, classes: AccountingStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\utils\app_snackbar.dart: 4 replacements, classes: GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\views\import_data_view.dart: 19 replacements, classes: InventoryStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\widgets\reusables\reusable_sale_details_dialog.dart: 28 replacements, classes: GeneralStrings, SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\widgets\shareds\home_navbar.dart: 25 replacements, classes: GeneralStrings, AuthStrings, NotificationsStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\widgets\shareds\home_shell.dart: 8 replacements, classes: GeneralStrings, AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\core\widgets\shareds\sidebar.dart: 6 replacements, classes: GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\accounting\views\accounting_shell_view.dart: 6 replacements, classes: AccountingStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\accounting\views\accounts_view.dart: 19 replacements, classes: GeneralStrings, AccountingStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\accounting\views\expenses_view.dart: 30 replacements, classes: GeneralStrings, AccountingStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\accounting\views\journal_view.dart: 13 replacements, classes: GeneralStrings, AccountingStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\accounting\views\party_payments_view.dart: 27 replacements, classes: GeneralStrings, AccountingStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\activity_log\views\activity_log_view.dart: 17 replacements, classes: ActivityLogStrings, GeneralStrings, ReportsStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\data\settings_tabs_data.dart: 10 replacements, classes: AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\admin_dashboard.dart: 30 replacements, classes: AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\branches_management.dart: 30 replacements, classes: AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\document_control_view.dart: 10 replacements, classes: AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\employees_management.dart: 56 replacements, classes: AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\permissions_management.dart: 33 replacements, classes: AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\settings_view.dart: 6 replacements, classes: AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\user_profile_view.dart: 32 replacements, classes: AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\tabs\email_settings_tab.dart: 13 replacements, classes: AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\tabs\extra_units_settings_tab.dart: 14 replacements, classes: AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\tabs\items_settings_tab.dart: 8 replacements, classes: AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\tabs\project_settings_tab.dart: 12 replacements, classes: AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\tabs\rewards_settings_tab.dart: 7 replacements, classes: AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\tabs\sales_settings_tab.dart: 12 replacements, classes: AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\tabs\shortcuts_settings_tab.dart: 10 replacements, classes: AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\tabs\sms_settings_tab.dart: 7 replacements, classes: AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\tabs\system_settings_tab.dart: 11 replacements, classes: AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\admin\views\tabs\tax_settings_tab.dart: 8 replacements, classes: AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\archive\views\archive_dashboard_view.dart: 49 replacements, classes: GeneralStrings, ArchiveStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\auth\bloc\auth_bloc.dart: 17 replacements, classes: AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\auth\views\auth_callback_view.dart: 1 replacements, classes: AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\auth\views\widgets\forgot_password_form.dart: 10 replacements, classes: AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\auth\views\widgets\login_form.dart: 10 replacements, classes: AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\auth\views\widgets\login_promo_panel.dart: 2 replacements, classes: AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\auth\views\widgets\signup_form.dart: 11 replacements, classes: AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\auth\views\widgets\signup_promo_panel.dart: 2 replacements, classes: AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\contacts\customers\views\add_customer_view.dart: 30 replacements, classes: GeneralStrings, AuthStrings, CustomersStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\contacts\customers\views\customers_list_view.dart: 93 replacements, classes: AuthStrings, CustomersStrings, ExportStrings, SuppliersStrings, GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\contacts\customer_groups\views\customer_groups_view.dart: 2 replacements, classes: GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\contacts\customer_suppliers\bloc\customer_suppliers_bloc.dart: 21 replacements, classes: CrmStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\contacts\customer_suppliers\views\add_customer_supplier_view.dart: 30 replacements, classes: CrmStrings, GeneralStrings, AuthStrings, CustomersStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\contacts\customer_suppliers\views\customer_suppliers_list_view.dart: 133 replacements, classes: AuthStrings, CrmStrings, CustomersStrings, ExportStrings, SuppliersStrings, GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\contacts\suppliers\views\add_supplier_view.dart: 26 replacements, classes: GeneralStrings, SuppliersStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\contacts\suppliers\views\suppliers_list_view.dart: 69 replacements, classes: CrmStrings, CustomersStrings, HomeStrings, SuppliersStrings, GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\crm\views\crm_view.dart: 1 replacements, classes: AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\employee\views\employee_dashboard.dart: 1 replacements, classes: HomeStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\home\views\dashboard_view.dart: 34 replacements, classes: GeneralStrings, AuthStrings, HomeStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\home\views\home_view.dart: 1 replacements, classes: HomeStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\home\views\main_page_view.dart: 33 replacements, classes: HomeStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\home\widgets\home_welcome_banner.dart: 4 replacements, classes: GeneralStrings, HomeStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\home\widgets\monitoring_chart_card.dart: 1 replacements, classes: GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\home\widgets\monitoring_table_card.dart: 1 replacements, classes: GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\hr\views\departments_view.dart: 2 replacements, classes: GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\hr\views\employees_view.dart: 2 replacements, classes: AdminStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\bloc\import_medicines_bloc.dart: 4 replacements, classes: InventoryStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\add_medicine_unit_card.dart: 13 replacements, classes: InventoryStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\add_medicine_view.dart: 97 replacements, classes: AuthStrings, GeneralStrings, InventoryStrings, SuppliersStrings, SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\barcode_label_view.dart: 26 replacements, classes: GeneralStrings, InventoryStrings, SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\barcode_settings_view.dart: 29 replacements, classes: InventoryStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\brands_view.dart: 2 replacements, classes: GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\edit_medicine_view.dart: 123 replacements, classes: GeneralStrings, InventoryStrings, SalesStrings, SuppliersStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\import_medicines_view.dart: 29 replacements, classes: InventoryStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\inventory_health_view.dart: 25 replacements, classes: GeneralStrings, InventoryStrings, SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\medicines_list_view.dart: 23 replacements, classes: GeneralStrings, InventoryStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\price_groups_view.dart: 2 replacements, classes: GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\stock_adjustment_view.dart: 11 replacements, classes: GeneralStrings, InventoryStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\inventory\views\variants_view.dart: 2 replacements, classes: GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\notifications\views\notifications_center_view.dart: 16 replacements, classes: AdminStrings, NotificationsStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\purchases\views\add_purchase_view.dart: 91 replacements, classes: GeneralStrings, AccountingStrings, PurchasesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\purchases\views\purchases_list_view.dart: 19 replacements, classes: GeneralStrings, SalesStrings, PurchasesStrings, InventoryStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\quotes\views\quotes_list_view.dart: 16 replacements, classes: GeneralStrings, SalesStrings, HomeStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\quotes\views\widgets\create_quote_dialog.dart: 22 replacements, classes: AdminStrings, SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\reports\views\advanced_ledger_report_view.dart: 25 replacements, classes: GeneralStrings, CustomersStrings, ReportsStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\reports\views\contacts_report_view.dart: 22 replacements, classes: GeneralStrings, ReportsStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\reports\views\extra_reports_view.dart: 45 replacements, classes: GeneralStrings, HomeStrings, ReportsStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\reports\views\profit_report_view.dart: 24 replacements, classes: GeneralStrings, ReportsStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\reports\views\purchase_report_view.dart: 5 replacements, classes: GeneralStrings, ReportsStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\reports\views\sales_report_view.dart: 6 replacements, classes: GeneralStrings, ReportsStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\returns\views\purchase_return_list_view.dart: 18 replacements, classes: GeneralStrings, InventoryStrings, SalesStrings, PurchasesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\returns\views\sales_return_view.dart: 34 replacements, classes: GeneralStrings, SalesStrings, PurchasesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\bloc\sales_bloc.dart: 5 replacements, classes: CrmStrings, GeneralStrings, SalesStrings, PurchasesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\views\cashier_shift_view.dart: 28 replacements, classes: GeneralStrings, SalesStrings, PurchasesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\views\open_shift_view.dart: 8 replacements, classes: SalesStrings, CustomersStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\views\sales_list_view.dart: 24 replacements, classes: GeneralStrings, SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\views\sections_pos\desktop_layout\desktop_cart_table.dart: 6 replacements, classes: SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\views\sections_pos\desktop_layout\desktop_dialogs.dart: 42 replacements, classes: GeneralStrings, CustomersStrings, HomeStrings, SuppliersStrings, SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\views\sections_pos\desktop_layout\desktop_layout.dart: 26 replacements, classes: GeneralStrings, SalesStrings, HomeStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\views\sections_pos\desktop_layout\desktop_toolbar.dart: 16 replacements, classes: SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\views\sections_pos\mobile_layout\mobile_layout.dart: 1 replacements, classes: GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\widgets\pos_cart_panel.dart: 8 replacements, classes: SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sales\widgets\pos_discount_dialog.dart: 4 replacements, classes: GeneralStrings, SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\splash\splash_view.dart: 2 replacements, classes: AuthStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\stocktaking\views\stocktaking_detail_view.dart: 31 replacements, classes: StocktakingStrings, GeneralStrings, SalesStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\stocktaking\views\stocktaking_list_view.dart: 24 replacements, classes: StocktakingStrings, GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sync\models\sync_table_meta.dart: 15 replacements, classes: SyncStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sync\views\sync_status_view.dart: 17 replacements, classes: SyncStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sync\views\widgets\sync_pending_list.dart: 14 replacements, classes: SyncStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sync\views\widgets\sync_summary_card.dart: 18 replacements, classes: SyncStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\sync\views\widgets\sync_table_tile.dart: 9 replacements, classes: SyncStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\tasks\views\messages_tab_view.dart: 2 replacements, classes: GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\tasks\views\notes_tab_view.dart: 2 replacements, classes: GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\tasks\views\reminders_tab_view.dart: 2 replacements, classes: GeneralStrings
+D:\projects\work\project-pharmacy\pharmacy_system\lib\app\modules\void_operations\views\void_operations_view.dart: 42 replacements, classes: GeneralStrings, SalesStrings, VoidOperationsStrings

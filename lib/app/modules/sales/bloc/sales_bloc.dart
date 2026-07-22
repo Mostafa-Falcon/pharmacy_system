@@ -1,0 +1,248 @@
+﻿import 'dart:async';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:equatable/equatable.dart';
+
+import 'package:pharmacy_system/app/core/domain/models/base/correction_model.dart';
+import 'package:pharmacy_system/app/modules/sales/models/sale_model.dart';
+import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
+import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
+import 'package:pharmacy_system/app/core/data/services/accounting/correction_service.dart';
+import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/core/constants/app_strings.dart';
+import 'package:pharmacy_system/app/core/bloc/base_state.dart';
+import 'package:pharmacy_system/app/core/data/repositories/sales_repository.dart';
+import 'package:pharmacy_system/app/core/injection.dart';
+
+// --- Events ---
+abstract class SalesEvent extends Equatable {
+  const SalesEvent();
+  @override
+  List<Object?> get props => [];
+}
+
+class LoadSales extends SalesEvent {
+  const LoadSales();
+}
+
+class FilterSalesQuery extends SalesEvent {
+  final String query;
+  const FilterSalesQuery(this.query);
+  @override
+  List<Object?> get props => [query];
+}
+
+class FilterSalesByStatus extends SalesEvent {
+  final String status;
+  const FilterSalesByStatus(this.status);
+  @override
+  List<Object?> get props => [status];
+}
+
+class VoidSale extends SalesEvent {
+  final SaleModel sale;
+  const VoidSale(this.sale);
+  @override
+  List<Object?> get props => [sale];
+}
+
+// --- State ---
+class SalesState extends BaseState<List<SaleModel>> {
+  final List<SaleModel> filteredSales;
+  final String searchQuery;
+  final String selectedFilter;
+  final double todayTotal;
+  final double monthTotal;
+  final int totalCount;
+  final double creditTotal;
+
+  const SalesState({
+    super.data,
+    super.isLoading = false,
+    super.errorMessage,
+    super.isInitial = false,
+    super.isEmpty = false,
+    super.fromDate,
+    super.toDate,
+    this.filteredSales = const [],
+    this.searchQuery = '',
+    this.selectedFilter = 'all',
+    this.todayTotal = 0,
+    this.monthTotal = 0,
+    this.totalCount = 0,
+    this.creditTotal = 0,
+  });
+
+  List<SaleModel> get sales => data ?? [];
+  BaseState<List<SaleModel>> get dataState => this;
+
+  @override
+  SalesState copyWith({
+    List<SaleModel>? data,
+    bool? isLoading,
+    String? errorMessage,
+    bool? isInitial,
+    bool? isEmpty,
+    DateTime? fromDate,
+    DateTime? toDate,
+    List<SaleModel>? filteredSales,
+    String? searchQuery,
+    String? selectedFilter,
+    double? todayTotal,
+    double? monthTotal,
+    int? totalCount,
+    double? creditTotal,
+  }) {
+    return SalesState(
+      data: data ?? this.data,
+      isLoading: isLoading ?? this.isLoading,
+      errorMessage: errorMessage ?? this.errorMessage,
+      isInitial: isInitial ?? this.isInitial,
+      isEmpty: isEmpty ?? this.isEmpty,
+      fromDate: fromDate ?? this.fromDate,
+      toDate: toDate ?? this.toDate,
+      filteredSales: filteredSales ?? this.filteredSales,
+      searchQuery: searchQuery ?? this.searchQuery,
+      selectedFilter: selectedFilter ?? this.selectedFilter,
+      todayTotal: todayTotal ?? this.todayTotal,
+      monthTotal: monthTotal ?? this.monthTotal,
+      totalCount: totalCount ?? this.totalCount,
+      creditTotal: creditTotal ?? this.creditTotal,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+        data,
+        isLoading,
+        errorMessage,
+        fromDate,
+        toDate,
+        filteredSales,
+        searchQuery,
+        selectedFilter,
+        todayTotal,
+        monthTotal,
+        totalCount,
+        creditTotal,
+      ];
+}
+
+// --- Bloc ---
+class SalesBloc extends Bloc<SalesEvent, SalesState> {
+  StreamSubscription? _subscription;
+
+  SalesBloc() : super(const SalesState()) {
+    on<LoadSales>(_onLoad);
+    on<FilterSalesQuery>(_onFilterQuery);
+    on<FilterSalesByStatus>(_onFilterStatus);
+    on<VoidSale>(_onVoid);
+
+    // اشتراك لحظي في تحديثات المبيعات
+    _subscription = sl<SalesRepository>().watchSales(_branchId).listen((_) {
+      if (!isClosed) add(const LoadSales());
+    });
+
+    add(const LoadSales());
+  }
+
+  @override
+  Future<void> close() {
+    _subscription?.cancel();
+    return super.close();
+  }
+
+  String get _branchId => AuthService.currentBranchId ?? '';
+
+  void _updateTotals(List<SaleModel> sales, Emitter<SalesState> emit) {
+    final now = DateTime.now();
+    final todayTotal = sales
+        .where((s) =>
+            s.createdAt.day == now.day &&
+            s.createdAt.month == now.month &&
+            s.createdAt.year == now.year)
+        .fold(0.0, (sum, s) => sum + s.finalAmount);
+    final monthTotal = sales
+        .where((s) => s.createdAt.month == now.month && s.createdAt.year == now.year)
+        .fold(0.0, (sum, s) => sum + s.finalAmount);
+    final creditTotal = sales
+        .where((s) => s.paymentMethod == 'credit')
+        .fold(0.0, (sum, s) => sum + s.finalAmount);
+    emit(state.copyWith(
+      totalCount: sales.length,
+      todayTotal: todayTotal,
+      monthTotal: monthTotal,
+      creditTotal: creditTotal,
+    ));
+  }
+
+  List<SaleModel> _applyFilter(List<SaleModel> list) {
+    var result = list.toList();
+    final q = state.searchQuery.trim().toLowerCase();
+    if (q.isNotEmpty) {
+      result = result
+          .where((s) =>
+              (s.customerName?.toLowerCase().contains(q) ?? false) ||
+              s.id.toLowerCase().contains(q) ||
+              s.items.any((i) => i.medicineName.toLowerCase().contains(q)))
+          .toList();
+    }
+    switch (state.selectedFilter) {
+      case 'today':
+        final now = DateTime.now();
+        result = result
+            .where((s) =>
+                s.createdAt.day == now.day &&
+                s.createdAt.month == now.month &&
+                s.createdAt.year == now.year)
+            .toList();
+        break;
+      case 'this_month':
+        final now = DateTime.now();
+        result = result
+            .where((s) => s.createdAt.month == now.month && s.createdAt.year == now.year)
+            .toList();
+        break;
+      case 'credit':
+        result = result.where((s) => s.paymentMethod == 'credit').toList();
+        break;
+    }
+    return result;
+  }
+
+  Future<void> _onLoad(LoadSales event, Emitter<SalesState> emit) async {
+    emit(state.copyWith(isLoading: true));
+    final all = BranchDataService.getSales(branchId: _branchId);
+    final sales = all.where((s) => !s.isDeleted).toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    _updateTotals(sales, emit);
+    emit(state.copyWith(data: sales, filteredSales: _applyFilter(sales), isLoading: false));
+  }
+
+  void _onFilterQuery(FilterSalesQuery event, Emitter<SalesState> emit) {
+    emit(state.copyWith(searchQuery: event.query, filteredSales: _applyFilter(state.sales)));
+  }
+
+  void _onFilterStatus(FilterSalesByStatus event, Emitter<SalesState> emit) {
+    emit(state.copyWith(selectedFilter: event.status, filteredSales: _applyFilter(state.sales)));
+  }
+
+  Future<void> _onVoid(VoidSale event, Emitter<SalesState> emit) async {
+    await BranchDataService.voidSale(event.sale.id, branchId: _branchId);
+    CorrectionService.record(
+      referenceType: CorrectionReferenceType.sale,
+      referenceId: event.sale.id,
+      action: CorrectionAction.voided,
+      details: AppStrings.voidInvoice,
+    );
+    add(const LoadSales());
+    AppSnackbar.success(AppStrings.msgUpdatedSuccess);
+  }
+
+  String getPaymentLabel(String method) => switch (method) {
+        'cash' => AppStrings.enumCustomerCash,
+        'credit' => AppStrings.enumCustomerRegular,
+        'card' => AppStrings.paymentMethodCardPurchase,
+        _ => method,
+      };
+}
+

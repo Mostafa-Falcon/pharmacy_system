@@ -1,0 +1,346 @@
+﻿import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../core/constants/app_strings.dart';
+import 'package:pharmacy_system/app/modules/auth/models/user_model.dart';
+import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
+import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
+import 'package:pharmacy_system/app/core/data/services/supplier/supplier_service.dart';
+import 'package:pharmacy_system/app/core/data/services/sync/supabase_client.dart';
+import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import '../../../core/utils/app_utils.dart';
+import '../../../core/injection.dart';
+import '../../layout/bloc/shell_bloc.dart';
+import '../../layout/bloc/shell_event.dart';
+import 'auth_state.dart';
+export 'auth_state.dart';
+
+part 'auth_event.dart';
+
+class AuthBloc extends Bloc<AuthEvent, AuthState> {
+  AuthBloc() : super(const AuthState()) {
+    on<AppStarted>(_onAppStarted);
+    on<LoginRequested>(_onLoginRequested);
+    on<RegisterRequested>(_onRegisterRequested);
+    on<ResetPasswordRequested>(_onResetPasswordRequested);
+    on<TogglePasswordVisibility>(_onTogglePasswordVisibility);
+    on<LogoutRequested>(_onLogoutRequested);
+    on<ClearAuthErrors>(_onClearErrors);
+    on<AuthErrorDisplayed>(_onErrorDisplayed);
+    on<ResendConfirmationRequested>(_onResendConfirmation);
+  }
+
+  Future<void> _onAppStarted(AppStarted event, Emitter<AuthState> emit) async {
+    emit(state.copyWith(
+      status: AuthStatus.loading,
+      error: null,
+      emailError: null,
+      passwordError: null,
+      confirmPasswordError: null,
+      nameError: null,
+    ));
+    try {
+      if (SyncService.isOnline) {
+        try {
+          await SyncService.syncAll();
+        } catch (e, s) {
+          safeDebugPrint('AuthBloc.AppStarted sync failed (ignored): $e\n$s');
+        }
+      }
+
+      await _initDefaults();
+
+      final user = AuthService.currentUser;
+      if (user != null) {
+        // تحديث حالة الواجهة (Shell) لتعكس بيانات المستخدم الحالي
+        sl<ShellBloc>().add(const LoadShell());
+
+        emit(state.copyWith(
+          status: AuthStatus.authenticated,
+          user: user,
+          error: null,
+          emailError: null,
+          passwordError: null,
+          confirmPasswordError: null,
+          nameError: null,
+        ));
+      } else {
+        // مفيش مستخدم محفوظ ← شاشة الدخول (من غير حالة error).
+        emit(state.copyWith(
+          status: AuthStatus.unauthenticated,
+          error: null,
+          emailError: null,
+          passwordError: null,
+          confirmPasswordError: null,
+          nameError: null,
+        ));
+      }
+    } catch (e, s) {
+      // خطأ حرج فعلاً في الـ init (مش مزامنة) ← نبين رسالة الخطأ
+      // للـ splash عشان المستخدم يفهم السبب ويقدر يعيد المحاولة.
+      safeDebugPrint('AuthBloc.AppStarted failed: $e $s');
+      emit(state.copyWith(
+        status: AuthStatus.error,
+        error: AppStrings.errorLoadingAccount,
+      ));
+    }
+  }
+
+  Future<void> _onLoginRequested(LoginRequested event, Emitter<AuthState> emit) async {
+    final email = event.email.trim();
+    emit(state.copyWith(
+      status: AuthStatus.loading,
+      emailError: null,
+      passwordError: null,
+      emailAttempt: email,
+    ));
+    if (email.isEmpty) {
+      emit(state.copyWith(
+        status: AuthStatus.error,
+        emailError: AppStrings.emailRequired,
+      ));
+      return;
+    }
+    if (!_isValidEmail(email)) {
+      emit(state.copyWith(
+        status: AuthStatus.error,
+        emailError: AppStrings.emailInvalid,
+      ));
+      return;
+    }
+    if (event.password.isEmpty) {
+      emit(state.copyWith(
+        status: AuthStatus.error,
+        passwordError: AppStrings.passwordRequired,
+      ));
+      return;
+    }
+
+    try {
+      final result = await AuthService.login(
+        email: email,
+        password: event.password,
+      );
+
+      if (result['success'] == true) {
+        final user = result['user'] as UserModel;
+
+        // مزامنة البيانات الأساسية في الخلفية عشان مأخرش الدخول
+        if (SyncService.isOnline) {
+          SyncService.syncAll().catchError((e) {
+             safeDebugPrint('AuthBloc: Background sync failed: $e');
+          });
+        }
+        
+        // تشغيل التهيئة الأساسية في الخلفية
+        _initDefaults();
+
+        // تحديث حالة الواجهة (Shell) لتعكس بيانات المستخدم الجديد
+        sl<ShellBloc>().add(const LoadShell());
+
+        emit(state.copyWith(
+          status: AuthStatus.authenticated,
+          user: user,
+        ));
+      } else {
+        emit(state.copyWith(
+          status: AuthStatus.error,
+          error: result['message'] as String? ?? AppStrings.errorGeneral,
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        status: AuthStatus.error,
+        error: AppStrings.errorServerConnection,
+      ));
+    }
+  }
+
+  Future<void> _onRegisterRequested(RegisterRequested event, Emitter<AuthState> emit) async {
+    emit(state.copyWith(
+      status: AuthStatus.loading,
+      emailError: null,
+      passwordError: null,
+      confirmPasswordError: null,
+    ));
+
+    final name = event.name.trim();
+    final email = event.email.trim();
+
+    if (name.isEmpty) {
+      emit(state.copyWith(
+        status: AuthStatus.error,
+        nameError: AppStrings.nameRequired,
+        error: null,
+      ));
+      return;
+    }
+    if (email.isEmpty) {
+      emit(state.copyWith(
+        status: AuthStatus.error,
+        emailError: AppStrings.emailRequired,
+      ));
+      return;
+    }
+    if (!_isValidEmail(email)) {
+      emit(state.copyWith(
+        status: AuthStatus.error,
+        emailError: AppStrings.emailInvalid,
+      ));
+      return;
+    }
+    if (event.password.length < 8) {
+      emit(state.copyWith(
+        status: AuthStatus.error,
+        passwordError: AppStrings.passwordMinLength,
+      ));
+      return;
+    }
+    if (event.password != event.confirmPassword) {
+      emit(state.copyWith(
+        status: AuthStatus.error,
+        confirmPasswordError: AppStrings.passwordsNotMatch,
+      ));
+      return;
+    }
+
+    try {
+      // نعتمد على AuthService.register للقيام بكل العمل (إنشاء الحساب، الفرع، الربط، والمزامنة)
+      final result = await AuthService.register(
+        name: name,
+        email: email,
+        password: event.password,
+        role: UserRole.owner,
+      );
+
+      if (result['success'] == true) {
+        // لو Confirm email مفعل، منحتش authenticated ونعرض رسالة بدل كده
+        if (result['emailConfirmationRequired'] == true) {
+          emit(state.copyWith(
+            status: AuthStatus.unauthenticated,
+            error: AppStrings.emailConfirmationSent,
+          ));
+          return;
+        }
+
+        final user = result['user'] as UserModel;
+        
+        // تهيئة البيانات الافتراضية للفرع الجديد
+        await _initDefaults();
+
+        emit(state.copyWith(
+          status: AuthStatus.authenticated,
+          user: user,
+          // في حالة التسجيل المحلي فقط، قد نحتاج لعرض رسالة تنبيه
+          error: result['isLocalOnly'] == true ? result['message'] as String? : null,
+        ));
+      } else {
+        emit(state.copyWith(
+          status: AuthStatus.error,
+          error: result['message'] as String? ?? AppStrings.errorRegister,
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        status: AuthStatus.error,
+        error: '${AppStrings.errorServer}${e.runtimeType}',
+      ));
+    }
+  }
+
+  Future<void> _onResetPasswordRequested(ResetPasswordRequested event, Emitter<AuthState> emit) async {
+    final email = event.email.trim();
+    if (email.isEmpty || !_isValidEmail(email)) {
+      emit(state.copyWith(
+        status: AuthStatus.error,
+        emailError: AppStrings.validEmailRequired,
+      ));
+      return;
+    }
+
+    emit(state.copyWith(status: AuthStatus.loading));
+    try {
+      await SupabaseClientService.resetPassword(email);
+      emit(state.copyWith(
+        status: AuthStatus.unauthenticated,
+        isResetSent: true,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        status: AuthStatus.error,
+        error: AppStrings.forgotPasswordMessage,
+      ));
+    }
+  }
+
+  void _onTogglePasswordVisibility(TogglePasswordVisibility event, Emitter<AuthState> emit) {
+    emit(state.copyWith(isPasswordVisible: !state.isPasswordVisible));
+  }
+
+  Future<void> _onResendConfirmation(ResendConfirmationRequested event, Emitter<AuthState> emit) async {
+    emit(state.copyWith(status: AuthStatus.loading));
+    final result = await AuthService.resendConfirmation(event.email);
+    if (result['success'] == true) {
+      AppSnackbar.success(result['message'] as String);
+    } else {
+      AppSnackbar.error(result['message'] as String? ?? AppStrings.errorGeneral);
+    }
+    emit(state.copyWith(status: AuthStatus.unauthenticated));
+  }
+
+  Future<void> _onLogoutRequested(LogoutRequested event, Emitter<AuthState> emit) async {
+    emit(state.copyWith(
+      status: AuthStatus.loading,
+      error: null,
+      emailError: null,
+      passwordError: null,
+      confirmPasswordError: null,
+      nameError: null,
+    ));
+    try {
+      await AuthService.logout();
+    } catch (e) {
+      safeDebugPrint('AuthBloc.logout error: $e');
+    }
+    emit(const AuthState(status: AuthStatus.unauthenticated));
+  }
+
+  void _onClearErrors(ClearAuthErrors event, Emitter<AuthState> emit) {
+    // نحدث فقط لو فيه فعلاً أخطاء عشان نمنع الـ infinite rebuild loop
+    if (state.error != null || state.emailError != null || state.passwordError != null) {
+      emit(state.copyWith(
+        error: null,
+        emailError: null,
+        passwordError: null,
+        confirmPasswordError: null,
+        nameError: null,
+      ));
+    }
+  }
+
+  void _onErrorDisplayed(AuthErrorDisplayed event, Emitter<AuthState> emit) {
+    // نمسح رسالة الخطأ بعد ما اتعرضت في الـ snackbar، عشان أي إعادة بناء
+    // لاحقة (زي تغيير حالة اللودنج) ما تعدش عرضها تاني.
+    if (state.error != null || state.emailError != null || state.passwordError != null) {
+      emit(state.copyWith(
+        error: null,
+        emailError: null,
+        passwordError: null,
+        confirmPasswordError: null,
+        nameError: null,
+      ));
+    }
+  }
+
+  Future<void> _initDefaults() async {
+    try {
+      await SupplierService.init();
+    } catch (e) {
+      safeDebugPrint('AuthBloc.initDefaults failed: $e');
+    }
+  }
+
+  bool _isValidEmail(String email) {
+    return RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').hasMatch(email);
+  }
+}
+

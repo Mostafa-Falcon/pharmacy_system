@@ -1,0 +1,298 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
+
+part of 'auth_state.dart';
+
+// **************************************************************************
+// FreezedGenerator
+// **************************************************************************
+
+// dart format off
+T _$identity<T>(T value) => value;
+/// @nodoc
+mixin _$AuthState {
+
+ AuthStatus get status; UserModel? get user; String? get error; bool get isPasswordVisible; bool get isResetSent; String? get emailError; String? get passwordError; String? get confirmPasswordError; String? get nameError; String? get emailAttempt;
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AuthStateCopyWith<AuthState> get copyWith => _$AuthStateCopyWithImpl<AuthState>(this as AuthState, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState&&(identical(other.status, status) || other.status == status)&&(identical(other.user, user) || other.user == user)&&(identical(other.error, error) || other.error == error)&&(identical(other.isPasswordVisible, isPasswordVisible) || other.isPasswordVisible == isPasswordVisible)&&(identical(other.isResetSent, isResetSent) || other.isResetSent == isResetSent)&&(identical(other.emailError, emailError) || other.emailError == emailError)&&(identical(other.passwordError, passwordError) || other.passwordError == passwordError)&&(identical(other.confirmPasswordError, confirmPasswordError) || other.confirmPasswordError == confirmPasswordError)&&(identical(other.nameError, nameError) || other.nameError == nameError)&&(identical(other.emailAttempt, emailAttempt) || other.emailAttempt == emailAttempt));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,status,user,error,isPasswordVisible,isResetSent,emailError,passwordError,confirmPasswordError,nameError,emailAttempt);
+
+@override
+String toString() {
+  return 'AuthState(status: $status, user: $user, error: $error, isPasswordVisible: $isPasswordVisible, isResetSent: $isResetSent, emailError: $emailError, passwordError: $passwordError, confirmPasswordError: $confirmPasswordError, nameError: $nameError, emailAttempt: $emailAttempt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AuthStateCopyWith<$Res>  {
+  factory $AuthStateCopyWith(AuthState value, $Res Function(AuthState) _then) = _$AuthStateCopyWithImpl;
+@useResult
+$Res call({
+ AuthStatus status, UserModel? user, String? error, bool isPasswordVisible, bool isResetSent, String? emailError, String? passwordError, String? confirmPasswordError, String? nameError, String? emailAttempt
+});
+
+
+
+
+}
+/// @nodoc
+class _$AuthStateCopyWithImpl<$Res>
+    implements $AuthStateCopyWith<$Res> {
+  _$AuthStateCopyWithImpl(this._self, this._then);
+
+  final AuthState _self;
+  final $Res Function(AuthState) _then;
+
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? user = freezed,Object? error = freezed,Object? isPasswordVisible = null,Object? isResetSent = null,Object? emailError = freezed,Object? passwordError = freezed,Object? confirmPasswordError = freezed,Object? nameError = freezed,Object? emailAttempt = freezed,}) {
+  return _then(_self.copyWith(
+status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as AuthStatus,user: freezed == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as UserModel?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as String?,isPasswordVisible: null == isPasswordVisible ? _self.isPasswordVisible : isPasswordVisible // ignore: cast_nullable_to_non_nullable
+as bool,isResetSent: null == isResetSent ? _self.isResetSent : isResetSent // ignore: cast_nullable_to_non_nullable
+as bool,emailError: freezed == emailError ? _self.emailError : emailError // ignore: cast_nullable_to_non_nullable
+as String?,passwordError: freezed == passwordError ? _self.passwordError : passwordError // ignore: cast_nullable_to_non_nullable
+as String?,confirmPasswordError: freezed == confirmPasswordError ? _self.confirmPasswordError : confirmPasswordError // ignore: cast_nullable_to_non_nullable
+as String?,nameError: freezed == nameError ? _self.nameError : nameError // ignore: cast_nullable_to_non_nullable
+as String?,emailAttempt: freezed == emailAttempt ? _self.emailAttempt : emailAttempt // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [AuthState].
+extension AuthStatePatterns on AuthState {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AuthState value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _AuthState() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AuthState value)  $default,){
+final _that = this;
+switch (_that) {
+case _AuthState():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AuthState value)?  $default,){
+final _that = this;
+switch (_that) {
+case _AuthState() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( AuthStatus status,  UserModel? user,  String? error,  bool isPasswordVisible,  bool isResetSent,  String? emailError,  String? passwordError,  String? confirmPasswordError,  String? nameError,  String? emailAttempt)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _AuthState() when $default != null:
+return $default(_that.status,_that.user,_that.error,_that.isPasswordVisible,_that.isResetSent,_that.emailError,_that.passwordError,_that.confirmPasswordError,_that.nameError,_that.emailAttempt);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( AuthStatus status,  UserModel? user,  String? error,  bool isPasswordVisible,  bool isResetSent,  String? emailError,  String? passwordError,  String? confirmPasswordError,  String? nameError,  String? emailAttempt)  $default,) {final _that = this;
+switch (_that) {
+case _AuthState():
+return $default(_that.status,_that.user,_that.error,_that.isPasswordVisible,_that.isResetSent,_that.emailError,_that.passwordError,_that.confirmPasswordError,_that.nameError,_that.emailAttempt);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( AuthStatus status,  UserModel? user,  String? error,  bool isPasswordVisible,  bool isResetSent,  String? emailError,  String? passwordError,  String? confirmPasswordError,  String? nameError,  String? emailAttempt)?  $default,) {final _that = this;
+switch (_that) {
+case _AuthState() when $default != null:
+return $default(_that.status,_that.user,_that.error,_that.isPasswordVisible,_that.isResetSent,_that.emailError,_that.passwordError,_that.confirmPasswordError,_that.nameError,_that.emailAttempt);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _AuthState implements AuthState {
+  const _AuthState({this.status = AuthStatus.initial, this.user, this.error, this.isPasswordVisible = false, this.isResetSent = false, this.emailError, this.passwordError, this.confirmPasswordError, this.nameError, this.emailAttempt});
+  
+
+@override@JsonKey() final  AuthStatus status;
+@override final  UserModel? user;
+@override final  String? error;
+@override@JsonKey() final  bool isPasswordVisible;
+@override@JsonKey() final  bool isResetSent;
+@override final  String? emailError;
+@override final  String? passwordError;
+@override final  String? confirmPasswordError;
+@override final  String? nameError;
+@override final  String? emailAttempt;
+
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AuthStateCopyWith<_AuthState> get copyWith => __$AuthStateCopyWithImpl<_AuthState>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthState&&(identical(other.status, status) || other.status == status)&&(identical(other.user, user) || other.user == user)&&(identical(other.error, error) || other.error == error)&&(identical(other.isPasswordVisible, isPasswordVisible) || other.isPasswordVisible == isPasswordVisible)&&(identical(other.isResetSent, isResetSent) || other.isResetSent == isResetSent)&&(identical(other.emailError, emailError) || other.emailError == emailError)&&(identical(other.passwordError, passwordError) || other.passwordError == passwordError)&&(identical(other.confirmPasswordError, confirmPasswordError) || other.confirmPasswordError == confirmPasswordError)&&(identical(other.nameError, nameError) || other.nameError == nameError)&&(identical(other.emailAttempt, emailAttempt) || other.emailAttempt == emailAttempt));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,status,user,error,isPasswordVisible,isResetSent,emailError,passwordError,confirmPasswordError,nameError,emailAttempt);
+
+@override
+String toString() {
+  return 'AuthState(status: $status, user: $user, error: $error, isPasswordVisible: $isPasswordVisible, isResetSent: $isResetSent, emailError: $emailError, passwordError: $passwordError, confirmPasswordError: $confirmPasswordError, nameError: $nameError, emailAttempt: $emailAttempt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AuthStateCopyWith<$Res> implements $AuthStateCopyWith<$Res> {
+  factory _$AuthStateCopyWith(_AuthState value, $Res Function(_AuthState) _then) = __$AuthStateCopyWithImpl;
+@override @useResult
+$Res call({
+ AuthStatus status, UserModel? user, String? error, bool isPasswordVisible, bool isResetSent, String? emailError, String? passwordError, String? confirmPasswordError, String? nameError, String? emailAttempt
+});
+
+
+
+
+}
+/// @nodoc
+class __$AuthStateCopyWithImpl<$Res>
+    implements _$AuthStateCopyWith<$Res> {
+  __$AuthStateCopyWithImpl(this._self, this._then);
+
+  final _AuthState _self;
+  final $Res Function(_AuthState) _then;
+
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? user = freezed,Object? error = freezed,Object? isPasswordVisible = null,Object? isResetSent = null,Object? emailError = freezed,Object? passwordError = freezed,Object? confirmPasswordError = freezed,Object? nameError = freezed,Object? emailAttempt = freezed,}) {
+  return _then(_AuthState(
+status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as AuthStatus,user: freezed == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as UserModel?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as String?,isPasswordVisible: null == isPasswordVisible ? _self.isPasswordVisible : isPasswordVisible // ignore: cast_nullable_to_non_nullable
+as bool,isResetSent: null == isResetSent ? _self.isResetSent : isResetSent // ignore: cast_nullable_to_non_nullable
+as bool,emailError: freezed == emailError ? _self.emailError : emailError // ignore: cast_nullable_to_non_nullable
+as String?,passwordError: freezed == passwordError ? _self.passwordError : passwordError // ignore: cast_nullable_to_non_nullable
+as String?,confirmPasswordError: freezed == confirmPasswordError ? _self.confirmPasswordError : confirmPasswordError // ignore: cast_nullable_to_non_nullable
+as String?,nameError: freezed == nameError ? _self.nameError : nameError // ignore: cast_nullable_to_non_nullable
+as String?,emailAttempt: freezed == emailAttempt ? _self.emailAttempt : emailAttempt // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+// dart format on

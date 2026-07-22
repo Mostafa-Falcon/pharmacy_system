@@ -1,0 +1,11 @@
+- [ ] **Constants Update**
+    - [ ] Add more keywords to `ExcelStrings` (Quantity, Storage Location, Categories)
+- [ ] **Service Refinement**
+    - [ ] Update `col` helper in `ExcelImportService` for Priority Matching
+    - [ ] Enhance `_parseSmartQuantity` with string cleaning
+    - [ ] Implement Storage Location mapping in `importFromExcel`
+    - [ ] Improve header normalization (trim/lowercase)
+- [ ] **Verification**
+    - [ ] Test with "الكمية" vs "الكمية المطلوبة"
+    - [ ] Test with formatted numbers (commas)
+    - [ ] Test Storage Location import

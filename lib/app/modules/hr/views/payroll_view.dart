@@ -1,0 +1,297 @@
+﻿import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../bloc/hr_bloc.dart';
+import 'package:pharmacy_system/app/modules/hr/models/payroll_model.dart';
+import '../services/payroll_service.dart';
+import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
+import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import '../../../core/constants/strings/hr_strings.dart';
+
+class PayrollView extends StatelessWidget {
+  const PayrollView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<HrBloc, HrState>(
+      builder: (context, state) {
+        if (state.status == HrStatus.loading && state.payrollRecords.isEmpty) {
+          return const LoadingIndicator();
+        }
+        return Scaffold(
+          backgroundColor: AppColors.backgroundOf(context),
+          body: ListView(
+            padding: EdgeInsets.all(AppSpacing.md.w),
+            physics: const BouncingScrollPhysics(),
+            children: [
+              _PayrollSummaryCard(
+                totalSalaries: state.currentMonthSalaryTotal,
+                payroll: state.currentPayroll,
+              ),
+              SizedBox(height: AppSpacing.md.h),
+              _PayrollListCard(records: state.payrollRecords),
+            ],
+          ),
+          floatingActionButton: ReusableFab(
+            icon: Icons.add_chart_rounded,
+            onPressed: () => _showCreatePayrollDialog(context),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+          ),
+        );
+      },
+    );
+  }
+
+  void _showCreatePayrollDialog(BuildContext context) {
+    final now = DateTime.now();
+    final monthCtrl = TextEditingController(text: now.month.toString());
+    final yearCtrl = TextEditingController(text: now.year.toString());
+
+    showDialog(
+      context: context,
+      builder: (context) => ReusableDialog(
+        title: 'Ã˜Â¥Ã™â€ Ã˜Â´Ã˜Â§Ã˜Â¡ Ã™Æ’Ã˜Â´Ã™Â Ã˜Â±Ã˜Â§Ã˜ÂªÃ˜Â¨ Ã˜Â¬Ã˜Â¯Ã™Å Ã˜Â¯',
+        headerIcon: const Icon(Icons.add_chart_rounded),
+        children: [
+          ReusableInput(
+            label: 'Ã˜Â§Ã™â€žÃ˜Â´Ã™â€¡Ã˜Â± (Ã˜Â±Ã™â€šÃ™â€¦)',
+            hint: 'Ã™â€¦Ã˜Â«Ã˜Â§Ã™â€ž: 1-12',
+            controller: monthCtrl,
+            keyboardType: TextInputType.number,
+          ),
+          SizedBox(height: AppSpacing.md.h),
+          ReusableInput(
+            label: 'Ã˜Â§Ã™â€žÃ˜Â³Ã™â€ Ã˜Â©',
+            hint: 'Ã™â€¦Ã˜Â«Ã˜Â§Ã™â€ž: 2026',
+            controller: yearCtrl,
+            keyboardType: TextInputType.number,
+          ),
+          SizedBox(height: AppSpacing.lg.h),
+          DialogActions(
+            confirmText: 'Ã˜Â¥Ã™â€ Ã˜Â´Ã˜Â§Ã˜Â¡ Ã˜Â§Ã™â€žÃ™Æ’Ã˜Â´Ã™Â',
+            onConfirm: () async {
+              final month = int.tryParse(monthCtrl.text);
+              final year = int.tryParse(yearCtrl.text);
+              if (month == null || year == null) return;
+              context.read<HrBloc>().add(CreatePayroll(month, year));
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PayrollSummaryCard extends StatelessWidget {
+  final double totalSalaries;
+  final PayrollModel? payroll;
+  const _PayrollSummaryCard({required this.totalSalaries, this.payroll});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return AppCard(
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(12.w),
+            decoration: BoxDecoration(
+              color: scheme.primary.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(Icons.payments_rounded, size: 28.sp, color: scheme.primary),
+          ),
+          SizedBox(height: AppSpacing.sm.h),
+          const ReusableText(
+            'Ã˜Â¥Ã˜Â¬Ã™â€¦Ã˜Â§Ã™â€žÃ™Å  Ã™â€¦Ã˜Â®Ã˜ÂµÃ˜ÂµÃ˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ˜Â±Ã™Ë†Ã˜Â§Ã˜ÂªÃ˜Â¨ Ã™â€žÃ™â€žÃ˜Â´Ã™â€¡Ã˜Â± Ã˜Â§Ã™â€žÃ˜Â­Ã˜Â§Ã™â€žÃ™Å ',
+            variant: ReusableTextVariant.caption,
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: AppSpacing.xs.h),
+          ReusableText(
+            '${totalSalaries.toStringAsFixed(0)} Ã˜Â¬.Ã™â€¦',
+            style: TextStyle(
+              fontSize: 26.sp,
+              fontWeight: FontWeight.bold,
+              color: scheme.onSurface,
+            ),
+          ),
+          if (payroll != null) ...[
+            SizedBox(height: AppSpacing.sm.h),
+            StatusBadge(
+              label: _statusText(payroll!.status),
+              color: _statusColor(context, payroll!.status),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Color _statusColor(BuildContext context, String status) => switch (status) {
+    'draft' => Colors.grey,
+    'processing' => AppColors.info,
+    'approved' => AppColors.success,
+    'paid' => AppColors.primary,
+    _ => AppColors.textSecondaryOf(context),
+  };
+
+  String _statusText(String status) => switch (status) {
+    'draft' => 'Ã™â€¦Ã˜Â³Ã™Ë†Ã˜Â¯Ã˜Â©',
+    'processing' => 'Ã™â€šÃ™Å Ã˜Â¯ Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â¬Ã™â€¡Ã™Å Ã˜Â²',
+    'approved' => 'Ã™â€¦Ã˜Â¹Ã˜ÂªÃ™â€¦Ã˜Â¯',
+    'paid' => 'Ã™â€¦Ã˜Â¯Ã™ÂÃ™Ë†Ã˜Â¹',
+    _ => status,
+  };
+}
+
+class _PayrollListCard extends StatelessWidget {
+  final List<PayrollModel> records;
+  const _PayrollListCard({required this.records});
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = context.read<HrBloc>();
+    final scheme = Theme.of(context).colorScheme;
+    
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SectionHeader(icon: Icons.list_alt_rounded, title: 'Ã™Æ’Ã˜Â´Ã™Ë†Ã™Â Ã˜Â§Ã™â€žÃ˜Â±Ã™Ë†Ã˜Â§Ã˜ÂªÃ˜Â¨ Ã˜Â§Ã™â€žÃ˜Â³Ã˜Â§Ã˜Â¨Ã™â€šÃ˜Â©'),
+          SizedBox(height: AppSpacing.sm.h),
+          if (records.isEmpty)
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 24.h),
+              child: const Center(
+                child: ReusableText(
+                  'Ã™â€žÃ˜Â§ Ã˜ÂªÃ™Ë†Ã˜Â¬Ã˜Â¯ Ã™Æ’Ã˜Â´Ã™Ë†Ã™Â Ã˜Â±Ã™Ë†Ã˜Â§Ã˜ÂªÃ˜Â¨ Ã™â€¦Ã˜Â³Ã˜Â¬Ã™â€žÃ˜Â© Ã˜Â­Ã˜ÂªÃ™â€° Ã˜Â§Ã™â€žÃ˜Â¢Ã™â€ .',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ),
+            )
+          else
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: records.length,
+              separatorBuilder: (_, index) => Divider(height: 1, color: scheme.outlineVariant.withValues(alpha: 0.1)),
+              itemBuilder: (context, i) {
+                final p = records[i];
+                final statusColor = switch (p.status) {
+                  'draft' => Colors.grey,
+                  'processing' => AppColors.info,
+                  'approved' => AppColors.success,
+                  'paid' => AppColors.primary,
+                  _ => AppColors.textSecondaryOf(context),
+                };
+                final statusText = switch (p.status) {
+                  'draft' => 'Ã™â€¦Ã˜Â³Ã™Ë†Ã˜Â¯Ã˜Â©',
+                  'processing' => 'Ã™â€šÃ™Å Ã˜Â¯ Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â¬Ã™â€¡Ã™Å Ã˜Â²',
+                  'approved' => 'Ã™â€¦Ã˜Â¹Ã˜ÂªÃ™â€¦Ã˜Â¯',
+                  'paid' => 'Ã™â€¦Ã˜Â¯Ã™ÂÃ™Ë†Ã˜Â¹',
+                  _ => p.status,
+                };
+
+                return ListTile(
+                  contentPadding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 4.w),
+                  title: ReusableText(
+                    'Ã™Æ’Ã˜Â´Ã™Â Ã˜Â´Ã™â€¡Ã˜Â± ${p.month} - Ã™â€žÃ˜Â³Ã™â€ Ã˜Â© ${p.year}',
+                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: ReusableText(
+                    'Ã˜Â¹Ã˜Â¯Ã˜Â¯ Ã˜Â§Ã™â€žÃ™â€¦Ã™Ë†Ã˜Â¸Ã™ÂÃ™Å Ã™â€ : ${p.employeeCount} | Ã˜Â§Ã™â€žÃ˜ÂµÃ˜Â§Ã™ÂÃ™Å : ${p.netTotal.toStringAsFixed(0)} Ã˜Â¬.Ã™â€¦',
+                    style: TextStyle(fontSize: 11.sp, color: AppColors.textSecondaryOf(context)),
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      StatusBadge(label: statusText, color: statusColor),
+                      SizedBox(width: 4.w),
+                      if (p.status == 'draft' || p.status == 'processing' || p.status == 'approved')
+                        PopupMenuButton<String>(
+                          onSelected: (value) async {
+                            switch (value) {
+                              case 'process':
+                                bloc.add(ProcessPayroll(p.id));
+                                break;
+                              case 'approve':
+                                bloc.add(ApprovePayroll(p.id));
+                                break;
+                              case 'lines':
+                                _showPayrollLines(context, p.id);
+                                break;
+                            }
+                          },
+                          itemBuilder: (context) => [
+                            if (p.status == 'draft')
+                              ReusableActionMenuItem(
+                                value: 'process',
+                                icon: Icons.play_circle_outline_rounded,
+                                label: HrStrings.hrStartProcessing,
+                              ),
+                            if (p.status == 'processing')
+                              ReusableActionMenuItem(
+                                value: 'approve',
+                                icon: Icons.check_circle_outline_rounded,
+                                label: HrStrings.hrApprovePayroll,
+                              ),
+                            ReusableActionMenuItem(
+                              value: 'lines',
+                              icon: Icons.visibility_outlined,
+                              label: HrStrings.hrViewDetails,
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+                );
+              },
+            ),
+        ],
+      ),
+    );
+  }
+
+  void _showPayrollLines(BuildContext context, String payrollId) {
+    final lines = PayrollService.getLines(payrollId);
+    final scheme = Theme.of(context).colorScheme;
+
+    ReusableDialog.show(
+      context,
+      title: 'Ã˜ÂªÃ™ÂÃ˜Â§Ã˜ÂµÃ™Å Ã™â€ž Ã™Æ’Ã˜Â´Ã™Â Ã˜Â§Ã™â€žÃ˜Â±Ã™Ë†Ã˜Â§Ã˜ÂªÃ˜Â¨',
+      headerIcon: const Icon(Icons.info_outline_rounded),
+      maxWidth: 600,
+      children: [
+        if (lines.isEmpty)
+          const ReusableStateView.empty(message: 'Ã™â€žÃ˜Â§ Ã˜ÂªÃ™Ë†Ã˜Â¬Ã˜Â¯ Ã˜ÂªÃ™ÂÃ˜Â§Ã˜ÂµÃ™Å Ã™â€ž Ã™â€¦Ã˜ÂªÃ˜Â§Ã˜Â­Ã˜Â© Ã™â€žÃ™â€¡Ã˜Â°Ã˜Â§ Ã˜Â§Ã™â€žÃ™Æ’Ã˜Â´Ã™Â.', compact: true)
+        else
+          SizedBox(
+            height: 400.h,
+            child: ListView.separated(
+              itemCount: lines.length,
+              separatorBuilder: (_, index) => Divider(height: 1, color: scheme.outlineVariant.withValues(alpha: 0.1)),
+              itemBuilder: (context, i) {
+                final line = lines[i];
+                return ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 4.w),
+                  title: ReusableText(line.employeeName, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: ReusableText(
+                    'Ã˜Â§Ã™â€žÃ˜Â£Ã˜Â³Ã˜Â§Ã˜Â³Ã™Å : ${line.baseSalary.toStringAsFixed(0)} | Ã˜Â®Ã˜ÂµÃ™Ë†Ã™â€¦Ã˜Â§Ã˜Âª: ${line.deductions.toStringAsFixed(0)} | Ã˜Â­Ã™Ë†Ã˜Â§Ã™ÂÃ˜Â²: ${line.bonuses.toStringAsFixed(0)}',
+                    style: TextStyle(fontSize: 10.5.sp, color: AppColors.textSecondaryOf(context)),
+                  ),
+                  trailing: ReusableText(
+                    '${line.netSalary.toStringAsFixed(0)} Ã˜Â¬.Ã™â€¦',
+                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: scheme.primary),
+                  ),
+                );
+              },
+            ),
+          ),
+      ],
+    );
+  }
+}
+

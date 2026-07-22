@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <base href="$FLUTTER_BASE_HREF">
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="نظام متكامل لإدارة الصيدلية والمبيعات والمشتريات والمخزون أونلاين وأوفلاين.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="نظام إدارة الصيدلية">
+  <meta name="theme-color" content="#1a237e">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Preload bootstrap for better debug connection -->
+  <link rel="preload" href="flutter_bootstrap.js" as="script">
+
+  <title>نظام إدارة الصيدلية</title>
+  <style>
+    body {
+      margin: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at center, #1a237e 0%, #121858 100%);
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+    }
+
+    .splash-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: opacity 0.4s ease-out;
+    }
+
+    .logo {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 30px;
+      filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    .app-name {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 40px;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .progress-wrapper {
+      width: 280px;
+    }
+
+    .progress-track {
+      height: 4px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    /* شريط تقدم انسيابي (Indeterminate) يظهر فوراً ويعطي انطباع بالنشاط */
+    .progress-fill {
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, transparent, #4fc3f7, transparent);
+      border-radius: 10px;
+      position: absolute;
+      animation: slide 1.5s infinite linear;
+    }
+
+    .loading-text {
+      font-size: 14px;
+      color: #b0bec5;
+      text-align: center;
+      width: 100%;
+    }
+
+    @keyframes slide {
+      from { left: -50%; }
+      to { left: 100%; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.9; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="splash-container" id="splash">
+    <img src="icons/Icon-192.png" alt="Logo" class="logo">
+    <div class="app-name">نظام إدارة الصيدلية</div>
+    <div class="progress-wrapper">
+      <div class="progress-track">
+        <div class="progress-fill"></div>
+      </div>
+      <div class="loading-text" id="status-text">جاري تشغيل المنظومة...</div>
+    </div>
+  </div>
+
+  <script src="flutter_bootstrap.js" async></script>
+
+  <script>
+    (function() {
+      const splash = document.getElementById('splash');
+
+      // إخفاء الـ Splash فور ظهور أول فريم من Flutter
+      window.addEventListener('flutter-first-frame', function() {
+        if (splash) {
+          splash.classList.add('fade-out');
+          setTimeout(() => splash.remove(), 500);
+        }
+      });
+
+      // Timeout احتياطي للأمان
+      setTimeout(() => {
+        if (splash && document.body.contains(splash)) {
+          splash.classList.add('fade-out');
+          setTimeout(() => splash.remove(), 500);
+        }
+      }, 15000);
+    })();
+
+    // إدارة الـ Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('pharmacy_service_worker.js');
+      });
+    }
+  </script>
+</body>
+</html>

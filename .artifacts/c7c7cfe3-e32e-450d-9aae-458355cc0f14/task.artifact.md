@@ -1,0 +1,24 @@
+# Task Checklist - Project Cleanup & Refactoring
+
+- [ ] Phase 1: Service Cleanup
+    - [ ] Remove `lib/app/core/data/services/party_ledger_service.dart` (if redundant)
+    - [ ] Consolidate other redundant services in `core/data/services/`
+- [ ] Phase 2: Directory Cleanup
+    - [ ] Remove empty `widgets/` folders in all modules
+    - [ ] Remove other identified empty directories
+- [ ] Phase 3: Model Reorganization
+    - [ ] Move Accounting models
+    - [ ] Move Admin models
+    - [ ] Move HR models
+    - [ ] Move Inventory models
+    - [ ] Move Sales models
+    - [ ] Move Contact (Customer/Supplier) models
+    - [ ] Update imports in the entire project
+- [ ] Phase 4: DI Optimization
+    - [ ] Create `lib/app/core/di/daos_di.dart`
+    - [ ] Clean up `lib/app/core/di/database_di.dart`
+- [ ] Phase 5: BaseBloc Adoption
+    - [ ] Refactor `CashierShiftBloc` to use `BaseBloc`
+- [ ] Phase 6: Verification
+    - [ ] Run `flutter analyze`
+    - [ ] Build project
