@@ -307,6 +307,10 @@ class LoadPurchaseForEdit extends PurchasesEvent {
   List<Object?> get props => [purchase];
 }
 
+class LoadReferenceData extends PurchasesEvent {
+  const LoadReferenceData();
+}
+
 class ResetPurchaseForm extends PurchasesEvent {
   const ResetPurchaseForm();
 }

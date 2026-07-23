@@ -8,9 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/data/services/sound_service.dart';
 import '../../../routes/app_routes.dart';
 import '../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/modules/contacts/supplier_customers/services/supplier_customer_service.dart';
 import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
-import 'package:pharmacy_system/app/core/data/services/supplier/supplier_service.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
@@ -41,23 +39,6 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
     'system:mobile_wallet': '1103 — ${AppStrings.accountMobileWallet}',
     'system:card_clearing': '1104 — ${AppStrings.accountCardClearing}',
   };
-
-  // مساعد لتوحيد عرض الموردين والعملاء/الموردين
-  List<Map<String, String>> _getUnifiedVendors() {
-    final list = <Map<String, String>>[];
-    
-    // 1. الموردين العاديين
-    for (final s in SupplierService.getAll()) {
-      list.add({'id': s.id, 'name': s.name, 'type': 'supplier'});
-    }
-    
-    // 2. العملاء/الموردين الموحدين
-    for (final sc in SupplierCustomerService.getAll()) {
-      list.add({'id': sc.id, 'name': sc.name, 'type': 'contact'});
-    }
-    
-    return list;
-  }
 
   Future<void> _selectExpiry(BuildContext context, int index, DateTime? current) async {
     final picked = await showDatePicker(

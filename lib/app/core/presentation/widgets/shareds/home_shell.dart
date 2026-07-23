@@ -58,6 +58,7 @@ class _ShellBody extends StatelessWidget {
         }
 
         if (state.status == ShellStatus.error) {
+          final scheme = Theme.of(context).colorScheme;
           return Scaffold(
             backgroundColor: AppColors.backgroundOf(context),
             body: Center(

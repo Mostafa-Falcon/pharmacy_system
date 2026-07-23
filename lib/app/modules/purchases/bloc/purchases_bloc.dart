@@ -1,8 +1,12 @@
-﻿import 'package:pharmacy_system/app/modules/contacts/models/supplier_customer_model.dart';
+﻿import 'dart:async';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 import 'package:pharmacy_system/app/modules/contacts/supplier_customers/services/supplier_customer_service.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
 import 'package:pharmacy_system/app/core/data/services/accounting/correction_service.dart';
+import 'package:pharmacy_system/app/core/domain/models/base/correction_model.dart';
 import 'package:pharmacy_system/app/core/data/services/operations/export_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_ledger_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_service.dart';
@@ -10,6 +14,7 @@ import 'package:pharmacy_system/app/core/data/services/inventory/stock_mutation_
 import 'package:pharmacy_system/app/core/data/services/sound_service.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
 import 'package:pharmacy_system/app/core/data/repositories/purchases_repository.dart';
+import 'package:pharmacy_system/app/modules/sales/models/purchase_model.dart';
 import '../../../core/injection.dart';
 import 'purchases_event.dart';
 import 'purchases_state.dart';

@@ -4,14 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import 'package:pharmacy_system/app/modules/contacts/models/customer_ledger_model.dart';
 import 'package:pharmacy_system/app/modules/contacts/models/supplier_customer_model.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_ledger_model.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import '../../../../core/extensions/string_ext.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../../core/injection.dart';
 import '../bloc/supplier_customers_bloc.dart';
@@ -332,7 +329,7 @@ class _LedgerDialogContent extends StatelessWidget {
 
     return ListView.separated(
       itemCount: entries.length,
-      separatorBuilder: (_, __) => const Divider(height: 1),
+      separatorBuilder: (_, _) => const Divider(height: 1),
       itemBuilder: (context, i) {
         final e = entries[i];
         final type = e['entryType'] as String;
@@ -346,7 +343,7 @@ class _LedgerDialogContent extends StatelessWidget {
           title: ReusableText(type, style: const TextStyle(fontWeight: FontWeight.bold)),
           subtitle: Text(DateFormat('yyyy/MM/dd HH:mm').format(date)),
           trailing: Column(
-            mainAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               ReusableText('${runningBalance.toStringAsFixed(2)} ${AppStrings.currency}', style: TextStyle(fontWeight: FontWeight.bold, color: runningBalance > 0 ? AppColors.warning : AppColors.success)),
