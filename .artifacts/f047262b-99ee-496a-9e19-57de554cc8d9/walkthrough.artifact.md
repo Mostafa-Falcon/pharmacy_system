@@ -1,36 +1,35 @@
-# Walkthrough - Enhanced Purchase Workflow & Unit Precision
+# Walkthrough - Unified Premium Table System
 
-I have resolved the critical issues in the Purchase Invoice module, ensuring all vendors are visible and medicines can be added instantly via search or barcode.
+I have unified the design of all contact-related tables (Suppliers, Customers, and Supplier/Customers) to match the high-end "Medicines" table. I also extracted these UI patterns into reusable components to ensure long-term consistency.
 
 ## Key Enhancements
 
-### 1. Unified Vendor Visibility
-Fixed the issue where the Supplier dropdown appeared empty or showed UUIDs.
-- **Reactive Vendor List**: The `PurchasesBloc` now maintains a live list of both **Suppliers** and **Supplier-Customers**.
-- **Instant Recognition**: Newly added contacts appear in the Purchase Invoice dropdown **immediately** without requiring a page refresh.
-- **Name Display**: The dropdown correctly displays contact names instead of internal database IDs.
+### 1. Reusable Table Framework (`@tables`)
+Created a suite of shared components in `shared_table_cells.dart`:
+- **`TableIconBox`**: A rounded-square container for icons that gives a modern, "App-like" feel.
+- **`TableContactNameCell`**: Standardized cell for showing a person/entity name with a descriptive subtitle.
+- **`TableMoneyCell`**: Unified financial display with smart color-coding (Red for debts, Green for positive balances).
+- **`TableOptionsButton`**: A streamlined, consistent "Options" button for row actions.
 
-### 2. High-Speed Medicine Entry (Fast-Track)
-Streamlined the item addition process to maximize efficiency for pharmacists.
-- **Zero-Dialog Addition**: When you select a medicine (via Mouse, Enter, or Barcode), it is **instantly added** to the invoice table.
-- **Default Values**: Automatically sets a quantity of 1 and uses the current purchase price, allowing you to quickly scan multiple items.
-- **In-Table Editing**: You can still modify quantities, prices, and expiry dates directly within the table rows for any specific adjustments.
+### 2. Design Parity (Medicines Look & Feel)
+- **Rounded Avatars**: Switched from simple circles to rounded-square icon boxes to match the Medicine table's primary identity cells.
+- **Zebra-Striping & Layout**: All tables now use the same padding, row heights, and font hierarchies.
+- **Action Uniformity**: The "Options" menu is now identical across all three modules, making the app feel cohesive.
 
-### 3. Smart Medicine Search
-Fixed the search reliability by ensuring the system fetches data from the database if the local memory cache is not yet ready.
-- **Branch-Aware**: Search is strictly tied to the currently selected branch to prevent stock confusion.
-- **Diagnostic Logging**: Added internal tracking to monitor search performance on large datasets (6,000+ items).
-
-### 4. Advanced Unit Parsing (Precision Level)
-Refined the "Heuristic Unit Engine" to handle even more complex notations:
-- **Liquid/Injectable Logic**: "5امبول" is correctly understood as a box of 5 units (level 2 multiplier).
-- **Fractional Quantities**: Successfully decomposes decimal stock (e.g., `10.1`) into its component levels (10 Boxes + 1 Strip) based on the specific unit hierarchy.
+### 3. Integrated Modules
+Updated the following views to use the new reusable system:
+- **Suppliers**: Now shows the delivery truck icon in a square box with professional balance highlighting.
+- **Customers**: Uses person/money icons with unified column styling.
+- **Supplier/Customers**: Perfectly aligned with the other two, completing the "Unified Contacts" vision.
 
 ## Verification Results
-- Verified Supplier Names appear in the dropdown.
-- Verified Medicines appear in search results immediately after typing.
-- Verified Barcode scanning adds items directly to the list.
-- Verified that "6 شريط" unit correctly resolves stock multipliers.
+
+### UI Audit
+- Verified that switching between "Medicines", "Suppliers", and "Customers" feels seamless with no design jumps.
+- Checked right-to-left (RTL) alignment for Arabic text.
+
+### Performance
+- The use of stateless reusable cells ensures that table rendering remains "Zero Lag" even with hundreds of rows.
 
 > [!TIP]
-> Use the **F2** shortcut to quickly jump to the medicine search field and start scanning or typing.
+> All new table components are located in `lib/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart`. Use them for any future list views to maintain this premium design.

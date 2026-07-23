@@ -1,53 +1,42 @@
-# Implementation Plan - Professional Redesign of Unified Contacts (Supplier/Customer)
+# Implementation Plan - Unified Table Design (Contacts & Suppliers)
 
-Fix data visibility issues and redesign the "Supplier/Customer" module to follow the premium, professional standard (Advanced Table Layout) used in the rest of the application.
+Unify the design of Suppliers, Customers, and Supplier/Customer tables to match the premium "Medicines" table design. This includes creating reusable table components for consistent UI across the application.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Layout Change**: I am switching the module from a split-view (Side list + Detail panel) to a **Full-Width Advanced Table**. This matches the "Medicines" and "Purchases" pages, offering more space for data and a cleaner look.
+> **Design Shift**: I will use the "Icon Box" design (rounded square containers) for avatars instead of simple circles, matching the Medicines table's aesthetic.
 
 > [!TIP]
-> **Live Synchronization**: The list will now be "Live". Any contact added will appear **instantly** without needing a page refresh, as the UI will directly watch the database.
+> **Reusable Components**: I will extract these patterns into a new `shared_table_cells.dart` file in the `@tables` directory so they can be easily reused in any future module.
 
 ## Proposed Changes
 
-### [Component] Core Infrastructure (Database)
+### [Component] Core Presentation (Tables)
 
-#### [MODIFY] [supplier_customers_dao.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/data/database/daos/supplier_customers_dao.dart)
-- Already contains `watchAll()`, which will be leveraged.
+#### [NEW] [shared_table_cells.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart)
+- `TableIconBox`: The rounded square icon container with background.
+- `TableContactNameCell`: The row identity cell (Icon + Name + Subtitle).
+- `TableMoneyCell`: Styled currency display (e.g., for balances).
+- `TableOptionsButton`: Standardized row action button.
 
-### [Component] Contacts Module (Services)
+### [Component] Contacts Module (Views)
 
-#### [MODIFY] [supplier_customer_service.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/contacts/supplier_customers/services/supplier_customer_service.dart)
-- Ensure the static cache is invalidated or updated when `add`, `update`, or `delete` is called.
+#### [MODIFY] [suppliers_list_view.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/contacts/suppliers/views/suppliers_list_view.dart)
+- Update columns to use `TableContactNameCell` and `TableMoneyCell`.
+- Update `rowActions` to use the standardized button.
+- Ensure consistent spacing and layout.
 
-### [Component] Contacts Module (Bloc)
-
-#### [MODIFY] [supplier_customers_state.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/contacts/supplier_customers/bloc/supplier_customers_state.dart)
-- Add `isSuccess` status to handle navigation/reset logic.
-- Ensure all metric totals (Active, Balance, Total) are calculated in the state.
-
-#### [MODIFY] [supplier_customers_bloc.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/contacts/supplier_customers/bloc/supplier_customers_bloc.dart)
-- Subscribe to the `SupplierCustomerService.watchAll()` stream in the constructor.
-- Automatically trigger `LoadSupplierCustomers` whenever a change is detected in the database.
-- Emit `isSuccess: true` after adding or updating a contact.
-
-### [Component] Contacts Module (View)
+#### [MODIFY] [customers_list_view.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/contacts/customers/views/customers_list_view.dart)
+- Update columns to match the new design.
+- Switch to `StandardModuleLayout` if not already using it.
 
 #### [MODIFY] [supplier_customers_list_view.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/contacts/supplier_customers/views/supplier_customers_list_view.dart)
-- **Redesign**: Switch to `StandardModuleLayout` and `ReusableTable`.
-- **Metric Cards**: Add professional summary cards for Total, Active, and Total Combined Balance.
-- **Row Actions**: Move operations (Ledger, Edit, Delete) to a clean "Options" button in each row.
-- **Ledger Dialog**: Improve the ledger view to be more professional and clear.
-
-#### [MODIFY] [add_supplier_customer_view.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/contacts/supplier_customers/views/add_supplier_customer_view.dart)
-- Implement `BlocListener` to handle automatic navigation back to the list upon success.
+- Refactor to use the new shared components for 100% parity with other tables.
 
 ## Verification Plan
 
 ### Manual Verification
-1. **Visibility Test**: Add a new contact and verify it appears immediately in the full-width table.
-2. **UI Test**: Verify that the table matches the zebra-row and premium styling of the Medicines table.
-3. **Ledger Test**: Open the ledger for a contact and verify all financial records (Sales/Purchases/Receipts) are shown correctly.
-4. **Consistency**: Verify that search and quick filters work smoothly on the new table.
+1. **Visual Consistency Check**: Open Medicines, Suppliers, and Customers pages and verify they look like they belong to the same "Premium" suite.
+2. **Responsive Check**: Verify that columns still resize correctly on different screen widths.
+3. **Action Test**: Ensure all row actions (Ledger, Edit, Delete) still trigger the correct Bloc events and dialogs.

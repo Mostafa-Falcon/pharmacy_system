@@ -130,7 +130,12 @@ class _CustomersBody extends StatelessWidget {
         title: AppStrings.customerTitle,
         flex: 1,
         isSortable: true,
-        cellBuilder: (c) => _buildCustomerCell(context, c),
+        cellBuilder: (c) => TableContactNameCell(
+          name: c.name,
+          subtitle: c.kindName,
+          icon: c.kind == CustomerKind.cash ? Icons.money_rounded : Icons.person_rounded,
+          iconColor: c.isActive ? AppColors.success : AppColors.error,
+        ),
       ),
       ReusableTableColumn<CustomerModel>(
         id: 'phone',
@@ -152,12 +157,10 @@ class _CustomersBody extends StatelessWidget {
         isNumeric: true,
         cellBuilder: (c) {
           final balance = state.balances[c.id] ?? 0;
-          return ReusableText(
-            '${balance.toStringAsFixed(0)} ج.م',
-            style: AppTextStyles.caption(context).copyWith(
-              fontWeight: FontWeight.w600,
-              color: balance > 0 ? AppColors.warning : AppColors.success,
-            ),
+          return TableMoneyCell(
+            amount: balance,
+            currency: AppStrings.currency,
+            isNegative: balance > 0,
           );
         },
       ),
@@ -221,44 +224,6 @@ class _CustomersBody extends StatelessWidget {
     );
   }
 
-  Widget _buildCustomerCell(BuildContext context, CustomerModel c) {
-    final scheme = Theme.of(context).colorScheme;
-    return Row(
-      children: [
-        CircleAvatar(
-          radius: 16.r,
-          backgroundColor: c.isActive
-              ? AppColors.success.withValues(alpha: 0.15)
-              : AppColors.error.withValues(alpha: 0.1),
-          child: Icon(
-            c.kind == CustomerKind.cash ? Icons.money_rounded : Icons.person_rounded,
-            color: c.isActive ? AppColors.success : AppColors.error,
-            size: AppIconSize.sm.value.sp,
-          ),
-        ),
-        SizedBox(width: 10.w),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-               ReusableText(
-                 c.name,
-                 style: AppTextStyles.bodyBold(context),
-                 maxLines: 1,
-                 overflow: TextOverflow.ellipsis,
-               ),
-               ReusableText(
-                 c.kindName,
-                 style: AppTextStyles.caption(context).copyWith(color: scheme.onSurfaceVariant),
-               ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
   List<Widget> _buildBulkActions(BuildContext context, CustomersBloc bloc, CustomersState state) {
     return [
       ReusableButton(
@@ -291,9 +256,7 @@ class _CustomersBody extends StatelessWidget {
   }
 
   Widget _buildRowActions(BuildContext context, CustomersBloc bloc, CustomerModel c) {
-    final scheme = Theme.of(context).colorScheme;
-    return PopupMenuButton<String>(
-      offset: const Offset(0, 40),
+    return TableOptionsButton(
       onSelected: (v) {
         switch (v) {
           case 'edit': _showEditCustomerDialog(context, c); break;
@@ -309,34 +272,12 @@ class _CustomersBody extends StatelessWidget {
           case 'ledger': _showLedgerDialog(context, c); break;
         }
       },
-      itemBuilder: (_) => [
+      menuItems: [
         const PopupMenuItem(value: 'ledger', child: ReusableText(AppStrings.ledgerTitle)),
         const PopupMenuItem(value: 'edit', child: ReusableText(AppStrings.edit)),
         PopupMenuItem(value: 'toggle', child: ReusableText(c.isActive ? AppStrings.deactivate : AppStrings.activate)),
         PopupMenuItem(value: 'delete', child: ReusableText(AppStrings.delete, color: AppColors.error)),
       ],
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-          decoration: BoxDecoration(
-            color: scheme.surface,
-            borderRadius: BorderRadius.circular(AppRadius.button),
-            border: Border.all(color: scheme.outlineVariant),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ReusableText(
-                'خيارات',
-                style: AppTextStyles.caption(context).copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: scheme.primary,
-                ),
-              ),
-              SizedBox(width: 4.w),
-              Icon(Icons.more_vert_rounded, size: AppIconSize.sm.value.sp, color: scheme.primary),
-          ],
-        ),
-      ),
     );
   }
 

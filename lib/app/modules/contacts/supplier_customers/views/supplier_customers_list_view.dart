@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:pharmacy_system/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart';
 
 import 'package:pharmacy_system/app/modules/contacts/models/supplier_customer_model.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
@@ -124,25 +125,11 @@ class SupplierCustomersListView extends StatelessWidget {
         title: AppStrings.partyNameLabel,
         flex: 1,
         isSortable: true,
-        cellBuilder: (c) => Row(
-          children: [
-            CircleAvatar(
-              radius: 16.r,
-              backgroundColor: c.isActive ? AppColors.info.withValues(alpha: 0.15) : AppColors.error.withValues(alpha: 0.1),
-              child: Icon(Icons.swap_horiz_rounded, color: c.isActive ? AppColors.info : AppColors.error, size: 16.sp),
-            ),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                   ReusableText(c.name, style: AppTextStyles.bodyBold(context), maxLines: 1, overflow: TextOverflow.ellipsis),
-                   ReusableText(c.subtitle, style: AppTextStyles.caption(context).copyWith(color: scheme.onSurfaceVariant)),
-                ],
-              ),
-            ),
-          ],
+        cellBuilder: (c) => TableContactNameCell(
+          name: c.name,
+          subtitle: c.subtitle,
+          icon: Icons.swap_horiz_rounded,
+          iconColor: c.isActive ? AppColors.info : AppColors.error,
         ),
       ),
       ReusableTableColumn<SupplierCustomerModel>(
@@ -164,12 +151,10 @@ class SupplierCustomersListView extends StatelessWidget {
         isNumeric: true,
         cellBuilder: (c) {
           final balance = state.currentBalances[c.id] ?? 0;
-          return ReusableText(
-            '${balance.toStringAsFixed(0)} ${AppStrings.currency}',
-            style: AppTextStyles.caption(context).copyWith(
-              fontWeight: FontWeight.w600,
-              color: balance > 0 ? AppColors.warning : AppColors.success,
-            ),
+          return TableMoneyCell(
+            amount: balance,
+            currency: AppStrings.currency,
+            isNegative: balance > 0,
           );
         },
       ),
@@ -191,48 +176,26 @@ class SupplierCustomersListView extends StatelessWidget {
       onTapRow: (c) => _showLedgerDialog(context, c),
       rowIdGetter: (c) => c.id,
       itemLabel: 'جهة تعامل',
-      rowActions: (c) => _buildRowActions(context, bloc, c),
-    );
-  }
-
-  Widget _buildRowActions(BuildContext context, SupplierCustomersBloc bloc, SupplierCustomerModel c) {
-    final scheme = Theme.of(context).colorScheme;
-    return PopupMenuButton<String>(
-      offset: const Offset(0, 40),
-      onSelected: (v) {
-        switch (v) {
-          case 'edit': _showDialog(context, item: c); break;
-          case 'ledger': _showLedgerDialog(context, c); break;
-          case 'delete':
-            ConfirmDeleteDialog.show(
-              context,
-              title: AppStrings.delete,
-              message: AppStrings.deleteConfirmMessageFormat.replaceFirst('%s', c.name),
-              onConfirm: () => bloc.add(DeleteSupplierCustomer(c.id)),
-            );
-            break;
-        }
-      },
-      itemBuilder: (_) => [
-        const PopupMenuItem(value: 'ledger', child: ReusableText(AppStrings.ledgerTitle)),
-        const PopupMenuItem(value: 'edit', child: ReusableText(AppStrings.edit)),
-        PopupMenuItem(value: 'delete', child: ReusableText(AppStrings.delete, color: AppColors.error)),
-      ],
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-        decoration: BoxDecoration(
-          color: scheme.surface,
-          borderRadius: BorderRadius.circular(AppRadius.button),
-          border: Border.all(color: scheme.outlineVariant),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ReusableText('خيارات', style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold, color: scheme.primary)),
-            SizedBox(width: 4.w),
-            Icon(Icons.more_vert_rounded, size: 14.sp, color: scheme.primary),
-          ],
-        ),
+      rowActions: (c) => TableOptionsButton(
+        onSelected: (v) {
+          switch (v) {
+            case 'edit': _showDialog(context, item: c); break;
+            case 'ledger': _showLedgerDialog(context, c); break;
+            case 'delete':
+              ConfirmDeleteDialog.show(
+                context,
+                title: AppStrings.delete,
+                message: AppStrings.deleteConfirmMessageFormat.replaceFirst('%s', c.name),
+                onConfirm: () => bloc.add(DeleteSupplierCustomer(c.id)),
+              );
+              break;
+          }
+        },
+        menuItems: [
+          const PopupMenuItem(value: 'ledger', child: ReusableText(AppStrings.ledgerTitle)),
+          const PopupMenuItem(value: 'edit', child: ReusableText(AppStrings.edit)),
+          PopupMenuItem(value: 'delete', child: ReusableText(AppStrings.delete, color: AppColors.error)),
+        ],
       ),
     );
   }
@@ -329,7 +292,7 @@ class _LedgerDialogContent extends StatelessWidget {
 
     return ListView.separated(
       itemCount: entries.length,
-      separatorBuilder: (_, _) => const Divider(height: 1),
+      separatorBuilder: (_, index) => const Divider(height: 1),
       itemBuilder: (context, i) {
         final e = entries[i];
         final type = e['entryType'] as String;

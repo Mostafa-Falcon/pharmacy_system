@@ -1,11 +1,11 @@
-- [ ] **Data Infrastructure**
-    - [ ] Add reactive subscription in `SupplierCustomersBloc`
-    - [ ] Update `SupplierCustomerService` with cache invalidation
-- [ ] **Redesign Contacts Module (Supplier/Customer)**
-    - [ ] Implement new `SupplierCustomersListView` using `ReusableTable`
-    - [ ] Update `AddSupplierCustomerView` with auto-navigation on success
-    - [ ] Refine `_LedgerDialogContent` for professional look
+- [x] **Infrastructure: Reusable Table Cells**
+    - [x] Create `shared_table_cells.dart` with `TableIconBox`, `TableContactNameCell`, etc.
+- [x] **Suppliers Redesign**
+    - [x] Update `SuppliersListView` columns and actions
+- [x] **Customers Redesign**
+    - [x] Update `CustomersListView` columns and actions
+- [x] **Supplier/Customers Redesign**
+    - [x] Update `SupplierCustomersListView` to use shared components
 - [ ] **Verification**
-    - [ ] Verify instant appearance of new contacts
-    - [ ] Verify redesigned UI consistency
-    - [ ] Verify ledger and edit operations from the table
+    - [ ] Visual audit of all redesigned tables
+    - [ ] Functional test of row actions

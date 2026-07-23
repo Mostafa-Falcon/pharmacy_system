@@ -131,7 +131,12 @@ class _SuppliersBody extends StatelessWidget {
         title: AppStrings.supplierLabelTable,
         flex: 1,
         isSortable: true,
-        cellBuilder: (s) => _buildSupplierCell(context, s),
+        cellBuilder: (s) => TableContactNameCell(
+          name: s.name,
+          subtitle: AppStrings.supplierType,
+          icon: Icons.local_shipping_rounded,
+          iconColor: s.isActive ? AppColors.success : AppColors.error,
+        ),
       ),
       ReusableTableColumn<SupplierModel>(
         id: 'phone',
@@ -153,12 +158,10 @@ class _SuppliersBody extends StatelessWidget {
         isNumeric: true,
         cellBuilder: (s) {
           final balance = state.balances[s.id] ?? 0;
-          return ReusableText(
-            '${f.format(balance)} ${AppStrings.currency}',
-            style: AppTextStyles.caption(context).copyWith(
-              color: balance > 0 ? AppColors.error : AppColors.success,
-              fontWeight: FontWeight.w700,
-            ),
+          return TableMoneyCell(
+            amount: balance,
+            currency: AppStrings.currency,
+            isNegative: balance > 0, // In suppliers, debit balance usually means we owe them
           );
         },
       ),
@@ -224,44 +227,6 @@ class _SuppliersBody extends StatelessWidget {
     );
   }
 
-  Widget _buildSupplierCell(BuildContext context, SupplierModel s) {
-    final scheme = Theme.of(context).colorScheme;
-    return Row(
-      children: [
-        CircleAvatar(
-          radius: 16.r,
-          backgroundColor: s.isActive
-              ? AppColors.success.withValues(alpha: 0.15)
-              : AppColors.error.withValues(alpha: 0.1),
-          child: Icon(
-            Icons.local_shipping_rounded,
-            color: s.isActive ? AppColors.success : AppColors.error,
-            size: AppIconSize.sm.value.sp,
-          ),
-        ),
-        SizedBox(width: 10.w),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-               ReusableText(
-                 s.name,
-                 style: AppTextStyles.bodyBold(context),
-                 maxLines: 1,
-                 overflow: TextOverflow.ellipsis,
-               ),
-               ReusableText(
-                  AppStrings.supplierType,
-                 style: AppTextStyles.caption(context).copyWith(color: scheme.onSurfaceVariant),
-               ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
   List<Widget> _buildBulkActions(BuildContext context, SuppliersBloc bloc, SuppliersState state) {
     return [
       ReusableButton(
@@ -294,9 +259,7 @@ class _SuppliersBody extends StatelessWidget {
   }
 
   Widget _buildRowActions(BuildContext context, SuppliersBloc bloc, SupplierModel s) {
-    final scheme = Theme.of(context).colorScheme;
-    return PopupMenuButton<String>(
-      offset: const Offset(0, 40),
+    return TableOptionsButton(
       onSelected: (v) {
         switch (v) {
           case 'ledger':
@@ -325,34 +288,12 @@ class _SuppliersBody extends StatelessWidget {
             break;
         }
       },
-      itemBuilder: (_) => [
+      menuItems: [
         const PopupMenuItem(value: 'ledger', child: ReusableText(AppStrings.accountStatement)),
         const PopupMenuItem(value: 'edit', child: ReusableText(AppStrings.edit)),
         PopupMenuItem(value: 'toggle', child: ReusableText(s.isActive ? AppStrings.deactivateLabel : AppStrings.activate)),
         const PopupMenuItem(value: 'delete', child: ReusableText(AppStrings.delete, color: AppColors.error)),
       ],
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-          decoration: BoxDecoration(
-            color: scheme.surface,
-            borderRadius: BorderRadius.circular(AppRadius.button),
-            border: Border.all(color: scheme.outlineVariant),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ReusableText(
-                'خيارات',
-                style: AppTextStyles.caption(context).copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: scheme.primary,
-                ),
-              ),
-              SizedBox(width: 4.w),
-              Icon(Icons.more_vert_rounded, size: AppIconSize.sm.value.sp, color: scheme.primary),
-          ],
-        ),
-      ),
     );
   }
 
