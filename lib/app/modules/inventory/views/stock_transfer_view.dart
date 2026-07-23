@@ -20,8 +20,8 @@ class StockTransferView extends StatelessWidget {
     return BlocBuilder<StockTransferBloc, StockTransferState>(
       builder: (context, state) {
         return StandardModuleLayout(
-          title: 'Ã˜ÂªÃ˜Â­Ã™Ë†Ã™Å Ã™â€ž Ã™â€¦Ã˜Â®Ã˜Â²Ã™Ë†Ã™â€ ',
-          subtitle: 'Ã˜Â¥Ã˜Â¯Ã˜Â§Ã˜Â±Ã˜Â© Ã˜Â­Ã˜Â±Ã™Æ’Ã˜Â© Ã˜Â§Ã™â€žÃ˜Â£Ã˜ÂµÃ™â€ Ã˜Â§Ã™Â Ã˜Â¨Ã™Å Ã™â€  Ã˜Â§Ã™â€žÃ™ÂÃ˜Â±Ã™Ë†Ã˜Â¹ Ã™Ë†Ã™â€¦Ã˜ÂªÃ˜Â§Ã˜Â¨Ã˜Â¹Ã˜Â© Ã˜Â§Ã™â€žÃ˜Â´Ã˜Â­Ã™â€ Ã˜Â§Ã˜Âª',
+          title: 'تحويل مخزون',
+          subtitle: 'إدارة حركة الأصناف بين الفروع ومتابعة الشحنات',
           actions: _buildHeaderActions(context, state),
           filters: _buildTabs(context, state),
           content: _buildList(context, state),
@@ -40,24 +40,24 @@ class StockTransferView extends StatelessWidget {
 
     return [
       ReusableButton(
-        text: 'Ã˜ÂªÃ˜Â­Ã™Ë†Ã™Å Ã™â€ž Ã˜Â¬Ã˜Â¯Ã™Å Ã˜Â¯',
+        text: 'تحويل جديد',
         prefixIcon: Icons.add_rounded,
         onPressed: () => context.push(Routes.STOCK_TRANSFER_ADD),
       ),
       SizedBox(width: AppSpacing.sm),
       if (pending.isNotEmpty)
         ReusableBadge.tone(
-          label: '${pending.length} Ã˜ÂªÃ˜Â­Ã™Ë†Ã™Å Ã™â€žÃ˜Â§Ã˜Âª Ã™Ë†Ã˜Â§Ã˜Â±Ã˜Â¯Ã˜Â© Ã™â€¦Ã˜Â¹Ã™â€žÃ™â€šÃ˜Â©',
+          label: '${pending.length} تحويلات واردة معلقة',
           tone: ReusableBadgeTone.warning,
         ),
       StatChip(
-        label: 'Ã˜Â¥Ã˜Â¬Ã™â€¦Ã˜Â§Ã™â€žÃ™Å  Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â­Ã™Ë†Ã™Å Ã™â€žÃ˜Â§Ã˜Âª',
+        label: 'إجمالي التحويلات',
         count: state.transfers.length,
         color: scheme.primary,
         icon: Icons.swap_horiz_rounded,
       ),
       ReusableButton(
-        text: 'Ã˜ÂªÃ˜Â­Ã˜Â¯Ã™Å Ã˜Â«',
+        text: 'تحديث',
         prefixIcon: Icons.refresh_rounded,
         type: ButtonType.tonal,
         onPressed: () => context
@@ -85,14 +85,14 @@ class StockTransferView extends StatelessWidget {
       child: Row(
         children: [
           _TabItem(
-            label: 'Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â­Ã™Ë†Ã™Å Ã™â€žÃ˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ˜ÂµÃ˜Â§Ã˜Â¯Ã˜Â±Ã˜Â©',
+            label: 'التحويلات الصادرة',
             count: outgoing,
             icon: Icons.arrow_upward_rounded,
             selected: state.selectedTab == 0,
             onTap: () => bloc.add(const SelectTransferTab(0)),
           ),
           _TabItem(
-            label: 'Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â­Ã™Ë†Ã™Å Ã™â€žÃ˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ™Ë†Ã˜Â§Ã˜Â±Ã˜Â¯Ã˜Â©',
+            label: 'التحويلات الواردة',
             count: incoming,
             icon: Icons.arrow_downward_rounded,
             selected: state.selectedTab == 1,
@@ -116,10 +116,10 @@ class StockTransferView extends StatelessWidget {
       return EmptyState(
         icon: Icons.swap_horiz_rounded,
         title: state.selectedTab == 0
-            ? 'Ã™â€žÃ˜Â§ Ã˜ÂªÃ™Ë†Ã˜Â¬Ã˜Â¯ Ã˜ÂªÃ˜Â­Ã™Ë†Ã™Å Ã™â€žÃ˜Â§Ã˜Âª Ã˜ÂµÃ˜Â§Ã˜Â¯Ã˜Â±Ã˜Â©'
-            : 'Ã™â€žÃ˜Â§ Ã˜ÂªÃ™Ë†Ã˜Â¬Ã˜Â¯ Ã˜ÂªÃ˜Â­Ã™Ë†Ã™Å Ã™â€žÃ˜Â§Ã˜Âª Ã™Ë†Ã˜Â§Ã˜Â±Ã˜Â¯Ã˜Â©',
+            ? 'لا توجد تحويلات صادرة'
+            : 'لا توجد تحويلات واردة',
         subtitle:
-            'Ã˜Â§Ã˜Â¶Ã˜ÂºÃ˜Â· Ã˜Â¹Ã™â€žÃ™â€° "Ã˜ÂªÃ˜Â­Ã™Ë†Ã™Å Ã™â€ž Ã˜Â¬Ã˜Â¯Ã™Å Ã˜Â¯" Ã™â€žÃ˜Â¥Ã™â€ Ã˜Â´Ã˜Â§Ã˜Â¡ Ã˜Â£Ã™Ë†Ã™â€ž Ã˜Â¹Ã™â€¦Ã™â€žÃ™Å Ã˜Â© Ã˜ÂªÃ˜Â­Ã™Ë†Ã™Å Ã™â€ž Ã˜Â¨Ã™Å Ã™â€  Ã˜Â§Ã™â€žÃ™ÂÃ˜Â±Ã™Ë†Ã˜Â¹ Ã˜Â¨Ã™Æ’Ã™â€ž Ã˜Â³Ã™â€¡Ã™Ë†Ã™â€žÃ˜Â©.',
+            'اضغط على "تحويل جديد" لإنشاء أول عملية تحويل بين الفروع بكل سهولة.',
       );
     }
     return ListView.separated(
@@ -220,10 +220,10 @@ class _TransferCardState extends State<_TransferCard> {
 
   String get _statusText {
     return switch (widget.transfer.status) {
-      TransferStatus.draft => 'Ã™â€¦Ã˜Â³Ã™Ë†Ã˜Â¯Ã˜Â©',
-      TransferStatus.sent => 'Ã™â€¦Ã˜Â±Ã˜Â³Ã™â€ž',
-      TransferStatus.received => 'Ã™â€¦Ã˜Â³Ã˜ÂªÃ™â€žÃ™â€¦',
-      TransferStatus.cancelled => 'Ã™â€¦Ã™â€žÃ˜ÂºÃ™Å ',
+      TransferStatus.draft => 'مسودة',
+      TransferStatus.sent => 'مرسل',
+      TransferStatus.received => 'مستلم',
+      TransferStatus.cancelled => 'ملغي',
     };
   }
 
@@ -277,7 +277,7 @@ class _TransferCardState extends State<_TransferCard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             ReusableText(
-                              'Ã˜ÂªÃ˜Â­Ã™Ë†Ã™Å Ã™â€ž Ã˜Â±Ã™â€šÃ™â€¦ #${t.transferNumber}',
+                              'تحويل رقم #${t.transferNumber}',
                               style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold),
                             ),
                             SizedBox(height: 4.h),
@@ -324,9 +324,9 @@ class _TransferCardState extends State<_TransferCard> {
                   SizedBox(height: AppSpacing.md.h),
                   Row(
                     children: [
-                      InfoChip(icon: Icons.inventory_2_outlined, label: '${t.items.length} Ã˜Â£Ã˜ÂµÃ™â€ Ã˜Â§Ã™Â'),
+                      InfoChip(icon: Icons.inventory_2_outlined, label: '${t.items.length} أصناف'),
                       SizedBox(width: AppSpacing.md.w),
-                      InfoChip(icon: Icons.numbers_rounded, label: '$_totalQuantity Ã™Ë†Ã˜Â­Ã˜Â¯Ã˜Â©'),
+                      InfoChip(icon: Icons.numbers_rounded, label: '$_totalQuantity وحدة'),
                       const Spacer(),
                           ReusableText(
                             '${t.createdAt.day}/${t.createdAt.month}/${t.createdAt.year}',
@@ -345,7 +345,7 @@ class _TransferCardState extends State<_TransferCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SectionHeader(icon: Icons.list_alt_rounded, title: 'Ã˜Â§Ã™â€žÃ˜Â£Ã˜ÂµÃ™â€ Ã˜Â§Ã™Â Ã˜Â§Ã™â€žÃ™â€¦Ã™â€ Ã™â€šÃ™Ë†Ã™â€žÃ˜Â©'),
+                  const SectionHeader(icon: Icons.list_alt_rounded, title: 'الأصناف المنقولة'),
                   ...t.items.map((item) => Padding(
                         padding: EdgeInsets.symmetric(vertical: 6.h),
                         child: Row(
@@ -359,10 +359,10 @@ class _TransferCardState extends State<_TransferCard> {
                             if (item.batchNumber != null)
                               Padding(
                                 padding: EdgeInsetsDirectional.only(end: 8.w),
-                                child: Tag(label: 'Ã˜Â¯Ã™ÂÃ˜Â¹Ã˜Â©: ${item.batchNumber}', color: AppColors.info),
+                                child: Tag(label: 'دفعة: ${item.batchNumber}', color: AppColors.info),
                               ),
                             ReusableText(
-                              '${item.quantity} Ã™Ë†Ã˜Â­Ã˜Â¯Ã˜Â©',
+                              '${item.quantity} وحدة',
                               style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: scheme.primary),
                             ),
                           ],
@@ -379,7 +379,7 @@ class _TransferCardState extends State<_TransferCard> {
                         border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.2)),
                       ),
                       child: ReusableText(
-                        'Ã™â€¦Ã™â€žÃ˜Â§Ã˜Â­Ã˜Â¸Ã˜Â§Ã˜Âª: ${t.notes}',
+                        'ملاحظات: ${t.notes}',
                         style: AppTextStyles.caption(context).copyWith(fontStyle: FontStyle.italic, color: scheme.onSurfaceVariant),
                       ),
                     ),
@@ -390,7 +390,7 @@ class _TransferCardState extends State<_TransferCard> {
                     children: [
                       if (t.status == TransferStatus.draft || t.status == TransferStatus.sent)
                         ReusableButton(
-                          text: 'Ã˜Â¥Ã™â€žÃ˜ÂºÃ˜Â§Ã˜Â¡ Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â­Ã™Ë†Ã™Å Ã™â€ž',
+                          text: 'إلغاء التحويل',
                           type: ButtonType.outlined,
                           color: AppColors.error,
                           onPressed: () => _confirmCancel(context, bloc),
@@ -398,7 +398,7 @@ class _TransferCardState extends State<_TransferCard> {
                       if (t.status == TransferStatus.sent && _isIncoming) ...[
                         SizedBox(width: AppSpacing.md.w),
                         ReusableButton(
-                          text: 'Ã˜ÂªÃ˜Â£Ã™Æ’Ã™Å Ã˜Â¯ Ã˜Â§Ã™â€žÃ˜Â§Ã˜Â³Ã˜ÂªÃ™â€žÃ˜Â§Ã™â€¦',
+                          text: 'تأكيد الاستلام',
                           prefixIcon: Icons.check_circle_rounded,
                           onPressed: () => _confirmReceive(context, bloc),
                         ),
@@ -406,7 +406,7 @@ class _TransferCardState extends State<_TransferCard> {
                       if (t.status == TransferStatus.draft && !_isIncoming) ...[
                         SizedBox(width: AppSpacing.md.w),
                         ReusableButton(
-                          text: 'Ã˜Â¥Ã˜Â±Ã˜Â³Ã˜Â§Ã™â€ž Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â­Ã™Ë†Ã™Å Ã™â€ž',
+                          text: 'إرسال التحويل',
                           prefixIcon: Icons.send_rounded,
                           onPressed: () => bloc.add(SendTransfer(t)),
                         ),
@@ -425,16 +425,16 @@ class _TransferCardState extends State<_TransferCard> {
   void _confirmReceive(BuildContext context, StockTransferBloc bloc) {
     ReusableDialog.show(
       context,
-      title: 'Ã˜ÂªÃ˜Â£Ã™Æ’Ã™Å Ã˜Â¯ Ã˜Â§Ã˜Â³Ã˜ÂªÃ™â€žÃ˜Â§Ã™â€¦ Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â­Ã™Ë†Ã™Å Ã™â€ž',
+      title: 'تأكيد استلام التحويل',
       headerIcon: const Icon(Icons.inventory_rounded),
       children: [
         ReusableText(
-          'Ã˜Â³Ã™Å Ã˜ÂªÃ™â€¦ Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â© Ã˜Â§Ã™â€žÃ˜Â£Ã˜ÂµÃ™â€ Ã˜Â§Ã™Â Ã˜Â§Ã™â€žÃ™â€¦Ã™â€ Ã™â€šÃ™Ë†Ã™â€žÃ˜Â© Ã˜Â¥Ã™â€žÃ™â€° Ã™â€¦Ã˜Â®Ã˜Â²Ã™Ë†Ã™â€  Ã™ÂÃ˜Â±Ã˜Â¹Ã™Æ’ Ã˜Â§Ã™â€žÃ˜Â­Ã˜Â§Ã™â€žÃ™Å  Ã™Ë†Ã˜ÂªÃ˜Â­Ã˜Â¯Ã™Å Ã˜Â« Ã˜Â§Ã™â€žÃ™Æ’Ã™â€¦Ã™Å Ã˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ™â€¦Ã˜ÂªÃ™Ë†Ã™ÂÃ˜Â±Ã˜Â©. Ã™â€¡Ã™â€ž Ã˜ÂªÃ˜Â±Ã™Å Ã˜Â¯ Ã˜Â§Ã™â€žÃ˜Â§Ã˜Â³Ã˜ÂªÃ™â€¦Ã˜Â±Ã˜Â§Ã˜Â±Ã˜Å¸',
+          'سيتم إضافة الأصناف المنقولة إلى مخزون فرعك الحالي وتحديث الكميات المتوفرة. هل تريد الاستمرار؟',
           style: AppTextStyles.body(context).copyWith(height: 1.5),
         ),
         SizedBox(height: 24.h),
         DialogActions(
-          confirmText: 'Ã˜Â§Ã˜Â³Ã˜ÂªÃ™â€žÃ˜Â§Ã™â€¦ Ã˜Â§Ã™â€žÃ™Æ’Ã™â€¦Ã™Å Ã˜Â©',
+          confirmText: 'استلام الكمية',
           onConfirm: () {
             Navigator.of(context).pop();
             bloc.add(ReceiveTransfer(widget.transfer.id));
@@ -447,16 +447,16 @@ class _TransferCardState extends State<_TransferCard> {
   void _confirmCancel(BuildContext context, StockTransferBloc bloc) {
     ReusableDialog.show(
       context,
-      title: 'Ã˜ÂªÃ˜Â£Ã™Æ’Ã™Å Ã˜Â¯ Ã˜Â§Ã™â€žÃ˜Â¥Ã™â€žÃ˜ÂºÃ˜Â§Ã˜Â¡',
+      title: 'تأكيد الإلغاء',
       headerIcon: const Icon(Icons.cancel_rounded, color: AppColors.error),
       children: [
         ReusableText(
-          widget.transfer.status == TransferStatus.sent ? 'Ã˜Â³Ã™Å Ã˜ÂªÃ™â€¦ Ã˜Â¥Ã™â€žÃ˜ÂºÃ˜Â§Ã˜Â¡ Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â­Ã™Ë†Ã™Å Ã™â€ž Ã™Ë†Ã˜Â¥Ã˜Â¹Ã˜Â§Ã˜Â¯Ã˜Â© Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â®Ã˜Â²Ã™Ë†Ã™â€  Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â­Ã˜Â¬Ã™Ë†Ã˜Â² Ã™â€žÃ™â€žÃ™ÂÃ˜Â±Ã˜Â¹ Ã˜Â§Ã™â€žÃ˜Â£Ã˜ÂµÃ™â€žÃ™Å .' : 'Ã™â€¡Ã™â€ž Ã˜Â£Ã™â€ Ã˜Âª Ã™â€¦Ã˜ÂªÃ˜Â£Ã™Æ’Ã˜Â¯ Ã™â€¦Ã™â€  Ã˜Â±Ã˜ÂºÃ˜Â¨Ã˜ÂªÃ™Æ’ Ã™ÂÃ™Å  Ã˜Â¥Ã™â€žÃ˜ÂºÃ˜Â§Ã˜Â¡ Ã™â€¡Ã˜Â°Ã˜Â§ Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â­Ã™Ë†Ã™Å Ã™â€ž Ã™â€ Ã™â€¡Ã˜Â§Ã˜Â¦Ã™Å Ã˜Â§Ã™â€¹Ã˜Å¸',
+          widget.transfer.status == TransferStatus.sent ? 'سيتم إلغاء التحويل وإعادة المخزون المحجوز للفرع الأصلي.' : 'هل أنت متأكد من رغبتك في إلغاء هذا التحويل نهائياً؟',
           style: AppTextStyles.body(context).copyWith(height: 1.5),
         ),
         SizedBox(height: 24.h),
         DialogActions(
-          confirmText: 'Ã˜ÂªÃ˜Â£Ã™Æ’Ã™Å Ã˜Â¯ Ã˜Â§Ã™â€žÃ˜Â¥Ã™â€žÃ˜ÂºÃ˜Â§Ã˜Â¡',
+          confirmText: 'تأكيد الإلغاء',
           confirmType: ButtonType.primary,
           onConfirm: () {
             Navigator.of(context).pop();

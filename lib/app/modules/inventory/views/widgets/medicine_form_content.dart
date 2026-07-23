@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:collection/collection.dart';
 
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
@@ -68,9 +67,9 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
   bool _isDirty = false;
   bool _allowPop = false;
 
+  late final TextEditingController _imageUrlController;
   late final List<AddUnitFormData> _units;
   bool _isSubmitting = false;
-  final _picker = ImagePicker();
 
   static const _dosageForms = [
     'أقراص',
@@ -105,6 +104,9 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
     _locationController = TextEditingController(text: initial?.location ?? '');
     _taxValueController = TextEditingController(
       text: initial?.taxValue?.toString() ?? '',
+    );
+    _imageUrlController = TextEditingController(
+      text: initial?.imageUrl ?? '',
     );
     _additionalBarcodeControllers = [];
 
@@ -152,6 +154,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
     _barcodeController.dispose();
     _locationController.dispose();
     _taxValueController.dispose();
+    _imageUrlController.dispose();
     for (final c in _additionalBarcodeControllers) {
       c.dispose();
     }
@@ -225,18 +228,13 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
     });
   }
 
-  Future<void> _pickImage() async {
-    final picked = await _picker.pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 1024,
-      maxHeight: 1024,
-      imageQuality: 80,
-    );
-    if (picked == null) return;
-    setState(() => _imageUrl = picked.path);
+  void _onImageUrlChanged(String value) {
+    setState(() => _imageUrl = value.trim().isEmpty ? null : value.trim());
+    _markDirty();
   }
 
-  void _removeImage() {
+  void _clearImage() {
+    _imageUrlController.clear();
     setState(() => _imageUrl = null);
   }
 
@@ -562,63 +560,35 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
             ],
           ),
           SizedBox(height: 16.h),
-          Container(
-            padding: EdgeInsets.all(12.w),
-            decoration: BoxDecoration(
-              color: scheme.surfaceContainerLowest,
-              borderRadius: BorderRadius.circular(AppRadius.md),
-              border: Border.all(color: scheme.outline.withValues(alpha: 0.3)),
-            ),
-            child: Row(
-              children: [
-                ReusableItemImage(
-                  imageUrl: _imageUrl,
-                  size: 56,
-                  borderRadius: 8,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              ReusableItemImage(
+                imageUrl: _imageUrl,
+                size: 56,
+                borderRadius: 8,
+              ),
+              SizedBox(width: 12.w),
+              Expanded(
+                child: ReusableInput(
+                  controller: _imageUrlController,
+                  label: AppStrings.imageUrlLabel,
+                  prefixIcon: Icon(Icons.link_rounded, size: 18.sp),
+                  hint: AppStrings.imageUrlHint,
+                  onChanged: _onImageUrlChanged,
+                  suffixIcon: _imageUrl != null
+                      ? IconButton(
+                          icon: Icon(
+                            Icons.close_rounded,
+                            size: 18.sp,
+                            color: AppColors.error,
+                          ),
+                          onPressed: _clearImage,
+                        )
+                      : null,
                 ),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ReusableText(
-                        AppStrings.itemVisualImageOptional,
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 2.h),
-                      ReusableText(
-                        _imageUrl != null
-                            ? _imageUrl!.split('/').last
-                            : AppStrings.imageUploadHint,
-                        style: TextStyle(
-                          fontSize: 11.sp,
-                          color: scheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                if (_imageUrl != null)
-                  IconButton(
-                    icon: const Icon(
-                      Icons.delete_outline,
-                      color: AppColors.error,
-                    ),
-                    onPressed: _removeImage,
-                  ),
-                IconButton(
-                  icon: Icon(
-                    Icons.add_photo_alternate_outlined,
-                    color: scheme.primary,
-                    size: 20.sp,
-                  ),
-                  onPressed: _pickImage,
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
           SizedBox(height: 12.h),
           buildToggleCardTile(

@@ -1,58 +1,44 @@
-# Implementation Plan - Heuristic "Expert" Pharmacy Unit Engine
+# Implementation Plan - Purchase Invoice Improvements & Super Smart Units
 
-The goal is to implement a heuristic-based parsing engine that understands the context and hierarchy of pharmacy units, effectively "thinking" like a pharmacist to normalize chaotic Excel data into structured stock levels (Level : Quantity).
+The goal is to fix supplier display, resolve the medicine search issue, implement automatic item addition, and deploy a heuristic-based unit parsing engine.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Level-Based Decomposition**: The system will decompose every unit string into a hierarchy:
-> - **Level 1 (Main)**: The outer container (e.g., Box).
-> - **Level 2 (Sub)**: The intermediate unit (e.g., Strip).
-> - **Level 3 (Base)**: The smallest unit (e.g., Pill).
-> Every level will be assigned a "Quantity Number" (Multiplier).
+> **Unified Suppliers**: The supplier dropdown will now show the **Name** instead of UUID and include all contacts from both "Suppliers" and "Supplier-Customers".
+
+> [!IMPORTANT]
+> **Heuristic Unit Engine**: The system will now "read" unit strings like "علبة 3 شريط 10 قرص" and automatically build the 3-level hierarchy (Box -> Strip -> Pill) with correct multipliers.
 
 > [!TIP]
-> **Smart Notation Handling**: If the unit is "6 شريط" and the inventory quantity is `10.2`, the system interprets this as **10 Level-1 units** and **2 Level-2 units**, mapping the decimal notation directly to the levels.
+> **Immediate Addition**: Selecting a medicine now adds it **instantly** to the invoice list with a default quantity of 1. You can then edit the details directly in the table.
 
 ## Proposed Changes
-
-### [Component] Inventory Module (Models)
-
-#### [MODIFY] [unit_normalizer.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/inventory/services/unit_normalizer.dart)
-- **New `UnitLevelInfo` class**:
-    - `String name` (e.g., "شريط")
-    - `double multiplier` (How many of this unit are in the parent unit).
-- **Update `UnitParsedInfo`**:
-    - `List<UnitLevelInfo> levels` (Stored from largest to smallest).
 
 ### [Component] Inventory Module (Services)
 
 #### [MODIFY] [unit_normalizer.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/inventory/services/unit_normalizer.dart)
-- **Heuristic Resolver**:
-    - Extract all numbers and identify their associated keywords.
-    - **Pattern: "N Keyword" vs "Keyword N"**:
-        - "6 شريط" -> Box contains 6 strips.
-        - "شريط 10" -> Strip contains 10 pills.
-    - **Hierarchy Construction**:
-        - If "علبة" is mentioned, it's Level 1.
-        - If "شريط/امبول" mentioned, it's Level 2.
-        - If "قرص/حبة" mentioned, it's Level 3.
-- **Auto-Correction**: typo handling like "قلرص" -> "قرص".
+- Implement a **Tokenization Engine** to break down unit strings.
+- Use a **Hierarchy Resolver** to infer the relationship between containers and base items.
+- Support complex pharmacy notations found in the provided Excel list.
 
-### [Component] Core Data Services
+### [Component] Purchases Module
 
-#### [MODIFY] [excel_import_service.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/data/services/excel_import_service.dart)
-- **Mathematical Total Resolution**:
-    - Total Pieces = `(WholePart * L1_Total_Multiplier) + (FractionPart * L2_Multiplier)`.
-    - This allows `10.1` to mean **10 Boxes and 1 Strip**.
+#### [MODIFY] [add_purchase_view.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/purchases/views/add_purchase_view.dart)
+- **Unified Vendor List**: Merge `SupplierService` and `SupplierCustomerService` for the dropdown.
+- **Auto-Add Logic**: Modify `onMedicineSelected` to call `bloc.add(AddPurchaseLine(...))` directly.
+- **Shortcut Support**: Ensure the search field is focused by default or via shortcuts.
+
+### [Component] Core Presentation (Inputs)
+
+#### [MODIFY] [medicine_search_field.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/presentation/widgets/reusables/inputs/medicine_search_field.dart)
+- **Async Warm-up**: Ensure medicines are fetched from the database if the local repository cache is empty.
+- **Search Optimization**: Improve fuzzy matching for name, nameEn, and barcodes.
 
 ## Verification Plan
 
-### Automated Test Cases (Mocked Inputs)
-- [ ] "علبة 3 شريط 10 قرص" -> L1: علبة(1), L2: شريط(3), L3: حباية(10). Total = 30.
-- [ ] "6 شريط" -> L1: علبة(1), L2: شريط(6), L3: حباية(10). Total = 60.
-- [ ] "شريط 5" -> L1: شريط(1), L2: حباية(5). Total = 5.
-- [ ] "12 قرص" -> L1: علبة(1), L2: قرص(12). Total = 12.
-
 ### Manual Verification
-1. Import Excel and verify that an item with unit "6 شريط" and quantity "10.2" shows a total stock of **620** (10 boxes * 60 pills + 2 strips * 10 pills).
+1. **Search Test**: Type "بار" in the search field and verify medicines appear.
+2. **Auto-Add Test**: Click a result or scan a barcode and verify the item is added to the table immediately.
+3. **Unit Test**: Verify that "شريط 5" and "6 شريط" result in correct stock calculations (e.g., Qty 10.1 = 10 units + 1 sub-unit).
+4. **Supplier Test**: Verify names are displayed instead of UUIDs in the header.

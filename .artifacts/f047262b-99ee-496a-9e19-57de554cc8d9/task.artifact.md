@@ -1,11 +1,8 @@
-- [ ] **Constants Update**
-    - [ ] Add more keywords to `ExcelStrings` (Quantity, Storage Location, Categories)
-- [ ] **Service Refinement**
-    - [ ] Update `col` helper in `ExcelImportService` for Priority Matching
-    - [ ] Enhance `_parseSmartQuantity` with string cleaning
-    - [ ] Implement Storage Location mapping in `importFromExcel`
-    - [ ] Improve header normalization (trim/lowercase)
+- [ ] **Purchases Module Fixes**
+    - [ ] Update Supplier Dropdown to show names and include both Suppliers & Supplier-Customers
+    - [ ] Implement Fast Entry (Auto-Add) in `MedicineSearchField.onSelected`
+    - [ ] Improve search reliability in `MedicineSearchField`
 - [ ] **Verification**
-    - [ ] Test with "الكمية" vs "الكمية المطلوبة"
-    - [ ] Test with formatted numbers (commas)
-    - [ ] Test Storage Location import
+    - [ ] Verify supplier names in dropdown
+    - [ ] Verify immediate item addition after selection
+    - [ ] Verify barcode scan triggers auto-add

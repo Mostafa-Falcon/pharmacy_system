@@ -8,6 +8,14 @@ import 'package:go_router/go_router.dart';
 import '../../../routes/app_routes.dart';
 import '../../../core/constants/app_strings.dart';
 
+import 'package:uuid/uuid.dart';
+import 'package:collection/collection.dart';
+import 'package:go_router/go_router.dart';
+import '../../../routes/app_routes.dart';
+import '../../../core/constants/app_strings.dart';
+
+import 'package:pharmacy_system/app/modules/contacts/models/supplier_customer_model.dart';
+import 'package:pharmacy_system/app/modules/contacts/supplier_customers/services/supplier_customer_service.dart';
 import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_service.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
@@ -30,6 +38,7 @@ class AddPurchaseView extends StatefulWidget {
 
 class _AddPurchaseViewState extends State<AddPurchaseView> {
   final Map<int, List<FocusNode>> _lineFocusNodes = {};
+  final TextEditingController _searchCtrl = TextEditingController();
 
   String get _branchId => AuthService.currentBranchId ?? '';
 
@@ -39,6 +48,23 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
     'system:mobile_wallet': '1103 — ${AppStrings.accountMobileWallet}',
     'system:card_clearing': '1104 — ${AppStrings.accountCardClearing}',
   };
+
+  // مساعد لتوحيد عرض الموردين والعملاء/الموردين
+  List<Map<String, String>> _getUnifiedVendors() {
+    final list = <Map<String, String>>[];
+    
+    // 1. الموردين العاديين
+    for (final s in SupplierService.getAll()) {
+      list.add({'id': s.id, 'name': s.name, 'type': 'supplier'});
+    }
+    
+    // 2. العملاء/الموردين الموحدين
+    for (final sc in SupplierCustomerService.getAll()) {
+      list.add({'id': sc.id, 'name': sc.name, 'type': 'contact'});
+    }
+    
+    return list;
+  }
 
   Future<void> _selectExpiry(BuildContext context, int index, DateTime? current) async {
     final picked = await showDatePicker(
@@ -155,25 +181,23 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
   }
 
   Widget _buildHeaderFields(BuildContext context, ColorScheme scheme, PurchasesState state) {
-    final suppliers = SupplierService.getAll();
+    final vendors = _getUnifiedVendors();
     return FormCard(
       padding: EdgeInsets.all(AppSpacing.xl.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _responsiveFields(context, minWidth: 220, children: [
-            // المورد
-            ReusableDropdown<String>(
+            // المورد (موحد)
+            ReusableDropdown<Map<String, String>>(
               hintText: AppStrings.select, labelText: AppStrings.supplierLabelPurchase,
-              items: suppliers.map((s) => s.id).toList(),
-              value: state.selectedSupplierId,
-              itemAsString: (v) {
-                final s = suppliers.firstWhereOrNull((x) => x.id == v);
-                return s?.name ?? v;
-              },
+              items: vendors,
+              value: vendors.firstWhereOrNull((v) => v['id'] == state.selectedSupplierId),
+              itemAsString: (v) => v['name'] ?? '',
               onChanged: (v) {
-                final s = suppliers.firstWhereOrNull((x) => x.id == v);
-                if (s != null) context.read<PurchasesBloc>().add(SetPurchaseSupplier(s.id, s.name));
+                if (v != null) {
+                  context.read<PurchasesBloc>().add(SetPurchaseSupplier(v['id']!, v['name']!));
+                }
               },
             ),
             // الرقم المرجعي
@@ -462,7 +486,28 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
   }
 
   Widget _buildItemSearchAndTable(BuildContext context, ColorScheme scheme, PurchasesState state) {
-    final searchCtrl = TextEditingController();
+    final bloc = context.read<PurchasesBloc>();
+
+    void onMedicineSelected(MedicineModel medicine) {
+      // ذكاء مهندسة: إضافة الصنف فوراً للفاتورة بالقيم الافتراضية
+      bloc.add(AddPurchaseLine(
+        medicineId: medicine.id,
+        medicineName: medicine.name,
+        quantity: 1,
+        unitPrice: medicine.buyPrice,
+        unitId: medicine.units.firstOrNull?.id,
+        unitName: medicine.units.firstOrNull?.name,
+        units: medicine.units,
+        batchNumber: _generateBatchNumber(),
+      ));
+      
+      // تشغيل تنبيه صوتي بسيط للنجاح
+      SoundService.instance.play(SoundEffect.itemAdded);
+      
+      // تنبيه خفيف في الواجهة
+      AppSnackbar.success('تم إضافة ${medicine.name} للفاتورة');
+    }
+
     return FormCard(
       child: Column(
         children: [
@@ -480,8 +525,9 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
                 SizedBox(width: AppSizes.spacingMD),
                 Expanded(
                   child: MedicineSearchField(
-                    controller: searchCtrl,
-                    onSelected: (medicine) => _openItemDialog(context, medicine, searchCtrl),
+                    controller: _searchCtrl,
+                    onSelected: onMedicineSelected,
+                    autofocus: true,
                   ),
                 ),
               ],

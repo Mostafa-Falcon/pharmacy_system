@@ -233,7 +233,7 @@ class _MedicineSearchFieldState extends State<MedicineSearchField> {
     _focusNode.requestFocus();
   }
 
-  void _onChanged(String value) {
+  void _onChanged(String value) async {
     widget.onChanged?.call(value);
     final query = value.trim().toLowerCase();
     
@@ -246,10 +246,12 @@ class _MedicineSearchFieldState extends State<MedicineSearchField> {
       return;
     }
 
-    final allItems = widget.customItems ?? BranchDataService.getMedicines(branchId: AuthService.currentBranchId);
+    List<MedicineModel> allItems = widget.customItems ?? BranchDataService.getMedicines(branchId: AuthService.currentBranchId);
     
-    // تسجيل عدد الأصناف المتاحة للبحث للتشخيص
-    safeDebugPrint('MedicineSearch: Searching "$query" in ${allItems.length} items');
+    // ذكاء مهندسة: لو الكاش فاضي، نحاول نجيب الداتا Async من الداتابيز
+    if (allItems.isEmpty && widget.customItems == null) {
+      allItems = await BranchDataService.getMedicinesAsync(branchId: AuthService.currentBranchId);
+    }
 
     final filteredResults = allItems.where((m) => !m.isDeleted && m.isActive).where((m) {
       final nameMatch = m.name.toLowerCase().contains(query);
