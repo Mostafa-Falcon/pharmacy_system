@@ -127,28 +127,14 @@ class _HeaderCell<T> extends StatelessWidget {
           onTap: isSortable ? () => onSort?.call(column.id) : null,
           hoverColor: scheme.primary.withValues(alpha: 0.04),
           child: Container(
-            alignment: column.alignment ?? Alignment.center,
+            alignment: Alignment.center,
             padding: column.cellPadding ?? density.cellPadding,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (isSortable) ...[
-                  AnimatedRotation(
-                    turns: isSorted ? (isAscending ? 0 : 0.5) : 0,
-                    duration: const Duration(milliseconds: 200),
-                    child: Icon(
-                      isSorted
-                          ? Icons.arrow_upward_rounded
-                          : Icons.unfold_more_rounded,
-                      size: (density.fontSize + 2).sp,
-                      color: isSorted
-                          ? scheme.primary
-                          : scheme.onSurfaceVariant.withValues(alpha: 0.4),
-                    ),
-                  ),
-                  SizedBox(width: 4.w),
-                ],
-                Flexible(
+                // مساحة تعويضية في جهة اليمين (للحفاظ على توسط النص في RTL)
+                SizedBox(width: (density.fontSize + 12).sp),
+                
+                Expanded(
                   child: ReusableText(
                     column.title,
                     textAlign: TextAlign.center,
@@ -162,6 +148,28 @@ class _HeaderCell<T> extends StatelessWidget {
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
+                ),
+
+                // أيقونة الترتيب في جهة اليسار (الشمال)
+                SizedBox(
+                  width: (density.fontSize + 12).sp,
+                  child: isSortable 
+                      ? Center(
+                          child: AnimatedRotation(
+                            turns: isSorted ? (isAscending ? 0 : 0.5) : 0,
+                            duration: const Duration(milliseconds: 200),
+                            child: Icon(
+                              isSorted
+                                  ? Icons.arrow_upward_rounded
+                                  : Icons.unfold_more_rounded,
+                              size: (density.fontSize + 2).sp,
+                              color: isSorted
+                                  ? scheme.primary
+                                  : scheme.onSurfaceVariant.withValues(alpha: 0.4),
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
                 ),
               ],
             ),

@@ -1,8 +1,9 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:pharmacy_system/app/modules/inventory/models/medicine_unit_model.dart';
 import 'package:pharmacy_system/app/modules/sales/models/pos_cart_line.dart';
 import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
+import 'package:collection/collection.dart';
 import 'package:pharmacy_system/app/modules/sales/bloc/pos_state.dart'; // For PaymentMode
 
 class CartState extends Equatable {

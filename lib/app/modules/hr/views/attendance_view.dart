@@ -1,7 +1,6 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../bloc/hr_bloc.dart';
 import 'package:pharmacy_system/app/modules/hr/models/attendance_model.dart';
@@ -177,8 +176,6 @@ class _AttendanceHistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    
     final columns = [
       ReusableTableColumn<AttendanceModel>(
         id: 'emp',

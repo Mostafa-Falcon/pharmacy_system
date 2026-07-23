@@ -1,17 +1,6 @@
-# قائمة المهام - نظام الوحدات المتعددة
+# مهام تنسيق رؤوس الجداول
 
-- [x] تعديل الموديلات (Medicine & Unit Models)
-    - [x] إضافة منطق التفكيك (Decomposition) في `MedicineModel`
-    - [x] تحديث `MedicineUnitModel` لضمان دقة المعاملات
-- [x] تحديث واجهات المخزون (Inventory UI)
-    - [x] تعديل حساب الكمية الكلية في `MedicineFormContent`
-    - [x] تحديث عرض الجدول في `MedicinesListView`
-- [x] تحديث نظام البيع (POS Logic)
-    - [x] إضافة معاملات التحويل في `PosCartLine`
-    - [x] تحديث `CartCubit` للتعامل مع الوحدات
-    - [x] تعديل `SaleEngine` لخصم المخزون بدقة
-- [x] التحقق والاختبار (Verification)
-    - [x] تجربة إضافة وبيع وحدات مختلفة
-    - [x] التأكد من دقة الأرقام في Supabase
-    - [x] إصلاح استرجاع الفواتير المعلقة (Suspended Sales Fix)
-    - [x] تحديث واجهة تسوية الجرد (Stock Adjustment Alignment)
+- [x] تعديل `_HeaderCell` in `app_table_header.dart`
+    - [x] تغيير الـ `Row` إلى هيكلية تدعم توسيط النص ووضع الأيقونة في اليسار.
+    - [x] إضافة مساحة تعويضية (Placeholder) لضمان المركزية المطلقة للنص.
+- [x] التحقق من النتيجة في جداول النظام.
