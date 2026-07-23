@@ -117,7 +117,6 @@ class SupplierCustomersListView extends StatelessWidget {
 
   Widget _buildTable(BuildContext context, SupplierCustomersState state) {
     final bloc = context.read<SupplierCustomersBloc>();
-    final scheme = Theme.of(context).colorScheme;
 
     final columns = [
       ReusableTableColumn<SupplierCustomerModel>(

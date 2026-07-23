@@ -1,37 +1,56 @@
-# Implementation Plan - Fix Synchronization Issues
+# Implementation Plan - Free Return (مرتجع حر) Module
 
-Resolve the failure in "Supplier/Customer" and "Customer Ledger" synchronization by fixing critical bugs in the branch ID propagation and improving the robustness of the Sync Engine.
+Add a new "Free Return" module that allows pharmacists to record sales and purchase returns without being linked to a specific original invoice. This module will handle stock updates and financial ledger entries automatically.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Branch ID Fix**: I found a critical bug where financial movements (ledgers) were being recorded without a branch ID. This caused the cloud database (Supabase) to reject them due to security policies (RLS).
+> **Unified View**: I will implement a single view that toggles between "Sales Return" and "Purchase Return" as shown in the provided screenshots. This ensures a clean and efficient workflow.
 
-> [!WARNING]
-> **Schema Check**: If "Supplier/Customer" still fails after this fix, it might indicate that the table is missing in the cloud backend. I will add detailed error logging to help identify if this is the case.
+> [!NOTE]
+> **Financial Integration**: For Sales Returns, the system will record a cash outflow (if cash) or update the customer ledger (if credit). For Purchase Returns, it will record a cash inflow or update the supplier ledger.
 
 ## Proposed Changes
 
-### [Component] Core Services (Sync)
+### [Component] Routes
 
-#### [MODIFY] [sync_push_service.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/data/services/sync/sync_push_service.dart)
-- Update `globalTables` set to include `medicine_units` and `item_batches`. This prevents the sync engine from incorrectly injecting a `branch_id` into tables that don't have that column.
-- Improve error reporting in the `catch` block to provide clearer diagnostic information.
+#### [MODIFY] [app_routes.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/routes/app_routes.dart)
+- Add `FREE_RETURN = '/returns/free'`.
+- Map it to destination `free_return`.
 
-### [Component] Core Data (Ledgers)
+### [Component] Returns Module (New Bloc)
 
-#### [MODIFY] [party_ledger_service.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/data/services/party_ledger_service.dart)
-- **CRITICAL FIX**: Update all method calls (`recordSaleInvoice`, `recordCashReceipt`, `recordOpeningBalance`, etc.) to pass `AuthService.currentBranchId ?? ''` instead of hardcoded empty strings `''`.
-- This ensures that every financial movement is correctly tagged with the branch it belongs to, allowing the cloud to accept the data.
+#### [NEW] [free_return_bloc.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/returns/bloc/free_return_bloc.dart)
+- State management for the free return form.
+- Handles adding/removing items, calculating totals with discount, and toggling return/party types.
+- Events: `AddItem`, `RemoveItem`, `UpdateItem`, `SetReturnType`, `SetPartyType`, `SubmitReturn`.
 
-### [Component] Contacts Module (Services)
+### [Component] Returns Module (View)
 
-#### [MODIFY] [supplier_customer_service.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/contacts/supplier_customers/services/supplier_customer_service.dart)
-- Ensure `branchId` is explicitly set and verified before queuing sync operations for new contacts. (Currently looks okay but will double-check during execution).
+#### [NEW] [free_return_view.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/returns/views/free_return_view.dart)
+- Professional UI based on the provided screenshots.
+- Includes:
+    - **Header**: Tab switch (Sales vs Purchase).
+    - **Party Section**: Segmented control (Cash, Customer, Supplier) + Dynamic Dropdown.
+    - **Note Section**: Reason/Notes + Safe selection.
+    - **Items Table**: Dynamic item entry with inline editing (Qty, Price, Expiry).
+    - **Footer**: Discount percentage input + Grand Total + Submit Button.
+
+### [Component] Data Layer
+
+#### [MODIFY] [return_model.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/sales/models/return_model.dart)
+- Add `discountPercent` and `safeId` fields to `ReturnModel` if necessary for persistence.
+- Update `toJson` and `fromJson`.
+
+#### [NEW] [free_return_service.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/returns/services/free_return_service.dart)
+- Handle the business logic of saving the return.
+- Call `StockMutationService` to update inventory.
+- Call `PartyLedgerService` to record financial effects.
 
 ## Verification Plan
 
 ### Manual Verification
-1. **Ledger Sync Test**: Create a new customer/supplier with an opening balance. Verify that both the contact AND the ledger entry appear in the sync status queue.
-2. **Push Test**: Click "Full Sync" and verify that "Customer Ledgers" (دفاتر العملاء) no longer show a red "X" and finish successfully.
-3. **Audit**: Monitor the "Last Sync Error" in the sync dashboard for any remaining "404" or "403" errors.
+1. **Sales Return Test**: Add a "Free Sales Return" for a customer. Verify that the medicine stock increases and the customer's debt decreases (or safe balance decreases).
+2. **Purchase Return Test**: Add a "Free Purchase Return" for a supplier. Verify that the medicine stock decreases and the supplier's debt decreases (or safe balance increases).
+3. **Discount Test**: Apply a 10% discount and verify that the final amount is calculated correctly in the footer.
+4. **Validation Test**: Try to submit without adding items or selecting a party when required.

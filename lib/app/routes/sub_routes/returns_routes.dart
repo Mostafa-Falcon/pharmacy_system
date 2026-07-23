@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pharmacy_system/app/modules/returns/bloc/purchase_return_bloc.dart';
 import 'package:pharmacy_system/app/modules/returns/bloc/sales_return_bloc.dart';
-import 'package:pharmacy_system/app/modules/returns/views/add_purchase_return_view.dart';
 import 'package:pharmacy_system/app/modules/returns/views/purchase_return_list_view.dart';
 import 'package:pharmacy_system/app/modules/returns/views/sales_return_view.dart';
 
@@ -30,7 +29,7 @@ final List<RouteBase> returnsRoutes = [
       state,
       BlocProvider(
         create: (_) => sl<PurchaseReturnBloc>(),
-        child: const PurchaseReturnListView(),
+        child: const PurchaseReturnListView(initialIndex: 0),
       ),
     ),
   ),
@@ -41,7 +40,7 @@ final List<RouteBase> returnsRoutes = [
       state,
       BlocProvider(
         create: (_) => sl<PurchaseReturnBloc>(),
-        child: const AddPurchaseReturnView(),
+        child: const PurchaseReturnListView(initialIndex: 1),
       ),
     ),
   ),

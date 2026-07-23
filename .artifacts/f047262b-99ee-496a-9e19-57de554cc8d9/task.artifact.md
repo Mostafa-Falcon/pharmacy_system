@@ -1,11 +1,13 @@
-- [x] **Core Sync Engine Improvements**
-    - [x] Update `SyncPushService` global tables to include `medicine_units` and `item_batches`
-    - [x] Add detailed error diagnostics in `SyncPushService`
-- [x] **Financial Ledger Fixes**
-    - [x] Correct `branchId` propagation in `PartyLedgerService` for all financial operations
-    - [x] Verify `SupplierCustomerService` branch identity
-- [x] **UI Diagnostics**
-    - [x] Display sync errors directly in the pending operations queue for easier troubleshooting
+- [ ] **Infrastructure & Models**
+    - [ ] Add `FREE_RETURN` route in `app_routes.dart`
+    - [ ] Update `ReturnModel` with `discountPercent` and `safeId`
+- [ ] **Business Logic: Free Return Service**
+    - [ ] Create `FreeReturnService` to coordinate stock and ledger updates
+- [ ] **Form Implementation: Free Return Bloc**
+    - [ ] Create `FreeReturnBloc`, `FreeReturnEvent`, and `FreeReturnState`
+- [ ] **UI Implementation: Free Return View**
+    - [ ] Design the layout based on the provided screenshots
+    - [ ] Implement the dynamic items table and totals calculation
 - [ ] **Verification**
-    - [ ] Check sync status for "Customer Ledgers" after fix
-    - [ ] Audit sync error logs for "Supplier/Customer"
+    - [ ] Test Sales/Purchase return logic with stock/ledger integration
+    - [ ] Verify UI consistency with the premium Medicines table design

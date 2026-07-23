@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -15,33 +15,130 @@ import '../bloc/purchase_return_bloc.dart';
 import '../bloc/purchase_return_event.dart';
 import '../bloc/purchase_return_state.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'add_purchase_return_view.dart';
 
-class PurchaseReturnListView extends StatelessWidget {
-  const PurchaseReturnListView({super.key});
+class PurchaseReturnListView extends StatefulWidget {
+  final int initialIndex;
+  const PurchaseReturnListView({super.key, this.initialIndex = 0});
+
+  @override
+  State<PurchaseReturnListView> createState() => _PurchaseReturnListViewState();
+}
+
+class _PurchaseReturnListViewState extends State<PurchaseReturnListView> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: widget.initialIndex.clamp(0, 1),
+    );
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+
     return BlocProvider.value(
       value: sl<PurchaseReturnBloc>()..add(const LoadPurchaseReturns()),
       child: HomeShell(
-        title: AppStrings.allReturns,
+        title: 'إدارة مرتجعات المشتريات',
         child: Container(
           color: scheme.surfaceContainerLow.withValues(alpha: 0.15),
           padding: EdgeInsets.all(AppSpacing.xl.w),
-          child: BlocBuilder<PurchaseReturnBloc, PurchaseReturnState>(
-            builder: (context, state) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _buildHeader(context, state),
-                  SizedBox(height: AppSpacing.lg.h),
-                  _buildFilters(context, state),
-                  SizedBox(height: AppSpacing.md.h),
-                  Expanded(child: _buildList(context, state)),
-                ],
-              );
-            },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // ─── شريط التبويب العريض والاحترافي ───
+              Container(
+                decoration: BoxDecoration(
+                  color: scheme.surface,
+                  borderRadius: BorderRadius.circular(AppRadius.lg.r),
+                  border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.6)),
+                ),
+                child: TabBar(
+                  controller: _tabController,
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  dividerColor: Colors.transparent,
+                  indicator: BoxDecoration(
+                    color: AppColors.error.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(AppRadius.lg.r),
+                    border: Border.all(color: AppColors.error, width: 1.5),
+                  ),
+                  labelColor: AppColors.error,
+                  unselectedLabelColor: scheme.onSurfaceVariant,
+                  labelStyle: AppTextStyles.bodyBold(context),
+                  unselectedLabelStyle: AppTextStyles.body(context),
+                  tabs: [
+                    Tab(
+                      height: 48.h,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.assignment_return_rounded),
+                          SizedBox(width: AppSpacing.sm.w),
+                          const Text('سجل المرتجعات والقائمة'),
+                        ],
+                      ),
+                    ),
+                    Tab(
+                      height: 48.h,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.add_shopping_cart_rounded),
+                          SizedBox(width: AppSpacing.sm.w),
+                          const Text('إضافة مرتجع مشتريات جديد'),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: AppSpacing.lg.h),
+
+              // ─── محتوى التبويبات ───
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    // 1. سجل المرتجعات
+                    BlocBuilder<PurchaseReturnBloc, PurchaseReturnState>(
+                      builder: (context, state) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            _buildHeader(context, state),
+                            SizedBox(height: AppSpacing.lg.h),
+                            _buildFilters(context, state),
+                            SizedBox(height: AppSpacing.md.h),
+                            Expanded(child: _buildList(context, state)),
+                          ],
+                        );
+                      },
+                    ),
+
+                    // 2. إضافة مرتجع جديد
+                    AddPurchaseReturnView(
+                      onSaved: () {
+                        _tabController.animateTo(0);
+                        context.read<PurchaseReturnBloc>().add(const LoadPurchaseReturns());
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -52,10 +149,10 @@ class PurchaseReturnListView extends StatelessWidget {
     return Row(
       children: [
         ReusableButton(
-          text: AppStrings.add,
+          text: 'إضافة مرتجع جديد',
           prefixIcon: Icons.add_rounded,
-          color: AppColors.homePurchases,
-          onPressed: () => context.push('/admin/purchases/returns/add'),
+          color: AppColors.error,
+          onPressed: () => _tabController.animateTo(1),
         ),
         const Spacer(),
         ReusableButton(
@@ -100,19 +197,19 @@ class PurchaseReturnListView extends StatelessWidget {
             children: [
               FilterDropdown.string(
                 label: AppStrings.supplierLabel,
-                items: ['الكل'],
+                items: const ['الكل'],
                 onChanged: (v) {},
               ),
               SizedBox(width: AppSpacing.md.w),
               FilterDropdown.string(
                 label: AppStrings.reasonLabel,
-                items: ['الكل', 'منتهي الصلاحية', 'تالف', 'خطأ في الصنف'],
+                items: const ['الكل', 'منتهي الصلاحية', 'تالف', 'خطأ في الصنف'],
                 onChanged: (v) {},
               ),
               SizedBox(width: AppSpacing.md.w),
               FilterDropdown.string(
                 label: 'المخزن',
-                items: ['الكل'],
+                items: const ['الكل'],
                 onChanged: (v) {},
               ),
               SizedBox(width: AppSpacing.md.w),
@@ -253,100 +350,36 @@ class PurchaseReturnListView extends StatelessWidget {
 
   Widget _buildTableToolbar(BuildContext context, PurchaseReturnState state) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
+      padding: EdgeInsets.all(AppSpacing.md.w),
       child: Row(
         children: [
-          ReusableText('إدخالات', style: AppTextStyles.body(context)),
-          SizedBox(width: 8.w),
-          _rowsPerPageDropdown(),
-          SizedBox(width: 8.w),
-          ReusableText('عرض', style: AppTextStyles.body(context)),
-          const Spacer(),
-          _toolbarButton(Icons.ios_share_rounded, 'تصدير إلى CSV'),
-          _toolbarButton(Icons.print_outlined, AppStrings.print),
-          _toolbarButton(Icons.view_column_outlined, AppStrings.viewColumns),
-          SizedBox(width: 16.w),
           SizedBox(
             width: 250.w,
             child: ReusableInput(
-              hint: 'بحث...',
-              prefixIcon: const Icon(Icons.search_rounded),
-              onChanged: (v) => context.read<PurchaseReturnBloc>().add(SearchPurchaseReturns(v)),
+              hint: AppStrings.search,
+              prefixIcon: const Icon(Icons.search),
+              onChanged: (v) {},
             ),
+          ),
+          const Spacer(),
+          IconButton(
+            icon: const Icon(Icons.refresh_rounded),
+            onPressed: () => context.read<PurchaseReturnBloc>().add(const LoadPurchaseReturns()),
           ),
         ],
       ),
     );
   }
 
-  Widget _rowsPerPageDropdown() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-      decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300), borderRadius: BorderRadius.circular(6.r)),
-      child: DropdownButton<int>(
-        value: 25,
-        items: [25, 50, 100].map((e) => DropdownMenuItem(value: e, child: ReusableText('$e'))).toList(),
-        onChanged: (v) {},
-        underline: const SizedBox(),
-        isDense: true,
-      ),
-    );
-  }
-
-  Widget _toolbarButton(IconData icon, String label) {
-    return Padding(
-      padding: EdgeInsetsDirectional.only(start: 8.w),
-      child: ReusableButton(
-        text: label,
-        prefixIcon: icon,
-        type: ButtonType.outlined,
-        size: ButtonSize.small,
-        onPressed: () {},
-      ),
-    );
-  }
-
-  Widget _buildRowActions(BuildContext context, ReturnModel r) {
-    final scheme = Theme.of(context).colorScheme;
-    return PopupMenuButton<String>(
-      offset: const Offset(0, 40),
-      onSelected: (v) {
-        if (v == 'view') { /* logic */ }
-      },
-      itemBuilder: (ctx) => [
-        _menuItem(ctx, 'view', Icons.visibility_rounded, AppStrings.inspect),
-        _menuItem(ctx, 'print', Icons.print_rounded, AppStrings.print),
-        _menuItem(ctx, 'delete', Icons.delete_outline_rounded, AppStrings.delete, color: AppColors.error),
+  Widget _buildRowActions(BuildContext context, ReturnModel item) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: const Icon(Icons.visibility_outlined, size: 18),
+          onPressed: () {},
+        ),
       ],
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
-        decoration: BoxDecoration(
-          color: scheme.primary,
-          borderRadius: BorderRadius.circular(6.r),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ReusableText('خيارات', style: AppTextStyles.caption(context).copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
-            Icon(Icons.keyboard_arrow_down_rounded, size: AppIconSize.sm.value, color: Colors.white),
-          ],
-        ),
-      ),
-    );
-  }
-
-  PopupMenuItem<String> _menuItem(BuildContext context, String value, IconData icon, String label, {Color? color}) {
-    return PopupMenuItem(
-      value: value,
-      child: Row(
-        children: [
-          Icon(icon, size: AppIconSize.md.value, color: color ?? Colors.grey.shade700),
-          SizedBox(width: 12.w),
-          ReusableText(label, style: AppTextStyles.body(context).copyWith(color: color)),
-        ],
-      ),
     );
   }
 }
-
-

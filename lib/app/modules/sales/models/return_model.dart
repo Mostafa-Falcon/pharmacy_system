@@ -1,3 +1,5 @@
+enum ReturnItemType { sales, purchase }
+
 class ReturnItemModel {
   String medicineId;
   String medicineName;
@@ -5,6 +7,8 @@ class ReturnItemModel {
   double unitPrice;
   double totalPrice;
   String? reason;
+  String? batchNumber;
+  DateTime? expiryDate;
 
   /// تكلفة شراء الوحدة — لحساب تكلفة البضاعة المرتجعة (COGS) بدقة.
   double costPrice;
@@ -16,6 +20,8 @@ class ReturnItemModel {
     required this.unitPrice,
     required this.totalPrice,
     this.reason,
+    this.batchNumber,
+    this.expiryDate,
     this.costPrice = 0,
   });
 
@@ -26,6 +32,8 @@ class ReturnItemModel {
     'unit_price': unitPrice,
     'total_price': totalPrice,
     'reason': reason,
+    'batch_number': batchNumber,
+    'expiry_date': expiryDate?.toIso8601String(),
     'cost_price': costPrice,
   };
 
@@ -36,6 +44,8 @@ class ReturnItemModel {
     unitPrice: (json['unit_price'] as num).toDouble(),
     totalPrice: (json['total_price'] as num).toDouble(),
     reason: json['reason'] as String?,
+    batchNumber: json['batch_number'] as String?,
+    expiryDate: json['expiry_date'] != null ? DateTime.tryParse(json['expiry_date'] as String) : null,
     costPrice: (json['cost_price'] as num?)?.toDouble() ?? 0,
   );
 }
@@ -45,10 +55,17 @@ enum ReturnReason { expired, damaged, wrongItem, customerReturn, other }
 class ReturnModel {
   String id;
   String branchId;
+  String returnType; // 'sales' or 'purchase'
+  String? partyId;
+  String? partyName;
+  String? partyType; // 'cash', 'customer', 'supplier'
   String? saleId; // original sale id if return from sale
   String? purchaseId; // original purchase id if return to supplier
   List<ReturnItemModel> items;
   double totalAmount;
+  double discountPercent;
+  double finalAmount;
+  String? safeId;
   ReturnReason reason;
   String? notes;
   String createdBy; // userId
@@ -60,10 +77,17 @@ class ReturnModel {
   ReturnModel({
     required this.id,
     required this.branchId,
+    required this.returnType,
+    this.partyId,
+    this.partyName,
+    this.partyType,
     this.saleId,
     this.purchaseId,
     required this.items,
     required this.totalAmount,
+    this.discountPercent = 0,
+    required this.finalAmount,
+    this.safeId,
     required this.reason,
     this.notes,
     required this.createdBy,
@@ -76,10 +100,17 @@ class ReturnModel {
   Map<String, dynamic> toJson() => {
     'id': id,
     'branch_id': branchId,
+    'return_type': returnType,
+    'party_id': partyId,
+    'party_name': partyName,
+    'party_type': partyType,
     'sale_id': saleId,
     'purchase_id': purchaseId,
     'items': items.map((e) => e.toJson()).toList(),
     'total_amount': totalAmount,
+    'discount_percent': discountPercent,
+    'final_amount': finalAmount,
+    'safe_id': safeId,
     'reason': reason.name,
     'notes': notes,
     'created_by': createdBy,
@@ -92,6 +123,10 @@ class ReturnModel {
   factory ReturnModel.fromJson(Map<String, dynamic> json) => ReturnModel(
     id: json['id'] as String,
     branchId: json['branch_id'] as String,
+    returnType: json['return_type'] as String? ?? 'sales',
+    partyId: json['party_id'] as String?,
+    partyName: json['party_name'] as String?,
+    partyType: json['party_type'] as String?,
     saleId: json['sale_id'] as String?,
     purchaseId: json['purchase_id'] as String?,
     items: (json['items'] as List<dynamic>?)
@@ -99,6 +134,9 @@ class ReturnModel {
             .toList() ??
         [],
     totalAmount: (json['total_amount'] as num).toDouble(),
+    discountPercent: (json['discount_percent'] as num?)?.toDouble() ?? 0,
+    finalAmount: (json['final_amount'] as num?)?.toDouble() ?? (json['total_amount'] as num).toDouble(),
+    safeId: json['safe_id'] as String?,
     reason: ReturnReason.values.firstWhere(
       (r) => r.name == json['reason'],
       orElse: () => ReturnReason.other,

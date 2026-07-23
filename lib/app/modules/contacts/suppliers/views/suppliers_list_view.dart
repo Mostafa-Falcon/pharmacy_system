@@ -11,6 +11,7 @@ import 'package:pharmacy_system/app/modules/contacts/models/supplier_ledger_mode
 import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart';
 import '../../../../routes/app_routes.dart';
 import '../bloc/suppliers_bloc.dart';
 import '../bloc/suppliers_state.dart';

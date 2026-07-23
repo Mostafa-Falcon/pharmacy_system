@@ -66,10 +66,17 @@ class PurchasesTable extends Table {
 class ReturnsTable extends Table {
   TextColumn get id => text()();
   TextColumn get branchId => text()();
+  TextColumn get returnType => text()(); // sales, purchase
+  TextColumn get partyId => text().nullable()();
+  TextColumn get partyName => text().nullable()();
+  TextColumn get partyType => text().nullable()(); // cash, customer, supplier
   TextColumn get saleId => text().nullable()();
   TextColumn get purchaseId => text().nullable()();
   TextColumn get items => text()();
   RealColumn get totalAmount => real()();
+  RealColumn get discountPercent => real()();
+  RealColumn get finalAmount => real()();
+  TextColumn get safeId => text().nullable()();
   TextColumn get reason => text()();
   TextColumn get notes => text().nullable()();
   TextColumn get createdBy => text()();
