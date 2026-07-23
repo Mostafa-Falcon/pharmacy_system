@@ -252,8 +252,9 @@ class _MedicineSearchFieldState extends State<MedicineSearchField> {
     if (allItems.isEmpty && widget.customItems == null) {
       allItems = await BranchDataService.getMedicinesAsync(branchId: AuthService.currentBranchId);
     }
-
-    final filteredResults = allItems.where((m) => !m.isDeleted && m.isActive).where((m) {
+    
+    // تسجيل عدد الأصناف المتاحة للبحث للتشخيص
+    safeDebugPrint('MedicineSearch: Searching "$query" in ${allItems.length} items (Branch: ${AuthService.currentBranchId})');
       final nameMatch = m.name.toLowerCase().contains(query);
       final nameEnMatch = m.nameEn?.toLowerCase().contains(query) ?? false;
       final barcodeMatch = m.barcodes.any((b) => b.toLowerCase().contains(query));

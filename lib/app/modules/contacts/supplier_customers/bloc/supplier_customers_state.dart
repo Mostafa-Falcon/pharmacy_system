@@ -14,6 +14,7 @@ class SupplierCustomersState extends Equatable {
   final SupplierCustomerModel? selectedParty;
   final List<Map<String, dynamic>> combinedLedger;
   final bool isLoadingLedger;
+  final bool isSuccess;
   final Map<String, double> transactionSummary;
 
   const SupplierCustomersState({
@@ -27,6 +28,7 @@ class SupplierCustomersState extends Equatable {
     this.selectedParty,
     this.combinedLedger = const [],
     this.isLoadingLedger = false,
+    this.isSuccess = false,
     this.transactionSummary = const {},
   });
 
@@ -42,6 +44,7 @@ class SupplierCustomersState extends Equatable {
     bool clearSelected = false,
     List<Map<String, dynamic>>? combinedLedger,
     bool? isLoadingLedger,
+    bool? isSuccess,
     Map<String, double>? transactionSummary,
   }) {
     return SupplierCustomersState(
@@ -55,6 +58,7 @@ class SupplierCustomersState extends Equatable {
       selectedParty: clearSelected ? null : (selectedParty ?? this.selectedParty),
       combinedLedger: combinedLedger ?? this.combinedLedger,
       isLoadingLedger: isLoadingLedger ?? this.isLoadingLedger,
+      isSuccess: isSuccess ?? false,
       transactionSummary: transactionSummary ?? this.transactionSummary,
     );
   }
@@ -95,6 +99,6 @@ class SupplierCustomersState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, error, allSuppliers, filteredSuppliers, searchQuery, selectedFilter, currentBalances, selectedParty, combinedLedger, isLoadingLedger, transactionSummary];
+  List<Object?> get props => [status, error, allSuppliers, filteredSuppliers, searchQuery, selectedFilter, currentBalances, selectedParty, combinedLedger, isLoadingLedger, isSuccess, transactionSummary];
 }
 

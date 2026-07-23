@@ -61,7 +61,7 @@ class SupplierCustomersListView extends StatelessWidget {
       SummaryCard(
         icon: Icons.swap_horiz_rounded,
         label: AppStrings.totalParties,
-        value: '${state.allSuppliers.length}',
+        value: '${state.totalCount}',
         color: AppColors.primary,
       ),
       SummaryCard(
@@ -253,7 +253,6 @@ class SupplierCustomersListView extends StatelessWidget {
   }
 
   void _showDialog(BuildContext context, {SupplierCustomerModel? item}) {
-    // Reuse existing add/edit dialog logic or navigate to add screen
     if (item != null) {
        // Logic to show edit dialog (could be extracted from the old file or moved to its own widget)
     } else {

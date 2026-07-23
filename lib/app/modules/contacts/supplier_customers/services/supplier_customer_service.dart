@@ -142,6 +142,7 @@ class SupplierCustomerService {
         branchId: branchId,
       );
       await _dao.upsert(_toCompanion(model));
+      _cachedList = null; // Invalidate cache
 
       // Queue for Sync
       unawaited(
@@ -175,6 +176,7 @@ class SupplierCustomerService {
       model.lastModified = DateTime.now();
       model.branchId ??= AuthService.currentBranchId;
       await _dao.upsert(_toCompanion(model));
+      _cachedList = null; // Invalidate cache
 
       // Queue for Sync
       unawaited(

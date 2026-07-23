@@ -93,6 +93,7 @@ class PurchasesState extends Equatable {
   final String? paymentAccountName;
   final String? editingPurchaseId;
   final String notes;
+  final List<Map<String, String>> vendors;
 
   PurchasesState({
     this.status = PurchasesStatus.initial,
@@ -126,6 +127,7 @@ class PurchasesState extends Equatable {
     this.paymentAccountName,
     this.editingPurchaseId,
     this.notes = '',
+    this.vendors = const [],
   })  : purchaseDate = purchaseDate ?? DateTime.now(),
         paymentDate = paymentDate ?? DateTime.now();
 
@@ -161,6 +163,7 @@ class PurchasesState extends Equatable {
     this.paymentAccountName,
     this.editingPurchaseId,
     this.notes = '',
+    this.vendors = const [],
   })  : purchaseDate = purchaseDate ?? DateTime.now(),
         paymentDate = paymentDate ?? DateTime.now();
 
@@ -200,6 +203,7 @@ class PurchasesState extends Equatable {
     String? editingPurchaseId,
     bool clearEditing = false,
     String? notes,
+    List<Map<String, String>>? vendors,
   }) {
     return PurchasesState(
       status: status ?? this.status,
@@ -233,6 +237,7 @@ class PurchasesState extends Equatable {
       paymentAccountName: paymentAccountName ?? this.paymentAccountName,
       editingPurchaseId: clearEditing ? null : (editingPurchaseId ?? this.editingPurchaseId),
       notes: notes ?? this.notes,
+      vendors: vendors ?? this.vendors,
     );
   }
 

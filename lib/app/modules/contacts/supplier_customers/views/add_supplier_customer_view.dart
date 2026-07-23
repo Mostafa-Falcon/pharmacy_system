@@ -90,8 +90,6 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
           openingBalance: double.tryParse(openingBalanceCtrl.text) ?? 0,
           openingBalanceDirection: _openingBalanceDirection ? 'debit' : 'credit',
         ));
-
-    context.pop();
   }
 
   @override
@@ -106,41 +104,42 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
       child: HomeShell(
         title: AppStrings.addNewPartyTitle,
         child: SingleChildScrollView(
-        padding: EdgeInsets.all(AppSpacing.xl.w),
-        child: Form(
-          key: _formKey,
-          child: Center(
-            child: FormCard(
-              maxWidth: 800,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SectionHeader(icon: Icons.person_add_alt_1_outlined, title: AppStrings.personalAndBasicInfo),
-                  SizedBox(height: AppSpacing.md.h),
-                  _buildPersonalSection(),
-                  SizedBox(height: AppSpacing.lg.h),
-                  const SectionHeader(icon: Icons.business_center_outlined, title: AppStrings.businessAndActivityDetails),
-                  SizedBox(height: AppSpacing.md.h),
-                  _buildBusinessSection(),
-                  SizedBox(height: AppSpacing.lg.h),
-                  const SectionHeader(icon: Icons.payments_outlined, title: AppStrings.financialAndCreditPolicies),
-                  SizedBox(height: AppSpacing.md.h),
-                  _buildFinancialSection(),
-                  SizedBox(height: AppSpacing.lg.h),
-                  const SectionHeader(icon: Icons.account_balance_outlined, title: AppStrings.openingBalanceAtStart),
-                  SizedBox(height: AppSpacing.md.h),
-                  _buildOpeningBalanceSection(),
-                  SizedBox(height: AppSpacing.lg.h),
-                  ReusableInput(
-                    label: AppStrings.additionalNotes,
-                    controller: notesCtrl,
-                    maxLines: 3,
-                    textDirection: TextDirection.rtl,
-                    prefixIcon: const Icon(Icons.note_alt_outlined),
-                  ),
-                  SizedBox(height: AppSpacing.xxl.h),
-                  _buildSubmitButton(),
-                ],
+          padding: EdgeInsets.all(AppSpacing.xl.w),
+          child: Form(
+            key: _formKey,
+            child: Center(
+              child: FormCard(
+                maxWidth: 800,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SectionHeader(icon: Icons.person_add_alt_1_outlined, title: AppStrings.personalAndBasicInfo),
+                    SizedBox(height: AppSpacing.md.h),
+                    _buildPersonalSection(),
+                    SizedBox(height: AppSpacing.lg.h),
+                    const SectionHeader(icon: Icons.business_center_outlined, title: AppStrings.businessAndActivityDetails),
+                    SizedBox(height: AppSpacing.md.h),
+                    _buildBusinessSection(),
+                    SizedBox(height: AppSpacing.lg.h),
+                    const SectionHeader(icon: Icons.payments_outlined, title: AppStrings.financialAndCreditPolicies),
+                    SizedBox(height: AppSpacing.md.h),
+                    _buildFinancialSection(),
+                    SizedBox(height: AppSpacing.lg.h),
+                    const SectionHeader(icon: Icons.account_balance_outlined, title: AppStrings.openingBalanceAtStart),
+                    SizedBox(height: AppSpacing.md.h),
+                    _buildOpeningBalanceSection(),
+                    SizedBox(height: AppSpacing.lg.h),
+                    ReusableInput(
+                      label: AppStrings.additionalNotes,
+                      controller: notesCtrl,
+                      maxLines: 3,
+                      textDirection: TextDirection.rtl,
+                      prefixIcon: const Icon(Icons.note_alt_outlined),
+                    ),
+                    SizedBox(height: AppSpacing.xxl.h),
+                    _buildSubmitButton(),
+                  ],
+                ),
               ),
             ),
           ),

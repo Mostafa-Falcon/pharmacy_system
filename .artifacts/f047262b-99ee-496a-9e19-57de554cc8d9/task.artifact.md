@@ -1,10 +1,10 @@
-- [x] **Data Infrastructure**
-    - [x] Add `watchAll()` to `SupplierCustomersDao`
-    - [x] Update `SupplierCustomerService` with cache invalidation
-- [x] **Redesign Contacts Module (Supplier/Customer)**
-    - [x] Update `SupplierCustomersBloc` for live updates and success state
-    - [x] Implement new `SupplierCustomersListView` using `ReusableTable`
-    - [x] Update `AddSupplierCustomerView` with auto-navigation
+- [ ] **Data Infrastructure**
+    - [ ] Add reactive subscription in `SupplierCustomersBloc`
+    - [ ] Update `SupplierCustomerService` with cache invalidation
+- [ ] **Redesign Contacts Module (Supplier/Customer)**
+    - [ ] Implement new `SupplierCustomersListView` using `ReusableTable`
+    - [ ] Update `AddSupplierCustomerView` with auto-navigation on success
+    - [ ] Refine `_LedgerDialogContent` for professional look
 - [ ] **Verification**
     - [ ] Verify instant appearance of new contacts
     - [ ] Verify redesigned UI consistency

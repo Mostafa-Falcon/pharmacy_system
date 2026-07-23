@@ -1,9 +1,5 @@
-﻿import 'dart:async';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-import 'package:uuid/uuid.dart';
-import 'package:pharmacy_system/app/modules/sales/models/purchase_model.dart';
-import 'package:pharmacy_system/app/core/domain/models/base/correction_model.dart';
+﻿import 'package:pharmacy_system/app/modules/contacts/models/supplier_customer_model.dart';
+import 'package:pharmacy_system/app/modules/contacts/supplier_customers/services/supplier_customer_service.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
 import 'package:pharmacy_system/app/core/data/services/accounting/correction_service.dart';
@@ -21,6 +17,7 @@ import 'purchases_state.dart';
 class PurchasesBloc extends Bloc<PurchasesEvent, PurchasesState> {
   static final _uuid = Uuid();
   StreamSubscription? _subscription;
+  StreamSubscription? _vendorsSubscription;
 
   String get _branchId => AuthService.currentBranchId ?? '';
 
@@ -61,19 +58,45 @@ class PurchasesBloc extends Bloc<PurchasesEvent, PurchasesState> {
     on<SetPurchaseStatus>(_onSetStatus);
     on<SetPurchaseDate>(_onSetDate);
     on<SetPurchasePaymentTerm>(_onSetPaymentTerm);
+    on<LoadReferenceData>(_onLoadReferenceData);
 
     // اشتراك لحظي في تحديثات المشتريات
     _subscription = sl<PurchasesRepository>().watchPurchases(_branchId).listen((_) {
       if (!isClosed) add(const LoadPurchases());
     });
 
+    // ذكاء مهندسة: مراقبة حية للموردين لضمان تحديث القائمة فوراً
+    _vendorsSubscription = SupplierCustomerService.watchAll().listen((_) {
+       if (!isClosed) add(const LoadReferenceData());
+    });
+
     add(const LoadPurchases());
+    add(const LoadReferenceData());
   }
 
   @override
   Future<void> close() {
     _subscription?.cancel();
+    _vendorsSubscription?.cancel();
     return super.close();
+  }
+
+  Future<void> _onLoadReferenceData(LoadReferenceData event, Emitter<PurchasesState> emit) async {
+    final list = <Map<String, String>>[];
+    
+    // 1. الموردين العاديين
+    final suppliers = SupplierService.getAll();
+    for (final s in suppliers) {
+      list.add({'id': s.id, 'name': s.name, 'type': 'supplier'});
+    }
+    
+    // 2. العملاء/الموردين الموحدين
+    final contacts = SupplierCustomerService.getAll();
+    for (final sc in contacts) {
+      list.add({'id': sc.id, 'name': sc.name, 'type': 'contact'});
+    }
+    
+    emit(state.copyWith(vendors: list));
   }
 
   void _onSetReferenceNumber(SetPurchaseReferenceNumber event, Emitter<PurchasesState> emit) {

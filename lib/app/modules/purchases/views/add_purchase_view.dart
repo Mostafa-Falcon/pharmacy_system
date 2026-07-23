@@ -174,14 +174,14 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
   }
 
   Widget _buildHeaderFields(BuildContext context, ColorScheme scheme, PurchasesState state) {
-    final vendors = _getUnifiedVendors();
+    final vendors = state.vendors;
     return FormCard(
       padding: EdgeInsets.all(AppSpacing.xl.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _responsiveFields(context, minWidth: 220, children: [
-            // المورد (موحد)
+            // المورد (موحد من الحالة)
             ReusableDropdown<Map<String, String>>(
               hintText: AppStrings.select, labelText: AppStrings.supplierLabelPurchase,
               items: vendors,
