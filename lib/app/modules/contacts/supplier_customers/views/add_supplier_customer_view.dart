@@ -96,9 +96,16 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
 
   @override
   Widget build(BuildContext context) {
-    return HomeShell(
-      title: AppStrings.addNewPartyTitle,
-      child: SingleChildScrollView(
+    return BlocListener<SupplierCustomersBloc, SupplierCustomersState>(
+      listenWhen: (prev, current) => prev.isSuccess != current.isSuccess,
+      listener: (context, state) {
+        if (state.isSuccess) {
+          context.pop();
+        }
+      },
+      child: HomeShell(
+        title: AppStrings.addNewPartyTitle,
+        child: SingleChildScrollView(
         padding: EdgeInsets.all(AppSpacing.xl.w),
         child: Form(
           key: _formKey,

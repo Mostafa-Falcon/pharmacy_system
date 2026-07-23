@@ -5,16 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 import 'package:collection/collection.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/data/services/sound_service.dart';
 import '../../../routes/app_routes.dart';
 import '../../../core/constants/app_strings.dart';
-
-import 'package:uuid/uuid.dart';
-import 'package:collection/collection.dart';
-import 'package:go_router/go_router.dart';
-import '../../../routes/app_routes.dart';
-import '../../../core/constants/app_strings.dart';
-
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_customer_model.dart';
 import 'package:pharmacy_system/app/modules/contacts/supplier_customers/services/supplier_customer_service.dart';
 import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_service.dart';
@@ -145,7 +138,7 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
                         bindings: {
                           SingleActivator(LogicalKeyboardKey.keyS, control: true): () => _submitForm(context),
                           SingleActivator(LogicalKeyboardKey.enter, control: true): () => _submitForm(context),
-                          const SingleActivator(LogicalKeyboardKey.f2): () => _openItemDialog(context, null, TextEditingController()),
+                          const SingleActivator(LogicalKeyboardKey.f2): () => _openItemDialog(context, null, _searchCtrl),
                         },
                         child: Focus(
                           autofocus: true,

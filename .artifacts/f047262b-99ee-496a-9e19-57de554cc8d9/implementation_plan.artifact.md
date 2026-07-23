@@ -1,44 +1,52 @@
-# Implementation Plan - Purchase Invoice Improvements & Super Smart Units
+# Implementation Plan - Unified Contact Redesign (Supplier/Customer)
 
-The goal is to fix supplier display, resolve the medicine search issue, implement automatic item addition, and deploy a heuristic-based unit parsing engine.
+Fix the data visibility issue and redesign the "Supplier/Customer" (Unified contact) module to follow the premium, professional standard established in the rest of the application.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Unified Suppliers**: The supplier dropdown will now show the **Name** instead of UUID and include all contacts from both "Suppliers" and "Supplier-Customers".
-
-> [!IMPORTANT]
-> **Heuristic Unit Engine**: The system will now "read" unit strings like "علبة 3 شريط 10 قرص" and automatically build the 3-level hierarchy (Box -> Strip -> Pill) with correct multipliers.
+> **Architecture Change**: I will switch this module from a split-view (List/Detail) to a full-width **Advanced Table View**. This provides more space for data and matches the UI of the Medicines and Purchases pages.
 
 > [!TIP]
-> **Immediate Addition**: Selecting a medicine now adds it **instantly** to the invoice list with a default quantity of 1. You can then edit the details directly in the table.
+> **Live Updates**: The list will now be "Live". Any contact added via a dialog or another screen will appear **instantly** without needing a refresh.
 
 ## Proposed Changes
 
-### [Component] Inventory Module (Services)
+### [Component] Core Infrastructure (Database)
 
-#### [MODIFY] [unit_normalizer.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/inventory/services/unit_normalizer.dart)
-- Implement a **Tokenization Engine** to break down unit strings.
-- Use a **Hierarchy Resolver** to infer the relationship between containers and base items.
-- Support complex pharmacy notations found in the provided Excel list.
+#### [MODIFY] [supplier_customers_dao.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/data/database/daos/supplier_customers_dao.dart)
+- Add `watchAll()` stream method to enable reactive UI updates.
 
-### [Component] Purchases Module
+### [Component] Contacts Module (Services)
 
-#### [MODIFY] [add_purchase_view.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/purchases/views/add_purchase_view.dart)
-- **Unified Vendor List**: Merge `SupplierService` and `SupplierCustomerService` for the dropdown.
-- **Auto-Add Logic**: Modify `onMedicineSelected` to call `bloc.add(AddPurchaseLine(...))` directly.
-- **Shortcut Support**: Ensure the search field is focused by default or via shortcuts.
+#### [MODIFY] [supplier_customer_service.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/contacts/supplier_customers/services/supplier_customer_service.dart)
+- Ensure cache is cleared/updated during `add`, `update`, and `delete` operations.
+- Add `watchAll()` wrapper to expose the DAO stream.
 
-### [Component] Core Presentation (Inputs)
+### [Component] Contacts Module (Bloc)
 
-#### [MODIFY] [medicine_search_field.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/presentation/widgets/reusables/inputs/medicine_search_field.dart)
-- **Async Warm-up**: Ensure medicines are fetched from the database if the local repository cache is empty.
-- **Search Optimization**: Improve fuzzy matching for name, nameEn, and barcodes.
+#### [MODIFY] [supplier_customers_state.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/contacts/supplier_customers/bloc/supplier_customers_state.dart)
+- Add `isSuccess` status for navigation control.
+- Ensure all relevant data (balances, totals) are tracked correctly.
+
+#### [MODIFY] [supplier_customers_bloc.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/contacts/supplier_customers/bloc/supplier_customers_bloc.dart)
+- Implement a database subscription to trigger `LoadSupplierCustomers` automatically.
+- Update `_onAdd` and `_onUpdate` to emit `success`.
+
+### [Component] Contacts Module (View)
+
+#### [MODIFY] [supplier_customers_list_view.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/contacts/supplier_customers/views/supplier_customers_list_view.dart)
+- **Redesign**: Use `StandardModuleLayout` and `ReusableTable`.
+- **Operations**: Add a "Options" button to each row (Ledger, Edit, Delete, Toggle).
+- **Metric Cards**: Display professional cards for Total Count, Active Count, and Total Combined Balance.
+
+#### [MODIFY] [add_supplier_customer_view.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/contacts/supplier_customers/views/add_supplier_customer_view.dart)
+- Implement `BlocListener` to handle automatic navigation back to the list upon success.
 
 ## Verification Plan
 
 ### Manual Verification
-1. **Search Test**: Type "بار" in the search field and verify medicines appear.
-2. **Auto-Add Test**: Click a result or scan a barcode and verify the item is added to the table immediately.
-3. **Unit Test**: Verify that "شريط 5" and "6 شريط" result in correct stock calculations (e.g., Qty 10.1 = 10 units + 1 sub-unit).
-4. **Supplier Test**: Verify names are displayed instead of UUIDs in the header.
+1. **Visibility Test**: Add a new contact and verify it appears immediately in the table.
+2. **UI Test**: Verify the new full-width table layout looks consistent with the "Medicines" page.
+3. **Operations Test**: Open the "Ledger" from a row action and verify financial movements.
+4. **Navigation Test**: Verify the "Add" page closes automatically after saving.

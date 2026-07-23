@@ -20,6 +20,41 @@ import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
 import '../add_medicine_form_data.dart';
 import '../add_medicine_unit_card.dart';
 
+class _ExpiryDateSlot {
+  final TextEditingController dayCtrl = TextEditingController();
+  final TextEditingController monthCtrl = TextEditingController();
+  final TextEditingController yearCtrl = TextEditingController();
+  DateTime? picked;
+
+  int? get day => int.tryParse(dayCtrl.text);
+  int? get month => int.tryParse(monthCtrl.text);
+  int? get year => int.tryParse(yearCtrl.text);
+
+  DateTime? get date {
+    if (day != null && month != null && year != null) {
+      try {
+        return DateTime(year!, month!, day!);
+      } catch (_) {
+        return null;
+      }
+    }
+    return picked;
+  }
+
+  void setDate(DateTime d) {
+    dayCtrl.text = d.day.toString();
+    monthCtrl.text = d.month.toString();
+    yearCtrl.text = d.year.toString();
+    picked = d;
+  }
+
+  void dispose() {
+    dayCtrl.dispose();
+    monthCtrl.dispose();
+    yearCtrl.dispose();
+  }
+}
+
 class MedicineFormContent extends StatefulWidget {
   final MedicineModel? initialMedicine;
   final bool isEditMode;
@@ -61,7 +96,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
   bool _pricesIncludeTax = false;
   bool _allowNegativeStock = false;
   bool _isActive = true;
-  DateTime? _expiryDate;
+  final List<_ExpiryDateSlot> _expiryDateSlots = [];
   String? _imageUrl;
   String? _selectedTaxType;
   bool _isDirty = false;
@@ -124,8 +159,18 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
       _pricesIncludeTax = initial.pricesIncludeTax;
       _allowNegativeStock = initial.allowNegativeStock;
       _isActive = initial.isActive;
-      _expiryDate = initial.expiryDate;
       _imageUrl = initial.imageUrl;
+      if ((initial.expiryDates ?? []).isNotEmpty) {
+        for (final d in initial.expiryDates!) {
+          final slot = _ExpiryDateSlot();
+          slot.setDate(d);
+          _expiryDateSlots.add(slot);
+        }
+      } else if (initial.expiryDate != null) {
+        final slot = _ExpiryDateSlot();
+        slot.setDate(initial.expiryDate!);
+        _expiryDateSlots.add(slot);
+      }
       _selectedTaxType = initial.taxType;
     }
 
@@ -160,6 +205,9 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
     }
     for (final u in _units) {
       u.dispose();
+    }
+    for (final s in _expiryDateSlots) {
+      s.dispose();
     }
     super.dispose();
   }
@@ -420,7 +468,8 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
             : 0,
         alertEnabled: _alertEnabled,
         expiryTrackingEnabled: _expiryTrackingEnabled,
-        expiryDate: _expiryTrackingEnabled ? _expiryDate : null,
+        expiryDate: _expiryTrackingEnabled ? _expiryDateSlots.map((s) => s.date).firstOrNull : null,
+        expiryDates: _expiryTrackingEnabled ? _expiryDateSlots.map((s) => s.date).whereType<DateTime>().toList() : [],
         dosageFormEnabled: _appearanceSpecsEnabled,
         dosageForm: _appearanceSpecsEnabled ? _selectedDosageForm : null,
         strength: _strengthController.text.trim().isEmpty
@@ -465,7 +514,8 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
             : 0,
         alertEnabled: _alertEnabled,
         expiryTrackingEnabled: _expiryTrackingEnabled,
-        expiryDate: _expiryTrackingEnabled ? _expiryDate : null,
+        expiryDate: _expiryTrackingEnabled ? _expiryDateSlots.map((s) => s.date).firstOrNull : null,
+        expiryDates: _expiryTrackingEnabled ? _expiryDateSlots.map((s) => s.date).whereType<DateTime>().toList() : [],
         dosageFormEnabled: _appearanceSpecsEnabled,
         dosageForm: _appearanceSpecsEnabled ? _selectedDosageForm : null,
         strength: _strengthController.text.trim().isEmpty
@@ -504,17 +554,33 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
     }
   }
 
-  Future<void> _pickDate() async {
+  void _addExpirySlot() {
+    setState(() {
+      _expiryDateSlots.add(_ExpiryDateSlot());
+      _isDirty = true;
+    });
+  }
+
+  void _removeExpirySlot(int index) {
+    setState(() {
+      _expiryDateSlots[index].dispose();
+      _expiryDateSlots.removeAt(index);
+      _isDirty = true;
+    });
+  }
+
+  void _pickDateForSlot(int index) async {
     final now = DateTime.now();
+    final current = _expiryDateSlots[index].date;
     final picked = await showDatePicker(
       context: context,
-      initialDate: _expiryDate ?? now.add(const Duration(days: 365)),
+      initialDate: current ?? now.add(const Duration(days: 365)),
       firstDate: now,
       lastDate: now.add(const Duration(days: 365 * 10)),
     );
     if (picked != null) {
       setState(() {
-        _expiryDate = picked;
+        _expiryDateSlots[index].setDate(picked);
         _isDirty = true;
       });
     }
@@ -1071,11 +1137,27 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
                     ),
                     if (_expiryTrackingEnabled) ...[
                       SizedBox(height: 16.h),
-                      buildPremiumDateField(
-                        label: AppStrings.currentExpiryDateAdd,
-                        date: _expiryDate,
-                        onTap: () => _pickDate(),
-                        onClear: () => setState(() => _expiryDate = null),
+                      ..._expiryDateSlots.asMap().entries.map((entry) {
+                        final i = entry.key;
+                        final slot = entry.value;
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: 8.h),
+                          child: _ExpiryDateRow(
+                            slot: slot,
+                            index: i,
+                            canDelete: _expiryDateSlots.length > 1,
+                            onPickDate: () => _pickDateForSlot(i),
+                            onDelete: () => _removeExpirySlot(i),
+                          ),
+                        );
+                      }),
+                      TextButton.icon(
+                        onPressed: _addExpirySlot,
+                        icon: const Icon(Icons.add_circle_outline_rounded, size: 18),
+                        label: ReusableText(
+                          'إضافة تاريخ صلاحية آخر',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   ],
@@ -1148,75 +1230,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
     );
   }
 
-  Widget buildPremiumDateField({
-    required String label,
-    required DateTime? date,
-    required VoidCallback onTap,
-    required VoidCallback onClear,
-  }) {
-    final scheme = Theme.of(context).colorScheme;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12.w),
-        height: 44.h,
-        decoration: BoxDecoration(
-          color: scheme.surfaceContainerLowest,
-          border: Border.all(color: scheme.outline),
-          borderRadius: BorderRadius.circular(AppRadius.md),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              Icons.edit_calendar_rounded,
-              size: 18.sp,
-              color: scheme.primary,
-            ),
-            SizedBox(width: 8.w),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ReusableText(
-                    label,
-                    style: TextStyle(
-                      fontSize: 10.sp,
-                      color: scheme.onSurfaceVariant,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  ReusableText(
-                    date != null
-                        ? '${date.day} / ${date.month} / ${date.year}'
-                        : AppStrings.datePickerHint,
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: date != null
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (date != null)
-              InkWell(
-                onTap: () {
-                  onClear();
-                  _markDirty();
-                },
-                child: Icon(
-                  Icons.cancel_rounded,
-                  size: 18.sp,
-                  color: AppColors.error,
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
+
 
   Widget buildCleanProfitBadge() {
     final color = _profitMargin >= 0 ? AppColors.success : AppColors.error;
@@ -1268,6 +1282,102 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _ExpiryDateRow extends StatelessWidget {
+  final _ExpiryDateSlot slot;
+  final int index;
+  final bool canDelete;
+  final VoidCallback onPickDate;
+  final VoidCallback onDelete;
+
+  const _ExpiryDateRow({
+    required this.slot,
+    required this.index,
+    required this.canDelete,
+    required this.onPickDate,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: EdgeInsets.all(8.w),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        border: Border.all(color: scheme.outline.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        children: [
+          ReusableText(
+            '${index + 1}',
+            style: TextStyle(
+              fontSize: 12.sp,
+              fontWeight: FontWeight.bold,
+              color: scheme.primary,
+            ),
+          ),
+          SizedBox(width: 8.w),
+          Expanded(
+            child: Row(
+              children: [
+                Expanded(
+                  child: ReusableInput(
+                    controller: slot.dayCtrl,
+                    label: 'يوم',
+                    hint: 'DD',
+                    keyboardType: TextInputType.number,
+                    showClearButton: false,
+                  ),
+                ),
+                SizedBox(width: 6.w),
+                Expanded(
+                  child: ReusableInput(
+                    controller: slot.monthCtrl,
+                    label: 'شهر',
+                    hint: 'MM',
+                    keyboardType: TextInputType.number,
+                    showClearButton: false,
+                  ),
+                ),
+                SizedBox(width: 6.w),
+                Expanded(
+                  child: ReusableInput(
+                    controller: slot.yearCtrl,
+                    label: 'سنة',
+                    hint: 'YYYY',
+                    keyboardType: TextInputType.number,
+                    showClearButton: false,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 6.w),
+          IconButton(
+            icon: Icon(
+              Icons.calendar_month_rounded,
+              color: scheme.primary,
+              size: 20.sp,
+            ),
+            onPressed: onPickDate,
+            tooltip: 'اختيار من التقويم',
+          ),
+          if (canDelete)
+            IconButton(
+              icon: Icon(
+                Icons.remove_circle_outline_rounded,
+                color: AppColors.error,
+                size: 20.sp,
+              ),
+              onPressed: onDelete,
+            ),
+        ],
       ),
     );
   }

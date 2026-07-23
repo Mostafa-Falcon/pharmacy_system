@@ -158,8 +158,13 @@ class UnitNormalizer {
       if (baseName != null) {
         levels.add(UnitLevelInfo(name: baseName, multiplier: baseMultiplier));
       } else {
-        // لو مفيش ذكر للحبات، بنفترض 10 حبات للشريط
-        levels.add(const UnitLevelInfo(name: 'حباية', multiplier: 10));
+        // ذكاء مهندسة: لو مفيش ذكر للحبات، بنفترض 10 حبات للشريط للأصناف الصلبة (أقراص/كبسولات)
+        // أما لو كانت أمبولات أو سوائل، فالمستوى التاني هو الأخير (multiplier 1)
+        if (subName.contains('شريط') || subName.contains('فلرص')) {
+           levels.add(const UnitLevelInfo(name: 'حباية', multiplier: 10));
+        } else {
+           levels.add(const UnitLevelInfo(name: 'وحدة', multiplier: 1));
+        }
       }
     } else if (baseName != null) {
       // حالة: علبة -> قرص مباشرة (زي 12 قرص)

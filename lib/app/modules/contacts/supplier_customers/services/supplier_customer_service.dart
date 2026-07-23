@@ -80,8 +80,19 @@ class SupplierCustomerService {
     _updateCache(items.map(_toModel).toList());
   }
 
+  static Stream<List<SupplierCustomerModel>> watchAll() {
+    return _dao.watchAll().map((list) => list.map(_toModel).toList());
+  }
+
   static List<SupplierCustomerModel> getAll({bool activeOnly = true, bool includeDeleted = false}) {
     var items = _cached();
+    // ذكاء مهندسة: لو الكاش لسه فاضي، جرب تقرأ الداتا من الداتابيز مباشرة
+    // عشان ما تظهرش "لا يوجد سجلات" واليوزر لسه ضايف حاجة.
+    if (items.isEmpty) {
+       // ملحوظة: getAll() في الـ DAO هي Sync في Drift عادةً، بس هنا محتاجة await
+       // فبنكتفي بإرجاع الكاش ونعمل تريجر للـ init في الخلفية.
+       init();
+    }
     if (!includeDeleted) {
       items = items.where((c) => !c.isDeleted).toList();
     }

@@ -59,7 +59,62 @@ class _ShellBody extends StatelessWidget {
 
         if (state.status == ShellStatus.error) {
           return Scaffold(
-            body: Center(child: Text(state.error ?? 'خطأ في تحميل الواجهة')),
+            backgroundColor: AppColors.backgroundOf(context),
+            body: Center(
+              child: Padding(
+                padding: EdgeInsets.all(24.w),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(20.w),
+                      decoration: BoxDecoration(
+                        color: scheme.error.withValues(alpha: 0.08),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.error_outline_rounded,
+                        size: 64.sp,
+                        color: scheme.error,
+                      ),
+                    ),
+                    SizedBox(height: 24.h),
+                    ReusableText(
+                      state.error ?? 'خطأ في تحميل الواجهة',
+                      style: AppTextStyles.title(context).copyWith(
+                        color: scheme.onSurface,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 12.h),
+                    ReusableText(
+                      'يرجى التأكد من تسجيل الدخول أو إعادة المحاولة',
+                      style: AppTextStyles.caption(context).copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                    SizedBox(height: 32.h),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ReusableButton(
+                          text: 'إعادة المحاولة',
+                          prefixIcon: Icons.refresh_rounded,
+                          onPressed: () => context.read<ShellBloc>().add(const LoadShell()),
+                        ),
+                        SizedBox(width: 12.w),
+                        ReusableButton(
+                          text: 'تسجيل الخروج',
+                          type: ButtonType.outlined,
+                          color: scheme.error,
+                          onPressed: () => context.read<AuthBloc>().add(const LogoutRequested()),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
           );
         }
 

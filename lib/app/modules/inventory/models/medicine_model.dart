@@ -11,6 +11,7 @@ class MedicineModel {
   int quantity;
   int minStock;
   DateTime? expiryDate;
+  List<DateTime>? expiryDates;
   String? manufacturer;
   String branchId;
   int syncVersion;
@@ -50,6 +51,7 @@ class MedicineModel {
     required this.quantity,
     this.minStock = 10,
     this.expiryDate,
+    List<DateTime>? expiryDates,
     this.manufacturer,
     required this.branchId,
     this.syncVersion = 1,
@@ -80,6 +82,7 @@ class MedicineModel {
   })  : lastModified = lastModified ?? DateTime.now(),
         createdAt = createdAt ?? lastModified ?? DateTime.now(),
         barcodes = barcodes ?? [],
+        expiryDates = expiryDates ?? [],
         units = units ?? [];
 
   MedicineModel copyWith({
@@ -93,6 +96,7 @@ class MedicineModel {
     int? quantity,
     int? minStock,
     DateTime? expiryDate,
+    List<DateTime>? expiryDates,
     String? manufacturer,
     String? branchId,
     int? syncVersion,
@@ -132,6 +136,7 @@ class MedicineModel {
       quantity: quantity ?? this.quantity,
       minStock: minStock ?? this.minStock,
       expiryDate: expiryDate ?? this.expiryDate,
+      expiryDates: expiryDates ?? List<DateTime>.from(this.expiryDates ?? []),
       manufacturer: manufacturer ?? this.manufacturer,
       branchId: branchId ?? this.branchId,
       syncVersion: syncVersion ?? this.syncVersion + 1,
@@ -173,6 +178,7 @@ class MedicineModel {
     'quantity': quantity,
     'min_stock': minStock,
     'expiry_date': expiryDate?.toIso8601String(),
+    'expiry_dates': (expiryDates ?? []).map((d) => d.toIso8601String()).toList(),
     'manufacturer': manufacturer,
     'branch_id': branchId,
     'sync_version': syncVersion,
@@ -213,6 +219,9 @@ class MedicineModel {
     quantity: json['quantity'] as int? ?? 0,
     minStock: json['min_stock'] as int? ?? 10,
     expiryDate: json['expiry_date'] != null ? DateTime.tryParse(json['expiry_date'] as String) : null,
+    expiryDates: (json['expiry_dates'] as List<dynamic>?)
+        ?.map((e) => DateTime.parse(e as String))
+        .toList(),
     manufacturer: json['manufacturer'] as String?,
     branchId: json['branch_id'] as String,
     syncVersion: json['sync_version'] as int? ?? 1,

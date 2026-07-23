@@ -13,6 +13,8 @@ import 'supplier_customers_event.dart';
 import 'supplier_customers_state.dart';
 
 class SupplierCustomersBloc extends Bloc<SupplierCustomersEvent, SupplierCustomersState> {
+  StreamSubscription? _subscription;
+
   SupplierCustomersBloc() : super(const SupplierCustomersState()) {
     on<LoadSupplierCustomers>(_onLoad);
     on<SearchSupplierCustomers>(_onSearch);
@@ -30,7 +32,19 @@ class SupplierCustomersBloc extends Bloc<SupplierCustomersEvent, SupplierCustome
     on<RecordCheckPayment>(_onRecordCheckPayment);
     on<ClearSupplierCustomerSelection>(_onClearSelection);
     on<ExportSupplierCustomerLedger>(_onExportLedger);
+
+    // ذكاء مهندسة: مراقبة حية للتغييرات في قاعدة البيانات
+    _subscription = SupplierCustomerService.watchAll().listen((_) {
+      if (!isClosed) add(const LoadSupplierCustomers());
+    });
+
     add(const LoadSupplierCustomers());
+  }
+
+  @override
+  Future<void> close() {
+    _subscription?.cancel();
+    return super.close();
   }
 
   Future<void> _onLoad(LoadSupplierCustomers event, Emitter<SupplierCustomersState> emit) async {
@@ -75,6 +89,7 @@ class SupplierCustomersBloc extends Bloc<SupplierCustomersEvent, SupplierCustome
         openingBalance: event.openingBalance, openingBalanceDirection: event.openingBalanceDirection,
       );
       if (!isClosed) add(const LoadSupplierCustomers());
+      emit(state.copyWith(isSuccess: true));
       AppSnackbar.success(AppStrings.msgPartyAdded);
     } catch (e) {
       if (isClosed) return;
@@ -86,6 +101,7 @@ class SupplierCustomersBloc extends Bloc<SupplierCustomersEvent, SupplierCustome
     try {
       await SupplierCustomerService.update(event.supplier);
       if (!isClosed) add(const LoadSupplierCustomers());
+      emit(state.copyWith(isSuccess: true));
       AppSnackbar.success(AppStrings.msgUpdatedSuccess);
     } catch (e) {
       if (isClosed) return;

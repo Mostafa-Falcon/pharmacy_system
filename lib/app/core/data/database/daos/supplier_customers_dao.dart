@@ -8,6 +8,9 @@ class SupplierCustomersDao {
   Future<List<SupplierCustomersTableData>> getAll() =>
       db.select(db.supplierCustomersTable).get();
 
+  Stream<List<SupplierCustomersTableData>> watchAll() =>
+      db.select(db.supplierCustomersTable).watch();
+
   Future<SupplierCustomersTableData?> getById(String id) =>
       (db.select(db.supplierCustomersTable)..where((t) => t.id.equals(id)))
           .getSingleOrNull();

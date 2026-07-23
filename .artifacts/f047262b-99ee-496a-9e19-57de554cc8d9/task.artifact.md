@@ -1,8 +1,11 @@
-- [ ] **Purchases Module Fixes**
-    - [ ] Update Supplier Dropdown to show names and include both Suppliers & Supplier-Customers
-    - [ ] Implement Fast Entry (Auto-Add) in `MedicineSearchField.onSelected`
-    - [ ] Improve search reliability in `MedicineSearchField`
+- [x] **Data Infrastructure**
+    - [x] Add `watchAll()` to `SupplierCustomersDao`
+    - [x] Update `SupplierCustomerService` with cache invalidation
+- [x] **Redesign Contacts Module (Supplier/Customer)**
+    - [x] Update `SupplierCustomersBloc` for live updates and success state
+    - [x] Implement new `SupplierCustomersListView` using `ReusableTable`
+    - [x] Update `AddSupplierCustomerView` with auto-navigation
 - [ ] **Verification**
-    - [ ] Verify supplier names in dropdown
-    - [ ] Verify immediate item addition after selection
-    - [ ] Verify barcode scan triggers auto-add
+    - [ ] Verify instant appearance of new contacts
+    - [ ] Verify redesigned UI consistency
+    - [ ] Verify ledger and edit operations from the table
