@@ -4,13 +4,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:collection/collection.dart';
 
-import '../../../../../core/constants/app_strings.dart';
+import '../../../../core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import '../../../../../core/extensions/string_ext.dart';
+import '../../../../core/extensions/string_ext.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import '../../../../../core/utils/format_utils.dart';
-import '../../../models/pos_cart_line.dart';
-import '../../../bloc/pos_bloc.dart';
+import '../../../../core/utils/format_utils.dart';
+import '../../models/pos_cart_line.dart';
+import '../../bloc/pos_bloc.dart';
 import 'package:pharmacy_system/app/core/data/services/print_service.dart';
 import 'package:pharmacy_system/app/core/data/services/sales/quote_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
@@ -23,8 +23,8 @@ import 'package:pharmacy_system/app/modules/inventory/models/opening_stock_model
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 
 // Modular Sub-Dialogs
-import 'desktop_dialogs/shift_report_dialog.dart';
-import 'desktop_dialogs/edit_cart_line_dialog.dart';
+import 'dialogs/shift_report_dialog.dart';
+import 'dialogs/edit_cart_line_dialog.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
 
 class PosDiscountResult {
@@ -784,7 +784,7 @@ class RecentOperationsDialog extends StatefulWidget {
 }
 
 class _RecentOperationsDialogState extends State<RecentOperationsDialog> {
-  int _activeTab = 0; // 0: Invoice, 1: Quote, 2: Draft
+  int _activeTab = 0;
 
   Widget _tabHeader(int index, String title, IconData icon) {
     final isSelected = _activeTab == index;
@@ -977,7 +977,7 @@ class _RecentOperationsDialogState extends State<RecentOperationsDialog> {
                     }),
                     SizedBox(width: 6.w),
                      _miniAction(Icons.delete_outline_rounded, AppColors.error, () {
-                       _confirmDelete(context, AppStrings.confirmDeleteQuote, () async {
+                        _confirmDelete(context, AppStrings.confirmDeleteQuote, () async {
 
                         await QuoteService.softDelete(quote.id);
                         setState(() {});
@@ -1063,5 +1063,3 @@ class _RecentOperationsDialogState extends State<RecentOperationsDialog> {
     );
   }
 }
-
-

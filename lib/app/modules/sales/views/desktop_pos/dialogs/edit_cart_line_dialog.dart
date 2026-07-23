@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../bloc/pos_bloc.dart';
-import '../../../../models/pos_cart_line.dart';
+import '../../../bloc/pos_bloc.dart';
+import '../../../models/pos_cart_line.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
 

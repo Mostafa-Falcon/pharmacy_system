@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,20 +9,20 @@ import 'package:collection/collection.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import '../../../../../core/utils/format_utils.dart';
-import '../../../../../routes/app_routes.dart';
+import '../../../../core/utils/format_utils.dart';
+import '../../../../routes/app_routes.dart';
 import 'package:pharmacy_system/app/modules/contacts/models/customer_model.dart';
 import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
 import 'package:pharmacy_system/app/modules/sales/models/cashier_shift_model.dart';
-import '../../../../../core/constants/app_strings.dart';
+import '../../../../core/constants/app_strings.dart';
 
-import '../../../bloc/pos_bloc.dart';
-import '../../../bloc/catalog_cubit.dart';
-import '../../../widgets/pos_catalog_panel.dart';
-import 'desktop_toolbar.dart';
-import 'desktop_cart_table.dart';
-import 'desktop_totals_bar.dart';
-import 'desktop_bottom_actions.dart';
+import '../../bloc/pos_bloc.dart';
+import '../../bloc/catalog_cubit.dart';
+import '../../widgets/pos_catalog_panel.dart';
+import 'toolbar.dart';
+import 'cart_table.dart';
+import 'totals_bar.dart';
+import 'bottom_actions.dart';
 
 class DesktopLayout extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -34,7 +34,6 @@ class DesktopLayout extends StatefulWidget {
 
 class _DesktopLayoutState extends State<DesktopLayout> {
   void _onMedicineSelected(BuildContext context, MedicineModel item) {
-    // تم التعديل لاستخدام PosBloc لضمان إضافة الدواء للسلة فوراً
     context.read<PosBloc>().add(PosAddMedicine(item));
   }
 
@@ -167,7 +166,6 @@ class _DesktopLayoutState extends State<DesktopLayout> {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onHorizontalDragUpdate: (details) {
-        // في اتجاه RTL السحب لليسار يعني زيادة الحجم
         final newWidth = bloc.state.catalogWidth - details.delta.dx;
         if (newWidth > 200 && newWidth < 900) {
           bloc.add(PosUpdateCatalogWidth(newWidth));
@@ -310,8 +308,7 @@ class _DesktopLayoutState extends State<DesktopLayout> {
   void _showCloseShiftDialog(BuildContext context, CashierShiftModel shift, PosState state) {
     final cashController = TextEditingController();
     final notesController = TextEditingController();
-    
-    // قراءة البيانات من الـ state مباشرة (متزامنة وبدون Future)
+
     final cashSales = state.shiftCashSales;
     final expectedCash = shift.openingCash + cashSales;
 
@@ -439,4 +436,3 @@ class _DesktopLayoutState extends State<DesktopLayout> {
     );
   }
 }
-

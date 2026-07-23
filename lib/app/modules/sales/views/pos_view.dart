@@ -5,9 +5,9 @@ import '../../../core/injection.dart';
 import '../bloc/pos_bloc.dart';
 import '../bloc/catalog_cubit.dart';
 import '../bloc/cart_cubit.dart';
-import 'sections_pos/pos_nav_drawer.dart';
-import 'sections_pos/desktop_layout/desktop_layout.dart';
-import 'sections_pos/mobile_layout/mobile_layout.dart';
+import 'pos_nav_drawer.dart';
+import 'desktop_pos/layout.dart';
+import 'mobile_pos/layout.dart';
 import 'open_shift_view.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
 

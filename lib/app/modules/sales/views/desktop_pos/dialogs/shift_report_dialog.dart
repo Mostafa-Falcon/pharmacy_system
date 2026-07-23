@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:collection/collection.dart';
@@ -51,7 +51,7 @@ class ShiftReportDialog {
                 netSales: data.netSales,
                 salesCount: data.salesCount,
                 expectedCash: data.expectedCashInDrawer,
-                actualCash: data.expectedCashInDrawer, // In view mode, we use expected as default
+                actualCash: data.expectedCashInDrawer,
                 difference: 0,
               );
             },
@@ -446,4 +446,3 @@ class _ShiftData {
     required this.customerPayments, required this.soldItems, required this.totalQuantity,
   });
 }
-

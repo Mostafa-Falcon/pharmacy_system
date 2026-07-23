@@ -8,8 +8,8 @@ import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
 import 'package:pharmacy_system/app/modules/sales/bloc/pos_bloc.dart';
 import 'package:pharmacy_system/app/modules/sales/widgets/pos_catalog_panel.dart';
 import '../pos_nav_drawer.dart';
-import 'mobile_app_bar.dart';
-import 'mobile_cart_tab.dart';
+import 'app_bar.dart';
+import 'cart_tab.dart';
 
 class MobileLayout extends StatelessWidget {
   const MobileLayout({super.key});

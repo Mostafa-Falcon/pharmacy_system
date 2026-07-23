@@ -3,9 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import '../../../../../core/constants/app_strings.dart';
-import '../../../bloc/pos_bloc.dart';
-import 'desktop_dialogs.dart';
+import '../../../../core/constants/app_strings.dart';
+import '../../bloc/pos_bloc.dart';
+import 'dialogs.dart';
 
 class DesktopTotalsBar extends StatefulWidget {
   final PosBloc controller;

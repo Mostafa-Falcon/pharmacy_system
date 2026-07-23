@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import '../../../../routes/app_routes.dart';
+import '../../../routes/app_routes.dart';
 
 class PosNavDrawer extends StatelessWidget {
   const PosNavDrawer({super.key});

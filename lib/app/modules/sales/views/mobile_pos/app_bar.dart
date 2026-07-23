@@ -1,11 +1,11 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import '../../../../../core/constants/app_strings.dart';
-import '../../../../../core/utils/format_utils.dart';
-import '../../../bloc/pos_bloc.dart';
+import '../../../../core/constants/app_strings.dart';
+import '../../../../core/utils/format_utils.dart';
+import '../../bloc/pos_bloc.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
 import 'package:pharmacy_system/app/modules/sales/models/cashier_shift_model.dart';
 
@@ -254,7 +254,3 @@ class MobileAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 }
-
-
-
-

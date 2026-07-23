@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import '../../../bloc/pos_bloc.dart';
+import '../../bloc/pos_bloc.dart';
 
 class DesktopBottomActions extends StatelessWidget {
   final PosBloc controller;

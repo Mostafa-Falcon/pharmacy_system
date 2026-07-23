@@ -5,11 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
 
-import '../../../../../../app/core/constants/app_strings.dart';
+import '../../../../core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
 import 'package:pharmacy_system/app/modules/sales/bloc/pos_bloc.dart';
-import '../../../models/pos_focus_nodes.dart';
-import 'desktop_dialogs.dart';
+import '../../models/pos_focus_nodes.dart';
+import 'dialogs.dart';
 
 class DesktopCartTable extends StatefulWidget {
   final PosBloc controller;
@@ -28,7 +28,6 @@ class _DesktopCartTableState extends State<DesktopCartTable> {
       nodes.quantityController.text = '$initialQuantity';
       _focusNodes[medicineId] = nodes;
     } else {
-      // Sync quantity if changed outside TextField
       final nodes = _focusNodes[medicineId]!;
       if (!nodes.quantityNode.hasFocus && nodes.quantityController.text != '$initialQuantity') {
         nodes.quantityController.text = '$initialQuantity';
@@ -453,4 +452,3 @@ class _DesktopCartTableState extends State<DesktopCartTable> {
     );
   }
 }
-

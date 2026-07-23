@@ -4,11 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
 
-import '../../../../../core/constants/app_strings.dart';
+import '../../../../core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/core/presentation/design_system/design_system.dart';
-import '../../../../../routes/app_routes.dart';
-import '../../../bloc/pos_bloc.dart';
-import 'desktop_dialogs.dart';
+import '../../../../routes/app_routes.dart';
+import '../../bloc/pos_bloc.dart';
+import 'dialogs.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
 
 class DesktopToolbar extends StatelessWidget {
