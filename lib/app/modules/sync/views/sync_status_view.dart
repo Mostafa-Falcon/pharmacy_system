@@ -798,9 +798,21 @@ class _PendingItemTile extends StatelessWidget {
           fontSize: 11.sp,
         ),
       ),
-      subtitle: Text(
-        'معرف: ${item.recordId.length > 8 ? item.recordId.substring(0, 8) : item.recordId}...',
-        style: TextStyle(fontSize: 9.sp, color: AppColors.textSecondaryOf(context)),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'معرف: ${item.recordId.length > 8 ? item.recordId.substring(0, 8) : item.recordId}...',
+            style: TextStyle(fontSize: 9.sp, color: AppColors.textSecondaryOf(context)),
+          ),
+          if (item.lastError != null)
+            Text(
+              'الخطأ: ${item.lastError}',
+              style: TextStyle(fontSize: 8.sp, color: AppColors.error, fontWeight: FontWeight.w500),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+        ],
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,

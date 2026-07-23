@@ -28,8 +28,16 @@ class SyncPushService {
           jsonDecode(item.data) as Map,
         );
         
-        // قائمة بالجداول التي لا تحتوي على عمود branch_id
-        const globalTables = {'branches', 'users', 'permissions', 'customer_groups', 'app_settings'};
+        // قائمة بالجداول التي لا تحتوي على عمود branch_id (جداول عامة أو فرعية تابعة لصنف)
+        const globalTables = {
+          'branches', 
+          'users', 
+          'permissions', 
+          'customer_groups', 
+          'app_settings',
+          'item_batches',
+          'medicine_units'
+        };
 
         // ضمان وجود branch_id في الـ payload للامتثال لسياسات RLS
         // فقط للجداول غير العالمية
@@ -56,11 +64,12 @@ class SyncPushService {
           }
           onItemProcessed?.call(item.targetTable, false, false);
         }
-      } catch (e, s) {
-        safeDebugPrint('SyncPushService: Error pushing item ${item.id}: $e\n$s');
+      } catch (e) {
+        final errorMsg = e is PostgrestException ? '${e.message} (Code: ${e.code})' : e.toString();
+        safeDebugPrint('SyncPushService: Error pushing item ${item.id} to table ${item.targetTable}: $errorMsg');
         
         // تسجيل الخطأ في قاعدة البيانات
-        await _syncDao.markFailed(item.id, e.toString());
+        await _syncDao.markFailed(item.id, errorMsg);
 
         final data = Map<String, dynamic>.from(
           jsonDecode(item.data) as Map,
@@ -82,6 +91,13 @@ class SyncPushService {
     return successCount;
   }
 
+  /// قائمة بالجداول التي تدعم sync_version لفحص التضارب
+  static const _versionedTables = {
+    'branches', 'users', 'permissions', 'customers', 'suppliers',
+    'supplier_customers', 'medicines', 'sales', 'purchases', 'inventory',
+    'cashier_shifts', 'quotes', 'stock_transfers',
+  };
+
   Future<bool> _pushSingleItem({
     required String operation,
     required String table,
@@ -90,18 +106,58 @@ class SyncPushService {
   }) async {
     final payload = Map<String, dynamic>.from(data);
 
-    switch (operation) {
-      case 'create':
-      case 'update':
-        await _supabase.from(table).upsert(payload);
-        return true;
-      case 'delete':
-        final idVal = payload['id'] ?? recordId;
-        await _supabase.from(table).delete().eq('id', idVal);
-        return true;
-      default:
-        safeDebugPrint('SyncPushService: Unknown operation type "$operation"');
-        return false;
+    try {
+      switch (operation) {
+        case 'update':
+          // درع التضارب: قبل الرفع، نتأكد إن النسخة المحلية أحدث من الـ server
+          if (_versionedTables.contains(table) && payload.containsKey('sync_version')) {
+            final localVersion = (payload['sync_version'] as num?)?.toInt() ?? 0;
+            final serverVersion = await _getServerVersion(table, recordId);
+            if (serverVersion > localVersion) {
+              safeDebugPrint(
+                'SyncPushService: Conflict shield — skipping $table/$recordId '
+                '(server v$serverVersion > local v$localVersion)',
+              );
+              return false;
+            }
+          }
+          await _supabase.from(table).upsert(payload);
+          return true;
+        case 'create':
+          await _supabase.from(table).upsert(payload);
+          return true;
+        case 'delete':
+          final idVal = payload['id'] ?? recordId;
+          await _supabase.from(table).delete().eq('id', idVal);
+          return true;
+        default:
+          safeDebugPrint('SyncPushService: Unknown operation type "$operation"');
+          return false;
+      }
+    } on PostgrestException catch (e) {
+      safeDebugPrint('SyncPushService: Supabase Error for table "$table" ($operation): ${e.message} (Code: ${e.code})');
+      // إعادة رمي الخطأ ليتم معالجته في processPushQueue وتسجيله في الـ Outbox
+      rethrow;
+    } catch (e) {
+      safeDebugPrint('SyncPushService: Unexpected Error for table "$table": $e');
+      rethrow;
+    }
+  }
+
+  /// استعلام sync_version من الـ server لفحص التضارب
+  Future<int> _getServerVersion(String table, String recordId) async {
+    try {
+      final response = await _supabase
+          .from(table)
+          .select('sync_version')
+          .eq('id', recordId)
+          .maybeSingle()
+          .timeout(const Duration(seconds: 5));
+      if (response == null) return 0;
+      return (response['sync_version'] as num?)?.toInt() ?? 0;
+    } catch (e) {
+      safeDebugPrint('SyncPushService: Version check failed for $table/$recordId: $e');
+      return 0; // لو فشل الاستعلام، نكمل الرفع عادي
     }
   }
 }

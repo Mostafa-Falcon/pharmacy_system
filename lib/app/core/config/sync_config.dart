@@ -18,4 +18,10 @@ class SyncConfig {
 
   /// تأخير السحب بين الجداول لتخفيف ضغط الشبكة (ميلي ثانية)
   static const int pullTableDelayMs = 120;
+
+  /// مهلة الإرسال (Push Timeout) — 30 ثانية
+  static const Duration pushTimeout = Duration(seconds: 30);
+
+  /// مهلة السحب (Pull Timeout) — 60 ثانية
+  static const Duration pullTimeout = Duration(seconds: 60);
 }

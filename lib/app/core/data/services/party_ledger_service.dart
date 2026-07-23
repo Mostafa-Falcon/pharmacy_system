@@ -1,10 +1,13 @@
-﻿import 'package:pharmacy_system/app/core/utils/app_utils.dart';
+﻿import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
+import 'package:pharmacy_system/app/core/utils/app_utils.dart';
 import 'package:pharmacy_system/app/core/data/services/customer/customer_ledger_service.dart';
 import 'package:pharmacy_system/app/core/data/services/ledger_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_ledger_service.dart';
 import 'package:pharmacy_system/app/modules/contacts/models/supplier_ledger_model.dart';
 
 class PartyLedgerService {
+  static String get _currentBranchId => AuthService.currentBranchId ?? '';
+
   static Future<void> recordSaleInvoice({
     required String partyId,
     required String saleId,
@@ -15,7 +18,7 @@ class PartyLedgerService {
     try {
       await CustomerLedgerService.recordSaleInvoice(
         customerId: partyId,
-        branchId: '',
+        branchId: _currentBranchId,
         saleId: saleId,
         invoiceNumber: invoiceNumber,
         dueAmount: dueAmount,
@@ -37,13 +40,13 @@ class PartyLedgerService {
     try {
       if (refundAmount <= 0) return;
 
-      final currentBalance = await LedgerService.getSupplierBalance(partyId, '');
+      final currentBalance = await LedgerService.getSupplierBalance(partyId, _currentBranchId);
       final newBalance = (currentBalance - refundAmount).clamp(0.0, double.infinity);
 
       final entry = SupplierLedgerModel(
         id: 'sale_return_${DateTime.now().millisecondsSinceEpoch}',
         supplierId: partyId,
-        branchId: '',
+        branchId: _currentBranchId,
         type: SupplierLedgerEntryType.purchaseVoid,
         debit: 0,
         credit: refundAmount,
@@ -72,7 +75,7 @@ class PartyLedgerService {
     try {
       await SupplierLedgerService.recordPurchaseInvoice(
         supplierId: partyId,
-        branchId: '',
+        branchId: _currentBranchId,
         purchaseId: purchaseId,
         invoiceNumber: invoiceNumber,
         dueAmount: dueAmount,
@@ -94,13 +97,13 @@ class PartyLedgerService {
     try {
       if (refundAmount <= 0) return;
 
-      final currentBalance = await LedgerService.getSupplierBalance(partyId, '');
+      final currentBalance = await LedgerService.getSupplierBalance(partyId, _currentBranchId);
       final newBalance = (currentBalance - refundAmount).clamp(0.0, double.infinity);
 
       final entry = SupplierLedgerModel(
         id: 'purchase_return_${DateTime.now().millisecondsSinceEpoch}',
         supplierId: partyId,
-        branchId: '',
+        branchId: _currentBranchId,
         type: SupplierLedgerEntryType.purchaseVoid,
         debit: 0,
         credit: refundAmount,
@@ -129,7 +132,7 @@ class PartyLedgerService {
     try {
       await CustomerLedgerService.recordCustomerPayment(
         customerId: partyId,
-        branchId: '',
+        branchId: _currentBranchId,
         amount: amount,
         createdBy: createdBy,
         notes: notes,
@@ -151,7 +154,7 @@ class PartyLedgerService {
     try {
       await SupplierLedgerService.recordSupplierPayment(
         supplierId: partyId,
-        branchId: '',
+        branchId: _currentBranchId,
         amount: amount,
         createdBy: createdBy,
         notes: notes,
@@ -175,7 +178,7 @@ class PartyLedgerService {
       if (ledgerTarget == 'supplier') {
         await SupplierLedgerService.recordAdditionNotice(
           supplierId: partyId,
-          branchId: '',
+          branchId: _currentBranchId,
           amount: amount,
           createdBy: createdBy,
           notes: notes,
@@ -184,7 +187,7 @@ class PartyLedgerService {
       } else {
         await CustomerLedgerService.recordAdditionNotice(
           customerId: partyId,
-          branchId: '',
+          branchId: _currentBranchId,
           amount: amount,
           createdBy: createdBy,
           notes: notes,
@@ -209,7 +212,7 @@ class PartyLedgerService {
       if (ledgerTarget == 'supplier') {
         await SupplierLedgerService.recordDiscountNotice(
           supplierId: partyId,
-          branchId: '',
+          branchId: _currentBranchId,
           amount: amount,
           createdBy: createdBy,
           notes: notes,
@@ -218,7 +221,7 @@ class PartyLedgerService {
       } else {
         await CustomerLedgerService.recordDiscountNotice(
           customerId: partyId,
-          branchId: '',
+          branchId: _currentBranchId,
           amount: amount,
           createdBy: createdBy,
           notes: notes,
@@ -244,7 +247,7 @@ class PartyLedgerService {
     try {
       await CustomerLedgerService.recordCheckReceipt(
         customerId: partyId,
-        branchId: '',
+        branchId: _currentBranchId,
         amount: amount,
         createdBy: createdBy,
         checkNumber: checkNumber,
@@ -272,7 +275,7 @@ class PartyLedgerService {
     try {
       await SupplierLedgerService.recordCheckPayment(
         supplierId: partyId,
-        branchId: '',
+        branchId: _currentBranchId,
         amount: amount,
         createdBy: createdBy,
         checkNumber: checkNumber,
@@ -291,7 +294,7 @@ class PartyLedgerService {
     String partyId,
   ) async {
     try {
-      return LedgerService.getCombinedLedger(partyId);
+      return LedgerService.getCombinedLedger(partyId, branchId: _currentBranchId);
     } catch (e, s) {
       safeDebugPrint('PartyLedgerService.getCombinedLedger failed: $e\n$s');
       return [];
@@ -309,7 +312,7 @@ class PartyLedgerService {
       if (direction == 'debit') {
         await CustomerLedgerService.recordOpeningBalanceDirect(
           customerId: partyId,
-          branchId: '',
+          branchId: _currentBranchId,
           amount: amount,
           createdBy: createdBy,
           notes: notes,
@@ -317,7 +320,7 @@ class PartyLedgerService {
       } else {
         await SupplierLedgerService.recordOpeningBalanceDirect(
           supplierId: partyId,
-          branchId: '',
+          branchId: _currentBranchId,
           amount: amount,
           createdBy: createdBy,
           notes: notes,
@@ -331,7 +334,7 @@ class PartyLedgerService {
 
   static Future<double> getCombinedBalance(String partyId) async {
     try {
-      return LedgerService.getCombinedBalance(partyId);
+      return LedgerService.getCombinedBalance(partyId, branchId: _currentBranchId);
     } catch (e, s) {
       safeDebugPrint('PartyLedgerService.getCombinedBalance failed: $e\n$s');
       return 0.0;
@@ -342,7 +345,7 @@ class PartyLedgerService {
     String partyId,
   ) async {
     try {
-      return LedgerService.getTransactionSummary(partyId);
+      return LedgerService.getTransactionSummary(partyId, branchId: _currentBranchId);
     } catch (e, s) {
       safeDebugPrint('PartyLedgerService.getTransactionSummary failed: $e\n$s');
       return {};

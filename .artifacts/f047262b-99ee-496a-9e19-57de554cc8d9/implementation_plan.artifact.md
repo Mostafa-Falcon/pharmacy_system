@@ -1,42 +1,37 @@
-# Implementation Plan - Unified Table Design (Contacts & Suppliers)
+# Implementation Plan - Fix Synchronization Issues
 
-Unify the design of Suppliers, Customers, and Supplier/Customer tables to match the premium "Medicines" table design. This includes creating reusable table components for consistent UI across the application.
+Resolve the failure in "Supplier/Customer" and "Customer Ledger" synchronization by fixing critical bugs in the branch ID propagation and improving the robustness of the Sync Engine.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Design Shift**: I will use the "Icon Box" design (rounded square containers) for avatars instead of simple circles, matching the Medicines table's aesthetic.
+> **Branch ID Fix**: I found a critical bug where financial movements (ledgers) were being recorded without a branch ID. This caused the cloud database (Supabase) to reject them due to security policies (RLS).
 
-> [!TIP]
-> **Reusable Components**: I will extract these patterns into a new `shared_table_cells.dart` file in the `@tables` directory so they can be easily reused in any future module.
+> [!WARNING]
+> **Schema Check**: If "Supplier/Customer" still fails after this fix, it might indicate that the table is missing in the cloud backend. I will add detailed error logging to help identify if this is the case.
 
 ## Proposed Changes
 
-### [Component] Core Presentation (Tables)
+### [Component] Core Services (Sync)
 
-#### [NEW] [shared_table_cells.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart)
-- `TableIconBox`: The rounded square icon container with background.
-- `TableContactNameCell`: The row identity cell (Icon + Name + Subtitle).
-- `TableMoneyCell`: Styled currency display (e.g., for balances).
-- `TableOptionsButton`: Standardized row action button.
+#### [MODIFY] [sync_push_service.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/data/services/sync/sync_push_service.dart)
+- Update `globalTables` set to include `medicine_units` and `item_batches`. This prevents the sync engine from incorrectly injecting a `branch_id` into tables that don't have that column.
+- Improve error reporting in the `catch` block to provide clearer diagnostic information.
 
-### [Component] Contacts Module (Views)
+### [Component] Core Data (Ledgers)
 
-#### [MODIFY] [suppliers_list_view.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/contacts/suppliers/views/suppliers_list_view.dart)
-- Update columns to use `TableContactNameCell` and `TableMoneyCell`.
-- Update `rowActions` to use the standardized button.
-- Ensure consistent spacing and layout.
+#### [MODIFY] [party_ledger_service.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/data/services/party_ledger_service.dart)
+- **CRITICAL FIX**: Update all method calls (`recordSaleInvoice`, `recordCashReceipt`, `recordOpeningBalance`, etc.) to pass `AuthService.currentBranchId ?? ''` instead of hardcoded empty strings `''`.
+- This ensures that every financial movement is correctly tagged with the branch it belongs to, allowing the cloud to accept the data.
 
-#### [MODIFY] [customers_list_view.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/contacts/customers/views/customers_list_view.dart)
-- Update columns to match the new design.
-- Switch to `StandardModuleLayout` if not already using it.
+### [Component] Contacts Module (Services)
 
-#### [MODIFY] [supplier_customers_list_view.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/contacts/supplier_customers/views/supplier_customers_list_view.dart)
-- Refactor to use the new shared components for 100% parity with other tables.
+#### [MODIFY] [supplier_customer_service.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/contacts/supplier_customers/services/supplier_customer_service.dart)
+- Ensure `branchId` is explicitly set and verified before queuing sync operations for new contacts. (Currently looks okay but will double-check during execution).
 
 ## Verification Plan
 
 ### Manual Verification
-1. **Visual Consistency Check**: Open Medicines, Suppliers, and Customers pages and verify they look like they belong to the same "Premium" suite.
-2. **Responsive Check**: Verify that columns still resize correctly on different screen widths.
-3. **Action Test**: Ensure all row actions (Ledger, Edit, Delete) still trigger the correct Bloc events and dialogs.
+1. **Ledger Sync Test**: Create a new customer/supplier with an opening balance. Verify that both the contact AND the ledger entry appear in the sync status queue.
+2. **Push Test**: Click "Full Sync" and verify that "Customer Ledgers" (دفاتر العملاء) no longer show a red "X" and finish successfully.
+3. **Audit**: Monitor the "Last Sync Error" in the sync dashboard for any remaining "404" or "403" errors.

@@ -36,6 +36,8 @@ class SyncEngine {
       StreamController<(String, String)>.broadcast();
 
   bool isOnline = true;
+  bool _isPushing = false;
+  bool _isPulling = false;
   bool _isSyncing = false;
   int _pendingCount = 0;
   DateTime? _lastSyncTime;
@@ -49,7 +51,7 @@ class SyncEngine {
   /// Legacy Callback (maintained for compatibility, but prefer tableUpdateStream)
   void Function(String table, String branchId)? onTableUpdated;
 
-  bool get isSyncing => _isSyncing;
+  bool get isSyncing => _isPushing || _isPulling || _isSyncing;
   int get pendingOperationsCount => _pendingCount;
   DateTime? get lastSyncTime => _lastSyncTime;
   String? get lastSyncError => _lastSyncError;
@@ -98,7 +100,7 @@ class SyncEngine {
   void _startPeriodicSync() {
     _periodicTimer?.cancel();
     _periodicTimer = Timer.periodic(SyncConfig.periodicInterval, (_) {
-      if (isOnline && !_isSyncing) {
+      if (isOnline && !_isPulling) {
         pullAllTables();
       }
     });
@@ -120,7 +122,7 @@ class SyncEngine {
     _statusController.add(
       SyncStatus(
         isOnline: isOnline,
-        isSyncing: _isSyncing,
+        isSyncing: isSyncing,
         lastSyncTime: _lastSyncTime,
         lastSyncError: _lastSyncError,
       ),
@@ -159,10 +161,10 @@ class SyncEngine {
   }
 
   void _triggerAutoPush() {
-    if (!isOnline || _isSyncing) return;
+    if (!isOnline || _isPushing || _isPulling) return;
     _pushDebouncer?.cancel();
     _pushDebouncer = Timer(const Duration(seconds: 3), () {
-      if (isOnline && !_isSyncing) {
+      if (isOnline && !_isPushing && !_isPulling) {
         syncAll();
       }
     });
@@ -185,8 +187,8 @@ class SyncEngine {
 
   /// إرسال التغيرات المحلية المعلقة فقط إلى السحابة مع التجميع والضغط أولاً.
   Future<void> pushOnly() async {
-    if (_isSyncing || !isOnline) return;
-    _isSyncing = true;
+    if (_isPushing || !isOnline) return;
+    _isPushing = true;
     _lastSyncError = null;
     _emitStatus();
     try {
@@ -212,7 +214,7 @@ class SyncEngine {
       _lastSyncError = e.toString();
       safeDebugPrint('SyncEngine: Push operation failed: $e\n$s');
     } finally {
-      _isSyncing = false;
+      _isPushing = false;
       await updatePendingCount();
       _emitStatus();
     }
@@ -228,7 +230,7 @@ class SyncEngine {
       return;
     }
 
-    _isSyncing = true;
+    _isPulling = true;
     _lastSyncError = null;
     _emitStatus();
 
@@ -268,16 +270,53 @@ class SyncEngine {
       _lastSyncError = e.toString();
       safeDebugPrint('SyncEngine: pullOnly failed: $e\n$s');
     } finally {
-      _isSyncing = false;
+      _isPulling = false;
       _emitStatus();
     }
   }
 
-  /// مزامنة كاملة ذكية ومزدوجة الاتجاه (تجميع ← إرسال ← سحب الفروقات)
+  /// مزامنة كاملة ذكية ثنائية الاتجاه بالتوازي:
+  /// الإرسال والسحب شغالين مع بعض بدون dependency.
+  /// كل عملية ليها timeout خاص عشان مفيش حاجة تعلق.
   Future<void> syncAll() async {
-    if (!isOnline) return;
-    await pushOnly();
-    await pullOnly();
+    if (!isOnline || _isSyncing) return;
+    _isSyncing = true;
+    _lastSyncError = null;
+    _emitStatus();
+
+    try {
+      await Future.wait([
+        _pushWithTimeout(),
+        _pullWithTimeout(),
+      ]);
+      _lastSyncTime = DateTime.now();
+      safeDebugPrint('SyncEngine: Full sync cycle completed successfully.');
+    } catch (e) {
+      _lastSyncError = e.toString();
+      safeDebugPrint('SyncEngine: Full sync cycle failed: $e');
+    } finally {
+      _isSyncing = false;
+      await updatePendingCount();
+      _emitStatus();
+    }
+  }
+
+  Future<void> _pushWithTimeout() async {
+    try {
+      await pushOnly().timeout(SyncConfig.pushTimeout);
+    } on TimeoutException catch (e) {
+      safeDebugPrint('SyncEngine: Push timed out after ${SyncConfig.pushTimeout}');
+      _lastSyncError = 'Push timed out: $e';
+    }
+  }
+
+  Future<void> _pullWithTimeout() async {
+    try {
+      await pullOnly().timeout(SyncConfig.pullTimeout);
+    } on TimeoutException catch (e) {
+      safeDebugPrint('SyncEngine: Pull timed out after ${SyncConfig.pullTimeout}');
+      _lastSyncError ??= 'Pull timed out: $e';
+    }
   }
 
   /// الاسم المعرف الجديد للمزامنة الشاملة الذكية

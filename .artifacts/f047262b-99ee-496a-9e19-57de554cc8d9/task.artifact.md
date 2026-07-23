@@ -1,11 +1,11 @@
-- [x] **Infrastructure: Reusable Table Cells**
-    - [x] Create `shared_table_cells.dart` with `TableIconBox`, `TableContactNameCell`, etc.
-- [x] **Suppliers Redesign**
-    - [x] Update `SuppliersListView` columns and actions
-- [x] **Customers Redesign**
-    - [x] Update `CustomersListView` columns and actions
-- [x] **Supplier/Customers Redesign**
-    - [x] Update `SupplierCustomersListView` to use shared components
+- [x] **Core Sync Engine Improvements**
+    - [x] Update `SyncPushService` global tables to include `medicine_units` and `item_batches`
+    - [x] Add detailed error diagnostics in `SyncPushService`
+- [x] **Financial Ledger Fixes**
+    - [x] Correct `branchId` propagation in `PartyLedgerService` for all financial operations
+    - [x] Verify `SupplierCustomerService` branch identity
+- [x] **UI Diagnostics**
+    - [x] Display sync errors directly in the pending operations queue for easier troubleshooting
 - [ ] **Verification**
-    - [ ] Visual audit of all redesigned tables
-    - [ ] Functional test of row actions
+    - [ ] Check sync status for "Customer Ledgers" after fix
+    - [ ] Audit sync error logs for "Supplier/Customer"

@@ -11,6 +11,7 @@ import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
 import '../../../../../app/core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
 import '../../../../core/extensions/string_ext.dart';
+import '../../../../core/presentation/widgets/reusables/tables/shared_table_cells.dart';
 import '../../../../routes/app_routes.dart';
 import '../bloc/customers_bloc.dart';
 import '../bloc/customers_state.dart';

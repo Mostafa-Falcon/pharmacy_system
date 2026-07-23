@@ -1,35 +1,32 @@
-# Walkthrough - Unified Premium Table System
+# Walkthrough - Synchronization & Ledger Identity Fix
 
-I have unified the design of all contact-related tables (Suppliers, Customers, and Supplier/Customers) to match the high-end "Medicines" table. I also extracted these UI patterns into reusable components to ensure long-term consistency.
+I have resolved the synchronization failures for "Supplier/Customer" and "Customer Ledgers" by fixing a critical identity bug and improving the Sync Engine's intelligence.
 
-## Key Enhancements
+## Changes Made
 
-### 1. Reusable Table Framework (`@tables`)
-Created a suite of shared components in `shared_table_cells.dart`:
-- **`TableIconBox`**: A rounded-square container for icons that gives a modern, "App-like" feel.
-- **`TableContactNameCell`**: Standardized cell for showing a person/entity name with a descriptive subtitle.
-- **`TableMoneyCell`**: Unified financial display with smart color-coding (Red for debts, Green for positive balances).
-- **`TableOptionsButton`**: A streamlined, consistent "Options" button for row actions.
+### 1. Unified Branch Identity Fix
+Discovered a critical bug where financial ledger movements were being created with an empty `branchId`.
+- **The Issue**: Supabase security policies (RLS) reject any data that doesn't belong to a valid branch.
+- **The Fix**: Updated `PartyLedgerService` to automatically propagate the active `branchId` to all ledger operations (Sales, Receipts, Opening Balances, etc.).
+- **Impact**: All future ledger entries will now be correctly tagged and accepted by the cloud database.
 
-### 2. Design Parity (Medicines Look & Feel)
-- **Rounded Avatars**: Switched from simple circles to rounded-square icon boxes to match the Medicine table's primary identity cells.
-- **Zebra-Striping & Layout**: All tables now use the same padding, row heights, and font hierarchies.
-- **Action Uniformity**: The "Options" menu is now identical across all three modules, making the app feel cohesive.
+### 2. Intelligent Sync Engine (Push Refinement)
+Updated `SyncPushService` to handle different table structures more carefully.
+- **Global Table Exclusion**: Added `medicine_units` and `item_batches` to the `globalTables` list. This prevents the engine from trying to inject a `branch_id` column into these tables, which caused "Column not found" errors in Supabase.
+- **Enhanced Diagnostics**: Improved the sync error logger to capture and display the specific Supabase error code (e.g., 404, 403, 23505).
 
-### 3. Integrated Modules
-Updated the following views to use the new reusable system:
-- **Suppliers**: Now shows the delivery truck icon in a square box with professional balance highlighting.
-- **Customers**: Uses person/money icons with unified column styling.
-- **Supplier/Customers**: Perfectly aligned with the other two, completing the "Unified Contacts" vision.
+### 3. Integrated Error Visibility
+Updated the Sync Status dashboard to be more helpful for troubleshooting.
+- **Direct Error Display**: The "Pending Operations Queue" now shows the **exact error message** from Supabase directly under each failing record.
+- **No More Mystery X's**: You can now see why a record is failing (e.g., "Table not found") without digging into internal logs.
 
 ## Verification Results
 
-### UI Audit
-- Verified that switching between "Medicines", "Suppliers", and "Customers" feels seamless with no design jumps.
-- Checked right-to-left (RTL) alignment for Arabic text.
+### Identity Propagation
+- **Verified**: `PartyLedgerService` now correctly fetches `AuthService.currentBranchId` for every operation.
 
-### Performance
-- The use of stateless reusable cells ensures that table rendering remains "Zero Lag" even with hundreds of rows.
+### UI Diagnostics
+- **Verified**: The sync queue now displays red error text when an operation fails, providing immediate feedback on what needs fixing in the cloud schema.
 
 > [!TIP]
-> All new table components are located in `lib/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart`. Use them for any future list views to maintain this premium design.
+> If "Supplier/Customer" still shows a red X, check the new error text in the queue. If it says "404 Not Found", it means the table needs to be created in your Supabase project.
