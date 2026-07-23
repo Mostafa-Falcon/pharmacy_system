@@ -29,6 +29,47 @@ class MedicineModel {
   List<MedicineUnitModel> units;
   bool alertEnabled;
   bool dosageFormEnabled;
+
+  String get formattedQuantity {
+    if (units.isEmpty) return '$quantity';
+    
+    // ترتيب الوحدات من الأكبر للأصغر بناءً على معامل التحويل
+    final sortedUnits = List<MedicineUnitModel>.from(units)
+      ..sort((a, b) => b.conversionFactor.compareTo(a.conversionFactor));
+    
+    int remaining = quantity;
+    List<String> parts = [];
+    
+    for (var unit in sortedUnits) {
+      if (unit.conversionFactor <= 0) continue;
+      
+      int unitQty = remaining ~/ unit.conversionFactor;
+      if (unitQty > 0) {
+        parts.add('$unitQty ${unit.name}');
+        remaining = remaining % unit.conversionFactor.toInt();
+      }
+      
+      // لو وصلنا لآخر وحدة ومعانا باقي، نضيفه
+      if (unit == sortedUnits.last && remaining > 0 && !parts.any((p) => p.contains(unit.name))) {
+        // هذه الحالة غالباً لن تحدث إذا كانت آخر وحدة معاملها 1
+        parts.add('$remaining ${unit.name}');
+      }
+    }
+    
+    if (parts.isEmpty) {
+      return '0 ${sortedUnits.last.name}';
+    }
+    
+    return parts.join(' + ');
+  }
+
+  String get baseUnitName {
+    if (units.isEmpty) return '';
+    final sortedUnits = List<MedicineUnitModel>.from(units)
+      ..sort((a, b) => a.conversionFactor.compareTo(b.conversionFactor));
+    return sortedUnits.first.name;
+  }
+
   String? imageUrl;
   String? containerShape;
   bool allowNegativeStock;

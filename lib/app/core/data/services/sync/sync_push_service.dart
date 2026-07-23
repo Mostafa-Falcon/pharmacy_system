@@ -36,7 +36,8 @@ class SyncPushService {
           'customer_groups', 
           'app_settings',
           'item_batches',
-          'medicine_units'
+          'medicine_units',
+          'variants'
         };
 
         // ضمان وجود branch_id في الـ payload للامتثال لسياسات RLS

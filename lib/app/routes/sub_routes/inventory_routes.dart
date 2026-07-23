@@ -64,7 +64,7 @@ final List<RouteBase> inventoryRoutes = [
     pageBuilder: (context, state) {
       final id = state.pathParameters['id'];
       final medicine = id != null ? BranchDataService.getMedicine(id) : null;
-      return fadePage(state, EditMedicineView(medicine: medicine));
+      return fadePage(state, EditMedicineView(medicine: medicine, medicineId: id));
     },
   ),
   GoRoute(

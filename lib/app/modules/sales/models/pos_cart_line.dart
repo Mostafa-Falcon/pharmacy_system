@@ -6,6 +6,7 @@ class PosCartLine {
   final double unitPrice;
   final double discountPercent;
   final String? unitName;
+  final double conversionFactor;
 
   PosCartLine({
     required this.medicine,
@@ -13,9 +14,12 @@ class PosCartLine {
     double? unitPrice,
     this.discountPercent = 0,
     this.unitName,
+    this.conversionFactor = 1.0,
   }) : unitPrice = unitPrice ?? medicine.sellPrice;
 
   double get lineGross => unitPrice * quantity;
+
+  int get totalPieces => (quantity * conversionFactor).toInt();
 
   double get discountAmount =>
       double.parse((lineGross * discountPercent / 100).toStringAsFixed(2));
@@ -37,6 +41,7 @@ class PosCartLine {
     double? unitPrice,
     double? discountPercent,
     String? unitName,
+    double? conversionFactor,
   }) {
     return PosCartLine(
       medicine: medicine ?? this.medicine,
@@ -44,6 +49,7 @@ class PosCartLine {
       unitPrice: unitPrice ?? this.unitPrice,
       discountPercent: discountPercent ?? this.discountPercent,
       unitName: unitName ?? this.unitName,
+      conversionFactor: conversionFactor ?? this.conversionFactor,
     );
   }
 
@@ -54,6 +60,7 @@ class PosCartLine {
     'unit_price': unitPrice,
     'discount_percent': discountPercent,
     'unit_name': unitName,
+    'conversion_factor': conversionFactor,
   };
 }
 

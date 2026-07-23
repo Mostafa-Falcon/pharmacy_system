@@ -8,9 +8,12 @@ import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
 import 'package:pharmacy_system/app/routes/app_routes.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart';
 import 'package:pharmacy_system/app/core/utils/format_utils.dart';
-import 'package:pharmacy_system/app/modules/sales/bloc/sales_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:pharmacy_system/app/modules/sales/models/sale_model.dart';
+import 'package:pharmacy_system/app/modules/sales/bloc/sales_bloc.dart';
+import 'package:pharmacy_system/app/core/extensions/string_ext.dart';
 
 class SalesListView extends StatefulWidget {
   const SalesListView({super.key});
@@ -266,8 +269,6 @@ class _SalesListViewState extends State<SalesListView> {
 
 
   Widget _buildSalesList(BuildContext context, SalesState state) {
-    final scheme = Theme.of(context).colorScheme;
-
     if (state.isLoading && state.sales.isEmpty) return const LoadingIndicator();
 
     // Apply UI dropdown filters
@@ -293,23 +294,9 @@ class _SalesListViewState extends State<SalesListView> {
     }
 
     final totalAmount = items.fold(0.0, (sum, s) => sum + s.finalAmount);
-    final totalPaid = items.fold(0.0, (sum, s) => sum + (s.paidAmount ?? s.finalAmount));
     final totalDue = items.fold(0.0, (sum, s) => sum + s.dueAmount);
 
     final columns = [
-      ReusableTableColumn<SaleModel>(
-        id: 'actions',
-        title: AppStrings.options,
-        width: 100.w,
-        cellBuilder: (s) => _buildRowActions(context, s),
-      ),
-      ReusableTableColumn<SaleModel>(
-        id: 'date',
-        title: AppStrings.date,
-        width: 150.w,
-        isSortable: true,
-        textBuilder: (s) => formatDateTime(s.createdAt),
-      ),
       ReusableTableColumn<SaleModel>(
         id: 'id',
         title: AppStrings.invoiceNumberLabel,
@@ -322,13 +309,12 @@ class _SalesListViewState extends State<SalesListView> {
         title: AppStrings.customerNameLabel,
         flex: 2,
         isSortable: true,
-        textBuilder: (s) => s.customerName ?? AppStrings.cashCustomer,
-      ),
-      ReusableTableColumn<SaleModel>(
-        id: 'contact',
-        title: AppStrings.contactNumber,
-        width: 120.w,
-        textBuilder: (s) => '—',
+        cellBuilder: (s) => TableContactNameCell(
+          name: s.customerName ?? AppStrings.cashCustomer,
+          subtitle: s.notes?.nullIfEmpty ?? 'لا توجد ملاحظات',
+          icon: s.paymentMethod == 'credit' ? Icons.person_rounded : Icons.money_rounded,
+          iconColor: s.paymentMethod == 'cash' ? AppColors.success : (s.paymentMethod == 'card' ? AppColors.info : AppColors.warning),
+        ),
       ),
       ReusableTableColumn<SaleModel>(
         id: 'method',
@@ -364,34 +350,21 @@ class _SalesListViewState extends State<SalesListView> {
         title: AppStrings.totalValue,
         width: 120.w,
         isNumeric: true,
-        textBuilder: (s) => formatMoney(s.finalAmount),
-      ),
-      ReusableTableColumn<SaleModel>(
-        id: 'paid',
-        title: AppStrings.paidAmount,
-        width: 120.w,
-        isNumeric: true,
-        textBuilder: (s) => formatMoney(s.paidAmount ?? s.finalAmount),
+        cellBuilder: (s) => TableMoneyCell(amount: s.finalAmount, currency: AppStrings.currency, isHighlight: true),
       ),
       ReusableTableColumn<SaleModel>(
         id: 'due',
         title: AppStrings.dueAmount,
         width: 120.w,
         isNumeric: true,
-        textBuilder: (s) => formatMoney(s.dueAmount),
+        cellBuilder: (s) => TableMoneyCell(amount: s.dueAmount, currency: AppStrings.currency, isNegative: s.dueAmount > 0),
       ),
       ReusableTableColumn<SaleModel>(
-        id: 'shipping',
-        title: AppStrings.shippingStatus,
-        width: 110.w,
-        cellBuilder: (s) => StatusBadge(label: AppStrings.shippingPending, color: AppColors.warning),
-      ),
-      ReusableTableColumn<SaleModel>(
-        id: 'qty',
-        title: AppStrings.quantity,
-        width: 70.w,
-        isNumeric: true,
-        textBuilder: (s) => '${s.items.length}',
+        id: 'date',
+        title: AppStrings.date,
+        width: 150.w,
+        isSortable: true,
+        textBuilder: (s) => DateFormat('yyyy/MM/dd HH:mm').format(s.createdAt),
       ),
     ];
 
@@ -404,28 +377,35 @@ class _SalesListViewState extends State<SalesListView> {
             items: items,
             itemLabel: AppStrings.invoiceLabelSales,
             bodyRowHeight: 56.h,
-            tableFooter: Container(
-              padding: EdgeInsets.symmetric(vertical: 12.h),
-              decoration: BoxDecoration(
-                color: scheme.surface,
-                border: Border(top: BorderSide(color: scheme.outlineVariant, width: 2)),
-              ),
-              child: Row(
-                children: [
-                  SizedBox(width: 100.w), // actions
-                  SizedBox(width: 150.w), // date
-                  SizedBox(width: 110.w), // id
-                  Expanded(flex: 2, child: const SizedBox()), // customer
-                  SizedBox(width: 120.w), // contact
-                  SizedBox(width: 110.w), // method
-                  SizedBox(width: 110.w, child: _cellPadding(ReusableText('${AppStrings.total}:', style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)), false)),
-                  SizedBox(width: 120.w, child: _cellPadding(ReusableText(formatMoney(totalAmount), style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)), true)),
-                  SizedBox(width: 120.w, child: _cellPadding(ReusableText(formatMoney(totalPaid), style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)), true)),
-                  SizedBox(width: 120.w, child: _cellPadding(ReusableText(formatMoney(totalDue), style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)), true)),
-                  SizedBox(width: 110.w), // shipping
-                  SizedBox(width: 70.w), // qty
-                ],
-              ),
+            rowActions: (s) => TableOptionsButton(
+              onSelected: (v) {
+                if (v == 'inspect') {
+                  SaleDetailsDialog.show(context, s);
+                } else if (v == 'void') {
+                  _confirmVoidSale(context, s);
+                }
+              },
+              menuItems: [
+                _menuItem('inspect', Icons.visibility_rounded, AppStrings.inspect, color: AppColors.info),
+                _menuItem('edit', Icons.edit_rounded, AppStrings.edit),
+                _menuItem('print', Icons.print_rounded, AppStrings.printInvoice),
+                _menuItem('void', Icons.delete_outline_rounded, AppStrings.voidInvoice, color: AppColors.error),
+              ],
+            ),
+            summaryRow: Row(
+              children: [
+                SizedBox(width: 100.w), // actions
+                SizedBox(width: 110.w), // id
+                Expanded(flex: 2, child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                  child: ReusableText('المجموع:', style: AppTextStyles.bodyBold(context)),
+                )), // customer
+                SizedBox(width: 110.w), // method
+                SizedBox(width: 110.w), // payment_status
+                SizedBox(width: 120.w, child: _cellPadding(ReusableText(formatMoney(totalAmount), style: AppTextStyles.bodyBold(context)), true)),
+                SizedBox(width: 120.w, child: _cellPadding(ReusableText(formatMoney(totalDue), style: AppTextStyles.bodyBold(context)), true)),
+                SizedBox(width: 150.w), // date
+              ],
             ),
           ),
         ),
@@ -540,43 +520,6 @@ class _SalesListViewState extends State<SalesListView> {
         type: ButtonType.outlined,
         size: ButtonSize.small,
         onPressed: () {},
-      ),
-    );
-  }
-
-  Widget _buildRowActions(BuildContext context, SaleModel sale) {
-    final primary = Theme.of(context).colorScheme.primary;
-
-    return PopupMenuButton<String>(
-      offset: const Offset(0, 40),
-      onSelected: (v) {
-        if (v == 'inspect') {
-          SaleDetailsDialog.show(context, sale);
-        } else if (v == 'void') {
-          _confirmVoidSale(context, sale);
-        }
-      },
-      itemBuilder: (_) => [
-        _menuItem('inspect', Icons.visibility_rounded, AppStrings.inspect, color: AppColors.info),
-        _menuItem('edit', Icons.edit_rounded, AppStrings.edit),
-        _menuItem('print', Icons.print_rounded, AppStrings.printInvoice),
-        _menuItem('void', Icons.delete_outline_rounded, AppStrings.voidInvoice, color: AppColors.error),
-      ],
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-        decoration: BoxDecoration(
-          color: primary.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8.r),
-          border: Border.all(color: primary.withValues(alpha: 0.2)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ReusableText(AppStrings.options, style: AppTextStyles.caption(context).copyWith(color: primary, fontWeight: FontWeight.bold)),
-            SizedBox(width: 4.w),
-            Icon(Icons.keyboard_arrow_down_rounded, size: AppIconSize.md.value, color: primary),
-          ],
-        ),
       ),
     );
   }

@@ -28,10 +28,9 @@ class MedicineUnitModel {
   });
 
   bool get isMain => level == 1;
-  double get quantityInParentUnit => conversionFactor;
 
-  double get quantityInMainUnit {
-    if (isMain) return quantity.toDouble();
+  /// إجمالي الكمية بالوحدات الصغرى (Base Units)
+  double get quantityInBaseUnit {
     return quantity * conversionFactor;
   }
 

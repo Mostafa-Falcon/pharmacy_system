@@ -1,4 +1,5 @@
-﻿import 'package:drift/drift.dart';
+﻿import 'package:collection/collection.dart';
+import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/expenses_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
@@ -123,8 +124,6 @@ class ExpenseService {
 
     await JournalEntryService.create(journal);
 
-    _recordAuditLog(expense, actorId);
-
     try {
       await SyncService.queueOperation(
         type: SyncOperationType.create,
@@ -183,8 +182,6 @@ class ExpenseService {
     );
   }
 
-  static void _recordAuditLog(ExpenseModel expense, String actorId) {}
-
   static String _paymentAccount(String? method) {
     switch (method) {
       case 'card': return 'system:card_clearing';
@@ -196,34 +193,31 @@ class ExpenseService {
 
   static String _paymentAccountName(String? method) {
     switch (method) {
-      case 'card': return 'ÃƒËœÃ‚ÂªÃƒËœÃ‚Â³Ãƒâ„¢Ã‹â€ Ãƒâ„¢Ã…Â ÃƒËœÃ‚Â§ÃƒËœÃ‚Âª ÃƒËœÃ‚Â§Ãƒâ„¢Ã¢â‚¬Å¾ÃƒËœÃ‚Â¨ÃƒËœÃ‚Â·ÃƒËœÃ‚Â§Ãƒâ„¢Ã¢â‚¬Å¡ÃƒËœÃ‚Â§ÃƒËœÃ‚Âª';
-      case 'bank_transfer': return 'ÃƒËœÃ‚Â§Ãƒâ„¢Ã¢â‚¬Å¾ÃƒËœÃ‚Â¨Ãƒâ„¢Ã¢â‚¬Â Ãƒâ„¢Ã†â€™';
-      case 'mobile_wallet': return 'ÃƒËœÃ‚Â§Ãƒâ„¢Ã¢â‚¬Å¾Ãƒâ„¢Ã¢â‚¬Â¦ÃƒËœÃ‚Â­Ãƒâ„¢Ã‚ÂÃƒËœÃ‚Â¸ÃƒËœÃ‚Â© ÃƒËœÃ‚Â§Ãƒâ„¢Ã¢â‚¬Å¾ÃƒËœÃ‚Â¥Ãƒâ„¢Ã¢â‚¬Å¾Ãƒâ„¢Ã†â€™ÃƒËœÃ‚ÂªÃƒËœÃ‚Â±Ãƒâ„¢Ã‹â€ Ãƒâ„¢Ã¢â‚¬Â Ãƒâ„¢Ã…Â ÃƒËœÃ‚Â©';
-      default: return 'ÃƒËœÃ‚Â§Ãƒâ„¢Ã¢â‚¬Å¾ÃƒËœÃ‚Â®ÃƒËœÃ‚Â²Ãƒâ„¢Ã…Â Ãƒâ„¢Ã¢â‚¬Â ÃƒËœÃ‚Â©';
+      case 'card': return 'تسويات البطاقات';
+      case 'bank_transfer': return 'البنك';
+      case 'mobile_wallet': return 'المحفظة الإلكترونية';
+      default: return 'الخزينة';
     }
   }
 
   static void _validate(ExpenseModel value, {required String actorId}) {
     if (value.id.trim().isEmpty) {
-      throw const FormatException('Ãƒâ„¢Ã¢â‚¬Â¦ÃƒËœÃ‚Â¹ÃƒËœÃ‚Â±Ãƒâ„¢Ã‚Â ÃƒËœÃ‚Â§Ãƒâ„¢Ã¢â‚¬Å¾Ãƒâ„¢Ã¢â‚¬Â¦ÃƒËœÃ‚ÂµÃƒËœÃ‚Â±Ãƒâ„¢Ã‹â€ Ãƒâ„¢Ã‚Â Ãƒâ„¢Ã¢â‚¬Â¦ÃƒËœÃ‚Â·Ãƒâ„¢Ã¢â‚¬Å¾Ãƒâ„¢Ã‹â€ ÃƒËœÃ‚Â¨');
+      throw const FormatException('معرف المصروف مطلوب');
     }
     if (value.branchId.trim().isEmpty) {
-      throw const FormatException('ÃƒËœÃ‚Â§Ãƒâ„¢Ã¢â‚¬Å¾Ãƒâ„¢Ã‚ÂÃƒËœÃ‚Â±ÃƒËœÃ‚Â¹ Ãƒâ„¢Ã¢â‚¬Â¦ÃƒËœÃ‚Â·Ãƒâ„¢Ã¢â‚¬Å¾Ãƒâ„¢Ã‹â€ ÃƒËœÃ‚Â¨');
+      throw const FormatException('الفرع مطلوب');
     }
     if (value.category.trim().isEmpty) {
-      throw const FormatException('ÃƒËœÃ‚ÂªÃƒËœÃ‚ÂµÃƒâ„¢Ã¢â‚¬Â Ãƒâ„¢Ã…Â Ãƒâ„¢Ã‚Â ÃƒËœÃ‚Â§Ãƒâ„¢Ã¢â‚¬Å¾Ãƒâ„¢Ã¢â‚¬Â¦ÃƒËœÃ‚ÂµÃƒËœÃ‚Â±Ãƒâ„¢Ã‹â€ Ãƒâ„¢Ã‚Â Ãƒâ„¢Ã¢â‚¬Â¦ÃƒËœÃ‚Â·Ãƒâ„¢Ã¢â‚¬Å¾Ãƒâ„¢Ã‹â€ ÃƒËœÃ‚Â¨');
-    }
-    if (value.description == null || value.description!.trim().isEmpty) {
-      throw const FormatException('Ãƒâ„¢Ã‹â€ ÃƒËœÃ‚ÂµÃƒâ„¢Ã‚Â ÃƒËœÃ‚Â§Ãƒâ„¢Ã¢â‚¬Å¾Ãƒâ„¢Ã¢â‚¬Â¦ÃƒËœÃ‚ÂµÃƒËœÃ‚Â±Ãƒâ„¢Ã‹â€ Ãƒâ„¢Ã‚Â Ãƒâ„¢Ã¢â‚¬Â¦ÃƒËœÃ‚Â·Ãƒâ„¢Ã¢â‚¬Å¾Ãƒâ„¢Ã‹â€ ÃƒËœÃ‚Â¨');
+      throw const FormatException('تصنيف المصروف مطلوب');
     }
     if (value.amount <= 0) {
-      throw StateError('Ãƒâ„¢Ã¢â‚¬Å¡Ãƒâ„¢Ã…Â Ãƒâ„¢Ã¢â‚¬Â¦ÃƒËœÃ‚Â© ÃƒËœÃ‚Â§Ãƒâ„¢Ã¢â‚¬Å¾Ãƒâ„¢Ã¢â‚¬Â¦ÃƒËœÃ‚ÂµÃƒËœÃ‚Â±Ãƒâ„¢Ã‹â€ Ãƒâ„¢Ã‚Â Ãƒâ„¢Ã…Â ÃƒËœÃ‚Â¬ÃƒËœÃ‚Â¨ ÃƒËœÃ‚Â£Ãƒâ„¢Ã¢â‚¬Â  ÃƒËœÃ‚ÂªÃƒâ„¢Ã†â€™Ãƒâ„¢Ã‹â€ Ãƒâ„¢Ã¢â‚¬Â  Ãƒâ„¢Ã¢â‚¬Â¦Ãƒâ„¢Ã‹â€ ÃƒËœÃ‚Â¬ÃƒËœÃ‚Â¨ÃƒËœÃ‚Â©');
+      throw StateError('قيمة المصروف يجب أن تكون موجبة');
     }
     if (value.paymentMethod == 'credit') {
-      throw StateError('ÃƒËœÃ‚Â§Ãƒâ„¢Ã¢â‚¬Å¾Ãƒâ„¢Ã¢â‚¬Â¦ÃƒËœÃ‚ÂµÃƒËœÃ‚Â±Ãƒâ„¢Ã‹â€ Ãƒâ„¢Ã‚ÂÃƒËœÃ‚Â§ÃƒËœÃ‚Âª Ãƒâ„¢Ã¢â‚¬Å¾ÃƒËœÃ‚Â§ Ãƒâ„¢Ã…Â Ãƒâ„¢Ã¢â‚¬Â¦Ãƒâ„¢Ã†â€™Ãƒâ„¢Ã¢â‚¬Â  ÃƒËœÃ‚Â£Ãƒâ„¢Ã¢â‚¬Â  ÃƒËœÃ‚ÂªÃƒâ„¢Ã†â€™Ãƒâ„¢Ã‹â€ Ãƒâ„¢Ã¢â‚¬Â  ÃƒËœÃ‚Â¢ÃƒËœÃ‚Â¬Ãƒâ„¢Ã¢â‚¬Å¾ÃƒËœÃ‚Â©');
+      throw StateError('المصروفات لا يمكن أن تكون آجلة');
     }
     if (actorId.trim().isEmpty) {
-      throw const FormatException('ÃƒËœÃ‚Â§Ãƒâ„¢Ã¢â‚¬Å¾Ãƒâ„¢Ã¢â‚¬Â¦ÃƒËœÃ‚Â³ÃƒËœÃ‚ÂªÃƒËœÃ‚Â®ÃƒËœÃ‚Â¯Ãƒâ„¢Ã¢â‚¬Â¦ Ãƒâ„¢Ã¢â‚¬Â¦ÃƒËœÃ‚Â·Ãƒâ„¢Ã¢â‚¬Å¾Ãƒâ„¢Ã‹â€ ÃƒËœÃ‚Â¨');
+      throw const FormatException('المستخدم مطلوب');
     }
   }
 
@@ -261,12 +255,33 @@ class ExpenseService {
         _cached.add(saved);
       }
     }
+    
+    try {
+      await SyncService.queueOperation(
+        type: SyncOperationType.update,
+        table: 'expenses',
+        data: updated.toJson(),
+        branchId: updated.branchId,
+      );
+    } catch (_) {}
   }
 
   static Future<void> deleteExpense(String id) async {
     await _ensureReady();
+    final e = _cached.firstWhereOrNull((x) => x.id == id);
+    if (e == null) return;
+    
     await _dao.softDelete(id);
-    _cached.removeWhere((e) => e.id == id);
+    _cached.removeWhere((x) => x.id == id);
+    
+    try {
+      await SyncService.queueOperation(
+        type: SyncOperationType.delete,
+        table: 'expenses',
+        data: {'id': id, 'is_deleted': true},
+        branchId: e.branchId,
+      );
+    } catch (_) {}
   }
 
   static double _money(double value) => (value * 100).roundToDouble() / 100;
@@ -287,4 +302,3 @@ class ExpenseService {
     updatedAt: d.updatedAt,
   );
 }
-

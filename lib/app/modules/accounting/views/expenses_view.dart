@@ -6,6 +6,7 @@ import 'package:intl/intl.dart' hide TextDirection;
 import '../bloc/accounting_bloc.dart';
 import 'package:pharmacy_system/app/modules/accounting/models/expense_model.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
 import '../../../../app/routes/app_routes.dart';
@@ -135,6 +136,7 @@ class _ExpensesViewState extends State<ExpensesView> {
   }
 
   Widget _buildContent(BuildContext context, AccountingState state) {
+    final scheme = Theme.of(context).colorScheme;
     final displayExpenses = state.filteredExpenses.isNotEmpty
         ? state.filteredExpenses
         : state.expenses;
@@ -147,50 +149,77 @@ class _ExpensesViewState extends State<ExpensesView> {
       );
     }
 
+    final columns = [
+      ReusableTableColumn<ExpenseModel>(
+        id: 'expenseNumber',
+        title: '#',
+        width: 80.w,
+        isSortable: true,
+        textBuilder: (e) => '#${e.expenseNumber}',
+      ),
+      ReusableTableColumn<ExpenseModel>(
+        id: 'category',
+        title: 'التصنيف والبيان',
+        flex: 2,
+        isSortable: true,
+        cellBuilder: (e) => TableContactNameCell(
+          name: e.category,
+          subtitle: e.description ?? 'بدون بيان',
+          icon: Icons.receipt_long_rounded,
+          iconColor: AppColors.error,
+        ),
+      ),
+      ReusableTableColumn<ExpenseModel>(
+        id: 'amount',
+        title: 'القيمة',
+        width: 130.w,
+        isNumeric: true,
+        isSortable: true,
+        cellBuilder: (e) => TableMoneyCell(
+          amount: e.amount,
+          currency: AppStrings.currency,
+          isNegative: true,
+        ),
+      ),
+      ReusableTableColumn<ExpenseModel>(
+        id: 'method',
+        title: 'طريقة الدفع',
+        width: 150.w,
+        textBuilder: (e) => _formatPaymentMethod(e.paymentMethod),
+      ),
+      ReusableTableColumn<ExpenseModel>(
+        id: 'date',
+        title: 'التاريخ',
+        width: 140.w,
+        isSortable: true,
+        textBuilder: (e) => DateFormat('yyyy/MM/dd').format(e.expenseDate),
+      ),
+    ];
+
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: ListView.builder(
-        padding: EdgeInsets.only(bottom: 80.h),
-        physics: const BouncingScrollPhysics(),
-        itemCount: displayExpenses.length,
-        itemBuilder: (context, index) {
-          final e = displayExpenses[index];
-          return Padding(
-            padding: EdgeInsets.only(bottom: AppSpacing.sm.h),
-            child: TransactionCard(
-              icon: Icons.receipt_long_rounded,
-              iconColor: AppColors.error,
-              title:
-                  '${AccountingStrings.accountingExpensePrefix}${e.expenseNumber} - ${e.category}',
-              tags: e.description != null && e.description!.isNotEmpty
-                  ? [
-                      Tag(
-                          label: e.description!,
-                          color: AppColors.textSecondaryOf(context))
-                    ]
-                  : const [],
-              amount: '${e.amount.toStringAsFixed(2)} ${AppStrings.currency}',
-              date: _formatPaymentMethod(e.paymentMethod),
-              amountSubtext: e.expenseDate.toString().substring(0, 10),
-              menuItems: [
-                const PopupMenuItem(value: 'edit', child: Text('تعديل المصروف')),
-                const PopupMenuItem(value: 'delete', child: Text('حذف المصروف')),
-              ],
-              onMenuSelected: (action) {
-                if (action == 'edit') {
-                  _showEditExpenseDialog(context, e);
-                } else if (action == 'delete') {
-                  _confirmDeleteExpense(context, e);
-                }
-              },
-            ),
-          );
-        },
+      body: ReusableTable<ExpenseModel>(
+        columns: columns,
+        items: displayExpenses,
+        itemLabel: 'مصروف',
+        rowActions: (e) => TableOptionsButton(
+          onSelected: (action) {
+            if (action == 'edit') {
+              _showEditExpenseDialog(context, e);
+            } else if (action == 'delete') {
+              _confirmDeleteExpense(context, e);
+            }
+          },
+          menuItems: [
+            const PopupMenuItem(value: 'edit', child: ReusableText('تعديل المصروف')),
+            const PopupMenuItem(value: 'delete', child: ReusableText('حذف المصروف', color: AppColors.error)),
+          ],
+        ),
       ),
       floatingActionButton: ReusableFab(
         icon: Icons.add_rounded,
         onPressed: () => _showAddExpenseDialog(context),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: scheme.primary,
       ),
     );
   }

@@ -88,9 +88,11 @@ class SalesReturnBloc extends Bloc<SalesReturnEvent, SalesReturnState> {
     final returnModel = ReturnModel(
       id: _uuid.v4(),
       branchId: _branchId,
+      returnType: 'sales',
       saleId: event.originalSale.id,
       items: returnItems,
       totalAmount: returnItems.fold(0.0, (sum, i) => sum + i.totalPrice),
+      finalAmount: returnItems.fold(0.0, (sum, i) => sum + i.totalPrice),
       reason: event.reason,
       notes: event.notes?.trim().isEmpty == true ? null : event.notes?.trim(),
       createdBy: _userId,

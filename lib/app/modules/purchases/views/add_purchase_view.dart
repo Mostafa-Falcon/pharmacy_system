@@ -150,7 +150,19 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
       SizedBox(height: AppSpacing.lg.h),
       _buildItemSearchAndTable(context, scheme, state),
       SizedBox(height: AppSpacing.lg.h),
-      _buildPaymentSectionMatchImage(context, scheme, state),
+      // القسم المالي المنظم
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(flex: 3, child: _buildFinancialAdjustments(context, scheme, state)),
+          SizedBox(width: AppSpacing.lg.w),
+          Expanded(flex: 2, child: _buildAccountingSummary(context, scheme, state)),
+        ],
+      ),
+      SizedBox(height: AppSpacing.lg.h),
+      _buildPaymentSection(context, scheme, state),
+      SizedBox(height: AppSpacing.xl.h),
+      _buildFinalFooter(context, scheme, state),
     ]);
   }
 
@@ -177,7 +189,8 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
             // الرقم المرجعي
             ReusableInput(
               label: AppStrings.referenceNumberLabel,
-              controller: TextEditingController(text: state.referenceNumber ?? 'PUR-0038'),
+              controller: TextEditingController(text: state.referenceNumber ?? ''),
+              hint: 'رقم الفاتورة الأصلي',
               onChanged: (v) => context.read<PurchasesBloc>().add(SetPurchaseReferenceNumber(v)),
             ),
             // تاريخ الشراء
@@ -209,33 +222,228 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
               itemAsString: (v) => v,
               onChanged: (v) => context.read<PurchasesBloc>().add(SetPurchaseStatus(v ?? AppStrings.statusReceived)),
             ),
-            // فترة الدفع
+          ]),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFinancialAdjustments(BuildContext context, ColorScheme scheme, PurchasesState state) {
+    final bloc = context.read<PurchasesBloc>();
+    return FormCard(
+      padding: EdgeInsets.all(AppSpacing.xl.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SectionHeader(icon: Icons.calculate_rounded, title: 'التعديلات المالية للفاتورة'),
+          SizedBox(height: AppSpacing.md.h),
+          _responsiveFields(context, minWidth: 200, children: [
+             // خصم الفاتورة الإجمالي
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
                   flex: 3,
                   child: ReusableInput(
-                    label: AppStrings.paymentTermLabel,
-                    hint: AppStrings.paymentTermLabel,
+                    label: 'خصم إجمالي الفاتورة',
+                    controller: TextEditingController(text: state.invoiceDiscountValue.toString()),
                     keyboardType: TextInputType.number,
-                    onChanged: (v) => context.read<PurchasesBloc>().add(SetPurchasePaymentTerm(int.tryParse(v))),
+                    onChanged: (v) => bloc.add(SetPurchaseInvoiceDiscount(state.invoiceDiscountType, double.tryParse(v) ?? 0)),
                   ),
                 ),
                 SizedBox(width: 8.w),
                 Expanded(
                   flex: 2,
                   child: ReusableDropdown<String>(
-                    items: const [AppStrings.days, AppStrings.months],
-                    value: state.paymentTermUnit,
-                    hintText: AppStrings.unitLabelShort,
-                    itemAsString: (v) => v,
-                    onChanged: (v) => context.read<PurchasesBloc>().add(SetPurchasePaymentTerm(state.paymentTerm, v)),
+                    hintText: 'نوع الخصم',
+                    items: const ['fixed', '%'],
+                    value: state.invoiceDiscountType,
+                    itemAsString: (v) => v == 'fixed' ? 'ج.م' : '%',
+                    onChanged: (v) => bloc.add(SetPurchaseInvoiceDiscount(v ?? 'fixed', state.invoiceDiscountValue)),
                   ),
                 ),
               ],
             ),
+            // الضريبة الإجمالية
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: ReusableInput(
+                    label: 'ضريبة الفاتورة',
+                    controller: TextEditingController(text: state.invoiceTaxValue.toString()),
+                    keyboardType: TextInputType.number,
+                    onChanged: (v) => bloc.add(SetPurchaseInvoiceTax(state.invoiceTaxType, double.tryParse(v) ?? 0)),
+                  ),
+                ),
+                SizedBox(width: 8.w),
+                Expanded(
+                  flex: 2,
+                  child: ReusableDropdown<String>(
+                    hintText: 'نوع الضريبة',
+                    items: const ['fixed', '%'],
+                    value: state.invoiceTaxType,
+                    itemAsString: (v) => v == 'fixed' ? 'ج.م' : '%',
+                    onChanged: (v) => bloc.add(SetPurchaseInvoiceTax(v ?? 'fixed', state.invoiceTaxValue)),
+                  ),
+                ),
+              ],
+            ),
+            // مصاريف الشحن
+            ReusableInput(
+              label: 'مصاريف الشحن',
+              controller: TextEditingController(text: state.shippingAmount.toString()),
+              keyboardType: TextInputType.number,
+              prefixIcon: const Icon(Icons.local_shipping_rounded),
+              onChanged: (v) => bloc.add(SetPurchaseShipping(double.tryParse(v) ?? 0)),
+            ),
+            // مصاريف التوصيل/أخرى
+            ReusableInput(
+              label: 'مصاريف أخرى',
+              controller: TextEditingController(text: state.deliveryAmount.toString()),
+              keyboardType: TextInputType.number,
+              prefixIcon: const Icon(Icons.add_task_rounded),
+              onChanged: (v) => bloc.add(SetPurchaseDelivery(double.tryParse(v) ?? 0)),
+            ),
           ]),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAccountingSummary(BuildContext context, ColorScheme scheme, PurchasesState state) {
+    return FormCard(
+      padding: EdgeInsets.all(AppSpacing.xl.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SectionHeader(icon: Icons.receipt_long_rounded, title: 'ملخص الحساب'),
+          SizedBox(height: AppSpacing.md.h),
+          _summaryRow('إجمالي الأصناف', FormatUtils.currency(state.subtotal)),
+          _summaryRow('خصم الأصناف', '- ${FormatUtils.currency(state.itemsDiscountTotal)}', color: AppColors.error),
+          _summaryRow('خصم الفاتورة الإجمالي', '- ${FormatUtils.currency(state.calcInvoiceDiscountAmount)}', color: AppColors.error),
+          _summaryRow('إجمالي ضرائب الأصناف', '+ ${FormatUtils.currency(state.itemsTaxTotal)}', color: AppColors.success),
+          _summaryRow('ضريبة الفاتورة العامة', '+ ${FormatUtils.currency(state.calcInvoiceTaxAmount)}', color: AppColors.success),
+          _summaryRow('إجمالي مصاريف الشحن والتحميل', '+ ${FormatUtils.currency(state.totalAdditionalExpenses)}', color: AppColors.info),
+          const Divider(thickness: 1.5),
+          SizedBox(height: 8.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ReusableText('الصافي النهائي', style: AppTextStyles.title(context).copyWith(fontWeight: FontWeight.w900, fontSize: 18.sp)),
+              ReusableText(FormatUtils.currency(state.finalAmount), style: AppTextStyles.title(context).copyWith(fontWeight: FontWeight.w900, color: scheme.primary, fontSize: 20.sp)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _summaryRow(String label, String value, {Color? color}) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 4.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ReusableText(label, style: AppTextStyles.caption(context)),
+          ReusableText(value, style: AppTextStyles.bodyBold(context).copyWith(color: color)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPaymentSection(BuildContext context, ColorScheme scheme, PurchasesState state) {
+    final bloc = context.read<PurchasesBloc>();
+    return FormCard(
+      padding: EdgeInsets.all(AppSpacing.xl.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SectionHeader(icon: Icons.payments_rounded, title: 'السداد والدفع'),
+          SizedBox(height: AppSpacing.md.h),
+          _responsiveFields(context, minWidth: 260, children: [
+            // طريقة الدفع
+            ReusableDropdown<String>(
+              labelText: AppStrings.paymentMethodLabelPurchase,
+              hintText: AppStrings.selectPaymentMethodHint,
+              items: const [AppStrings.paymentMethodCashPurchase, AppStrings.paymentMethodCardPurchase, AppStrings.paymentMethodCreditPurchase],
+              value: state.getPaymentLabel(state.paymentMethod),
+              itemAsString: (v) => v,
+              onChanged: (v) {
+                final method = switch (v) {
+                  AppStrings.paymentMethodCashPurchase => 'cash',
+                  AppStrings.paymentMethodCreditPurchase => 'credit',
+                  AppStrings.paymentMethodCardPurchase => 'card',
+                  _ => 'cash'
+                };
+                bloc.add(SetPurchasePaymentMethod(method));
+              },
+            ),
+             // المبلغ المدفوع
+            ReusableInput(
+              label: AppStrings.paidAmountLabel,
+              controller: TextEditingController(text: state.paidAmount.toString()),
+              suffixIcon: IconButton(icon: const Icon(Icons.done_all_rounded, size: 18), onPressed: () => bloc.add(const PayInFull())),
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              onChanged: (v) => bloc.add(SetPurchasePaidAmount(double.tryParse(v) ?? 0)),
+            ),
+            // الحساب/الخزينة
+            ReusableDropdown<String>(
+              labelText: AppStrings.accountLabel,
+              hintText: AppStrings.selectAccountHint,
+              items: _paymentAccounts.keys.toList(),
+              value: state.paymentAccountId ?? _paymentAccounts.keys.first,
+              itemAsString: (v) => _paymentAccounts[v] ?? v,
+              onChanged: (v) {
+                final name = _paymentAccounts[v];
+                if (v != null) bloc.add(SetPurchasePaymentAccount(v, name));
+              },
+            ),
+            // ملاحظة الدفع
+            ReusableInput(
+              label: AppStrings.paymentNoteLabel,
+              controller: TextEditingController(text: state.notes),
+              onChanged: (v) => bloc.add(SetPurchaseNotes(v)),
+            ),
+          ]),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFinalFooter(BuildContext context, ColorScheme scheme, PurchasesState state) {
+    final remaining = state.finalAmount - state.paidAmount;
+    final isCredit = remaining > 0.01;
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl.w),
+      child: Row(
+        children: [
+          // المتبقي (لو آجل)
+          if (isCredit)
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 24.w),
+              decoration: BoxDecoration(
+                color: AppColors.error.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(AppRadius.md.r),
+                border: Border.all(color: AppColors.error.withValues(alpha: 0.2)),
+              ),
+              child: Row(
+                children: [
+                  ReusableText('المتبقي (آجل): ', style: AppTextStyles.bodyBold(context).copyWith(color: AppColors.error)),
+                  ReusableText(FormatUtils.currency(remaining), style: AppTextStyles.bodyBold(context).copyWith(color: AppColors.error)),
+                ],
+              ),
+            ),
+          const Spacer(),
+          // زرار الحفظ الكبير
+          ReusableButton(
+            text: state.editingPurchaseId != null ? 'حفظ التعديلات' : 'تسجيل الفاتورة النهائية',
+            prefixIcon: Icons.check_circle_rounded,
+            size: ButtonSize.large,
+            onPressed: () => _submitForm(context),
+          ),
         ],
       ),
     );
@@ -597,13 +805,27 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
                 border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.5)),
                 borderRadius: BorderRadius.circular(4.r),
               ),
-              child: ReusableText(line.medicineName, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                   ReusableText(line.medicineName, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold)),
+                   if (med?.dosageForm != null)
+                      Text(med!.dosageForm!, style: TextStyle(fontSize: 9.sp, color: scheme.onSurfaceVariant)),
+                ],
+              ),
             ),
           ),
           // Stock
           SizedBox(
             width: 80.w,
-            child: ReusableText('${med?.quantity ?? 0} ${AppStrings.unitPiece}', textAlign: TextAlign.center, style: AppTextStyles.caption(context)),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ReusableText('${med?.quantity ?? 0}', textAlign: TextAlign.center, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold)),
+                Text('بالمخزن', style: TextStyle(fontSize: 9.sp, color: scheme.onSurfaceVariant)),
+              ],
+            ),
           ),
           // Unit
           SizedBox(
@@ -671,7 +893,7 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
           // Total
           SizedBox(
             width: 80.w,
-            child: ReusableText(line.finalLineTotal.toStringAsFixed(2), textAlign: TextAlign.center, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold)),
+            child: ReusableText(line.finalLineTotal.toStringAsFixed(2), textAlign: TextAlign.center, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold, color: scheme.primary)),
           ),
           // Sale Price
           SizedBox(

@@ -313,16 +313,18 @@ class CashierShiftService {
     return ReturnModel(
       id: d.id,
       branchId: d.branchId,
-      saleId: d.saleId,
-      purchaseId: d.purchaseId,
+      returnType: 'sales',
       items: (jsonDecode(d.items) as List)
           .map((e) => ReturnItemModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       totalAmount: d.totalAmount,
+      finalAmount: d.totalAmount,
       reason: ReturnReason.values.firstWhere(
         (r) => r.name == d.reason,
         orElse: () => ReturnReason.other,
       ),
+      saleId: d.saleId,
+      purchaseId: d.purchaseId,
       notes: d.notes,
       createdBy: d.createdBy,
       createdAt: d.createdAt,

@@ -82,9 +82,11 @@ class PurchaseReturnBloc extends Bloc<PurchaseReturnEvent, PurchaseReturnState> 
     final returnModel = ReturnModel(
       id: _uuid.v4(),
       branchId: _branchId,
+      returnType: 'purchase',
       purchaseId: event.originalPurchase.id,
       items: returnItems,
       totalAmount: returnItems.fold(0.0, (sum, i) => sum + i.totalPrice),
+      finalAmount: returnItems.fold(0.0, (sum, i) => sum + i.totalPrice),
       reason: event.reason,
       notes: event.notes?.trim().isEmpty == true ? null : event.notes?.trim(),
       createdBy: _userId,

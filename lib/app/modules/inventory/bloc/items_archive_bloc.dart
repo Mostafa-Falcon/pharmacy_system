@@ -10,6 +10,7 @@ import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
 import 'items_archive_event.dart';
 import 'items_archive_state.dart';
 
@@ -194,6 +195,15 @@ class ItemsArchiveBloc extends Bloc<ItemsArchiveEvent, ItemsArchiveState> {
       for (final item in items) {
         try {
           await _dao.softDelete(item.id);
+          
+          unawaited(
+            SyncService.queueOperation(
+              type: SyncOperationType.delete,
+              table: 'items_archive',
+              data: {'id': item.id, 'is_deleted': true},
+              branchId: _branchId,
+            ),
+          );
         } on Object catch (_) {
           failed++;
         }

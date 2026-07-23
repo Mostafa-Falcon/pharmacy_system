@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:drift/drift.dart';
-import 'package:uuid/uuid.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
-import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/inventory/stock_mutation_service.dart';
 import 'package:pharmacy_system/app/core/data/services/party_ledger_service.dart';
 import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
@@ -12,7 +10,6 @@ import 'package:pharmacy_system/app/core/injection.dart';
 import 'package:pharmacy_system/app/core/utils/app_utils.dart';
 
 class FreeReturnService {
-  static const _uuid = Uuid();
   static AppDatabase get _db => sl<AppDatabase>();
 
   static Future<ReturnModel> submitFreeReturn(ReturnModel model) async {

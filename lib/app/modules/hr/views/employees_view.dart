@@ -5,6 +5,7 @@ import '../bloc/hr_bloc.dart';
 import 'package:pharmacy_system/app/modules/hr/models/employee_model.dart';
 import 'package:pharmacy_system/app/modules/hr/models/department_model.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
@@ -19,32 +20,113 @@ class EmployeesView extends StatelessWidget {
         if (state.status == HrStatus.loading && state.employees.isEmpty) {
           return const LoadingIndicator();
         }
+        
+        final scheme = Theme.of(context).colorScheme;
+
+        if (state.employees.isEmpty) {
+          return Scaffold(
+            backgroundColor: Colors.transparent,
+            body: const EmptyState(
+              icon: Icons.people_outline_rounded,
+              title: 'لا يوجد موظفون',
+              subtitle: 'لم يتم إضافة أي موظفين بعد في هذا الفرع',
+            ),
+            floatingActionButton: ReusableFab(
+              icon: Icons.person_add_rounded,
+              onPressed: () => _showAddEmployeeDialog(
+                  context, state.departments, state.employees),
+            ),
+          );
+        }
+
+        final columns = [
+          ReusableTableColumn<EmployeeModel>(
+            id: 'name',
+            title: 'الموظف والوظيفة',
+            flex: 2,
+            isSortable: true,
+            cellBuilder: (e) => TableContactNameCell(
+              name: e.name,
+              subtitle: e.jobTitle,
+              icon: Icons.person_rounded,
+              iconColor: scheme.primary,
+            ),
+          ),
+          ReusableTableColumn<EmployeeModel>(
+            id: 'dept',
+            title: 'القسم',
+            width: 150.w,
+            textBuilder: (e) => e.departmentName.isNotEmpty ? e.departmentName : 'عام',
+          ),
+          ReusableTableColumn<EmployeeModel>(
+            id: 'salary',
+            title: 'الراتب',
+            width: 130.w,
+            isNumeric: true,
+            cellBuilder: (e) => TableMoneyCell(amount: e.salary, currency: AppStrings.currency, isHighlight: true),
+          ),
+          ReusableTableColumn<EmployeeModel>(
+            id: 'status',
+            title: 'الحالة',
+            width: 110.w,
+            cellBuilder: (e) {
+               final (color, text, icon) = _getStatus(e.status);
+               return StatusBadge(label: text, color: color, icon: icon);
+            },
+          ),
+          ReusableTableColumn<EmployeeModel>(
+            id: 'phone',
+            title: 'رقم الهاتف',
+            width: 140.w,
+            textBuilder: (e) => e.phone,
+          ),
+        ];
+
         return Scaffold(
-          backgroundColor: AppColors.backgroundOf(context),
-          body: state.employees.isEmpty
-              ? const EmptyState(
-                  icon: Icons.people_outline_rounded,
-                  title: 'Ã™â€žÃ˜Â§ Ã™Å Ã™Ë†Ã˜Â¬Ã˜Â¯ Ã™â€¦Ã™Ë†Ã˜Â¸Ã™ÂÃ™Ë†Ã™â€ ',
-                  subtitle: 'Ã™â€žÃ™â€¦ Ã™Å Ã˜ÂªÃ™â€¦ Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â© Ã˜Â£Ã™Å  Ã™â€¦Ã™Ë†Ã˜Â¸Ã™ÂÃ™Å Ã™â€  Ã˜Â¨Ã˜Â¹Ã˜Â¯ Ã™ÂÃ™Å  Ã™â€¡Ã˜Â°Ã˜Â§ Ã˜Â§Ã™â€žÃ™ÂÃ˜Â±Ã˜Â¹',
-                )
-              : ListView.builder(
-                  padding: EdgeInsets.all(AppSpacing.md.w),
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: state.employees.length,
-                  itemBuilder: (context, index) {
-                    final emp = state.employees[index];
-                    return _EmployeeCard(employee: emp);
-                  },
-                ),
+          backgroundColor: Colors.transparent,
+          body: Padding(
+            padding: EdgeInsets.all(AppSpacing.md.w),
+            child: ReusableTable<EmployeeModel>(
+              columns: columns,
+              items: state.employees,
+              itemLabel: 'موظف',
+              rowActions: (e) => TableOptionsButton(
+                onSelected: (val) {
+                  if (val == 'edit') _showEditDialog(context, context.read<HrBloc>(), e);
+                  if (val == 'delete') {
+                    ConfirmDeleteDialog.show(
+                      context,
+                      title: 'حذف الموظف',
+                      message: 'هل أنت متأكد من حذف الموظف "${e.name}"؟ سيتم حذف جميع بياناته نهائياً.',
+                      onConfirm: () => context.read<HrBloc>().add(DeleteEmployee(e.id)),
+                    );
+                  }
+                },
+                menuItems: [
+                  const PopupMenuItem(value: 'edit', child: ReusableText('تعديل البيانات')),
+                  const PopupMenuItem(value: 'delete', child: ReusableText('حذف نهائي', color: AppColors.error)),
+                ],
+              ),
+            ),
+          ),
           floatingActionButton: ReusableFab(
             icon: Icons.person_add_rounded,
             onPressed: () => _showAddEmployeeDialog(
                 context, state.departments, state.employees),
-            backgroundColor: Theme.of(context).colorScheme.primary,
+            backgroundColor: scheme.primary,
           ),
         );
       },
     );
+  }
+
+  (Color, String, IconData) _getStatus(String status) {
+    return switch (status) {
+      'active' => (AppColors.success, 'نشط', Icons.check_circle_rounded),
+      'inactive' => (AppColors.warning, 'غير نشط', Icons.pause_circle_rounded),
+      'left' => (AppColors.error, 'غادر', Icons.exit_to_app_rounded),
+      _ => (Colors.grey, status, Icons.help_outline_rounded),
+    };
   }
 
   void _showAddEmployeeDialog(
@@ -70,40 +152,40 @@ class EmployeesView extends StatelessWidget {
           (context) => StatefulBuilder(
             builder:
                 (context, setState) => ReusableDialog(
-                  title: 'Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â© Ã™â€¦Ã™Ë†Ã˜Â¸Ã™Â Ã˜Â¬Ã˜Â¯Ã™Å Ã˜Â¯',
+                  title: 'إضافة موظف جديد',
                   headerIcon: const Icon(Icons.person_add_rounded),
                   children: [
                     ReusableInput(
-                      label: 'Ã˜Â§Ã˜Â³Ã™â€¦ Ã˜Â§Ã™â€žÃ™â€¦Ã™Ë†Ã˜Â¸Ã™Â *',
-                      hint: 'Ã˜Â§Ã™â€žÃ˜Â§Ã˜Â³Ã™â€¦ Ã˜Â§Ã™â€žÃ™Æ’Ã˜Â§Ã™â€¦Ã™â€ž',
+                      label: 'اسم الموظف *',
+                      hint: 'الاسم الكامل',
                       controller: nameCtrl,
                       textDirection: TextDirection.rtl,
                     ),
                     SizedBox(height: AppSpacing.sm.h),
                     ReusableInput(
-                      label: 'Ã˜Â±Ã™â€šÃ™â€¦ Ã˜Â§Ã™â€žÃ™â€¡Ã˜Â§Ã˜ÂªÃ™Â',
-                      hint: 'Ã˜Â±Ã™â€šÃ™â€¦ Ã˜Â§Ã™â€žÃ˜Â¬Ã™Ë†Ã˜Â§Ã™â€ž',
+                      label: 'رقم الهاتف',
+                      hint: 'رقم الجوال',
                       controller: phoneCtrl,
                       keyboardType: TextInputType.phone,
                     ),
                     SizedBox(height: AppSpacing.sm.h),
                     ReusableInput.email(
-                      label: 'Ã˜Â§Ã™â€žÃ˜Â¨Ã˜Â±Ã™Å Ã˜Â¯ Ã˜Â§Ã™â€žÃ˜Â¥Ã™â€žÃ™Æ’Ã˜ÂªÃ˜Â±Ã™Ë†Ã™â€ Ã™Å ',
+                      label: 'البريد الإلكتروني',
                       hint: 'example@domain.com',
                       controller: emailCtrl,
                     ),
                     SizedBox(height: AppSpacing.sm.h),
                     ReusableInput(
-                      label: 'Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â³Ã™â€¦Ã™â€° Ã˜Â§Ã™â€žÃ™Ë†Ã˜Â¸Ã™Å Ã™ÂÃ™Å ',
-                      hint: 'Ã™â€¦Ã˜Â«Ã™â€ž: Ã˜ÂµÃ™Å Ã˜Â¯Ã™â€žÃ™Å Ã˜Å’ Ã™Æ’Ã˜Â§Ã˜Â´Ã™Å Ã˜Â±',
+                      label: 'المسمى الوظيفي',
+                      hint: 'مثل: صيدلي، كاشير',
                       controller: jobTitleCtrl,
                       textDirection: TextDirection.rtl,
                     ),
                     SizedBox(height: AppSpacing.sm.h),
                     if (departmentOptions.isNotEmpty)
                       ReusableDropdown<String>(
-                        labelText: 'Ã˜Â§Ã™â€žÃ˜Â¥Ã˜Â¯Ã˜Â§Ã˜Â±Ã˜Â©',
-                        hintText: 'Ã˜Â§Ã˜Â®Ã˜ÂªÃ˜Â± Ã˜Â§Ã™â€žÃ˜Â¥Ã˜Â¯Ã˜Â§Ã˜Â±Ã˜Â©',
+                        labelText: 'الإدارة',
+                        hintText: 'اختر الإدارة',
                         items: departmentOptions,
                         value: selectedDepartmentName,
                         itemAsString: (s) => s,
@@ -120,7 +202,7 @@ class EmployeesView extends StatelessWidget {
                       ),
                     SizedBox(height: AppSpacing.sm.h),
                     ReusableInput(
-                      label: 'Ã˜Â§Ã™â€žÃ˜Â±Ã˜Â§Ã˜ÂªÃ˜Â¨ Ã˜Â§Ã™â€žÃ˜Â£Ã˜Â³Ã˜Â§Ã˜Â³Ã™Å  (Ã˜Â¬.Ã™â€¦)',
+                      label: 'الراتب الأساسي (ج.م)',
                       hint: '0.00',
                       controller: salaryCtrl,
                       keyboardType: const TextInputType.numberWithOptions(
@@ -129,15 +211,15 @@ class EmployeesView extends StatelessWidget {
                     ),
                     SizedBox(height: AppSpacing.sm.h),
                     ReusableInput(
-                      label: 'Ã™â€¦Ã™â€žÃ˜Â§Ã˜Â­Ã˜Â¸Ã˜Â§Ã˜Âª',
-                      hint: 'Ã™â€¦Ã™â€žÃ˜Â§Ã˜Â­Ã˜Â¸Ã˜Â§Ã˜Âª Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ™Å Ã˜Â©',
+                      label: 'ملاحظات',
+                      hint: 'ملاحظات إضافية',
                       controller: notesCtrl,
                       maxLines: 2,
                       textDirection: TextDirection.rtl,
                     ),
                     SizedBox(height: AppSpacing.lg.h),
                     DialogActions(
-                      confirmText: 'Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â© Ã˜Â§Ã™â€žÃ™â€¦Ã™Ë†Ã˜Â¸Ã™Â',
+                      confirmText: 'إضافة الموظف',
                       onConfirm: () async {
                         final name = nameCtrl.text.trim();
                         if (name.isEmpty) return;
@@ -165,122 +247,6 @@ class EmployeesView extends StatelessWidget {
           ),
     );
   }
-}
-
-class _EmployeeCard extends StatelessWidget {
-  final EmployeeModel employee;
-  const _EmployeeCard({required this.employee});
-
-  @override
-  Widget build(BuildContext context) {
-    final bloc = context.read<HrBloc>();
-    final scheme = Theme.of(context).colorScheme;
-    
-    final (statusColor, statusText, statusIcon) = switch (employee.status) {
-      'active' => (AppColors.success, 'Ã™â€ Ã˜Â´Ã˜Â·', Icons.check_circle_rounded),
-      'inactive' => (AppColors.warning, 'Ã˜ÂºÃ™Å Ã˜Â± Ã™â€ Ã˜Â´Ã˜Â·', Icons.pause_circle_rounded),
-      'left' => (AppColors.error, 'Ã˜ÂºÃ˜Â§Ã˜Â¯Ã˜Â±', Icons.exit_to_app_rounded),
-      _ => (AppColors.textMutedOf(context), employee.status, Icons.help_outline_rounded),
-    };
-
-    return AppCard(
-      margin: EdgeInsets.only(bottom: AppSpacing.sm.h),
-      padding: EdgeInsets.zero,
-      child: ListTile(
-        contentPadding:
-            EdgeInsets.symmetric(horizontal: AppSpacing.md.w, vertical: 4.h),
-        leading: CircleAvatar(
-          radius: 20.r,
-          backgroundColor: AppColors.primarySoftOf(context),
-          child: ReusableText(
-            employee.name.isNotEmpty ? employee.name[0] : '?',
-            style: TextStyle(
-              color: AppColors.primary,
-              fontWeight: FontWeight.bold,
-              fontSize: 16.sp,
-            ),
-          ),
-        ),
-        title: ReusableText(
-          employee.name,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14.sp,
-          ),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (employee.jobTitle.isNotEmpty)
-              ReusableText(
-                employee.jobTitle,
-                style: TextStyle(
-                  fontSize: 11.5.sp,
-                  color: AppColors.textSecondaryOf(context),
-                ),
-              ),
-            if (employee.departmentName.isNotEmpty)
-              ReusableText(
-                employee.departmentName,
-                style: TextStyle(
-                  fontSize: 11.sp,
-                  color: AppColors.textMutedOf(context),
-                ),
-              ),
-          ],
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            StatusBadge(
-              label: statusText,
-              color: statusColor,
-              icon: statusIcon,
-            ),
-            SizedBox(width: 12.w),
-            ReusableText(
-              '${employee.salary.toStringAsFixed(0)} Ã˜Â¬.Ã™â€¦',
-              style: TextStyle(
-                fontSize: 13.sp,
-                fontWeight: FontWeight.bold,
-                color: scheme.primary,
-              ),
-            ),
-            PopupMenuButton<String>(
-              onSelected: (value) async {
-                switch (value) {
-                  case 'edit':
-                    _showEditDialog(context, bloc, employee);
-                    break;
-                  case 'delete':
-                    ConfirmDeleteDialog.show(
-                      context,
-                      title: 'Ã˜Â­Ã˜Â°Ã™Â Ã˜Â§Ã™â€žÃ™â€¦Ã™Ë†Ã˜Â¸Ã™Â',
-                      message: 'Ã™â€¡Ã™â€ž Ã˜Â£Ã™â€ Ã˜Âª Ã™â€¦Ã˜ÂªÃ˜Â£Ã™Æ’Ã˜Â¯ Ã™â€¦Ã™â€  Ã˜Â­Ã˜Â°Ã™Â Ã˜Â§Ã™â€žÃ™â€¦Ã™Ë†Ã˜Â¸Ã™Â "${employee.name}"Ã˜Å¸ Ã˜Â³Ã™Å Ã˜ÂªÃ™â€¦ Ã˜Â­Ã˜Â°Ã™Â Ã˜Â¬Ã™â€¦Ã™Å Ã˜Â¹ Ã˜Â¨Ã™Å Ã˜Â§Ã™â€ Ã˜Â§Ã˜ÂªÃ™â€¡ Ã™â€ Ã™â€¡Ã˜Â§Ã˜Â¦Ã™Å Ã˜Â§Ã™â€¹.',
-                      onConfirm: () => bloc.add(DeleteEmployee(employee.id)),
-                    );
-                    break;
-                }
-              },
-              itemBuilder: (context) => [
-                ReusableActionMenuItem(
-                  value: 'edit',
-                  icon: Icons.edit_outlined,
-                  label: AppStrings.editData,
-                ),
-                ReusableActionMenuItem(
-                  value: 'delete',
-                  icon: Icons.delete_outline_rounded,
-                  label: AppStrings.deleteEmployee,
-                  color: AppColors.error,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   void _showEditDialog(BuildContext context, HrBloc bloc, EmployeeModel emp) {
     final nameCtrl = TextEditingController(text: emp.name);
@@ -297,31 +263,31 @@ class _EmployeeCard extends StatelessWidget {
           (context) => StatefulBuilder(
             builder:
                 (context, setState) => ReusableDialog(
-                  title: 'Ã˜ÂªÃ˜Â¹Ã˜Â¯Ã™Å Ã™â€ž Ã˜Â¨Ã™Å Ã˜Â§Ã™â€ Ã˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ™â€¦Ã™Ë†Ã˜Â¸Ã™Â',
+                  title: 'تعديل بيانات الموظف',
                   headerIcon: const Icon(Icons.edit_rounded),
                   children: [
                     ReusableInput(
-                      label: 'Ã˜Â§Ã™â€žÃ˜Â§Ã˜Â³Ã™â€¦',
+                      label: 'الاسم',
                       controller: nameCtrl,
                       textDirection: TextDirection.rtl,
                     ),
                     SizedBox(height: AppSpacing.sm.h),
                     ReusableInput(
-                      label: 'Ã˜Â±Ã™â€šÃ™â€¦ Ã˜Â§Ã™â€žÃ™â€¡Ã˜Â§Ã˜ÂªÃ™Â',
+                      label: 'رقم الهاتف',
                       controller: phoneCtrl,
                       keyboardType: TextInputType.phone,
                     ),
                     SizedBox(height: AppSpacing.sm.h),
-                    ReusableInput.email(label: 'Ã˜Â§Ã™â€žÃ˜Â¨Ã˜Â±Ã™Å Ã˜Â¯ Ã˜Â§Ã™â€žÃ˜Â¥Ã™â€žÃ™Æ’Ã˜ÂªÃ˜Â±Ã™Ë†Ã™â€ Ã™Å ', controller: emailCtrl),
+                    ReusableInput.email(label: 'البريد الإلكتروني', controller: emailCtrl),
                     SizedBox(height: AppSpacing.sm.h),
                     ReusableInput(
-                      label: 'Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â³Ã™â€¦Ã™â€° Ã˜Â§Ã™â€žÃ™Ë†Ã˜Â¸Ã™Å Ã™ÂÃ™Å ',
+                      label: 'المسمى الوظيفي',
                       controller: jobTitleCtrl,
                       textDirection: TextDirection.rtl,
                     ),
                     SizedBox(height: AppSpacing.sm.h),
                     ReusableInput(
-                      label: 'Ã˜Â§Ã™â€žÃ˜Â±Ã˜Â§Ã˜ÂªÃ˜Â¨ Ã˜Â§Ã™â€žÃ˜Â£Ã˜Â³Ã˜Â§Ã˜Â³Ã™Å ',
+                      label: 'الراتب الأساسي',
                       controller: salaryCtrl,
                       keyboardType: const TextInputType.numberWithOptions(
                         decimal: true,
@@ -329,15 +295,15 @@ class _EmployeeCard extends StatelessWidget {
                     ),
                     SizedBox(height: AppSpacing.sm.h),
                     ReusableDropdown<String>(
-                      labelText: 'Ã˜Â­Ã˜Â§Ã™â€žÃ˜Â© Ã˜Â§Ã™â€žÃ™â€¦Ã™Ë†Ã˜Â¸Ã™Â',
-                      hintText: 'Ã˜Â§Ã˜Â®Ã˜ÂªÃ˜Â± Ã˜Â§Ã™â€žÃ˜Â­Ã˜Â§Ã™â€žÃ˜Â©',
+                      labelText: 'حالة الموظف',
+                      hintText: 'اختر الحالة',
                       items: const ['active', 'inactive', 'left'],
                       value: selectedStatus,
                       itemAsString:
                           (s) => switch (s) {
-                            'active' => 'Ã™â€ Ã˜Â´Ã˜Â·',
-                            'inactive' => 'Ã˜ÂºÃ™Å Ã˜Â± Ã™â€ Ã˜Â´Ã˜Â·',
-                            'left' => 'Ã˜ÂºÃ˜Â§Ã˜Â¯Ã˜Â±',
+                            'active' => 'نشط',
+                            'inactive' => 'غير نشط',
+                            'left' => 'غادر',
                             _ => s,
                           },
                       onChanged: (v) {
@@ -346,7 +312,7 @@ class _EmployeeCard extends StatelessWidget {
                     ),
                     SizedBox(height: AppSpacing.lg.h),
                     DialogActions(
-                      confirmText: 'Ã˜Â­Ã™ÂÃ˜Â¸ Ã˜Â§Ã™â€žÃ˜ÂªÃ˜ÂºÃ™Å Ã™Å Ã˜Â±Ã˜Â§Ã˜Âª',
+                      confirmText: 'حفظ التغييرات',
                       onConfirm: () async {
                         final salary =
                             double.tryParse(salaryCtrl.text) ?? emp.salary;
@@ -370,4 +336,3 @@ class _EmployeeCard extends StatelessWidget {
     );
   }
 }
-

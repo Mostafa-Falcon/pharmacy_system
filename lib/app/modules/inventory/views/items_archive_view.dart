@@ -7,6 +7,7 @@ import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 import '../bloc/items_archive_bloc.dart';
 import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
 
@@ -86,10 +87,13 @@ class ItemsArchiveView extends StatelessWidget {
   }
 
   Widget _buildContent(BuildContext context, ItemsArchiveState state) {
+    final bloc = context.read<ItemsArchiveBloc>();
+    final scheme = Theme.of(context).colorScheme;
+
     if (state.status == ItemsArchiveStatus.loading) {
-      return const Center(
-          child: LoadingIndicator(message: 'جاري تحميل الأرشيف...'));
+      return const Center(child: LoadingIndicator(message: 'جاري تحميل الأرشيف...'));
     }
+
     final items = state.items;
     if (items.isEmpty) {
       return const EmptyState(
@@ -98,177 +102,68 @@ class ItemsArchiveView extends StatelessWidget {
         subtitle: 'لا توجد أصناف مؤرشفة مطابقة لبحثك.',
       );
     }
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth < 800) {
-          return ListView.separated(
-            itemCount: items.length,
-            separatorBuilder: (_, index) => SizedBox(height: AppSpacing.sm),
-            itemBuilder: (_, index) => _ArchiveCard(item: items[index]),
-          );
-        }
-        return _ArchiveTable(items: items);
-      },
-    );
-  }
-}
 
-class _ArchiveTable extends StatelessWidget {
-  final List<MedicineModel> items;
-  const _ArchiveTable({required this.items});
+    final columns = [
+      ReusableTableColumn<MedicineModel>(
+        id: 'name',
+        title: 'الصنف والباركود',
+        flex: 2,
+        isSortable: true,
+        cellBuilder: (m) => TableContactNameCell(
+          name: m.name,
+          subtitle: m.barcodes.firstOrNull ?? 'بدون باركود',
+          icon: Icons.inventory_2_rounded,
+          iconColor: scheme.primary,
+        ),
+      ),
+      ReusableTableColumn<MedicineModel>(
+        id: 'category',
+        title: 'التصنيف',
+        width: 150.w,
+        textBuilder: (m) => m.category ?? '—',
+      ),
+      ReusableTableColumn<MedicineModel>(
+        id: 'sellPrice',
+        title: 'سعر البيع',
+        width: 120.w,
+        isNumeric: true,
+        cellBuilder: (m) => TableMoneyCell(amount: m.sellPrice, currency: AppStrings.currency, isHighlight: true),
+      ),
+      ReusableTableColumn<MedicineModel>(
+        id: 'quantity',
+        title: 'المخزون',
+        width: 100.w,
+        isNumeric: true,
+        textBuilder: (m) => '${m.quantity}',
+      ),
+      ReusableTableColumn<MedicineModel>(
+        id: 'archivedAt',
+        title: 'تاريخ الأرشفة',
+        width: 160.w,
+        textBuilder: (m) => DateFormat('yyyy/MM/dd HH:mm').format(m.lastModified),
+      ),
+    ];
 
-  @override
-  Widget build(BuildContext context) {
-    final bloc = context.read<ItemsArchiveBloc>();
-    final scheme = Theme.of(context).colorScheme;
-    
-    return BlocBuilder<ItemsArchiveBloc, ItemsArchiveState>(
-      builder: (context, state) {
-        return AppCard(
-          padding: EdgeInsets.zero,
-          child: SingleChildScrollView(
-            child: DataTable(
-              showCheckboxColumn: false,
-              headingRowColor: WidgetStatePropertyAll(scheme.surfaceContainerLow.withValues(alpha: 0.5)),
-              columns: [
-                DataColumn(
-                  label: Checkbox(
-                    value: items.isNotEmpty && items.every((i) => state.selectedIds.contains(i.id)),
-                    onChanged: (_) => bloc.add(const ToggleAllSelection()),
-                  ),
-                ),
-                const DataColumn(label: ReusableText('الصنف والباركود', style: TextStyle(fontWeight: FontWeight.bold))),
-                const DataColumn(label: ReusableText('التصنيف', style: TextStyle(fontWeight: FontWeight.bold))),
-                const DataColumn(label: ReusableText('سعر البيع', style: TextStyle(fontWeight: FontWeight.bold))),
-                const DataColumn(label: ReusableText('المخزون', style: TextStyle(fontWeight: FontWeight.bold))),
-                const DataColumn(label: ReusableText('تاريخ الأرشفة', style: TextStyle(fontWeight: FontWeight.bold))),
-                const DataColumn(label: ReusableText('الإجراءات', style: TextStyle(fontWeight: FontWeight.bold))),
-              ],
-              rows: [
-                for (final item in items)
-                  DataRow(cells: [
-                    DataCell(
-                      Checkbox(
-                        value: state.selectedIds.contains(item.id),
-                        onChanged: (_) => bloc.add(ToggleItemSelection(item.id)),
-                      ),
-                    ),
-                    DataCell(
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ReusableText(item.name, style: const TextStyle(fontWeight: FontWeight.w700)),
-                          if (item.barcodes.isNotEmpty)
-                            ReusableText(item.barcodes.first, variant: ReusableTextVariant.caption),
-                        ],
-                      ),
-                    ),
-                    DataCell(ReusableText(item.category ?? '—')),
-                    DataCell(
-                      ReusableText(
-                        '${item.sellPrice.toStringAsFixed(2)} ${AppStrings.currency}',
-                        style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold, color: scheme.primary),
-                      ),
-                    ),
-                    DataCell(ReusableText('${item.quantity}')),
-                    DataCell(
-                      ReusableText(
-                        DateFormat('yyyy/MM/dd HH:mm').format(item.lastModified.toLocal()),
-                        style: AppTextStyles.caption(context).copyWith(color: AppColors.textSecondaryOf(context)),
-                      ),
-                    ),
-                    DataCell(
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            tooltip: AppStrings.restore,
-                            onPressed: state.isWorking ? null : () => bloc.add(RestoreItem(item.id)),
-                            icon: const Icon(Icons.restore_rounded, color: AppColors.success),
-                          ),
-                          IconButton(
-                            tooltip: AppStrings.archivePermanentDelete,
-                            onPressed: state.isWorking ? null : () => bloc.add(DeleteItem(item.id)),
-                            icon: const Icon(Icons.delete_forever_rounded, color: AppColors.error),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ]),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _ArchiveCard extends StatelessWidget {
-  final MedicineModel item;
-  const _ArchiveCard({required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    final bloc = context.read<ItemsArchiveBloc>();
-    final scheme = Theme.of(context).colorScheme;
-    
-    return BlocBuilder<ItemsArchiveBloc, ItemsArchiveState>(
-      builder: (context, state) {
-        return AppCard(
-          padding: EdgeInsets.all(AppSpacing.sm.w),
-          child: Row(
-            children: [
-              Checkbox(
-                value: state.selectedIds.contains(item.id),
-                onChanged: (_) => bloc.add(ToggleItemSelection(item.id)),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ReusableText(item.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                    ReusableText(
-                      '${item.barcodes.firstOrNull ?? 'بدون باركود'} | ${item.category ?? 'بدون تصنيف'}',
-                      variant: ReusableTextVariant.caption,
-                    ),
-                    ReusableText(
-                      'المخزون عند الأرشفة: ${item.quantity}',
-                      style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context)),
-                    ),
-                  ],
-                ),
-              ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  ReusableText(
-                    '${item.sellPrice.toStringAsFixed(2)} ${AppStrings.currency}',
-                    style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: scheme.primary),
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        visualDensity: VisualDensity.compact,
-                        onPressed: state.isWorking ? null : () => bloc.add(RestoreItem(item.id)),
-                        icon: const Icon(Icons.restore_rounded, color: AppColors.success, size: 20),
-                      ),
-                      IconButton(
-                        visualDensity: VisualDensity.compact,
-                        onPressed: state.isWorking ? null : () => bloc.add(DeleteItem(item.id)),
-                        icon: const Icon(Icons.delete_forever_rounded, color: AppColors.error, size: 20),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
+    return ReusableTable<MedicineModel>(
+      columns: columns,
+      items: items,
+      isLoading: state.isWorking,
+      showCheckbox: true,
+      selectedIds: state.selectedIds,
+      rowIdGetter: (m) => m.id,
+      onSelectRow: (id) => bloc.add(ToggleItemSelection(id)),
+      onToggleAll: (v) => bloc.add(const ToggleAllSelection()),
+      itemLabel: 'صنف مؤرشف',
+      rowActions: (m) => TableOptionsButton(
+        onSelected: (v) {
+          if (v == 'restore') bloc.add(RestoreItem(m.id));
+          if (v == 'delete') bloc.add(DeleteItem(m.id));
+        },
+        menuItems: [
+          const PopupMenuItem(value: 'restore', child: ReusableText('استعادة الصنف', color: AppColors.success)),
+          const PopupMenuItem(value: 'delete', child: ReusableText('حذف نهائي', color: AppColors.error)),
+        ],
+      ),
     );
   }
 }

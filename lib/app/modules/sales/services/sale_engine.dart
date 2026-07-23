@@ -179,7 +179,7 @@ class SaleEngine {
       // لأن الدواء ممكن يكون مشترك أو branchId بتاعه قديم/فارغ.
       await StockMutationService.adjustStock(
         medicineId: line.medicine.id,
-        delta: -line.quantity,
+        delta: -line.totalPieces, // الخصم بإجمالي عدد القطع الصغرى
         branchId: branchId,
       );
 
@@ -187,7 +187,7 @@ class SaleEngine {
       try {
         await BatchService.to.consumeFromBatches(
           medicineId: line.medicine.id,
-          quantity: line.quantity,
+          quantity: line.totalPieces,
         );
       } catch (e) {
         safeDebugPrint('SaleEngine: Batch consumption failed for ${line.medicine.id}: $e');

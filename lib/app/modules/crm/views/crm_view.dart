@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 
 import 'package:pharmacy_system/app/modules/crm/models/crm_model.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
@@ -8,6 +9,7 @@ import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/extensions/string_ext.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart';
 import '../bloc/crm_bloc.dart';
 import '../bloc/crm_event.dart';
 import '../bloc/crm_state.dart';
@@ -105,75 +107,82 @@ class _CrmBody extends StatelessWidget {
   }
 
   Widget _buildList(BuildContext context, CrmState state) {
+    final bloc = context.read<CrmBloc>();
     final items = state.filteredLeads;
     if (items.isEmpty) {
-      return EmptyState(
+      return const EmptyState(
         icon: Icons.people_outline_rounded,
         title: CrmStrings.crmEmpty,
         subtitle: CrmStrings.crmEmptySubtitle,
       );
     }
-    return ListView.separated(
-      itemCount: items.length,
-      separatorBuilder: (_, _) => SizedBox(height: AppSpacing.sm.h),
-      itemBuilder: (_, i) => _leadCard(context, items[i]),
-    );
-  }
 
-  Widget _leadCard(BuildContext context, CrmLeadModel lead) {
-    final bloc = context.read<CrmBloc>();
-    final statusColor = switch (lead.status) {
-      CrmLeadStatus.newLead => AppColors.info,
-      CrmLeadStatus.contacted => AppColors.warning,
-      CrmLeadStatus.interested => AppColors.primary,
-      CrmLeadStatus.converted => AppColors.success,
-      CrmLeadStatus.notInterested => AppColors.error,
-    };
-    final statusLabel = _statusLabel(lead.status);
-
-    final menuItems = <PopupMenuEntry<String>>[
-      for (final s in CrmLeadStatus.values.where((s) => s != lead.status))
-        PopupMenuItem<String>(value: 'status:${s.name}', child: ReusableText(_statusLabel(s))),
-      ReusableActionMenuItem(
-        value: 'edit',
-        icon: Icons.edit_outlined,
-        label: AppStrings.editData,
+    final columns = [
+      ReusableTableColumn<CrmLeadModel>(
+        id: 'name',
+        title: 'العميل المتوقع',
+        flex: 2,
+        isSortable: true,
+        cellBuilder: (l) => TableContactNameCell(
+          name: l.name,
+          subtitle: l.source ?? 'بدون مصدر',
+          icon: Icons.person_rounded,
+          iconColor: _statusColor(l.status),
+        ),
       ),
-      ReusableActionMenuItem(
-        value: 'followup',
-        icon: Icons.add_alert_outlined,
-        label: CrmStrings.crmAddFollowUp,
+      ReusableTableColumn<CrmLeadModel>(
+        id: 'contact',
+        title: 'الاتصال',
+        width: 180.w,
+        textBuilder: (l) => l.phone ?? l.email ?? '—',
+      ),
+      ReusableTableColumn<CrmLeadModel>(
+        id: 'status',
+        title: 'الحالة',
+        width: 130.w,
+        cellBuilder: (l) => StatusBadge(label: _statusLabel(l.status), color: _statusColor(l.status)),
+      ),
+      ReusableTableColumn<CrmLeadModel>(
+        id: 'date',
+        title: 'تاريخ الإضافة',
+        width: 140.w,
+        textBuilder: (l) => DateFormat('yyyy/MM/dd').format(l.createdAt),
       ),
     ];
 
-    return PartyListTile(
-      avatarIcon: Icons.person_rounded,
-      avatarColor: statusColor,
-      title: lead.name,
-      subtitle: (lead.phone != null || lead.email != null)
-          ? '${lead.phone ?? ''}${lead.phone != null && lead.email != null ? ' | ' : ''}${lead.email ?? ''}'
-          : null,
-      tags: [Tag(label: statusLabel, color: statusColor)],
-      trailing: lead.source != null ? ReusableText(lead.source!, variant: ReusableTextVariant.caption) : null,
-      menuItems: menuItems,
-      onMenuSelected: (v) {
-        if (v.startsWith('status:')) {
-          final name = v.substring(7);
-          final status = CrmLeadStatus.values.firstWhere((s) => s.name == name);
-          bloc.add(UpdateCrmLeadStatus(lead, status));
-        } else {
-          switch (v) {
-            case 'edit':
-              _showLeadDialog(context, lead: lead);
-              break;
-            case 'followup':
-              _showFollowUpDialog(context, lead);
-              break;
+    return ReusableTable<CrmLeadModel>(
+      columns: columns,
+      items: items,
+      itemLabel: 'عميل محتمل',
+      rowActions: (l) => TableOptionsButton(
+        onSelected: (v) {
+          if (v.startsWith('status:')) {
+            final name = v.substring(7);
+            final status = CrmLeadStatus.values.firstWhere((s) => s.name == name);
+            bloc.add(UpdateCrmLeadStatus(l, status));
+          } else if (v == 'edit') {
+            _showLeadDialog(context, lead: l);
+          } else if (v == 'followup') {
+            _showFollowUpDialog(context, l);
           }
-        }
-      },
+        },
+        menuItems: [
+          for (final s in CrmLeadStatus.values.where((s) => s != l.status))
+            PopupMenuItem<String>(value: 'status:${s.name}', child: ReusableText('نقل إلى: ${_statusLabel(s)}')),
+          const PopupMenuItem(value: 'edit', child: ReusableText(AppStrings.editData)),
+          const PopupMenuItem(value: 'followup', child: ReusableText(CrmStrings.crmAddFollowUp)),
+        ],
+      ),
     );
   }
+
+  Color _statusColor(CrmLeadStatus status) => switch (status) {
+    CrmLeadStatus.newLead => AppColors.info,
+    CrmLeadStatus.contacted => AppColors.warning,
+    CrmLeadStatus.interested => AppColors.primary,
+    CrmLeadStatus.converted => AppColors.success,
+    CrmLeadStatus.notInterested => AppColors.error,
+  };
 
   String _statusLabel(CrmLeadStatus s) => switch (s) {
     CrmLeadStatus.newLead => CrmStrings.crmNew,

@@ -1,4 +1,5 @@
-﻿import 'dart:convert';
+﻿import 'dart:async';
+import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -14,6 +15,7 @@ import 'package:pharmacy_system/app/core/data/services/inventory/stock_mutation_
 import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
 import 'package:pharmacy_system/app/modules/inventory/models/inventory_enums.dart';
 import 'package:pharmacy_system/app/modules/inventory/models/stock_transfer_model.dart';
+import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
 import '../services/inventory_transaction_service.dart';
 import '../services/stock_quantity_guard.dart';
 import 'stock_transfer_event.dart';
@@ -168,6 +170,15 @@ class StockTransferBloc extends Bloc<StockTransferEvent, StockTransferState> {
 
       await _transfersDao.upsert(_transferToCompanion(updated));
 
+      unawaited(
+        SyncService.queueOperation(
+          type: SyncOperationType.update,
+          table: 'stock_transfers',
+          data: updated.toJson(),
+          branchId: updated.fromBranchId,
+        ),
+      );
+
       for (final item in updated.items) {
         final medicine = BranchDataService.getMedicine(item.medicineId);
         if (medicine != null && medicine.branchId == updated.fromBranchId) {
@@ -236,6 +247,15 @@ class StockTransferBloc extends Bloc<StockTransferEvent, StockTransferState> {
       );
       await _transfersDao.upsert(_transferToCompanion(updated));
 
+      unawaited(
+        SyncService.queueOperation(
+          type: SyncOperationType.update,
+          table: 'stock_transfers',
+          data: updated.toJson(),
+          branchId: updated.toBranchId,
+        ),
+      );
+
       await _refreshCaches();
       emit(state.copyWith(transfers: _transfersCache, isProcessing: false));
       AppSnackbar.success('تم استلام التحويل رقم ${transfer.transferNumber}');
@@ -262,6 +282,14 @@ class StockTransferBloc extends Bloc<StockTransferEvent, StockTransferState> {
           updatedAt: DateTime.now(),
         );
         await _transfersDao.upsert(_transferToCompanion(updated));
+        unawaited(
+          SyncService.queueOperation(
+            type: SyncOperationType.update,
+            table: 'stock_transfers',
+            data: updated.toJson(),
+            branchId: updated.fromBranchId,
+          ),
+        );
         await _refreshCaches();
         emit(state.copyWith(transfers: _transfersCache, isProcessing: false));
         AppSnackbar.warning(
@@ -295,6 +323,14 @@ class StockTransferBloc extends Bloc<StockTransferEvent, StockTransferState> {
           updatedAt: DateTime.now(),
         );
         await _transfersDao.upsert(_transferToCompanion(updated));
+        unawaited(
+          SyncService.queueOperation(
+            type: SyncOperationType.update,
+            table: 'stock_transfers',
+            data: updated.toJson(),
+            branchId: updated.fromBranchId,
+          ),
+        );
         await _refreshCaches();
         emit(state.copyWith(transfers: _transfersCache, isProcessing: false));
         AppSnackbar.warning(

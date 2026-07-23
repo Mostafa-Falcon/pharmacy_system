@@ -214,14 +214,27 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
 
   double get _totalQuantity {
     if (_units.isEmpty) return 0;
-    final mainQty = int.tryParse(_units.first.quantityController.text) ?? 0;
-    var total = mainQty.toDouble();
-    for (var i = 1; i < _units.length; i++) {
-      final subQty = int.tryParse(_units[i].quantityController.text) ?? 0;
-      final factor = double.tryParse(_units[i].factorController.text) ?? 10;
-      total += subQty * factor;
+    
+    // حساب المعاملات المطلقة لكل وحدة (عدد القطع الصغرى في كل وحدة)
+    List<double> absoluteFactors = _calculateAbsoluteFactors();
+    
+    double total = 0;
+    for (var i = 0; i < _units.length; i++) {
+      final qty = int.tryParse(_units[i].quantityController.text) ?? 0;
+      total += qty * absoluteFactors[i];
     }
     return total;
+  }
+
+  List<double> _calculateAbsoluteFactors() {
+    List<double> absoluteFactors = List.filled(_units.length, 1.0);
+    
+    // الوحدات تترتب من الأكبر للأصغر: علبة (0)، شريط (1)، قرص (2)
+    // المعامل المدخل في الواجهة للوحدة i هو "كم قطعة من الأصغر (Base Unit) موجودة في هذه الوحدة"
+    for (var i = 0; i < _units.length; i++) {
+      absoluteFactors[i] = double.tryParse(_units[i].factorController.text) ?? (i == _units.length - 1 ? 1.0 : 10.0);
+    }
+    return absoluteFactors;
   }
 
   double get _profitMargin {
@@ -423,6 +436,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
       final code = c.text.trim();
       if (code.isNotEmpty && !barcodes.contains(code)) barcodes.add(code);
     }
+    final absoluteFactors = _calculateAbsoluteFactors();
     final units = _units.asMap().entries.map((entry) {
       final i = entry.key;
       final u = entry.value;
@@ -432,9 +446,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
             ? u.nameController.text.trim()
             : (i == 0 ? 'علبة' : 'وحدة ${i + 1}'),
         level: u.level,
-        conversionFactor: i == 0
-            ? 1
-            : (double.tryParse(u.factorController.text) ?? 10),
+        conversionFactor: absoluteFactors[i],
         buyPrice: double.tryParse(u.buyPriceController.text) ?? 0,
         sellPrice: double.tryParse(u.sellPriceController.text) ?? 0,
         oldSellPrice: _showOldPrice

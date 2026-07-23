@@ -1,7 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pharmacy_system/app/modules/returns/bloc/free_return_bloc.dart';
 import 'package:pharmacy_system/app/modules/returns/bloc/purchase_return_bloc.dart';
 import 'package:pharmacy_system/app/modules/returns/bloc/sales_return_bloc.dart';
+import 'package:pharmacy_system/app/modules/returns/views/free_return_view.dart';
 import 'package:pharmacy_system/app/modules/returns/views/purchase_return_list_view.dart';
 import 'package:pharmacy_system/app/modules/returns/views/sales_return_view.dart';
 
@@ -41,6 +43,17 @@ final List<RouteBase> returnsRoutes = [
       BlocProvider(
         create: (_) => sl<PurchaseReturnBloc>(),
         child: const PurchaseReturnListView(initialIndex: 1),
+      ),
+    ),
+  ),
+  GoRoute(
+    path: Routes.FREE_RETURN,
+    name: 'free_return',
+    pageBuilder: (context, state) => fadePage(
+      state,
+      BlocProvider(
+        create: (_) => sl<FreeReturnBloc>(),
+        child: const FreeReturnView(),
       ),
     ),
   ),

@@ -8,6 +8,7 @@ import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
 import '../bloc/medicines_bloc.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
+import 'package:pharmacy_system/app/core/injection.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
 
 class StockAdjustmentView extends StatelessWidget {
@@ -28,7 +29,7 @@ class StockAdjustmentView extends StatelessWidget {
       );
     }
     return BlocProvider(
-      create: (_) => MedicinesBloc(),
+      create: (_) => sl<MedicinesBloc>(),
       child: _StockAdjustmentBody(medicine: medicine!),
     );
   }
@@ -155,8 +156,8 @@ class _StockAdjustmentBodyState extends State<_StockAdjustmentBody> {
                                   border: Border.all(color: scheme.primary.withValues(alpha: 0.15)),
                                 ),
                                 child: ReusableText(
-                                  '${medicine.quantity}',
-                                  style: TextStyle(fontSize: 26.sp, fontWeight: FontWeight.w900, color: scheme.primary),
+                                  medicine.formattedQuantity,
+                                  style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w900, color: scheme.primary),
                                 ),
                               ),
                             ],

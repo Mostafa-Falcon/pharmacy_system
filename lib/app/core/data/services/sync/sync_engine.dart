@@ -342,6 +342,22 @@ class SyncEngine {
     'cashier_shifts',
     'customer_ledgers',
     'supplier_ledgers',
+    'expenses',
+    'journal_entries',
+    'accounts',
+    'employees',
+    'attendance',
+    'leaves',
+    'payroll',
+    'departments',
+    'notifications',
+    'tasks',
+    'stock_adjustments',
+    'inventory_transactions',
+    'price_groups',
+    'brands',
+    'variants',
+    'items_archive',
   ];
 
   Future<void> pullAllTables() => pullOnly();

@@ -64,6 +64,7 @@ abstract class Routes {
   static const PURCHASE_DETAILS = '/admin/purchases/details';
   static const PURCHASE_RETURN = '/admin/purchases/returns';
   static const PURCHASE_RETURN_ADD = '/admin/purchases/returns/add';
+  static const FREE_RETURN = '/admin/returns/free';
 
   // ─── Accounting ───
   static const ACCOUNTING = '/admin/accounting';
@@ -133,6 +134,7 @@ abstract class Routes {
     '/admin/purchases/details': 'purchase_invoice',
     '/admin/purchases/returns': 'purchase_return',
     '/admin/purchases/returns/add': 'purchase_return',
+    '/admin/returns/free': 'free_return',
     '/admin/inventory/barcodes': 'barcode_label',
     '/admin/inventory/barcodes/settings': 'barcode_settings',
     '/admin/inventory/archive': 'items_archive',
@@ -208,6 +210,7 @@ abstract class Routes {
     'purchase_invoice': '/admin/purchases/list',
     'purchase_order': '/admin/purchases/add',
     'purchase_return': '/admin/purchases/returns',
+    'free_return': '/admin/returns/free',
     'customers': '/admin/contacts/customers',
     'suppliers': '/admin/contacts/suppliers',
     'customer_groups': '/admin/contacts/customer-groups',

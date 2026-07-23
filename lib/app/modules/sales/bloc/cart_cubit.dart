@@ -97,6 +97,10 @@ class CartCubit extends Cubit<CartState> {
 
   void addMedicine(MedicineModel medicine, {MedicineUnitModel? unit}) {
     final price = unit?.sellPrice ?? medicine.sellPrice;
+    // لو مفيش وحدة مختارة، ناخد معامل تحويل الوحدة الأولى (العلبة)
+    final factor = unit?.conversionFactor ?? 
+                  (medicine.units.isNotEmpty ? medicine.units.first.conversionFactor : 1.0);
+    
     final existingIdx = state.items.indexWhere(
       (l) => l.medicine.id == medicine.id && l.unitName == unit?.name,
     );
@@ -117,6 +121,7 @@ class CartCubit extends Cubit<CartState> {
               quantity: 1,
               unitPrice: price,
               unitName: unit?.name,
+              conversionFactor: factor,
             ),
           ],
         ),
@@ -188,7 +193,12 @@ class CartCubit extends Cubit<CartState> {
             .where((u) => u.name == unitName)
             .firstOrNull;
         final price = unit?.sellPrice ?? l.medicine.sellPrice;
-        return l.copyWith(unitName: unitName, unitPrice: price);
+        final factor = unit?.conversionFactor ?? 1.0;
+        return l.copyWith(
+          unitName: unitName,
+          unitPrice: price,
+          conversionFactor: factor,
+        );
       }
       return l;
     }).toList();
@@ -251,6 +261,18 @@ class CartCubit extends Cubit<CartState> {
           .where((m) => m.id == item['medicine_id'])
           .firstOrNull;
       if (medicine != null) {
+        final savedFactor = (item['conversion_factor'] as num?)?.toDouble();
+        final unitName = item['unit_name'] as String?;
+        
+        // محاولة استعادة المعامل لو مش متخزن (Backward compatibility)
+        double factor = savedFactor ?? 1.0;
+        if (savedFactor == null && unitName != null) {
+          final unit = medicine.units.firstWhereOrNull((u) => u.name == unitName);
+          if (unit != null) factor = unit.conversionFactor;
+        } else if (savedFactor == null && medicine.units.isNotEmpty) {
+          factor = medicine.units.first.conversionFactor;
+        }
+
         newItems.add(
           PosCartLine(
             medicine: medicine,
@@ -258,6 +280,8 @@ class CartCubit extends Cubit<CartState> {
             unitPrice: (item['unit_price'] as num?)?.toDouble(),
             discountPercent:
                 (item['discount_percent'] as num?)?.toDouble() ?? 0,
+            unitName: unitName,
+            conversionFactor: factor,
           ),
         );
       }

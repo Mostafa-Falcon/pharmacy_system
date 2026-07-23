@@ -9,8 +9,10 @@ import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
 import '../../../core/utils/format_utils.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/extensions/string_ext.dart';
 import '../../../routes/app_routes.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart';
 import '../../../core/injection.dart';
 import '../bloc/purchases_bloc.dart';
 import '../bloc/purchases_event.dart';
@@ -90,19 +92,12 @@ class PurchasesListView extends StatelessWidget {
 
   Widget _buildPurchasesList(BuildContext context, PurchasesState state) {
     if (state.status == PurchasesStatus.loading && state.allPurchases.isEmpty) return const LoadingIndicator();
-
+    final scheme = Theme.of(context).colorScheme;
     final items = state.filteredPurchases;
     final totalAmount = items.fold(0.0, (sum, p) => sum + p.finalAmount);
     final totalRemaining = items.fold(0.0, (sum, p) => sum + p.remainingAmount);
 
     final columns = [
-      ReusableTableColumn<PurchaseModel>(
-        id: 'date',
-        title: AppStrings.date,
-        width: 160.w,
-        isSortable: true,
-        textBuilder: (p) => DateFormat('yyyy/MM/dd HH:mm').format(p.createdAt),
-      ),
       ReusableTableColumn<PurchaseModel>(
         id: 'id',
         title: 'رقم الفاتورة',
@@ -112,10 +107,15 @@ class PurchasesListView extends StatelessWidget {
       ),
       ReusableTableColumn<PurchaseModel>(
         id: 'supplier',
-        title: 'المورد',
+        title: 'المورد والبيان',
         flex: 2,
         isSortable: true,
-        textBuilder: (p) => p.supplierName,
+        cellBuilder: (p) => TableContactNameCell(
+          name: p.supplierName,
+          subtitle: p.notes?.nullIfEmpty ?? 'لا توجد ملاحظات',
+          icon: Icons.local_shipping_rounded,
+          iconColor: scheme.primary,
+        ),
       ),
       ReusableTableColumn<PurchaseModel>(
         id: 'status',
@@ -140,27 +140,21 @@ class PurchasesListView extends StatelessWidget {
         title: 'المبلغ الإجمالي',
         width: 130.w,
         isNumeric: true,
-        textBuilder: (p) => formatMoney(p.finalAmount),
-      ),
-      ReusableTableColumn<PurchaseModel>(
-        id: 'paid',
-        title: AppStrings.paidAmount,
-        width: 130.w,
-        isNumeric: true,
-        textBuilder: (p) => formatMoney(p.finalAmount - p.remainingAmount),
+        cellBuilder: (p) => TableMoneyCell(amount: p.finalAmount, currency: AppStrings.currency, isHighlight: true),
       ),
       ReusableTableColumn<PurchaseModel>(
         id: 'due',
         title: AppStrings.dueAmount,
         width: 130.w,
         isNumeric: true,
-        textBuilder: (p) => formatMoney(p.remainingAmount),
+        cellBuilder: (p) => TableMoneyCell(amount: p.remainingAmount, currency: AppStrings.currency, isNegative: p.remainingAmount > 0),
       ),
       ReusableTableColumn<PurchaseModel>(
-        id: 'added_by',
-        title: AppStrings.addedBy,
-        width: 120.w,
-        textBuilder: (p) => 'المسؤول',
+        id: 'date',
+        title: AppStrings.date,
+        width: 160.w,
+        isSortable: true,
+        textBuilder: (p) => DateFormat('yyyy/MM/dd HH:mm').format(p.createdAt),
       ),
     ];
 
@@ -173,12 +167,34 @@ class PurchasesListView extends StatelessWidget {
       showToolbar: true,
       onExportCsv: () => bloc.add(const ExportPurchasesCsv()),
       onSearchChanged: (v) => bloc.add(SearchPurchases(v)),
-      rowActions: (p) => _buildRowActions(context, p),
+      rowActions: (p) => TableOptionsButton(
+        onSelected: (v) {
+          if (v == 'view') context.push(Routes.PURCHASE_DETAILS, extra: p);
+          if (v == 'edit') {
+            bloc.add(LoadPurchaseForEdit(p));
+            context.push(Routes.PURCHASE_ADD);
+          }
+          if (v == 'delete') {
+            ConfirmDeleteDialog.show(
+              context,
+              title: 'إلغاء فاتورة المشتريات',
+              message: 'هل أنت متأكد من إلغاء الفاتورة؟ سيتم خصم الكميات من المخزون.',
+              onConfirm: () => bloc.add(VoidPurchase(p.id)),
+            );
+          }
+        },
+        menuItems: [
+          const PopupMenuItem(value: 'view', child: ReusableText(AppStrings.inspect)),
+          const PopupMenuItem(value: 'edit', child: ReusableText(AppStrings.edit)),
+          const PopupMenuItem(value: 'print', child: ReusableText(AppStrings.print)),
+          const PopupMenuItem(value: 'delete', child: ReusableText(AppStrings.delete, color: AppColors.error)),
+        ],
+      ),
       summaryRow: Row(
         children: [
           SizedBox(width: 100.w), // actions width
           SizedBox(
-            width: 160.w + 120.w + 110.w, // date + id + status
+            width: 120.w, // id
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
               child: ReusableText(
@@ -188,23 +204,17 @@ class PurchasesListView extends StatelessWidget {
             ),
           ),
           Expanded(flex: 2, child: const SizedBox()), // supplier
-          SizedBox(
-            width: 110.w, // payment_status
-            child: const SizedBox(),
-          ),
+          SizedBox(width: 110.w), // status
+          SizedBox(width: 110.w), // payment_status
           SizedBox(
             width: 130.w,
             child: _cellPadding(ReusableText(formatMoney(totalAmount), style: AppTextStyles.bodyBold(context)), true),
           ),
           SizedBox(
             width: 130.w,
-            child: _cellPadding(ReusableText(formatMoney(totalAmount - totalRemaining), style: AppTextStyles.bodyBold(context)), true),
-          ),
-          SizedBox(
-            width: 130.w,
             child: _cellPadding(ReusableText(formatMoney(totalRemaining), style: AppTextStyles.bodyBold(context)), true),
           ),
-          SizedBox(width: 120.w), // added_by
+          SizedBox(width: 160.w), // date
         ],
       ),
     );
@@ -216,50 +226,6 @@ class PurchasesListView extends StatelessWidget {
       child: Align(
         alignment: isNumeric ? Alignment.centerLeft : Alignment.centerRight,
         child: child,
-      ),
-    );
-  }
-
-  Widget _buildRowActions(BuildContext context, PurchaseModel p) {
-    final scheme = Theme.of(context).colorScheme;
-    final bloc = context.read<PurchasesBloc>();
-
-    return PopupMenuButton<String>(
-      offset: const Offset(0, 40),
-      onSelected: (v) {
-        if (v == 'view') context.push(Routes.PURCHASE_DETAILS, extra: p);
-        if (v == 'edit') {
-          bloc.add(LoadPurchaseForEdit(p));
-          context.push(Routes.PURCHASE_ADD, extra: p);
-        }
-        if (v == 'delete') {
-          ConfirmDeleteDialog.show(
-            context,
-            title: 'إلغاء فاتورة المشتريات',
-            message: 'هل أنت متأكد من إلغاء الفاتورة؟ سيتم خصم الكميات من المخزون.',
-            onConfirm: () => bloc.add(VoidPurchase(p.id)),
-          );
-        }
-      },
-      itemBuilder: (ctx) => [
-        _menuItem(ctx, 'view', Icons.visibility_rounded, AppStrings.inspect),
-        _menuItem(ctx, 'print', Icons.print_rounded, AppStrings.print),
-        _menuItem(ctx, 'payments', Icons.account_balance_wallet_rounded, AppStrings.invoicePayments),
-        _menuItem(ctx, 'delete', Icons.delete_outline_rounded, AppStrings.delete, color: AppColors.error),
-      ],
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
-        decoration: BoxDecoration(
-          color: scheme.primary,
-          borderRadius: BorderRadius.circular(6.r),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ReusableText('خيارات', style: AppTextStyles.caption(context).copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
-            Icon(Icons.keyboard_arrow_down_rounded, size: AppIconSize.sm.value, color: Colors.white),
-          ],
-        ),
       ),
     );
   }

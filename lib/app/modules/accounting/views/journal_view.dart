@@ -1,11 +1,14 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import '../bloc/accounting_bloc.dart';
 import 'package:pharmacy_system/app/modules/accounting/models/journal_entry_model.dart';
 import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
 import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 
 class JournalView extends StatefulWidget {
   const JournalView({super.key});
@@ -15,8 +18,8 @@ class JournalView extends StatefulWidget {
 }
 
 class _JournalViewState extends State<JournalView> {
-  final DateTime _fromDate = DateTime.now().subtract(const Duration(days: 30));
-  final DateTime _toDate = DateTime.now();
+  DateTime _fromDate = DateTime.now().subtract(const Duration(days: 30));
+  DateTime _toDate = DateTime.now();
 
   @override
   void initState() {
@@ -44,9 +47,10 @@ class _JournalViewState extends State<JournalView> {
                 children: [
                   Expanded(
                     child: _DatePickerField(
-                      label: 'Ã™â€¦Ã™â€  Ã˜ÂªÃ˜Â§Ã˜Â±Ã™Å Ã˜Â®',
+                      label: 'من تاريخ',
                       initialDate: _fromDate,
                       onChanged: (d) {
+                        setState(() => _fromDate = d);
                         context.read<AccountingBloc>().add(
                           LoadJournalsInRange(from: d, to: _toDate),
                         );
@@ -56,9 +60,10 @@ class _JournalViewState extends State<JournalView> {
                   SizedBox(width: AppSpacing.sm.w),
                   Expanded(
                     child: _DatePickerField(
-                      label: 'Ã˜Â¥Ã™â€žÃ™â€° Ã˜ÂªÃ˜Â§Ã˜Â±Ã™Å Ã˜Â®',
+                      label: 'إلى تاريخ',
                       initialDate: _toDate,
                       onChanged: (d) {
+                        setState(() => _toDate = d);
                         context.read<AccountingBloc>().add(
                           LoadJournalsInRange(from: _fromDate, to: d),
                         );
@@ -72,29 +77,140 @@ class _JournalViewState extends State<JournalView> {
               child: state.journalsInRange.isEmpty
                   ? const EmptyState(
                       icon: Icons.receipt_long_rounded,
-                      title: 'Ã™â€žÃ˜Â§ Ã˜ÂªÃ™Ë†Ã˜Â¬Ã˜Â¯ Ã™â€šÃ™Å Ã™Ë†Ã˜Â¯ Ã™ÂÃ™Å  Ã™â€¡Ã˜Â°Ã™â€¡ Ã˜Â§Ã™â€žÃ™ÂÃ˜ÂªÃ˜Â±Ã˜Â©',
-                      subtitle: 'Ã™Å Ã˜Â±Ã˜Â¬Ã™â€° Ã˜Â§Ã˜Â®Ã˜ÂªÃ™Å Ã˜Â§Ã˜Â± Ã™â€ Ã˜Â·Ã˜Â§Ã™â€š Ã˜Â²Ã™â€¦Ã™â€ Ã™Å  Ã˜Â¢Ã˜Â®Ã˜Â± Ã˜Â£Ã™Ë† Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â£Ã™Æ’Ã˜Â¯ Ã™â€¦Ã™â€  Ã™Ë†Ã˜Â¬Ã™Ë†Ã˜Â¯ Ã˜Â¹Ã™â€¦Ã™â€žÃ™Å Ã˜Â§Ã˜Âª Ã™â€¦Ã˜Â³Ã˜Â¬Ã™â€žÃ˜Â©.',
+                      title: 'لا توجد قيود في هذه الفترة',
+                      subtitle: 'يرجى اختيار نطاق زمني آخر أو التأكد من وجود عمليات مسجلة.',
                     )
-                  : ListView.separated(
-                      padding: EdgeInsets.fromLTRB(
-                        AppSpacing.md.w,
-                        0,
-                        AppSpacing.md.w,
-                        AppSpacing.lg.h,
-                      ),
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: state.journalsInRange.length,
-                      separatorBuilder: (_, index) => SizedBox(height: AppSpacing.sm.h),
-                      itemBuilder: (context, index) {
-                        return _JournalEntryCard(entry: state.journalsInRange[index]);
-                      },
-                    ),
+                  : _buildJournalTable(context, state),
             ),
           ],
         );
       },
     );
   }
+
+  Widget _buildJournalTable(BuildContext context, AccountingState state) {
+    final scheme = Theme.of(context).colorScheme;
+
+    final columns = [
+      ReusableTableColumn<JournalEntryModel>(
+        id: 'entryNumber',
+        title: '#',
+        width: 100.w,
+        isSortable: true,
+        textBuilder: (j) => '#${j.entryNumber}',
+      ),
+      ReusableTableColumn<JournalEntryModel>(
+        id: 'description',
+        title: 'البيان والقيد',
+        flex: 2,
+        isSortable: true,
+        cellBuilder: (j) => TableContactNameCell(
+          name: j.description ?? 'قيد محاسبي',
+          subtitle: _formatType(j.entryType.name),
+          icon: Icons.receipt_long_rounded,
+          iconColor: scheme.primary,
+        ),
+      ),
+      ReusableTableColumn<JournalEntryModel>(
+        id: 'debit',
+        title: 'مدين',
+        width: 120.w,
+        isNumeric: true,
+        cellBuilder: (j) => TableMoneyCell(amount: j.totalDebit, currency: AppStrings.currency, isHighlight: false),
+      ),
+      ReusableTableColumn<JournalEntryModel>(
+        id: 'credit',
+        title: 'دائن',
+        width: 120.w,
+        isNumeric: true,
+        cellBuilder: (j) => TableMoneyCell(amount: j.totalCredit, currency: AppStrings.currency, isHighlight: false),
+      ),
+      ReusableTableColumn<JournalEntryModel>(
+        id: 'date',
+        title: 'تاريخ القيد',
+        width: 140.w,
+        isSortable: true,
+        textBuilder: (j) => DateFormat('yyyy/MM/dd').format(j.entryDate),
+      ),
+    ];
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.md.w),
+      child: ReusableTable<JournalEntryModel>(
+        columns: columns,
+        items: state.journalsInRange,
+        itemLabel: 'قيد يومية',
+        onTapRow: (j) => _showEntryDetails(context, j),
+        rowActions: (j) => TableOptionsButton(
+          onSelected: (v) {
+             if (v == 'view') _showEntryDetails(context, j);
+             if (v == 'delete') context.read<AccountingBloc>().add(DeleteJournalEntry(id: j.id));
+          },
+          menuItems: [
+            const PopupMenuItem(value: 'view', child: ReusableText('عرض التفاصيل')),
+            const PopupMenuItem(value: 'delete', child: ReusableText('حذف القيد', color: AppColors.error)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showEntryDetails(BuildContext context, JournalEntryModel entry) {
+    final scheme = Theme.of(context).colorScheme;
+    showDialog(
+      context: context,
+      builder: (ctx) => ReusableDialog(
+        title: 'تفاصيل القيد رقم #${entry.entryNumber}',
+        headerIcon: const Icon(Icons.receipt_long_rounded),
+        maxWidth: 600,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: scheme.outlineVariant),
+              borderRadius: BorderRadius.circular(AppRadius.md.r),
+            ),
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(12.w),
+                  color: scheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                  child: Row(
+                    children: [
+                      const Expanded(child: ReusableText('الحساب', style: TextStyle(fontWeight: FontWeight.bold))),
+                      SizedBox(width: 100.w, child: const ReusableText('مدين', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold))),
+                      SizedBox(width: 100.w, child: const ReusableText('دائن', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold))),
+                    ],
+                  ),
+                ),
+                ...entry.lines.map((l) => Container(
+                  padding: EdgeInsets.all(12.w),
+                  decoration: BoxDecoration(border: Border(top: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.5)))),
+                  child: Row(
+                    children: [
+                      Expanded(child: ReusableText(l.accountName)),
+                      SizedBox(width: 100.w, child: ReusableText(l.debit > 0 ? l.debit.toStringAsFixed(2) : '—', textAlign: TextAlign.center, color: AppColors.success)),
+                      SizedBox(width: 100.w, child: ReusableText(l.credit > 0 ? l.credit.toStringAsFixed(2) : '—', textAlign: TextAlign.center, color: AppColors.error)),
+                    ],
+                  ),
+                )),
+              ],
+            ),
+          ),
+          if (entry.description != null) ...[
+            SizedBox(height: 16.h),
+            ReusableText('البيان: ${entry.description!}', style: AppTextStyles.caption(context).copyWith(fontStyle: FontStyle.italic)),
+          ],
+        ],
+      ),
+    );
+  }
+
+  String _formatType(String t) => switch (t) {
+    'sale' => 'مبيعات',
+    'purchase' => 'مشتريات',
+    'expense' => 'مصروفات',
+    _ => t,
+  };
 }
 
 class _DatePickerField extends StatelessWidget {
@@ -154,7 +270,7 @@ class _DatePickerField extends StatelessWidget {
                   style: AppTextStyles.caption(context),
                 ),
                 ReusableText(
-                  '${initialDate.year}-${initialDate.month}-${initialDate.day}',
+                  '${initialDate.year}-${initialDate.month.toString().padLeft(2,'0')}-${initialDate.day.toString().padLeft(2,'0')}',
                   style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold),
                 ),
               ],
@@ -165,154 +281,3 @@ class _DatePickerField extends StatelessWidget {
     );
   }
 }
-
-class _JournalEntryCard extends StatefulWidget {
-  final JournalEntryModel entry;
-  const _JournalEntryCard({required this.entry});
-
-  @override
-  State<_JournalEntryCard> createState() => _JournalEntryCardState();
-}
-
-class _JournalEntryCardState extends State<_JournalEntryCard> {
-  bool _expanded = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final e = widget.entry;
-    final scheme = Theme.of(context).colorScheme;
-
-    return AppCard(
-      padding: EdgeInsets.zero,
-      child: Column(
-        children: [
-          InkWell(
-            onTap: () => setState(() => _expanded = !_expanded),
-            child: Padding(
-              padding: EdgeInsets.all(AppSpacing.md.w),
-              child: Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(6.w),
-                    decoration: BoxDecoration(
-                      color: scheme.primary.withValues(alpha: 0.08),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.receipt_long_rounded,
-                      size: AppIconSize.md.value,
-                      color: scheme.primary,
-                    ),
-                  ),
-                  SizedBox(width: AppSpacing.md.w),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ReusableText(
-                          'Ã™â€šÃ™Å Ã˜Â¯ Ã˜Â±Ã™â€šÃ™â€¦ #${e.entryNumber}',
-                          style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        ReusableText(
-                          '${e.entryDate.toString().substring(0, 10)} | ${_formatType(e.entryType.name)}',
-                          style: AppTextStyles.caption(context).copyWith(color: AppColors.textSecondaryOf(context)),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      ReusableText(
-                        '${e.totalDebit.toStringAsFixed(2)} Ã˜Â¬.Ã™â€¦',
-                        style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.success),
-                      ),
-                      ReusableText(
-                        'Ã™â€¦Ã˜ÂªÃ™Ë†Ã˜Â§Ã˜Â²Ã™â€ ',
-                        variant: ReusableTextVariant.caption,
-                      ),
-                    ],
-                  ),
-                  SizedBox(width: AppSpacing.sm.w),
-                  Icon(
-                    _expanded
-                        ? Icons.keyboard_arrow_up_rounded
-                        : Icons.keyboard_arrow_down_rounded,
-                    size: AppIconSize.md.value,
-                    color: AppColors.textMutedOf(context),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          if (_expanded) ...[
-            const Divider(height: 1),
-            Container(
-              padding: EdgeInsets.all(AppSpacing.md.w),
-              color: scheme.surfaceContainerLow.withValues(alpha: 0.3),
-              child: Column(
-                children: [
-                  ...e.lines.map((line) => Padding(
-                        padding: EdgeInsets.symmetric(vertical: 4.h),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.subdirectory_arrow_left_rounded,
-                              size: AppIconSize.sm.value,
-                              color: scheme.primary.withValues(alpha: 0.5),
-                            ),
-                            SizedBox(width: 8.w),
-                            Expanded(
-                              flex: 4,
-                              child: ReusableText(
-                                line.accountName,
-                                style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                            if (line.debit > 0)
-                              ReusableText(
-                                '${line.debit.toStringAsFixed(2)} (Ã™â€¦Ã˜Â¯Ã™Å Ã™â€ )',
-                                style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.success),
-                              ),
-                            if (line.credit > 0)
-                              ReusableText(
-                                '${line.credit.toStringAsFixed(2)} (Ã˜Â¯Ã˜Â§Ã˜Â¦Ã™â€ )',
-                                style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.error),
-                              ),
-                          ],
-                        ),
-                      )),
-                  if (e.description?.isNotEmpty == true) ...[
-                    SizedBox(height: AppSpacing.md.h),
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(8.w),
-                      decoration: BoxDecoration(
-                        color: scheme.surface,
-                        borderRadius: BorderRadius.circular(AppRadius.sm.r),
-                        border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.3)),
-                      ),
-                      child: ReusableText(
-                        'Ã˜Â§Ã™â€žÃ˜Â¨Ã™Å Ã˜Â§Ã™â€ : ${e.description!}',
-                        style: AppTextStyles.caption(context).copyWith(fontStyle: FontStyle.italic),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  String _formatType(String t) => switch (t) {
-    'sale' => 'Ã™â€¦Ã˜Â¨Ã™Å Ã˜Â¹Ã˜Â§Ã˜Âª',
-    'purchase' => 'Ã™â€¦Ã˜Â´Ã˜ÂªÃ˜Â±Ã™Å Ã˜Â§Ã˜Âª',
-    'expense' => 'Ã™â€¦Ã˜ÂµÃ˜Â±Ã™Ë†Ã™ÂÃ˜Â§Ã˜Âª',
-    _ => t,
-  };
-}
-
-

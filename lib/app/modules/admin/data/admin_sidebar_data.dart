@@ -61,6 +61,11 @@ List<SidebarGroup> getAdminSidebarGroups() {
             label: AppStrings.sidebarSalesReturns,
           ),
           SidebarItem(
+            id: 'free_return',
+            icon: Icons.assignment_return_rounded,
+            label: 'مرتجع حر',
+          ),
+          SidebarItem(
             id: 'price_quotes',
             icon: Icons.sell_outlined,
             label: AppStrings.sidebarPriceQuotes,

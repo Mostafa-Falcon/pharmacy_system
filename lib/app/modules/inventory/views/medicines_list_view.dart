@@ -355,7 +355,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
       ReusableTableColumn<MedicineModel>(
         id: 'quantity',
         title: AppStrings.quantity,
-        flex: 2,
+        flex: 3,
         isSortable: true,
         isNumeric: true,
         cellBuilder: (m) {
@@ -370,7 +370,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
               borderRadius: BorderRadius.circular(6.r),
             ),
             child: ReusableText(
-              '${m.quantity}',
+              m.formattedQuantity,
               style: AppTextStyles.bodyBold(context).copyWith(
                 color: color,
                 fontSize: 12.sp,

@@ -163,6 +163,60 @@ class SyncPullService {
       case 'supplier_ledgers':
         await db.into(db.supplierLedgersTable).insertOnConflictUpdate(_mapToSupplierLedger(data));
         break;
+      case 'medicine_units':
+        await db.into(db.medicineUnitsTable).insertOnConflictUpdate(_mapToMedicineUnit(data));
+        break;
+      case 'item_batches':
+        await db.into(db.itemBatchesTable).insertOnConflictUpdate(_mapToItemBatch(data));
+        break;
+      case 'expenses':
+        await db.into(db.expensesTable).insertOnConflictUpdate(_mapToExpense(data));
+        break;
+      case 'journal_entries':
+        await db.into(db.journalEntriesTable).insertOnConflictUpdate(_mapToJournalEntry(data));
+        break;
+      case 'accounts':
+        await db.into(db.accountsTable).insertOnConflictUpdate(_mapToAccount(data));
+        break;
+      case 'employees':
+        await db.into(db.employeesTable).insertOnConflictUpdate(_mapToEmployee(data));
+        break;
+      case 'attendance':
+        await db.into(db.attendanceTable).insertOnConflictUpdate(_mapToAttendance(data));
+        break;
+      case 'leaves':
+        await db.into(db.leavesTable).insertOnConflictUpdate(_mapToLeave(data));
+        break;
+      case 'payroll':
+        await db.into(db.payrollTable).insertOnConflictUpdate(_mapToPayroll(data));
+        break;
+      case 'departments':
+        await db.into(db.departmentsTable).insertOnConflictUpdate(_mapToDepartment(data));
+        break;
+      case 'notifications':
+        await db.into(db.notificationsTable).insertOnConflictUpdate(_mapToNotification(data));
+        break;
+      case 'tasks':
+        await db.into(db.tasksTable).insertOnConflictUpdate(_mapToTask(data));
+        break;
+      case 'stock_adjustments':
+        await db.into(db.stockAdjustmentsTable).insertOnConflictUpdate(_mapToStockAdjustment(data));
+        break;
+      case 'inventory_transactions':
+        await db.into(db.inventoryTransactionsTable).insertOnConflictUpdate(_mapToInventoryTransaction(data));
+        break;
+      case 'price_groups':
+        await db.into(db.priceGroupsTable).insertOnConflictUpdate(_mapToPriceGroup(data));
+        break;
+      case 'brands':
+        await db.into(db.medicineBrandsTable).insertOnConflictUpdate(_mapToBrand(data));
+        break;
+      case 'variants':
+        await db.into(db.medicineVariantsTable).insertOnConflictUpdate(_mapToVariant(data));
+        break;
+      case 'items_archive':
+        await db.into(db.itemsArchiveTable).insertOnConflictUpdate(_mapToItemsArchive(data));
+        break;
       default:
         safeDebugPrint('SyncPullService: Table $tableName mapping not implemented yet.');
     }
@@ -419,9 +473,19 @@ class SyncPullService {
   ReturnsTableCompanion _mapToReturn(Map<String, dynamic> raw) => ReturnsTableCompanion(
     id: Value(_s(raw['id'])),
     branchId: Value(_s(raw['branch_id'])),
+    returnType: Value(_s(raw['return_type'])),
+    partyId: Value(_sn(raw['party_id'])),
+    partyName: Value(_sn(raw['party_name'])),
+    partyType: Value(_sn(raw['party_type'])),
+    saleId: Value(_sn(raw['sale_id'])),
+    purchaseId: Value(_sn(raw['purchase_id'])),
     items: Value(_j(raw['items'])),
     totalAmount: Value(_d(raw['total_amount'])),
-    reason: Value(_s(raw['reason'] ?? '')),
+    discountPercent: Value(_d(raw['discount_percent'])),
+    finalAmount: Value(_d(raw['final_amount'])),
+    safeId: Value(_sn(raw['safe_id'])),
+    reason: Value(_s(raw['reason'] ?? 'other')),
+    notes: Value(_sn(raw['notes'])),
     createdBy: Value(_s(raw['created_by'])),
     createdAt: Value(_dt(raw['created_at'])),
     syncVersion: Value(_i(raw['sync_version'])),
@@ -483,6 +547,259 @@ class SyncPullService {
     entryDate: Value(_dt(raw['entry_date'])),
     syncVersion: Value(_i(raw['sync_version'])),
     lastModified: Value(_dt(raw['last_modified'])),
+    isDeleted: Value(_b(raw['is_deleted'])),
+  );
+
+  MedicineUnitsTableCompanion _mapToMedicineUnit(Map<String, dynamic> raw) => MedicineUnitsTableCompanion(
+    id: Value(_s(raw['id'])),
+    medicineId: Value(_s(raw['medicine_id'])),
+    name: Value(_s(raw['name'])),
+    level: Value(_i(raw['level'])),
+    conversionFactor: Value(_d(raw['conversion_factor'])),
+    buyPrice: Value(_d(raw['buy_price'])),
+    sellPrice: Value(_d(raw['sell_price'])),
+    oldSellPrice: Value(_ddn(raw['old_sell_price'])),
+    discountPercent: Value(_ddn(raw['discount_percent'])),
+    allowSale: Value(_b(raw['allow_sale'])),
+    quantity: Value(_i(raw['quantity'])),
+    barcode: Value(_sn(raw['barcode'])),
+  );
+
+  ItemBatchesTableCompanion _mapToItemBatch(Map<String, dynamic> raw) => ItemBatchesTableCompanion(
+    id: Value(_s(raw['id'])),
+    medicineId: Value(_s(raw['medicine_id'])),
+    batchNumber: Value(_sn(raw['batch_number'])),
+    expiryDate: Value(_dn(raw['expiry_date'])),
+    quantity: Value(_i(raw['quantity'])),
+    damagedQuantity: Value(_i(raw['damaged_quantity'])),
+    purchasePrice: Value(_ddn(raw['purchase_price'])),
+    isActive: Value(_b(raw['is_active'])),
+    isDeleted: Value(_b(raw['is_deleted'])),
+    createdAt: Value(_dt(raw['created_at'])),
+  );
+
+  ExpensesTableCompanion _mapToExpense(Map<String, dynamic> raw) => ExpensesTableCompanion(
+    id: Value(_s(raw['id'])),
+    branchId: Value(_s(raw['branch_id'])),
+    expenseNumber: Value(_i(raw['expense_number'])),
+    expenseDate: Value(_dt(raw['expense_date'])),
+    category: Value(_s(raw['category'])),
+    description: Value(_sn(raw['description'])),
+    amount: Value(_d(raw['amount'])),
+    paymentMethod: Value(_s(raw['payment_method'])),
+    createdById: Value(_s(raw['created_by_id'])),
+    createdByName: Value(_sn(raw['created_by_name'])),
+    notes: Value(_sn(raw['notes'])),
+    createdAt: Value(_dt(raw['created_at'])),
+    updatedAt: Value(_dt(raw['updated_at'])),
+    isDeleted: Value(_b(raw['is_deleted'])),
+  );
+
+  JournalEntriesTableCompanion _mapToJournalEntry(Map<String, dynamic> raw) => JournalEntriesTableCompanion(
+    id: Value(_s(raw['id'])),
+    branchId: Value(_s(raw['branch_id'])),
+    entryNumber: Value(_i(raw['entry_number'])),
+    entryDate: Value(_dt(raw['entry_date'])),
+    entryType: Value(_s(raw['entry_type'])),
+    referenceId: Value(_sn(raw['reference_id'])),
+    referenceNumber: Value(_sn(raw['reference_number'])),
+    description: Value(_sn(raw['description'])),
+    lines: Value(_s(raw['lines'])),
+    totalDebit: Value(_d(raw['total_debit'])),
+    totalCredit: Value(_d(raw['total_credit'])),
+    createdById: Value(_s(raw['created_by_id'])),
+    createdByName: Value(_sn(raw['created_by_name'])),
+    createdAt: Value(_dt(raw['created_at'])),
+    updatedAt: Value(_dt(raw['updated_at'])),
+    isDeleted: Value(_b(raw['is_deleted'])),
+  );
+
+  AccountsTableCompanion _mapToAccount(Map<String, dynamic> raw) => AccountsTableCompanion(
+    id: Value(_s(raw['id'])),
+    code: Value(_s(raw['code'])),
+    name: Value(_s(raw['name'])),
+    type: Value(_s(raw['type'])),
+    parentId: Value(_sn(raw['parent_id'])),
+    balance: Value(_d(raw['balance'])),
+    isActive: Value(_b(raw['is_active'])),
+    branchId: Value(_s(raw['branch_id'])),
+    isDeleted: Value(_b(raw['is_deleted'])),
+    lastModified: Value(_dt(raw['last_modified'])),
+  );
+
+  EmployeesTableCompanion _mapToEmployee(Map<String, dynamic> raw) => EmployeesTableCompanion(
+    id: Value(_s(raw['id'])),
+    code: Value(_s(raw['code'])),
+    name: Value(_s(raw['name'])),
+    phone: Value(_sn(raw['phone'])),
+    email: Value(_sn(raw['email'])),
+    address: Value(_sn(raw['address'])),
+    departmentId: Value(_sn(raw['department_id'])),
+    position: Value(_sn(raw['position'])),
+    baseSalary: Value(_d(raw['base_salary'])),
+    bankAccount: Value(_sn(raw['bank_account'])),
+    nationalId: Value(_sn(raw['national_id'])),
+    hireDate: Value(_dt(raw['hire_date'])),
+    isActive: Value(_b(raw['is_active'])),
+    branchId: Value(_s(raw['branch_id'])),
+    isDeleted: Value(_b(raw['is_deleted'])),
+    lastModified: Value(_dt(raw['last_modified'])),
+  );
+
+  AttendanceTableCompanion _mapToAttendance(Map<String, dynamic> raw) => AttendanceTableCompanion(
+    id: Value(_s(raw['id'])),
+    employeeId: Value(_s(raw['employee_id'])),
+    date: Value(_dt(raw['date'])),
+    checkIn: Value(_sn(raw['check_in'])),
+    checkOut: Value(_sn(raw['check_out'])),
+    status: Value(_s(raw['status'])),
+    notes: Value(_sn(raw['notes'])),
+    branchId: Value(_s(raw['branch_id'])),
+    isDeleted: Value(_b(raw['is_deleted'])),
+  );
+
+  LeavesTableCompanion _mapToLeave(Map<String, dynamic> raw) => LeavesTableCompanion(
+    id: Value(_s(raw['id'])),
+    employeeId: Value(_s(raw['employee_id'])),
+    type: Value(_s(raw['type'])),
+    startDate: Value(_dt(raw['start_date'])),
+    endDate: Value(_dt(raw['end_date'])),
+    status: Value(_s(raw['status'])),
+    reason: Value(_sn(raw['reason'])),
+    approvedBy: Value(_sn(raw['approved_by'])),
+    branchId: Value(_s(raw['branch_id'])),
+    isDeleted: Value(_b(raw['is_deleted'])),
+    lastModified: Value(_dt(raw['last_modified'])),
+  );
+
+  PayrollTableCompanion _mapToPayroll(Map<String, dynamic> raw) => PayrollTableCompanion(
+    id: Value(_s(raw['id'])),
+    employeeId: Value(_s(raw['employee_id'])),
+    period: Value(_s(raw['period'])),
+    payDate: Value(_dt(raw['pay_date'])),
+    baseSalary: Value(_d(raw['base_salary'])),
+    bonuses: Value(_d(raw['bonuses'])),
+    deductions: Value(_d(raw['deductions'])),
+    netSalary: Value(_d(raw['net_salary'])),
+    status: Value(_s(raw['status'])),
+    notes: Value(_sn(raw['notes'])),
+    branchId: Value(_s(raw['branch_id'])),
+    isDeleted: Value(_b(raw['is_deleted'])),
+    lastModified: Value(_dt(raw['last_modified'])),
+  );
+
+  DepartmentsTableCompanion _mapToDepartment(Map<String, dynamic> raw) => DepartmentsTableCompanion(
+    id: Value(_s(raw['id'])),
+    name: Value(_s(raw['name'])),
+    branchId: Value(_s(raw['branch_id'])),
+    isActive: Value(_b(raw['is_active'])),
+    isDeleted: Value(_b(raw['is_deleted'])),
+    createdAt: Value(_dt(raw['created_at'])),
+  );
+
+  NotificationsTableCompanion _mapToNotification(Map<String, dynamic> raw) => NotificationsTableCompanion(
+    id: Value(_s(raw['id'])),
+    title: Value(_s(raw['title'])),
+    message: Value(_s(raw['message'])),
+    timestamp: Value(_dt(raw['timestamp'])),
+    category: Value(_s(raw['category'])),
+    priority: Value(_s(raw['priority'])),
+    isRead: Value(_b(raw['is_read'])),
+    metadata: Value(_sn(raw['metadata'])),
+    actionRoute: Value(_sn(raw['action_route'])),
+    branchId: Value(_sn(raw['branch_id'])),
+    isDeleted: Value(_b(raw['is_deleted'])),
+  );
+
+  TasksTableCompanion _mapToTask(Map<String, dynamic> raw) => TasksTableCompanion(
+    id: Value(_s(raw['id'])),
+    branchId: Value(_s(raw['branch_id'])),
+    title: Value(_s(raw['title'])),
+    description: Value(_sn(raw['description'])),
+    priority: Value(_s(raw['priority'])),
+    status: Value(_s(raw['status'])),
+    assignedTo: Value(_sn(raw['assigned_to'])),
+    assignedName: Value(_sn(raw['assigned_name'])),
+    dueDate: Value(_dn(raw['due_date'])),
+    completedAt: Value(_dn(raw['completed_at'])),
+    createdAt: Value(_dt(raw['created_at'])),
+    updatedAt: Value(_dt(raw['updated_at'])),
+    syncVersion: Value(_i(raw['sync_version'])),
+    lastModified: Value(_dt(raw['last_modified'])),
+    isDeleted: Value(_b(raw['is_deleted'])),
+  );
+
+  StockAdjustmentsTableCompanion _mapToStockAdjustment(Map<String, dynamic> raw) => StockAdjustmentsTableCompanion(
+    id: Value(_s(raw['id'])),
+    branchId: Value(_s(raw['branch_id'])),
+    adjustmentNumber: Value(_s(raw['adjustment_number'])),
+    adjustmentDate: Value(_dt(raw['adjustment_date'])),
+    items: Value(_s(raw['items'])),
+    createdById: Value(_sn(raw['created_by_id'])),
+    createdByName: Value(_sn(raw['created_by_name'])),
+    notes: Value(_sn(raw['notes'])),
+    createdAt: Value(_dt(raw['created_at'])),
+    updatedAt: Value(_dt(raw['updated_at'])),
+    isDeleted: Value(_b(raw['is_deleted'])),
+  );
+
+  InventoryTransactionsTableCompanion _mapToInventoryTransaction(Map<String, dynamic> raw) => InventoryTransactionsTableCompanion(
+    id: Value(_s(raw['id'])),
+    branchId: Value(_s(raw['branch_id'])),
+    medicineId: Value(_s(raw['medicine_id'])),
+    medicineName: Value(_sn(raw['medicine_name'])),
+    batchId: Value(_sn(raw['batch_id'])),
+    unitId: Value(_sn(raw['unit_id'])),
+    type: Value(_s(raw['type'])),
+    quantity: Value(_d(raw['quantity'])),
+    unitCost: Value(_d(raw['unit_cost'])),
+    beforeQuantity: Value(_ddn(raw['before_quantity'])),
+    afterQuantity: Value(_ddn(raw['after_quantity'])),
+    referenceType: Value(_s(raw['reference_type'])),
+    referenceId: Value(_s(raw['reference_id'])),
+    actorId: Value(_s(raw['actor_id'])),
+    notes: Value(_sn(raw['notes'])),
+    occurredAt: Value(_dt(raw['occurred_at'])),
+    isDeleted: Value(_b(raw['is_deleted'])),
+  );
+
+  PriceGroupsTableCompanion _mapToPriceGroup(Map<String, dynamic> raw) => PriceGroupsTableCompanion(
+    id: Value(_s(raw['id'])),
+    name: Value(_s(raw['name'])),
+    markupPercentage: Value(_d(raw['markup_percentage'])),
+    discountPercentage: Value(_d(raw['discount_percentage'])),
+    isDefault: Value(_b(raw['is_default'])),
+  );
+
+  MedicineBrandsTableCompanion _mapToBrand(Map<String, dynamic> raw) => MedicineBrandsTableCompanion(
+    id: Value(_s(raw['id'])),
+    name: Value(_s(raw['name'])),
+    description: Value(_sn(raw['description'])),
+    logo: Value(_sn(raw['logo'])),
+    createdAt: Value(_dt(raw['created_at'])),
+  );
+
+  MedicineVariantsTableCompanion _mapToVariant(Map<String, dynamic> raw) => MedicineVariantsTableCompanion(
+    id: Value(_s(raw['id'])),
+    medicineId: Value(_s(raw['medicine_id'])),
+    name: Value(_s(raw['name'])),
+    price: Value(_d(raw['price'])),
+    cost: Value(_d(raw['cost'])),
+    sku: Value(_s(raw['sku'])),
+    attributes: Value(_s(raw['attributes'])),
+  );
+
+  ItemsArchiveTableCompanion _mapToItemsArchive(Map<String, dynamic> raw) => ItemsArchiveTableCompanion(
+    id: Value(_s(raw['id'])),
+    medicineId: Value(_s(raw['medicine_id'])),
+    medicineName: Value(_s(raw['medicine_name'])),
+    barcodes: Value(_s(raw['barcodes'])),
+    buyPrice: Value(_d(raw['buy_price'])),
+    sellPrice: Value(_d(raw['sell_price'])),
+    archivedBy: Value(_s(raw['archived_by'])),
+    archivedAt: Value(_dt(raw['archived_at'])),
+    reason: Value(_sn(raw['reason'])),
+    branchId: Value(_s(raw['branch_id'])),
     isDeleted: Value(_b(raw['is_deleted'])),
   );
 

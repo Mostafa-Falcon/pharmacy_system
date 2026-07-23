@@ -14798,6 +14798,50 @@ class $ReturnsTableTable extends ReturnsTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _returnTypeMeta = const VerificationMeta(
+    'returnType',
+  );
+  @override
+  late final GeneratedColumn<String> returnType = GeneratedColumn<String>(
+    'return_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _partyIdMeta = const VerificationMeta(
+    'partyId',
+  );
+  @override
+  late final GeneratedColumn<String> partyId = GeneratedColumn<String>(
+    'party_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _partyNameMeta = const VerificationMeta(
+    'partyName',
+  );
+  @override
+  late final GeneratedColumn<String> partyName = GeneratedColumn<String>(
+    'party_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _partyTypeMeta = const VerificationMeta(
+    'partyType',
+  );
+  @override
+  late final GeneratedColumn<String> partyType = GeneratedColumn<String>(
+    'party_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _saleIdMeta = const VerificationMeta('saleId');
   @override
   late final GeneratedColumn<String> saleId = GeneratedColumn<String>(
@@ -14837,6 +14881,37 @@ class $ReturnsTableTable extends ReturnsTable
     false,
     type: DriftSqlType.double,
     requiredDuringInsert: true,
+  );
+  static const VerificationMeta _discountPercentMeta = const VerificationMeta(
+    'discountPercent',
+  );
+  @override
+  late final GeneratedColumn<double> discountPercent = GeneratedColumn<double>(
+    'discount_percent',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _finalAmountMeta = const VerificationMeta(
+    'finalAmount',
+  );
+  @override
+  late final GeneratedColumn<double> finalAmount = GeneratedColumn<double>(
+    'final_amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _safeIdMeta = const VerificationMeta('safeId');
+  @override
+  late final GeneratedColumn<String> safeId = GeneratedColumn<String>(
+    'safe_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _reasonMeta = const VerificationMeta('reason');
   @override
@@ -14918,10 +14993,17 @@ class $ReturnsTableTable extends ReturnsTable
   List<GeneratedColumn> get $columns => [
     id,
     branchId,
+    returnType,
+    partyId,
+    partyName,
+    partyType,
     saleId,
     purchaseId,
     items,
     totalAmount,
+    discountPercent,
+    finalAmount,
+    safeId,
     reason,
     notes,
     createdBy,
@@ -14955,6 +15037,32 @@ class $ReturnsTableTable extends ReturnsTable
     } else if (isInserting) {
       context.missing(_branchIdMeta);
     }
+    if (data.containsKey('return_type')) {
+      context.handle(
+        _returnTypeMeta,
+        returnType.isAcceptableOrUnknown(data['return_type']!, _returnTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_returnTypeMeta);
+    }
+    if (data.containsKey('party_id')) {
+      context.handle(
+        _partyIdMeta,
+        partyId.isAcceptableOrUnknown(data['party_id']!, _partyIdMeta),
+      );
+    }
+    if (data.containsKey('party_name')) {
+      context.handle(
+        _partyNameMeta,
+        partyName.isAcceptableOrUnknown(data['party_name']!, _partyNameMeta),
+      );
+    }
+    if (data.containsKey('party_type')) {
+      context.handle(
+        _partyTypeMeta,
+        partyType.isAcceptableOrUnknown(data['party_type']!, _partyTypeMeta),
+      );
+    }
     if (data.containsKey('sale_id')) {
       context.handle(
         _saleIdMeta,
@@ -14985,6 +15093,34 @@ class $ReturnsTableTable extends ReturnsTable
       );
     } else if (isInserting) {
       context.missing(_totalAmountMeta);
+    }
+    if (data.containsKey('discount_percent')) {
+      context.handle(
+        _discountPercentMeta,
+        discountPercent.isAcceptableOrUnknown(
+          data['discount_percent']!,
+          _discountPercentMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_discountPercentMeta);
+    }
+    if (data.containsKey('final_amount')) {
+      context.handle(
+        _finalAmountMeta,
+        finalAmount.isAcceptableOrUnknown(
+          data['final_amount']!,
+          _finalAmountMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_finalAmountMeta);
+    }
+    if (data.containsKey('safe_id')) {
+      context.handle(
+        _safeIdMeta,
+        safeId.isAcceptableOrUnknown(data['safe_id']!, _safeIdMeta),
+      );
     }
     if (data.containsKey('reason')) {
       context.handle(
@@ -15063,6 +15199,22 @@ class $ReturnsTableTable extends ReturnsTable
         DriftSqlType.string,
         data['${effectivePrefix}branch_id'],
       )!,
+      returnType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}return_type'],
+      )!,
+      partyId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}party_id'],
+      ),
+      partyName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}party_name'],
+      ),
+      partyType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}party_type'],
+      ),
       saleId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}sale_id'],
@@ -15079,6 +15231,18 @@ class $ReturnsTableTable extends ReturnsTable
         DriftSqlType.double,
         data['${effectivePrefix}total_amount'],
       )!,
+      discountPercent: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}discount_percent'],
+      )!,
+      finalAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}final_amount'],
+      )!,
+      safeId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}safe_id'],
+      ),
       reason: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}reason'],
@@ -15120,10 +15284,17 @@ class ReturnsTableData extends DataClass
     implements Insertable<ReturnsTableData> {
   final String id;
   final String branchId;
+  final String returnType;
+  final String? partyId;
+  final String? partyName;
+  final String? partyType;
   final String? saleId;
   final String? purchaseId;
   final String items;
   final double totalAmount;
+  final double discountPercent;
+  final double finalAmount;
+  final String? safeId;
   final String reason;
   final String? notes;
   final String createdBy;
@@ -15134,10 +15305,17 @@ class ReturnsTableData extends DataClass
   const ReturnsTableData({
     required this.id,
     required this.branchId,
+    required this.returnType,
+    this.partyId,
+    this.partyName,
+    this.partyType,
     this.saleId,
     this.purchaseId,
     required this.items,
     required this.totalAmount,
+    required this.discountPercent,
+    required this.finalAmount,
+    this.safeId,
     required this.reason,
     this.notes,
     required this.createdBy,
@@ -15151,6 +15329,16 @@ class ReturnsTableData extends DataClass
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['branch_id'] = Variable<String>(branchId);
+    map['return_type'] = Variable<String>(returnType);
+    if (!nullToAbsent || partyId != null) {
+      map['party_id'] = Variable<String>(partyId);
+    }
+    if (!nullToAbsent || partyName != null) {
+      map['party_name'] = Variable<String>(partyName);
+    }
+    if (!nullToAbsent || partyType != null) {
+      map['party_type'] = Variable<String>(partyType);
+    }
     if (!nullToAbsent || saleId != null) {
       map['sale_id'] = Variable<String>(saleId);
     }
@@ -15159,6 +15347,11 @@ class ReturnsTableData extends DataClass
     }
     map['items'] = Variable<String>(items);
     map['total_amount'] = Variable<double>(totalAmount);
+    map['discount_percent'] = Variable<double>(discountPercent);
+    map['final_amount'] = Variable<double>(finalAmount);
+    if (!nullToAbsent || safeId != null) {
+      map['safe_id'] = Variable<String>(safeId);
+    }
     map['reason'] = Variable<String>(reason);
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
@@ -15175,6 +15368,16 @@ class ReturnsTableData extends DataClass
     return ReturnsTableCompanion(
       id: Value(id),
       branchId: Value(branchId),
+      returnType: Value(returnType),
+      partyId: partyId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(partyId),
+      partyName: partyName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(partyName),
+      partyType: partyType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(partyType),
       saleId: saleId == null && nullToAbsent
           ? const Value.absent()
           : Value(saleId),
@@ -15183,6 +15386,11 @@ class ReturnsTableData extends DataClass
           : Value(purchaseId),
       items: Value(items),
       totalAmount: Value(totalAmount),
+      discountPercent: Value(discountPercent),
+      finalAmount: Value(finalAmount),
+      safeId: safeId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(safeId),
       reason: Value(reason),
       notes: notes == null && nullToAbsent
           ? const Value.absent()
@@ -15203,10 +15411,17 @@ class ReturnsTableData extends DataClass
     return ReturnsTableData(
       id: serializer.fromJson<String>(json['id']),
       branchId: serializer.fromJson<String>(json['branchId']),
+      returnType: serializer.fromJson<String>(json['returnType']),
+      partyId: serializer.fromJson<String?>(json['partyId']),
+      partyName: serializer.fromJson<String?>(json['partyName']),
+      partyType: serializer.fromJson<String?>(json['partyType']),
       saleId: serializer.fromJson<String?>(json['saleId']),
       purchaseId: serializer.fromJson<String?>(json['purchaseId']),
       items: serializer.fromJson<String>(json['items']),
       totalAmount: serializer.fromJson<double>(json['totalAmount']),
+      discountPercent: serializer.fromJson<double>(json['discountPercent']),
+      finalAmount: serializer.fromJson<double>(json['finalAmount']),
+      safeId: serializer.fromJson<String?>(json['safeId']),
       reason: serializer.fromJson<String>(json['reason']),
       notes: serializer.fromJson<String?>(json['notes']),
       createdBy: serializer.fromJson<String>(json['createdBy']),
@@ -15222,10 +15437,17 @@ class ReturnsTableData extends DataClass
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'branchId': serializer.toJson<String>(branchId),
+      'returnType': serializer.toJson<String>(returnType),
+      'partyId': serializer.toJson<String?>(partyId),
+      'partyName': serializer.toJson<String?>(partyName),
+      'partyType': serializer.toJson<String?>(partyType),
       'saleId': serializer.toJson<String?>(saleId),
       'purchaseId': serializer.toJson<String?>(purchaseId),
       'items': serializer.toJson<String>(items),
       'totalAmount': serializer.toJson<double>(totalAmount),
+      'discountPercent': serializer.toJson<double>(discountPercent),
+      'finalAmount': serializer.toJson<double>(finalAmount),
+      'safeId': serializer.toJson<String?>(safeId),
       'reason': serializer.toJson<String>(reason),
       'notes': serializer.toJson<String?>(notes),
       'createdBy': serializer.toJson<String>(createdBy),
@@ -15239,10 +15461,17 @@ class ReturnsTableData extends DataClass
   ReturnsTableData copyWith({
     String? id,
     String? branchId,
+    String? returnType,
+    Value<String?> partyId = const Value.absent(),
+    Value<String?> partyName = const Value.absent(),
+    Value<String?> partyType = const Value.absent(),
     Value<String?> saleId = const Value.absent(),
     Value<String?> purchaseId = const Value.absent(),
     String? items,
     double? totalAmount,
+    double? discountPercent,
+    double? finalAmount,
+    Value<String?> safeId = const Value.absent(),
     String? reason,
     Value<String?> notes = const Value.absent(),
     String? createdBy,
@@ -15253,10 +15482,17 @@ class ReturnsTableData extends DataClass
   }) => ReturnsTableData(
     id: id ?? this.id,
     branchId: branchId ?? this.branchId,
+    returnType: returnType ?? this.returnType,
+    partyId: partyId.present ? partyId.value : this.partyId,
+    partyName: partyName.present ? partyName.value : this.partyName,
+    partyType: partyType.present ? partyType.value : this.partyType,
     saleId: saleId.present ? saleId.value : this.saleId,
     purchaseId: purchaseId.present ? purchaseId.value : this.purchaseId,
     items: items ?? this.items,
     totalAmount: totalAmount ?? this.totalAmount,
+    discountPercent: discountPercent ?? this.discountPercent,
+    finalAmount: finalAmount ?? this.finalAmount,
+    safeId: safeId.present ? safeId.value : this.safeId,
     reason: reason ?? this.reason,
     notes: notes.present ? notes.value : this.notes,
     createdBy: createdBy ?? this.createdBy,
@@ -15269,6 +15505,12 @@ class ReturnsTableData extends DataClass
     return ReturnsTableData(
       id: data.id.present ? data.id.value : this.id,
       branchId: data.branchId.present ? data.branchId.value : this.branchId,
+      returnType: data.returnType.present
+          ? data.returnType.value
+          : this.returnType,
+      partyId: data.partyId.present ? data.partyId.value : this.partyId,
+      partyName: data.partyName.present ? data.partyName.value : this.partyName,
+      partyType: data.partyType.present ? data.partyType.value : this.partyType,
       saleId: data.saleId.present ? data.saleId.value : this.saleId,
       purchaseId: data.purchaseId.present
           ? data.purchaseId.value
@@ -15277,6 +15519,13 @@ class ReturnsTableData extends DataClass
       totalAmount: data.totalAmount.present
           ? data.totalAmount.value
           : this.totalAmount,
+      discountPercent: data.discountPercent.present
+          ? data.discountPercent.value
+          : this.discountPercent,
+      finalAmount: data.finalAmount.present
+          ? data.finalAmount.value
+          : this.finalAmount,
+      safeId: data.safeId.present ? data.safeId.value : this.safeId,
       reason: data.reason.present ? data.reason.value : this.reason,
       notes: data.notes.present ? data.notes.value : this.notes,
       createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
@@ -15296,10 +15545,17 @@ class ReturnsTableData extends DataClass
     return (StringBuffer('ReturnsTableData(')
           ..write('id: $id, ')
           ..write('branchId: $branchId, ')
+          ..write('returnType: $returnType, ')
+          ..write('partyId: $partyId, ')
+          ..write('partyName: $partyName, ')
+          ..write('partyType: $partyType, ')
           ..write('saleId: $saleId, ')
           ..write('purchaseId: $purchaseId, ')
           ..write('items: $items, ')
           ..write('totalAmount: $totalAmount, ')
+          ..write('discountPercent: $discountPercent, ')
+          ..write('finalAmount: $finalAmount, ')
+          ..write('safeId: $safeId, ')
           ..write('reason: $reason, ')
           ..write('notes: $notes, ')
           ..write('createdBy: $createdBy, ')
@@ -15315,10 +15571,17 @@ class ReturnsTableData extends DataClass
   int get hashCode => Object.hash(
     id,
     branchId,
+    returnType,
+    partyId,
+    partyName,
+    partyType,
     saleId,
     purchaseId,
     items,
     totalAmount,
+    discountPercent,
+    finalAmount,
+    safeId,
     reason,
     notes,
     createdBy,
@@ -15333,10 +15596,17 @@ class ReturnsTableData extends DataClass
       (other is ReturnsTableData &&
           other.id == this.id &&
           other.branchId == this.branchId &&
+          other.returnType == this.returnType &&
+          other.partyId == this.partyId &&
+          other.partyName == this.partyName &&
+          other.partyType == this.partyType &&
           other.saleId == this.saleId &&
           other.purchaseId == this.purchaseId &&
           other.items == this.items &&
           other.totalAmount == this.totalAmount &&
+          other.discountPercent == this.discountPercent &&
+          other.finalAmount == this.finalAmount &&
+          other.safeId == this.safeId &&
           other.reason == this.reason &&
           other.notes == this.notes &&
           other.createdBy == this.createdBy &&
@@ -15349,10 +15619,17 @@ class ReturnsTableData extends DataClass
 class ReturnsTableCompanion extends UpdateCompanion<ReturnsTableData> {
   final Value<String> id;
   final Value<String> branchId;
+  final Value<String> returnType;
+  final Value<String?> partyId;
+  final Value<String?> partyName;
+  final Value<String?> partyType;
   final Value<String?> saleId;
   final Value<String?> purchaseId;
   final Value<String> items;
   final Value<double> totalAmount;
+  final Value<double> discountPercent;
+  final Value<double> finalAmount;
+  final Value<String?> safeId;
   final Value<String> reason;
   final Value<String?> notes;
   final Value<String> createdBy;
@@ -15364,10 +15641,17 @@ class ReturnsTableCompanion extends UpdateCompanion<ReturnsTableData> {
   const ReturnsTableCompanion({
     this.id = const Value.absent(),
     this.branchId = const Value.absent(),
+    this.returnType = const Value.absent(),
+    this.partyId = const Value.absent(),
+    this.partyName = const Value.absent(),
+    this.partyType = const Value.absent(),
     this.saleId = const Value.absent(),
     this.purchaseId = const Value.absent(),
     this.items = const Value.absent(),
     this.totalAmount = const Value.absent(),
+    this.discountPercent = const Value.absent(),
+    this.finalAmount = const Value.absent(),
+    this.safeId = const Value.absent(),
     this.reason = const Value.absent(),
     this.notes = const Value.absent(),
     this.createdBy = const Value.absent(),
@@ -15380,10 +15664,17 @@ class ReturnsTableCompanion extends UpdateCompanion<ReturnsTableData> {
   ReturnsTableCompanion.insert({
     required String id,
     required String branchId,
+    required String returnType,
+    this.partyId = const Value.absent(),
+    this.partyName = const Value.absent(),
+    this.partyType = const Value.absent(),
     this.saleId = const Value.absent(),
     this.purchaseId = const Value.absent(),
     required String items,
     required double totalAmount,
+    required double discountPercent,
+    required double finalAmount,
+    this.safeId = const Value.absent(),
     required String reason,
     this.notes = const Value.absent(),
     required String createdBy,
@@ -15394,8 +15685,11 @@ class ReturnsTableCompanion extends UpdateCompanion<ReturnsTableData> {
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        branchId = Value(branchId),
+       returnType = Value(returnType),
        items = Value(items),
        totalAmount = Value(totalAmount),
+       discountPercent = Value(discountPercent),
+       finalAmount = Value(finalAmount),
        reason = Value(reason),
        createdBy = Value(createdBy),
        createdAt = Value(createdAt),
@@ -15405,10 +15699,17 @@ class ReturnsTableCompanion extends UpdateCompanion<ReturnsTableData> {
   static Insertable<ReturnsTableData> custom({
     Expression<String>? id,
     Expression<String>? branchId,
+    Expression<String>? returnType,
+    Expression<String>? partyId,
+    Expression<String>? partyName,
+    Expression<String>? partyType,
     Expression<String>? saleId,
     Expression<String>? purchaseId,
     Expression<String>? items,
     Expression<double>? totalAmount,
+    Expression<double>? discountPercent,
+    Expression<double>? finalAmount,
+    Expression<String>? safeId,
     Expression<String>? reason,
     Expression<String>? notes,
     Expression<String>? createdBy,
@@ -15421,10 +15722,17 @@ class ReturnsTableCompanion extends UpdateCompanion<ReturnsTableData> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (branchId != null) 'branch_id': branchId,
+      if (returnType != null) 'return_type': returnType,
+      if (partyId != null) 'party_id': partyId,
+      if (partyName != null) 'party_name': partyName,
+      if (partyType != null) 'party_type': partyType,
       if (saleId != null) 'sale_id': saleId,
       if (purchaseId != null) 'purchase_id': purchaseId,
       if (items != null) 'items': items,
       if (totalAmount != null) 'total_amount': totalAmount,
+      if (discountPercent != null) 'discount_percent': discountPercent,
+      if (finalAmount != null) 'final_amount': finalAmount,
+      if (safeId != null) 'safe_id': safeId,
       if (reason != null) 'reason': reason,
       if (notes != null) 'notes': notes,
       if (createdBy != null) 'created_by': createdBy,
@@ -15439,10 +15747,17 @@ class ReturnsTableCompanion extends UpdateCompanion<ReturnsTableData> {
   ReturnsTableCompanion copyWith({
     Value<String>? id,
     Value<String>? branchId,
+    Value<String>? returnType,
+    Value<String?>? partyId,
+    Value<String?>? partyName,
+    Value<String?>? partyType,
     Value<String?>? saleId,
     Value<String?>? purchaseId,
     Value<String>? items,
     Value<double>? totalAmount,
+    Value<double>? discountPercent,
+    Value<double>? finalAmount,
+    Value<String?>? safeId,
     Value<String>? reason,
     Value<String?>? notes,
     Value<String>? createdBy,
@@ -15455,10 +15770,17 @@ class ReturnsTableCompanion extends UpdateCompanion<ReturnsTableData> {
     return ReturnsTableCompanion(
       id: id ?? this.id,
       branchId: branchId ?? this.branchId,
+      returnType: returnType ?? this.returnType,
+      partyId: partyId ?? this.partyId,
+      partyName: partyName ?? this.partyName,
+      partyType: partyType ?? this.partyType,
       saleId: saleId ?? this.saleId,
       purchaseId: purchaseId ?? this.purchaseId,
       items: items ?? this.items,
       totalAmount: totalAmount ?? this.totalAmount,
+      discountPercent: discountPercent ?? this.discountPercent,
+      finalAmount: finalAmount ?? this.finalAmount,
+      safeId: safeId ?? this.safeId,
       reason: reason ?? this.reason,
       notes: notes ?? this.notes,
       createdBy: createdBy ?? this.createdBy,
@@ -15479,6 +15801,18 @@ class ReturnsTableCompanion extends UpdateCompanion<ReturnsTableData> {
     if (branchId.present) {
       map['branch_id'] = Variable<String>(branchId.value);
     }
+    if (returnType.present) {
+      map['return_type'] = Variable<String>(returnType.value);
+    }
+    if (partyId.present) {
+      map['party_id'] = Variable<String>(partyId.value);
+    }
+    if (partyName.present) {
+      map['party_name'] = Variable<String>(partyName.value);
+    }
+    if (partyType.present) {
+      map['party_type'] = Variable<String>(partyType.value);
+    }
     if (saleId.present) {
       map['sale_id'] = Variable<String>(saleId.value);
     }
@@ -15490,6 +15824,15 @@ class ReturnsTableCompanion extends UpdateCompanion<ReturnsTableData> {
     }
     if (totalAmount.present) {
       map['total_amount'] = Variable<double>(totalAmount.value);
+    }
+    if (discountPercent.present) {
+      map['discount_percent'] = Variable<double>(discountPercent.value);
+    }
+    if (finalAmount.present) {
+      map['final_amount'] = Variable<double>(finalAmount.value);
+    }
+    if (safeId.present) {
+      map['safe_id'] = Variable<String>(safeId.value);
     }
     if (reason.present) {
       map['reason'] = Variable<String>(reason.value);
@@ -15523,10 +15866,17 @@ class ReturnsTableCompanion extends UpdateCompanion<ReturnsTableData> {
     return (StringBuffer('ReturnsTableCompanion(')
           ..write('id: $id, ')
           ..write('branchId: $branchId, ')
+          ..write('returnType: $returnType, ')
+          ..write('partyId: $partyId, ')
+          ..write('partyName: $partyName, ')
+          ..write('partyType: $partyType, ')
           ..write('saleId: $saleId, ')
           ..write('purchaseId: $purchaseId, ')
           ..write('items: $items, ')
           ..write('totalAmount: $totalAmount, ')
+          ..write('discountPercent: $discountPercent, ')
+          ..write('finalAmount: $finalAmount, ')
+          ..write('safeId: $safeId, ')
           ..write('reason: $reason, ')
           ..write('notes: $notes, ')
           ..write('createdBy: $createdBy, ')
@@ -48590,10 +48940,17 @@ typedef $$ReturnsTableTableCreateCompanionBuilder =
     ReturnsTableCompanion Function({
       required String id,
       required String branchId,
+      required String returnType,
+      Value<String?> partyId,
+      Value<String?> partyName,
+      Value<String?> partyType,
       Value<String?> saleId,
       Value<String?> purchaseId,
       required String items,
       required double totalAmount,
+      required double discountPercent,
+      required double finalAmount,
+      Value<String?> safeId,
       required String reason,
       Value<String?> notes,
       required String createdBy,
@@ -48607,10 +48964,17 @@ typedef $$ReturnsTableTableUpdateCompanionBuilder =
     ReturnsTableCompanion Function({
       Value<String> id,
       Value<String> branchId,
+      Value<String> returnType,
+      Value<String?> partyId,
+      Value<String?> partyName,
+      Value<String?> partyType,
       Value<String?> saleId,
       Value<String?> purchaseId,
       Value<String> items,
       Value<double> totalAmount,
+      Value<double> discountPercent,
+      Value<double> finalAmount,
+      Value<String?> safeId,
       Value<String> reason,
       Value<String?> notes,
       Value<String> createdBy,
@@ -48640,6 +49004,26 @@ class $$ReturnsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get returnType => $composableBuilder(
+    column: $table.returnType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get partyId => $composableBuilder(
+    column: $table.partyId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get partyName => $composableBuilder(
+    column: $table.partyName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get partyType => $composableBuilder(
+    column: $table.partyType,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get saleId => $composableBuilder(
     column: $table.saleId,
     builder: (column) => ColumnFilters(column),
@@ -48657,6 +49041,21 @@ class $$ReturnsTableTableFilterComposer
 
   ColumnFilters<double> get totalAmount => $composableBuilder(
     column: $table.totalAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get discountPercent => $composableBuilder(
+    column: $table.discountPercent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get finalAmount => $composableBuilder(
+    column: $table.finalAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get safeId => $composableBuilder(
+    column: $table.safeId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -48715,6 +49114,26 @@ class $$ReturnsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get returnType => $composableBuilder(
+    column: $table.returnType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get partyId => $composableBuilder(
+    column: $table.partyId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get partyName => $composableBuilder(
+    column: $table.partyName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get partyType => $composableBuilder(
+    column: $table.partyType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get saleId => $composableBuilder(
     column: $table.saleId,
     builder: (column) => ColumnOrderings(column),
@@ -48732,6 +49151,21 @@ class $$ReturnsTableTableOrderingComposer
 
   ColumnOrderings<double> get totalAmount => $composableBuilder(
     column: $table.totalAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get discountPercent => $composableBuilder(
+    column: $table.discountPercent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get finalAmount => $composableBuilder(
+    column: $table.finalAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get safeId => $composableBuilder(
+    column: $table.safeId,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -48786,6 +49220,20 @@ class $$ReturnsTableTableAnnotationComposer
   GeneratedColumn<String> get branchId =>
       $composableBuilder(column: $table.branchId, builder: (column) => column);
 
+  GeneratedColumn<String> get returnType => $composableBuilder(
+    column: $table.returnType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get partyId =>
+      $composableBuilder(column: $table.partyId, builder: (column) => column);
+
+  GeneratedColumn<String> get partyName =>
+      $composableBuilder(column: $table.partyName, builder: (column) => column);
+
+  GeneratedColumn<String> get partyType =>
+      $composableBuilder(column: $table.partyType, builder: (column) => column);
+
   GeneratedColumn<String> get saleId =>
       $composableBuilder(column: $table.saleId, builder: (column) => column);
 
@@ -48801,6 +49249,19 @@ class $$ReturnsTableTableAnnotationComposer
     column: $table.totalAmount,
     builder: (column) => column,
   );
+
+  GeneratedColumn<double> get discountPercent => $composableBuilder(
+    column: $table.discountPercent,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get finalAmount => $composableBuilder(
+    column: $table.finalAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get safeId =>
+      $composableBuilder(column: $table.safeId, builder: (column) => column);
 
   GeneratedColumn<String> get reason =>
       $composableBuilder(column: $table.reason, builder: (column) => column);
@@ -48861,10 +49322,17 @@ class $$ReturnsTableTableTableManager
               ({
                 Value<String> id = const Value.absent(),
                 Value<String> branchId = const Value.absent(),
+                Value<String> returnType = const Value.absent(),
+                Value<String?> partyId = const Value.absent(),
+                Value<String?> partyName = const Value.absent(),
+                Value<String?> partyType = const Value.absent(),
                 Value<String?> saleId = const Value.absent(),
                 Value<String?> purchaseId = const Value.absent(),
                 Value<String> items = const Value.absent(),
                 Value<double> totalAmount = const Value.absent(),
+                Value<double> discountPercent = const Value.absent(),
+                Value<double> finalAmount = const Value.absent(),
+                Value<String?> safeId = const Value.absent(),
                 Value<String> reason = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<String> createdBy = const Value.absent(),
@@ -48876,10 +49344,17 @@ class $$ReturnsTableTableTableManager
               }) => ReturnsTableCompanion(
                 id: id,
                 branchId: branchId,
+                returnType: returnType,
+                partyId: partyId,
+                partyName: partyName,
+                partyType: partyType,
                 saleId: saleId,
                 purchaseId: purchaseId,
                 items: items,
                 totalAmount: totalAmount,
+                discountPercent: discountPercent,
+                finalAmount: finalAmount,
+                safeId: safeId,
                 reason: reason,
                 notes: notes,
                 createdBy: createdBy,
@@ -48893,10 +49368,17 @@ class $$ReturnsTableTableTableManager
               ({
                 required String id,
                 required String branchId,
+                required String returnType,
+                Value<String?> partyId = const Value.absent(),
+                Value<String?> partyName = const Value.absent(),
+                Value<String?> partyType = const Value.absent(),
                 Value<String?> saleId = const Value.absent(),
                 Value<String?> purchaseId = const Value.absent(),
                 required String items,
                 required double totalAmount,
+                required double discountPercent,
+                required double finalAmount,
+                Value<String?> safeId = const Value.absent(),
                 required String reason,
                 Value<String?> notes = const Value.absent(),
                 required String createdBy,
@@ -48908,10 +49390,17 @@ class $$ReturnsTableTableTableManager
               }) => ReturnsTableCompanion.insert(
                 id: id,
                 branchId: branchId,
+                returnType: returnType,
+                partyId: partyId,
+                partyName: partyName,
+                partyType: partyType,
                 saleId: saleId,
                 purchaseId: purchaseId,
                 items: items,
                 totalAmount: totalAmount,
+                discountPercent: discountPercent,
+                finalAmount: finalAmount,
+                safeId: safeId,
                 reason: reason,
                 notes: notes,
                 createdBy: createdBy,

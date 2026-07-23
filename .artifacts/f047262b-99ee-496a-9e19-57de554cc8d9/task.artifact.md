@@ -1,13 +1,11 @@
-- [ ] **Infrastructure & Models**
-    - [ ] Add `FREE_RETURN` route in `app_routes.dart`
-    - [ ] Update `ReturnModel` with `discountPercent` and `safeId`
-- [ ] **Business Logic: Free Return Service**
-    - [ ] Create `FreeReturnService` to coordinate stock and ledger updates
-- [ ] **Form Implementation: Free Return Bloc**
-    - [ ] Create `FreeReturnBloc`, `FreeReturnEvent`, and `FreeReturnState`
-- [ ] **UI Implementation: Free Return View**
-    - [ ] Design the layout based on the provided screenshots
-    - [ ] Implement the dynamic items table and totals calculation
-- [ ] **Verification**
-    - [ ] Test Sales/Purchase return logic with stock/ledger integration
-    - [ ] Verify UI consistency with the premium Medicines table design
+- [ ] **Phase 1: Logic & Data Integration**
+    - [ ] Update `BulkPriceUpdateBloc` to use `BranchDataService` and `MedicinesRepository`
+    - [ ] Implement `batchUpdate` logic with full sync support
+- [ ] **Phase 2: UI Redesign (Premium Standard)**
+    - [ ] Redesign `BulkPriceUpdateView` with `StandardModuleLayout`
+    - [ ] Create three logical cards: Scope, Parameters, and Execution
+    - [ ] Standardize choice chips and dropdowns
+    - [ ] Add real-time "Affected Count" preview logic
+- [ ] **Phase 3: Cleanup & Verification**
+    - [ ] Add progress indicators for the update process
+    - [ ] Verify multi-branch data consistency and sync queue

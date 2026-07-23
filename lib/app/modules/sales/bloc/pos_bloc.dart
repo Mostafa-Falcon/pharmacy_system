@@ -307,6 +307,9 @@ class PosBloc extends Bloc<PosEvent, PosState> {
   void _onAddMedicine(PosAddMedicine event, Emitter<PosState> emit) {
     final medicine = event.medicine;
     final price = event.unit?.sellPrice ?? medicine.sellPrice;
+    final factor = event.unit?.conversionFactor ?? 
+                  (medicine.units.isNotEmpty ? medicine.units.first.conversionFactor : 1.0);
+    
     final available = availableFor(medicine);
     if (available <= 0 && !medicine.allowNegativeStock) {
       _warn(
@@ -332,6 +335,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
                 quantity: 1,
                 unitPrice: price,
                 unitName: event.unit?.name,
+                conversionFactor: factor,
               ),
             ],
             searchQuery: '',
@@ -441,10 +445,13 @@ class PosBloc extends Bloc<PosEvent, PosState> {
       (u) => u.name == event.unitName,
     );
     final price = unit?.sellPrice ?? line.medicine.sellPrice;
+    final factor = unit?.conversionFactor ?? 1.0;
+    
     final updated = [...state.cart];
     updated[updated.indexOf(line)] = line.copyWith(
       unitName: event.unitName,
       unitPrice: price,
+      conversionFactor: factor,
     );
     emit(state.copyWith(cart: updated));
   }

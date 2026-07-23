@@ -30,12 +30,14 @@ class SalesReturnRepository {
     return ReturnModel(
       id: d.id,
       branchId: d.branchId,
+      returnType: 'sales', // Default for legacy records
       saleId: d.saleId,
       purchaseId: d.purchaseId,
       items: (jsonDecode(d.items) as List)
           .map((e) => ReturnItemModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       totalAmount: d.totalAmount,
+      finalAmount: d.totalAmount, // Default for legacy records
       reason: ReturnReason.values.firstWhere(
         (r) => r.name == d.reason,
         orElse: () => ReturnReason.other,

@@ -35,6 +35,21 @@ const List<SyncTableMeta> syncTables = [
   SyncTableMeta(table: 'supplier_customers', box: 'supplier_customers', label: AppStrings.tableSupplierCustomers),
   SyncTableMeta(table: 'customer_ledgers', box: 'customer_ledgers', label: AppStrings.tableCustomerLedgers),
   SyncTableMeta(table: 'supplier_ledgers', box: 'supplier_ledgers', label: AppStrings.tableSupplierLedgers),
+  SyncTableMeta(table: 'expenses', box: 'expenses', label: 'المصروفات'),
+  SyncTableMeta(table: 'journal_entries', box: 'journal_entries', label: 'القيود المحاسبية'),
+  SyncTableMeta(table: 'accounts', box: 'accounts', label: 'شجرة الحسابات'),
+  SyncTableMeta(table: 'employees', box: 'employees', label: 'شؤون الموظفين'),
+  SyncTableMeta(table: 'attendance', box: 'attendance', label: 'الحضور والانصراف'),
+  SyncTableMeta(table: 'payroll', box: 'payroll', label: 'المرتبات'),
+  SyncTableMeta(table: 'departments', box: 'departments', label: 'الأقسام'),
+  SyncTableMeta(table: 'notifications', box: 'notifications', label: 'التنبيهات'),
+  SyncTableMeta(table: 'tasks', box: 'tasks', label: 'المهام'),
+  SyncTableMeta(table: 'stock_adjustments', box: 'stock_adjustments', label: 'تسويات المخزون'),
+  SyncTableMeta(table: 'inventory_transactions', box: 'inventory_transactions', label: 'حركات المخزن'),
+  SyncTableMeta(table: 'price_groups', box: 'price_groups', label: 'مجموعات الأسعار'),
+  SyncTableMeta(table: 'brands', box: 'brands', label: 'العلامات التجارية'),
+  SyncTableMeta(table: 'variants', box: 'variants', label: 'بدائل الأصناف'),
+  SyncTableMeta(table: 'items_archive', box: 'items_archive', label: 'أرشيف الأصناف'),
 ];
 
 String syncTableLabel(String table) =>

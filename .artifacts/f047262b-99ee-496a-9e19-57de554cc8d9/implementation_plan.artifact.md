@@ -1,56 +1,44 @@
-# Implementation Plan - Free Return (مرتجع حر) Module
+# Implementation Plan - Professional Bulk Price Update Module
 
-Add a new "Free Return" module that allows pharmacists to record sales and purchase returns without being linked to a specific original invoice. This module will handle stock updates and financial ledger entries automatically.
+Redesign and complete the "Bulk Price Update" module to match the project's premium design language and ensure robust, branch-aware logic with cloud synchronization.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Unified View**: I will implement a single view that toggles between "Sales Return" and "Purchase Return" as shown in the provided screenshots. This ensures a clean and efficient workflow.
+> **Data Integrity**: I will use `BranchDataService.batchUpdateMedicines` to ensure that all price changes are correctly recorded in the local database and queued for synchronization to Supabase. This ensures all branches stay updated.
 
-> [!NOTE]
-> **Financial Integration**: For Sales Returns, the system will record a cash outflow (if cash) or update the customer ledger (if credit). For Purchase Returns, it will record a cash inflow or update the supplier ledger.
+> [!TIP]
+> **Visual Progress**: I will add a progress overlay during the bulk update operation so you can see the status when updating thousands of items.
 
 ## Proposed Changes
 
-### [Component] Routes
+### [Component] Inventory Module (Bloc)
 
-#### [MODIFY] [app_routes.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/routes/app_routes.dart)
-- Add `FREE_RETURN = '/returns/free'`.
-- Map it to destination `free_return`.
+#### [MODIFY] [bulk_price_update_bloc.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/inventory/bloc/bulk_price/bulk_price_update_bloc.dart)
+- Replace direct `_dao` usage with `BranchDataService` and `sl<MedicinesRepository>()`.
+- Update `_onConfirmApply` to use `BranchDataService.batchUpdateMedicines(updatedItems)` for efficiency and sync support.
+- Ensure categories are loaded for the current active branch only.
 
-### [Component] Returns Module (New Bloc)
+### [Component] Inventory Module (View)
 
-#### [NEW] [free_return_bloc.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/returns/bloc/free_return_bloc.dart)
-- State management for the free return form.
-- Handles adding/removing items, calculating totals with discount, and toggling return/party types.
-- Events: `AddItem`, `RemoveItem`, `UpdateItem`, `SetReturnType`, `SetPartyType`, `SubmitReturn`.
-
-### [Component] Returns Module (View)
-
-#### [NEW] [free_return_view.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/returns/views/free_return_view.dart)
-- Professional UI based on the provided screenshots.
-- Includes:
-    - **Header**: Tab switch (Sales vs Purchase).
-    - **Party Section**: Segmented control (Cash, Customer, Supplier) + Dynamic Dropdown.
-    - **Note Section**: Reason/Notes + Safe selection.
-    - **Items Table**: Dynamic item entry with inline editing (Qty, Price, Expiry).
-    - **Footer**: Discount percentage input + Grand Total + Submit Button.
-
-### [Component] Data Layer
-
-#### [MODIFY] [return_model.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/sales/models/return_model.dart)
-- Add `discountPercent` and `safeId` fields to `ReturnModel` if necessary for persistence.
-- Update `toJson` and `fromJson`.
-
-#### [NEW] [free_return_service.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/returns/services/free_return_service.dart)
-- Handle the business logic of saving the return.
-- Call `StockMutationService` to update inventory.
-- Call `PartyLedgerService` to record financial effects.
+#### [MODIFY] [bulk_price_update_view.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/inventory/views/bulk_price_update_view.dart)
+- **Reorganization**: Use `StandardModuleLayout`.
+- **Card 1: Scope (Apply To)**:
+    - Toggle between "All Items" and "Specific Category".
+    - Clean category dropdown integration.
+- **Card 2: Parameters (Field & Operation)**:
+    - Choose Target: [Sell Price, Buy Price, Both].
+    - Choose Operation: [Set Value, Increase (+), Decrease (-), Increase (%), Decrease (%)].
+- **Card 3: Execution (Value & Impact)**:
+    - Input for the numeric value/percentage.
+    - Live Summary: "Affected Items" summary card.
+    - Large, professional "Apply Update" button with a secondary "Reset" option.
+- **Visuals**: Use `TableIconBox` or consistent icons and sector colors.
 
 ## Verification Plan
 
 ### Manual Verification
-1. **Sales Return Test**: Add a "Free Sales Return" for a customer. Verify that the medicine stock increases and the customer's debt decreases (or safe balance decreases).
-2. **Purchase Return Test**: Add a "Free Purchase Return" for a supplier. Verify that the medicine stock decreases and the supplier's debt decreases (or safe balance increases).
-3. **Discount Test**: Apply a 10% discount and verify that the final amount is calculated correctly in the footer.
-4. **Validation Test**: Try to submit without adding items or selecting a party when required.
+1. **Simulation Test**: Select a category and an operation. Verify the "Affected Items" count updates in real-time before applying.
+2. **Buy Price Test**: Increase buy price by 10% for a category. Verify in the Medicines list that the items now have the correct updated buy price.
+3. **Sync Test**: After applying a bulk update, check the "Sync Status" page to confirm all modified medicines are in the queue to be uploaded.
+4. **Validation**: Ensure negative prices are prevented when using the "Decrease" operations.

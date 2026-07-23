@@ -31,6 +31,8 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
     return BlocConsumer<BulkPriceUpdateBloc, BulkPriceUpdateState>(
       listener: (context, state) {
         if (state.isSuccess && state.message != null) {
@@ -40,95 +42,116 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
       builder: (context, state) {
         return StandardModuleLayout(
           title: AppStrings.bulkPriceUpdateTitle,
-          useShell: state.categories.isEmpty,
-          content: ListView(
-            padding: EdgeInsets.all(AppSpacing.md.w),
-            children: [
-              AppCard(
-                padding: EdgeInsets.all(AppSpacing.md.w),
+          subtitle: AppStrings.bulkPriceUpdateDesc,
+          content: SingleChildScrollView(
+            padding: EdgeInsets.all(AppSpacing.xl.w),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 900.w),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SectionHeader(
-                      icon: Icons.price_change_rounded,
-                      title: AppStrings.bulkPriceUpdateTitle,
+                    // Card 1: Scope Selection (Apply To)
+                    _buildStepCard(
+                      title: 'تطبيق على (النطاق)',
+                      icon: Icons.filter_list_rounded,
+                      child: _buildCategorySection(state),
                     ),
-                    SizedBox(height: AppSpacing.sm.h),
-                    ReusableText(AppStrings.bulkPriceUpdateDesc,
-                        variant: ReusableTextVariant.caption),
-                    SizedBox(height: AppSpacing.lg.h),
-                    _buildCategorySection(state),
-                    SizedBox(height: AppSpacing.md.h),
-                    _buildFieldSection(state),
-                    SizedBox(height: AppSpacing.md.h),
-                    _buildOperationSection(state),
-                    SizedBox(height: AppSpacing.md.h),
-                    _buildValueSection(state),
-                    if (state.affectedCount > 0) ...[
-                      SizedBox(height: AppSpacing.md.h),
-                      _buildPreviewSection(state),
-                    ],
-                    SizedBox(height: AppSpacing.lg.h),
-                    _buildActions(state),
+                    SizedBox(height: 16.h),
+
+                    // Card 2: Parameters (Field & Operation)
+                    _buildStepCard(
+                      title: 'البيانات المطلوبة ونوع العملية',
+                      icon: Icons.settings_suggest_rounded,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildFieldSection(state),
+                          SizedBox(height: 24.h),
+                          _buildOperationSection(state),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
+
+                    // Card 3: Execution (Value & Apply)
+                    _buildStepCard(
+                      title: 'تحديد القيمة والتنفيذ',
+                      icon: Icons.bolt_rounded,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildValueSection(state),
+                          if (state.affectedCount > 0) ...[
+                            SizedBox(height: 20.h),
+                            _buildPreviewSection(state),
+                          ],
+                          SizedBox(height: 32.h),
+                          _buildActions(state, scheme),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ],
+            ),
           ),
         );
       },
     );
   }
 
-  Widget _buildCategorySection(BulkPriceUpdateState state) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ReusableText(AppStrings.bulkPriceUpdateApplyTo, style: const TextStyle(fontWeight: FontWeight.bold)),
-        SizedBox(height: AppSpacing.sm.h),
-        Wrap(
-          spacing: 8.w,
-          runSpacing: 8.h,
-          children: [
-            _choiceChip(AppStrings.bulkPriceUpdateAllItems, state.selectedCategory == null, () {
-              context.read<BulkPriceUpdateBloc>().add(BulkPriceUpdateApply(
-                field: state.selectedField,
-                operation: state.selectedOperation,
-                value: state.value,
-              ));
-            }),
-            if (state.categories.isNotEmpty)
-              SizedBox(
-                width: 200.w,
-                child: ReusableDropdown<String>(
-                  labelText: AppStrings.bulkPriceUpdateCategory,
-                  hintText: AppStrings.bulkPriceUpdateCategoryHint,
-                  items: state.categories,
-                  value: state.selectedCategory,
-                  itemAsString: (s) => s,
-                  onChanged: (v) {
-                    if (v != null) {
-                      context.read<BulkPriceUpdateBloc>().add(BulkPriceUpdateApply(
-                        category: v,
-                        field: state.selectedField,
-                        operation: state.selectedOperation,
-                        value: state.value,
-                      ));
-                    }
-                  },
-                ),
-              ),
-          ],
-        ),
-      ],
+  Widget _buildStepCard({required String title, required IconData icon, required Widget child}) {
+    return AppCard(
+      padding: EdgeInsets.all(24.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SectionHeader(title: title, icon: icon),
+          SizedBox(height: 20.h),
+          child,
+        ],
+      ),
     );
   }
 
-  Widget _choiceChip(String label, bool selected, VoidCallback onTap) {
-    return ChoiceChip(
-      label: Text(label),
-      selected: selected,
-      onSelected: (_) => onTap(),
+  Widget _buildCategorySection(BulkPriceUpdateState state) {
+    return Wrap(
+      spacing: 12.w,
+      runSpacing: 12.h,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        _segmentButton(
+          label: AppStrings.bulkPriceUpdateAllItems,
+          isSelected: state.selectedCategory == null,
+          onTap: () => context.read<BulkPriceUpdateBloc>().add(BulkPriceUpdateApply(
+            field: state.selectedField,
+            operation: state.selectedOperation,
+            value: state.value,
+          )),
+        ),
+        if (state.categories.isNotEmpty) ...[
+          ReusableText('أو اختر تصنيف:', style: AppTextStyles.caption(context)),
+          SizedBox(
+            width: 250.w,
+            child: ReusableDropdown<String>(
+              items: state.categories,
+              value: state.selectedCategory,
+              hintText: AppStrings.bulkPriceUpdateCategoryHint,
+              itemAsString: (s) => s,
+              onChanged: (v) {
+                if (v != null) {
+                  context.read<BulkPriceUpdateBloc>().add(BulkPriceUpdateApply(
+                    category: v,
+                    field: state.selectedField,
+                    operation: state.selectedOperation,
+                    value: state.value,
+                  ));
+                }
+              },
+            ),
+          ),
+        ],
+      ],
     );
   }
 
@@ -136,32 +159,26 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ReusableText(AppStrings.bulkPriceUpdateField, style: const TextStyle(fontWeight: FontWeight.bold)),
-        SizedBox(height: AppSpacing.sm.h),
+        ReusableText('الحقل المطلوب تعديله:', style: AppTextStyles.bodyBold(context)),
+        SizedBox(height: 12.h),
         Wrap(
-          spacing: 8.w,
+          spacing: 10.w,
           children: [
-            _choiceChip(AppStrings.bulkPriceUpdateFieldSellPrice, state.selectedField == 'sellPrice', () {
-              context.read<BulkPriceUpdateBloc>().add(BulkPriceUpdateApply(
-                field: 'sellPrice',
-                operation: state.selectedOperation,
-                value: state.value,
-              ));
-            }),
-            _choiceChip(AppStrings.bulkPriceUpdateFieldBuyPrice, state.selectedField == 'buyPrice', () {
-              context.read<BulkPriceUpdateBloc>().add(BulkPriceUpdateApply(
-                field: 'buyPrice',
-                operation: state.selectedOperation,
-                value: state.value,
-              ));
-            }),
-            _choiceChip(AppStrings.bulkPriceUpdateFieldBoth, state.selectedField == 'both', () {
-              context.read<BulkPriceUpdateBloc>().add(BulkPriceUpdateApply(
-                field: 'both',
-                operation: state.selectedOperation,
-                value: state.value,
-              ));
-            }),
+            _segmentButton(
+              label: AppStrings.bulkPriceUpdateFieldSellPrice,
+              isSelected: state.selectedField == 'sellPrice',
+              onTap: () => _updateApply(state, field: 'sellPrice'),
+            ),
+            _segmentButton(
+              label: AppStrings.bulkPriceUpdateFieldBuyPrice,
+              isSelected: state.selectedField == 'buyPrice',
+              onTap: () => _updateApply(state, field: 'buyPrice'),
+            ),
+            _segmentButton(
+              label: AppStrings.bulkPriceUpdateFieldBoth,
+              isSelected: state.selectedField == 'both',
+              onTap: () => _updateApply(state, field: 'both'),
+            ),
           ],
         ),
       ],
@@ -172,82 +189,78 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ReusableText(AppStrings.bulkPriceUpdateOperation, style: const TextStyle(fontWeight: FontWeight.bold)),
-        SizedBox(height: AppSpacing.sm.h),
+        ReusableText('نوع العملية الحسابية:', style: AppTextStyles.bodyBold(context)),
+        SizedBox(height: 12.h),
         Wrap(
-          spacing: 8.w,
-          runSpacing: 8.h,
+          spacing: 10.w,
+          runSpacing: 10.h,
           children: [
-            _opChip(AppStrings.bulkPriceUpdateOpSet, 'set', state),
-            _opChip(AppStrings.bulkPriceUpdateOpIncrease, 'increase', state),
-            _opChip(AppStrings.bulkPriceUpdateOpDecrease, 'decrease', state),
-            _opChip(AppStrings.bulkPriceUpdateOpIncreasePercent, 'increasePercent', state),
-            _opChip(AppStrings.bulkPriceUpdateOpDecreasePercent, 'decreasePercent', state),
+            _segmentButton(label: AppStrings.bulkPriceUpdateOpSet, isSelected: state.selectedOperation == 'set', onTap: () => _updateApply(state, op: 'set')),
+            _segmentButton(label: AppStrings.bulkPriceUpdateOpIncrease, isSelected: state.selectedOperation == 'increase', onTap: () => _updateApply(state, op: 'increase')),
+            _segmentButton(label: AppStrings.bulkPriceUpdateOpDecrease, isSelected: state.selectedOperation == 'decrease', onTap: () => _updateApply(state, op: 'decrease')),
+            _segmentButton(label: AppStrings.bulkPriceUpdateOpIncreasePercent, isSelected: state.selectedOperation == 'increasePercent', onTap: () => _updateApply(state, op: 'increasePercent')),
+            _segmentButton(label: AppStrings.bulkPriceUpdateOpDecreasePercent, isSelected: state.selectedOperation == 'decreasePercent', onTap: () => _updateApply(state, op: 'decreasePercent')),
           ],
         ),
       ],
     );
   }
 
-  Widget _opChip(String label, String value, BulkPriceUpdateState state) {
-    return ChoiceChip(
-      label: Text(label),
-      selected: state.selectedOperation == value,
-      onSelected: (_) {
-        context.read<BulkPriceUpdateBloc>().add(BulkPriceUpdateApply(
-          field: state.selectedField,
-          operation: value,
-          value: state.value,
-        ));
-      },
-    );
+  void _updateApply(BulkPriceUpdateState state, {String? field, String? op, double? val}) {
+    context.read<BulkPriceUpdateBloc>().add(BulkPriceUpdateApply(
+      category: state.selectedCategory,
+      field: field ?? state.selectedField,
+      operation: op ?? state.selectedOperation,
+      value: val ?? state.value,
+    ));
   }
 
   Widget _buildValueSection(BulkPriceUpdateState state) {
     final isPercent = state.selectedOperation.contains('Percent');
-    return ReusableInput(
-      label: isPercent ? AppStrings.bulkPriceUpdatePercentage : AppStrings.bulkPriceUpdateValue,
-      hint: isPercent ? '10' : '0.00',
-      controller: _valueController,
-      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-      prefixIcon: Icon(isPercent ? Icons.percent_rounded : Icons.payments_rounded, size: 18),
-      onChanged: (v) {
-        final val = double.tryParse(v) ?? 0;
-        context.read<BulkPriceUpdateBloc>().add(BulkPriceUpdateApply(
-          field: state.selectedField,
-          operation: state.selectedOperation,
-          value: val,
-        ));
-      },
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Expanded(
+          child: ReusableInput(
+            label: isPercent ? AppStrings.bulkPriceUpdatePercentage : AppStrings.bulkPriceUpdateValue,
+            hint: isPercent ? 'مثال: 10' : '0.00',
+            controller: _valueController,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            prefixIcon: Icon(isPercent ? Icons.percent_rounded : Icons.payments_rounded, size: 20),
+            onChanged: (v) => _updateApply(state, val: double.tryParse(v) ?? 0),
+          ),
+        ),
+        if (isPercent) ...[
+          SizedBox(width: 12.w),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            decoration: BoxDecoration(
+              color: AppColors.info.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(AppRadius.md.r),
+            ),
+            child: ReusableText('سيتم احتساب النسبة من السعر الحالي', style: AppTextStyles.caption(context).copyWith(color: AppColors.info)),
+          ),
+        ],
+      ],
     );
   }
 
   Widget _buildPreviewSection(BulkPriceUpdateState state) {
     return Container(
-      padding: EdgeInsets.all(AppSpacing.md.w),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: AppColors.info.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(AppRadius.button.r),
+        color: AppColors.warning.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(AppRadius.md.r),
+        border: Border.all(color: AppColors.warning.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
-          Icon(Icons.info_outline_rounded, color: AppColors.info, size: AppIconSize.md.value),
-          SizedBox(width: AppSpacing.sm.w),
+          const Icon(Icons.analytics_rounded, color: AppColors.warning),
+          SizedBox(width: 12.w),
           Expanded(
             child: ReusableText(
-              AppStrings.bulkPriceUpdateAffectedItems,
-              variant: ReusableTextVariant.body,
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
-            decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(AppRadius.chip.r),
-            ),
-            child: ReusableText(
-              state.affectedCount.toString(),
-              style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.primary),
+              'سيتم تعديل أسعار ${state.affectedCount} صنف بناءً على اختياراتك الحالية.',
+              style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -255,36 +268,74 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
     );
   }
 
-  Widget _buildActions(BulkPriceUpdateState state) {
-    return ReusableButton(
-      text: AppStrings.bulkPriceUpdateApply,
-      prefixIcon: Icons.price_change_rounded,
-      type: ButtonType.primary,
-      isLoading: state.isLoading,
-      enabled: state.affectedCount > 0 && !state.isLoading,
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: Text(AppStrings.bulkPriceUpdateApply),
-            content: Text(AppStrings.bulkPriceUpdateConfirm.replaceAll('%s', state.affectedCount.toString())),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: Text(AppStrings.cancel),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(ctx);
-                  context.read<BulkPriceUpdateBloc>().add(const BulkPriceUpdateConfirmApply());
-                },
-                child: Text(AppStrings.apply),
-              ),
-            ],
+  Widget _buildActions(BulkPriceUpdateState state, ColorScheme scheme) {
+    return Row(
+      children: [
+        Expanded(
+          child: ReusableButton(
+            text: AppStrings.bulkPriceUpdateApply,
+            prefixIcon: Icons.check_circle_rounded,
+            size: ButtonSize.large,
+            isLoading: state.isLoading,
+            enabled: state.affectedCount > 0 && !state.isLoading,
+            onPressed: () => _confirmApply(context, state),
           ),
-        );
-      },
+        ),
+        SizedBox(width: 16.w),
+        ReusableButton(
+          text: 'إعادة تعيين',
+          type: ButtonType.outlined,
+          onPressed: () {
+            _valueController.clear();
+            context.read<BulkPriceUpdateBloc>().add(const BulkPriceUpdateLoadCategories());
+          },
+        ),
+      ],
+    );
+  }
+
+  void _confirmApply(BuildContext context, BulkPriceUpdateState state) {
+    ReusableDialog.show(
+      context,
+      title: 'تأكيد التعديل الجماعي',
+      headerIcon: const Icon(Icons.warning_amber_rounded, color: AppColors.warning),
+      children: [
+        ReusableText('هل أنت متأكد من رغبتك في تعديل أسعار ${state.affectedCount} صنف؟'),
+        ReusableText('هذه العملية ستؤثر على كافة الفروع وستقوم بتحديث السحابة تلقائياً.', style: AppTextStyles.caption(context).copyWith(color: AppColors.error)),
+        SizedBox(height: 24.h),
+        DialogActions(
+          confirmText: 'نعم، قم بالتعديل الآن',
+          confirmType: ButtonType.primary,
+          onConfirm: () {
+            Navigator.pop(context);
+            context.read<BulkPriceUpdateBloc>().add(const BulkPriceUpdateConfirmApply());
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _segmentButton({required String label, required bool isSelected, required VoidCallback onTap}) {
+    final scheme = Theme.of(context).colorScheme;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8.r),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: isSelected ? scheme.primary : scheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(8.r),
+          border: Border.all(color: isSelected ? scheme.primary : scheme.outlineVariant.withValues(alpha: 0.5)),
+        ),
+        child: ReusableText(
+          label,
+          style: AppTextStyles.caption(context).copyWith(
+            fontWeight: FontWeight.bold,
+            color: isSelected ? Colors.white : scheme.onSurfaceVariant,
+          ),
+        ),
+      ),
     );
   }
 }
-

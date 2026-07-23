@@ -258,7 +258,7 @@ class _AddPurchaseReturnViewState extends State<AddPurchaseReturnView> {
                 : ListView.separated(
                     shrinkWrap: true,
                     itemCount: _searchResults.length,
-                    separatorBuilder: (_, __) => Divider(
+                    separatorBuilder: (context, index) => Divider(
                       height: 1,
                       color: scheme.outlineVariant.withValues(alpha: 0.4),
                     ),

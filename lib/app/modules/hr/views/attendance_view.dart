@@ -1,5 +1,7 @@
 ﻿import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:pharmacy_system/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../bloc/hr_bloc.dart';
 import 'package:pharmacy_system/app/modules/hr/models/attendance_model.dart';
@@ -175,56 +177,72 @@ class _AttendanceHistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    
+    final columns = [
+      ReusableTableColumn<AttendanceModel>(
+        id: 'emp',
+        title: 'الموظف',
+        flex: 2,
+        cellBuilder: (a) => TableContactNameCell(
+          name: a.employeeName.isNotEmpty ? a.employeeName : a.employeeId,
+          subtitle: a.date,
+          icon: Icons.person_rounded,
+          iconColor: _statusColor(context, a.status),
+        ),
+      ),
+      ReusableTableColumn<AttendanceModel>(
+        id: 'in',
+        title: 'حضور',
+        width: 100.w,
+        textBuilder: (a) => a.clockIn.length > 11 ? a.clockIn.substring(11, 16) : '--',
+      ),
+      ReusableTableColumn<AttendanceModel>(
+        id: 'out',
+        title: 'انصراف',
+        width: 100.w,
+        textBuilder: (a) => (a.clockOut?.length ?? 0) > 11 ? a.clockOut!.substring(11, 16) : '--',
+      ),
+      ReusableTableColumn<AttendanceModel>(
+        id: 'hours',
+        title: 'ساعات',
+        width: 90.w,
+        textBuilder: (a) => '${a.workedHours} س',
+      ),
+      ReusableTableColumn<AttendanceModel>(
+        id: 'status',
+        title: 'الحالة',
+        width: 110.w,
+        cellBuilder: (a) => StatusBadge(label: _statusLabel(a.status), color: _statusColor(context, a.status), icon: _statusIcon(a.status)),
+      ),
+    ];
+
     return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ReusableText(
-            'سجل الحضور',
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.bold,
+          const SectionHeader(icon: Icons.history_rounded, title: 'سجل الحضور'),
+          SizedBox(height: AppSpacing.sm.h),
+          SizedBox(
+            height: 400.h,
+            child: ReusableTable<AttendanceModel>(
+              columns: columns,
+              items: records,
+              itemLabel: 'سجل حضور',
             ),
           ),
-          SizedBox(height: AppSpacing.sm.h),
-          ...records.take(20).map((a) {
-            final hours = a.workedHours;
-            return ListTile(
-              dense: true,
-              contentPadding: EdgeInsets.zero,
-              leading: CircleAvatar(
-                radius: 16.r,
-                backgroundColor: _statusColor(context, a.status).withValues(alpha: 0.12),
-                child: Icon(
-                  _statusIcon(a.status),
-                  size: 16.sp,
-                  color: _statusColor(context, a.status),
-                ),
-              ),
-              title: ReusableText(
-                a.employeeName.isNotEmpty ? a.employeeName : a.employeeId,
-                style: TextStyle(fontSize: 13.sp),
-              ),
-              subtitle: ReusableText(
-                '${a.date} | ${a.clockIn.isNotEmpty ? a.clockIn.substring(11, 19) : '--'}',
-                style: TextStyle(
-                    fontSize: 11.sp,
-                    color: AppColors.textSecondaryOf(context)),
-              ),
-              trailing: ReusableText(
-                hours > 0 ? '$hours س' : a.status,
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w600,
-                  color: _statusColor(context, a.status),
-                ),
-              ),
-            );
-          }),
         ],
       ),
     );
   }
+
+  String _statusLabel(String status) => switch (status) {
+    'present' => 'حاضر',
+    'late' => 'متأخر',
+    'absent' => 'غائب',
+    'half-day' => 'نصف يوم',
+    _ => status,
+  };
 
   Color _statusColor(BuildContext context, String status) => switch (status) {
         'present' => AppColors.success,

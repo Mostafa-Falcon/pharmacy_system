@@ -92,7 +92,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -109,6 +109,27 @@ class AppDatabase extends _$AppDatabase {
           await m.addColumn(customersTable, customersTable.branchId);
           await m.addColumn(suppliersTable, suppliersTable.branchId);
           await m.addColumn(supplierCustomersTable, supplierCustomersTable.branchId);
+        } catch (_) {}
+      }
+      if (from < 5) {
+        // تحديث جدول المرتجعات لإضافة أعمدة المرتجع الحر
+        try {
+          await m.addColumn(returnsTable, returnsTable.returnType);
+          await m.addColumn(returnsTable, returnsTable.partyId);
+          await m.addColumn(returnsTable, returnsTable.partyName);
+          await m.addColumn(returnsTable, returnsTable.partyType);
+          await m.addColumn(returnsTable, returnsTable.discountPercent);
+          await m.addColumn(returnsTable, returnsTable.finalAmount);
+          await m.addColumn(returnsTable, returnsTable.safeId);
+        } catch (_) {}
+      }
+      if (from < 6) {
+        // إضافة أعمدة branch_id للجداول الإضافية لضمان سلامة المزامنة
+        try {
+          await m.addColumn(medicineBrandsTable, medicineBrandsTable.branchId as GeneratedColumn);
+          await m.addColumn(priceGroupsTable, priceGroupsTable.branchId as GeneratedColumn);
+          await m.addColumn(reportDefinitionsTable, reportDefinitionsTable.branchId as GeneratedColumn);
+          await m.addColumn(medicineVariantsTable, medicineVariantsTable.branchId as GeneratedColumn);
         } catch (_) {}
       }
     },

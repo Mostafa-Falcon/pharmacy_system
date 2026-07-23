@@ -1,4 +1,5 @@
 ﻿import 'dart:async';
+import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
@@ -312,9 +313,32 @@ class PurchasesBloc extends Bloc<PurchasesEvent, PurchasesState> {
 
     emit(state.copyWith(status: PurchasesStatus.submitting));
     try {
-      final supplier = SupplierService.getById(state.selectedSupplierId!);
-      if (supplier == null) {
+      String? supplierName;
+      String? supplierPhone;
+      String? supplierId;
+
+      // ذكاء مهندسة: البحث عن المورد في كل المصادر الممكنة (الموردين أو جهات التعامل الموحدة)
+      final vendor = state.vendors.firstWhereOrNull((v) => v['id'] == state.selectedSupplierId);
+      if (vendor == null) {
         AppSnackbar.error('المورد غير موجود');
+        emit(state.copyWith(status: PurchasesStatus.loaded));
+        return;
+      }
+
+      if (vendor['type'] == 'supplier') {
+        final s = SupplierService.getById(vendor['id']!);
+        supplierName = s?.name;
+        supplierPhone = s?.phone;
+        supplierId = s?.id;
+      } else {
+        final sc = SupplierCustomerService.getById(vendor['id']!);
+        supplierName = sc?.name;
+        supplierPhone = sc?.phone;
+        supplierId = sc?.id;
+      }
+
+      if (supplierName == null) {
+        AppSnackbar.error('بيانات المورد غير مكتملة');
         emit(state.copyWith(status: PurchasesStatus.loaded));
         return;
       }
@@ -323,9 +347,9 @@ class PurchasesBloc extends Bloc<PurchasesEvent, PurchasesState> {
       final purchase = PurchaseModel(
         id: state.editingPurchaseId ?? _uuid.v4(),
         branchId: _branchId,
-        supplierName: supplier.name,
-        supplierPhone: supplier.phone,
-        supplierId: supplier.id,
+        supplierName: supplierName,
+        supplierPhone: supplierPhone,
+        supplierId: supplierId,
         sourceType: state.sourceType,
         receiptNumber: 'PO-${now.millisecondsSinceEpoch.toString().substring(6)}',
         items: state.receiptLines.map((l) => l.toItemModel()).toList(),
@@ -374,7 +398,7 @@ class PurchasesBloc extends Bloc<PurchasesEvent, PurchasesState> {
           referenceType: CorrectionReferenceType.purchase,
           referenceId: purchase.id,
           action: CorrectionAction.modified,
-          details: 'تعديل فاتورة مشتريات — ${supplier.name}',
+          details: 'تعديل فاتورة مشتريات — $supplierName',
         );
       } else {
         await BranchDataService.addPurchase(purchase);
@@ -382,7 +406,7 @@ class PurchasesBloc extends Bloc<PurchasesEvent, PurchasesState> {
           referenceType: CorrectionReferenceType.purchase,
           referenceId: purchase.id,
           action: CorrectionAction.created,
-          details: 'فاتورة مشتريات بقيمة ${purchase.finalAmount.toStringAsFixed(2)} ج.م — ${supplier.name}',
+          details: 'فاتورة مشتريات بقيمة ${purchase.finalAmount.toStringAsFixed(2)} ج.م — $supplierName',
         );
         // إضافة الكميات المستلمة للمخزون عبر نظام StockMutationService الموحّد
         // (قفل FIFO + sync queue) — ده بيقفل الدورة: الشراء يرفع المخزون
