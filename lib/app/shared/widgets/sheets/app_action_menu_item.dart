@@ -27,12 +27,12 @@ class AppActionMenuItem extends PopupMenuItem<String> {
         );
 }
 
-class _ReusableActionMenuItemChild extends StatelessWidget {
+class _AppActionMenuItemChild extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color? color;
 
-  const _ReusableActionMenuItemChild({
+  const _AppActionMenuItemChild({
     required this.icon,
     required this.label,
     this.color,

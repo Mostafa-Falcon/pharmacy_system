@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:drift/drift.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:pharmacy_system/app/core/models/system/app_notification_model.dart';
@@ -60,33 +61,51 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     on<MarkAsRead>(_onMarkAsRead);
   }
 
-  Future<void> _onLoad(LoadNotifications event, Emitter<NotificationsState> emit) async {
+  Future<void> _onLoad(
+    LoadNotifications event,
+    Emitter<NotificationsState> emit,
+  ) async {
     emit(state.copyWith(isLoading: true, clearError: true));
     try {
       final db = sl<AppDatabase>();
-      final rows = await (db.select(db.notificationsTable)
-            ..where((t) => t.isRead.equals(false))
-            ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
-          .get();
-      final notifications = rows.map((r) => AppNotificationModel(
-        id: r.id,
-        title: r.title,
-        message: r.message,
-        type: r.type,
-        isRead: r.isRead,
-        createdAt: r.createdAt,
-      )).toList();
+      final rows =
+          await (db.select(db.notificationsTable)
+                ..where((t) => t.isRead.equals(false))
+                ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
+              .get();
+      final notifications = rows
+          .map(
+            (r) => AppNotificationModel(
+              id: r.id,
+              title: r.title,
+              message: r.message,
+              type: r.type,
+              isRead: r.isRead,
+              createdAt: r.createdAt,
+            ),
+          )
+          .toList();
       final unread = notifications.where((n) => !n.isRead).length;
-      emit(state.copyWith(isLoading: false, notifications: notifications, unreadCount: unread));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          notifications: notifications,
+          unreadCount: unread,
+        ),
+      );
     } catch (e) {
       emit(state.copyWith(isLoading: false, error: e.toString()));
     }
   }
 
-  Future<void> _onMarkAsRead(MarkAsRead event, Emitter<NotificationsState> emit) async {
+  Future<void> _onMarkAsRead(
+    MarkAsRead event,
+    Emitter<NotificationsState> emit,
+  ) async {
     try {
       final db = sl<AppDatabase>();
-      await (db.update(db.notificationsTable)..where((t) => t.id.equals(event.notificationId)))
+      await (db.update(db.notificationsTable)
+            ..where((t) => t.id.equals(event.notificationId)))
           .write(const NotificationsTableCompanion(isRead: Value(true)));
       add(const LoadNotifications());
     } catch (_) {}

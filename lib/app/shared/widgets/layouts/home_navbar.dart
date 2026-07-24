@@ -6,8 +6,6 @@ import 'package:pharmacy_system/app/shared/ui_core.dart';
 import 'package:pharmacy_system/app/core/models/system/app_notification_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pharmacy_system/app/modules/notifications/bloc/notifications_bloc.dart';
-import 'package:pharmacy_system/app/modules/notifications/bloc/notifications_event.dart';
-import 'package:pharmacy_system/app/modules/notifications/bloc/notifications_state.dart';
 import 'package:pharmacy_system/app/modules/auth/bloc/auth_bloc.dart';
 import 'package:pharmacy_system/app/routes/app_routes.dart';
 
@@ -354,7 +352,7 @@ class _NotificationBadgeState extends State<_NotificationBadge> with SingleTicke
                         ),
                         TextButton.icon(
                           onPressed: () {
-                            context.read<NotificationsBloc>().add(const MarkAllAsRead());
+                            context.read<NotificationsBloc>().add(const MarkAsRead('all'));
                           },
                           icon: Icon(Icons.done_all_rounded, size: 16.sp),
                           label: ReusableText(

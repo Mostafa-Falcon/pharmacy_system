@@ -5,6 +5,7 @@ import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_service.dart';
 import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'package:pharmacy_system/app/core/sync/supabase/supabase_client.dart';
+import 'package:pharmacy_system/app/modules/layout/index.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 import '../../../core/injection.dart';
 import 'auth_state.dart';

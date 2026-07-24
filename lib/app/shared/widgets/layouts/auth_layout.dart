@@ -91,13 +91,15 @@ class AuthLayout extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      ReusableText.h2(
+                      AppText(
                         title,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        variant: AppTextVariant.h2,
+                        fontWeight: FontWeight.bold,
                       ),
                       SizedBox(height: AppSpacing.xs.h),
-                      ReusableText.caption(
+                      AppText(
                         subtitle,
+                        variant: AppTextVariant.caption,
                       ),
                       SizedBox(height: AppSpacing.xl.h),
                       child,

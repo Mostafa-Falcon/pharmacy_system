@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:pharmacy_system/app/core/models/base/correction_model.dart';
-import 'package:pharmacy_system/app/core/data/services/accounting/correction_service.dart';
+import 'package:pharmacy_system/app/core/data/services/system/correction_service.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 
 class CorrectionChainWidget extends StatefulWidget {

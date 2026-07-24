@@ -177,32 +177,5 @@ class Tag extends StatelessWidget {
   }
 }
 
-/// بادج للتوافق التام يعتمد على [AppBadge].
-class AppBadge extends StatelessWidget {
-  const AppBadge.tone({
-    super.key,
-    required this.label,
-    required this.tone,
-    this.fontSize,
-  }) : color = null;
-
-  const AppBadge.color({
-    super.key,
-    required this.label,
-    required this.color,
-    this.fontSize,
-  }) : tone = null;
-
-  final String label;
-  final AppBadgeTone? tone;
-  final Color? color;
-  final double? fontSize;
-
-  @override
-  Widget build(BuildContext context) {
-    if (tone != null) {
-      return AppBadge.tone(label: label, tone: tone!, fontSize: fontSize);
-    }
-    return AppBadge(label: label, color: color, fontSize: fontSize);
-  }
-}
+// Legacy typedef for backward compatibility
+typedef ReusableBadge = AppBadge;

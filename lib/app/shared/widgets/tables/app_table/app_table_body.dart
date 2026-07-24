@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
-import 'package:pharmacy_system/app/shared/widgets/index.dart';
 
 /// مكون جسم الجدول التفاعلي عالي الأداء والافتراضية الفائقة (Virtualized High-Performance Body).
 /// يقوم بإنشاء الصفوف الظاهرة للعين فقط بدون تخصيص ذاكرة إضافية أو حدوث Lag في الشاشة.
@@ -25,11 +24,11 @@ class AppTableBody<T> extends StatelessWidget {
   final Widget Function(
     BuildContext context,
     T item,
-    ReusableTableColumn<T> column,
+    AppTableColumn<T> column,
   )? cellOverrideBuilder;
   final ScrollController? verticalScrollController;
 
-  const ReusableTableBody({
+  const AppTableBody({
     super.key,
     required this.items,
     required this.columns,
@@ -120,7 +119,7 @@ class AppTableBody<T> extends StatelessWidget {
 
 class _TableRow<T> extends StatelessWidget {
   final T item;
-  final List<ReusableTableColumn<T>> columns;
+  final List<AppTableColumn<T>> columns;
   final int index;
   final bool showCheckbox;
   final bool isSelected;
@@ -135,7 +134,7 @@ class _TableRow<T> extends StatelessWidget {
   final Widget Function(
     BuildContext context,
     T item,
-    ReusableTableColumn<T> column,
+    AppTableColumn<T> column,
   )? cellOverrideBuilder;
 
   const _TableRow({
@@ -240,12 +239,12 @@ class _TableRow<T> extends StatelessWidget {
 
 class _BodyCell<T> extends StatelessWidget {
   final T item;
-  final ReusableTableColumn<T> column;
+  final AppTableColumn<T> column;
   final AppTableDensity density;
   final Widget Function(
     BuildContext context,
     T item,
-    ReusableTableColumn<T> column,
+    AppTableColumn<T> column,
   )? overrideBuilder;
 
   const _BodyCell({
@@ -302,7 +301,7 @@ class _BodyCell<T> extends StatelessWidget {
 }
 
 class _ShimmerBody<T> extends StatefulWidget {
-  final List<ReusableTableColumn<T>> columns;
+  final List<AppTableColumn<T>> columns;
   final int rowCount;
   final bool showCheckbox;
   final double rowHeight;
@@ -399,7 +398,7 @@ class _ShimmerBodyState<T> extends State<_ShimmerBody<T>>
 
 class _ShimmerCell<T> extends StatelessWidget {
   final Animation<double> animation;
-  final ReusableTableColumn<T> column;
+  final AppTableColumn<T> column;
   final int rowIndex;
   final AppTableDensity density;
 

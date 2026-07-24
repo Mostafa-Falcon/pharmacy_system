@@ -20,7 +20,7 @@ class AppTableFooter extends StatelessWidget {
   final bool showGoToPage;
   final Color? backgroundColor;
 
-  const ReusableTableFooter({
+  const AppTableFooter({
     super.key,
     required this.totalItems,
     required this.currentPage,

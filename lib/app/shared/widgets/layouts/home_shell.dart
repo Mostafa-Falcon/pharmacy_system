@@ -7,13 +7,9 @@ import 'package:pharmacy_system/app/shared/ui_core.dart';
 
 import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'package:pharmacy_system/app/core/data/services/ui/sound_service.dart';
-import 'package:pharmacy_system/app/shared/widgets/index.dart';
-
-import 'package:pharmacy_system/app/core/theme/screen_tier.dart';
 import 'package:pharmacy_system/app/core/theme/sidebar_theme.dart';
 import 'package:pharmacy_system/app/modules/auth/bloc/auth_bloc.dart';
-import 'package:pharmacy_system/app/modules/layout/index.dart'
-    hide LogoutRequested;
+import 'package:pharmacy_system/app/modules/layout/index.dart';
 import 'package:pharmacy_system/app/routes/app_routes.dart';
 
 String? destinationForCurrentRoute(BuildContext context) =>

@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pharmacy_system/app/modules/inventory/services/barcode_code_service.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
+
+// ── Local barcode helpers (self-contained, no external service needed) ──
+String _digitsOnly(String code) => code.replaceAll(RegExp(r'[^\d]'), '');
+
+bool _isValidEan13(String digits) {
+  if (digits.length != 13) return false;
+  int sum = 0;
+  for (int i = 0; i < 12; i++) {
+    final d = int.parse(digits[i]);
+    sum += i.isEven ? d : d * 3;
+  }
+  final check = (10 - (sum % 10)) % 10;
+  return check == int.parse(digits[12]);
+}
 
 class LinearBarcodePreview extends StatelessWidget {
   const LinearBarcodePreview({
@@ -24,10 +37,10 @@ class LinearBarcodePreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final foreground = color ?? Theme.of(context).colorScheme.onSurface;
-    final digits = BarcodeCodeService.digitsOnly(code);
+    final digits = _digitsOnly(code);
 
     // Determine which real encoding to use
-    final bits = BarcodeCodeService.isValidEan13(digits)
+    final bits = _isValidEan13(digits)
         ? _Ean13Pattern.encode(digits)
         : _Code128Pattern.encode(code);
 
@@ -286,7 +299,7 @@ abstract final class _Ean13Pattern {
   ];
 
   static String encode(String digits) {
-    if (!BarcodeCodeService.isValidEan13(digits)) return '';
+    if (!_isValidEan13(digits)) return '';
     final first = int.parse(digits[0]);
     final parity = _parity[first];
     final buffer = StringBuffer('101');

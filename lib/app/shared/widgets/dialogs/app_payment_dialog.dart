@@ -59,7 +59,7 @@ class PaymentDialog {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     // حقل إدخال المبلغ
-                    ReusableInput(
+                    AppInput(
                       label: WidgetStrings.paymentAmountLabel,
                       hint: '0.00',
                       controller: amountCtrl,
@@ -81,7 +81,7 @@ class PaymentDialog {
                     SizedBox(height: 16.h),
 
                     // حقل إدخال الملاحظات
-                    ReusableInput(
+                    AppInput(
                       label: WidgetStrings.paymentNotesLabel,
                       hint: WidgetStrings.paymentNotesHint,
                       controller: notesCtrl,

@@ -36,7 +36,6 @@ export 'inputs/app_dropdown.dart';
 export 'inputs/app_filter_dropdown.dart';
 export 'inputs/app_input.dart';
 export 'inputs/app_quantity_stepper.dart';
-export 'inputs/app_search_field.dart';
 export 'inputs/medicine_search_field.dart';
 
 // Layout

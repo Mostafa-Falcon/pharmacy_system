@@ -64,7 +64,7 @@ class StandardModuleLayout extends StatelessWidget {
           ),
         ),
         if (showProgress)
-          ReusableProgressOverlay(
+          AppProgressOverlay(
             isVisible: true,
             progress: progress ?? 0.0,
             title: progressTitle ?? WidgetStrings.moduleProcessing,

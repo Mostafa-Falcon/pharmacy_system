@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
 import 'package:pharmacy_system/app/core/sync/sync_service.dart';
@@ -19,19 +20,21 @@ class ArchiveService {
     Map<String, dynamic>? entityData,
   }) async {
     final now = DateTime.now();
-    await _db.into(_db.archiveRecordsTable).insertOnConflictUpdate(
-      ArchiveRecordsTableCompanion.insert(
-        id: '${entityType}_${entityId}_${now.millisecondsSinceEpoch}',
-        entityType: entityType,
-        entityId: entityId,
-        entityTitle: entityName,
-        entityDataJson: entityData?.toString() ?? '{}',
-        deletedById: deletedById,
-        deletedByName: Value(deletedByName ?? 'المستخدم'),
-        branchId: Value(branchId ?? ''),
-        deletedAt: now,
-      ),
-    );
+    await _db
+        .into(_db.archiveRecordsTable)
+        .insertOnConflictUpdate(
+          ArchiveRecordsTableCompanion.insert(
+            id: '${entityType}_${entityId}_${now.millisecondsSinceEpoch}',
+            entityType: entityType,
+            entityId: entityId,
+            entityTitle: entityName,
+            entityDataJson: entityData?.toString() ?? '{}',
+            deletedById: deletedById,
+            deletedByName: Value(deletedByName ?? 'المستخدم'),
+            branchId: Value(branchId ?? ''),
+            deletedAt: now,
+          ),
+        );
 
     await SyncService.queueOperation(
       type: SyncOperationType.create,

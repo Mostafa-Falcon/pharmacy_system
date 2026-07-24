@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
-import 'package:pharmacy_system/app/shared/widgets/index.dart';
 
 class AppTableHeader<T> extends StatelessWidget {
   final List<AppTableColumn<T>> columns;
@@ -17,7 +16,7 @@ class AppTableHeader<T> extends StatelessWidget {
   final Color? borderColor;
   final bool hasActions;
 
-  const ReusableTableHeader({
+  const AppTableHeader({
     super.key,
     required this.columns,
     this.sortColumnId,
@@ -100,7 +99,7 @@ class AppTableHeader<T> extends StatelessWidget {
 }
 
 class _HeaderCell<T> extends StatelessWidget {
-  final ReusableTableColumn<T> column;
+  final AppTableColumn<T> column;
   final bool isSorted;
   final bool isAscending;
   final ValueChanged<String>? onSort;

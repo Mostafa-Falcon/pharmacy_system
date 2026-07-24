@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
-import 'package:pharmacy_system/app/shared/widgets/index.dart';
 
 /// جدول البيانات الذكي التفاعلي عالي الأداء والجماليات [ReusableTable].
 /// مصمم هندسياً للتعامل مع البيانات الضخمة بدون أي لغبطة أو تهنيج (Zero Lag).
@@ -157,7 +156,7 @@ class _AppTableState<T> extends State<AppTable<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant ReusableTable<T> oldWidget) {
+  void didUpdateWidget(covariant AppTable<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.columns != oldWidget.columns) {
       _visibleColumnIds = widget.columns.where((c) => c.isVisible).map((c) => c.id).toSet();

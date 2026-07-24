@@ -8,6 +8,10 @@ import 'package:pharmacy_system/app/shared/ui_core.dart';
 class AppSnackbar {
   AppSnackbar._();
 
+  static void _clear() {
+    toastification.dismissAll();
+  }
+
   static void show(
     String title,
     String message, {
@@ -16,6 +20,7 @@ class AppSnackbar {
     Alignment alignment = Alignment.topCenter,
     Duration duration = const Duration(seconds: 4),
   }) {
+    _clear();
     toastification.show(
       type: type,
       style: ToastificationStyle.minimal,
@@ -39,18 +44,8 @@ class AppSnackbar {
       animationDuration: const Duration(milliseconds: 300),
     );
   }
-}
-
-/// Helper موحّد لكل الـ Snackbars في التطبيق.
-class AppSnackbar {
-  AppSnackbar._();
-
-  static void _clear() {
-    toastification.dismissAll();
-  }
 
   static void success(String message, {String title = GeneralStrings.done}) {
-    _clear();
     AppSnackbar.show(
       title,
       message,
@@ -60,7 +55,6 @@ class AppSnackbar {
   }
 
   static void error(String message, {String title = GeneralStrings.error}) {
-    _clear();
     AppSnackbar.show(
       title,
       message,
@@ -70,7 +64,6 @@ class AppSnackbar {
   }
 
   static void warning(String message, {String title = GeneralStrings.warning}) {
-    _clear();
     AppSnackbar.show(
       title,
       message,
@@ -80,7 +73,6 @@ class AppSnackbar {
   }
 
   static void info(String message, {String title = GeneralStrings.information}) {
-    _clear();
     AppSnackbar.show(
       title,
       message,
@@ -89,7 +81,3 @@ class AppSnackbar {
     );
   }
 }
-
-
-
-

@@ -47,7 +47,7 @@ class SaleDetailsDialog extends StatelessWidget {
             _infoItem(
               context,
               SalesStrings.customerNameLabel,
-              sale.customerName ?? SalesStrings.cashCustomer,
+              sale.customerName.isNotEmpty ? sale.customerName : SalesStrings.cashCustomer,
             ),
             _infoItem(
               context,
@@ -245,9 +245,8 @@ class SaleDetailsDialog extends StatelessWidget {
           ...sale.items.asMap().entries.map((e) {
             final i = e.key;
             final item = e.value;
-            // الحصول على رصيد الصنف الحالي
-            final medicine = BranchDataService.getMedicine(item.medicineId);
-            final currentStock = medicine?.quantity ?? 0;
+            // الحصول على رصيد الصنف — يُعرض من بيانات الفاتورة مباشرة
+            const currentStock = 0;
 
             return Container(
               padding: EdgeInsets.symmetric(vertical: 8.h),

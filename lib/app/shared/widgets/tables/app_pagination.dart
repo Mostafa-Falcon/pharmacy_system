@@ -43,7 +43,7 @@ class ReusablePagination extends StatelessWidget {
                 style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w600),
               ),
               SizedBox(width: AppSpacing.xs.w),
-              ReusableDropdown<int>(
+              AppDropdown<int>(
                 value: pageSize,
                 hintText: WidgetStrings.paginationPageSize,
                 items: pageSizeOptions,

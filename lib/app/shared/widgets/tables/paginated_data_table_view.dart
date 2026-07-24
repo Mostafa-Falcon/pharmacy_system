@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:pharmacy_system/app/shared/widgets/index.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 
 /// مكوّن ديناميكي لعرض أي قائمة بيانات في جدول [ReusableTable] جاهز:
@@ -12,7 +11,7 @@ class PaginatedDataTableView<T> extends StatelessWidget {
   /// كل العناصر (لحساب التقسيم) — إن كانت الصفحات تُدار خارجيًا.
   final List<T>? allItems;
 
-  final List<ReusableTableColumn<T>> columns;
+  final List<AppTableColumn<T>> columns;
   final String Function(T item) rowIdGetter;
 
   final ValueChanged<T>? onTapRow;
@@ -127,10 +126,10 @@ class PaginatedDataTableView<T> extends StatelessWidget {
 
     // ─── الخطأ ───
     if (isFailure && data.isEmpty) {
-      return ReusableStateView(
+      return AppStateView(
         icon: Icons.error_outline_rounded,
         title: WidgetStrings.tableError,
-        message: errorMessage ?? WidgetStrings.tableLoadError,
+        subtitle: errorMessage ?? WidgetStrings.tableLoadError,
         action: onRetry != null
             ? ReusableButton(text: GeneralStrings.refresh, onPressed: onRetry!)
             : null,
@@ -139,16 +138,16 @@ class PaginatedDataTableView<T> extends StatelessWidget {
 
     // ─── فارغ ───
     if (data.isEmpty && !isLoading) {
-      return ReusableStateView.empty(title: emptyTitle, message: emptyMessage);
+      return AppStateView.empty(title: emptyTitle, subtitle: emptyMessage);
     }
 
     // ─── الجدول ───
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ?header,
+        header,
         Expanded(
-          child: ReusableTable<T>(
+          child: AppTable<T>(
             columns: columns,
             items: data,
             sortColumnId: sortColumnId,

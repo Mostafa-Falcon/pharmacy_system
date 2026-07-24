@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pharmacy_system/app/shared/widgets/index.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 import 'package:pharmacy_system/app/core/bloc/import/import_data_bloc.dart';
 import 'package:pharmacy_system/app/core/bloc/import/import_data_event.dart';
@@ -82,7 +81,7 @@ class ImportDataView extends StatelessWidget {
                     ),
                     child: BlocConsumer<ImportDataBloc, ImportDataState>(
                       listenWhen: (prev, current) =>
-                          prev?.status != current.status,
+                          prev.status != current.status,
                       listener: (context, state) {
                         if (state.status == ImportDataStatus.success) {
                           SoundService.instance.play(SoundEffect.itemAdded);

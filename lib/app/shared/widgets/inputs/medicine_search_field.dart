@@ -6,6 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
+import 'package:pharmacy_system/app/core/data/repositories/medicines_repository.dart';
+import 'package:pharmacy_system/app/core/injection.dart';
 
 class MedicineSearchField extends StatefulWidget {
   final ValueChanged<MedicineModel> onSelected;
@@ -259,14 +261,16 @@ class _MedicineSearchFieldState extends State<MedicineSearchField> {
       return;
     }
 
+    final repo = sl<MedicinesRepository>();
+    final branchId = AuthService.currentBranchId ?? '';
     List<MedicineModel> allItems =
         widget.customItems ??
-        BranchDataService.getMedicines(branchId: AuthService.currentBranchId);
+        repo.getMedicinesSync(branchId: branchId);
 
     // حماية إضافية: لو القائمة فارغة يتم جلب الأصناف أوفلاين/أونلاين
     if (allItems.isEmpty && widget.customItems == null) {
-      allItems = await BranchDataService.getMedicinesAsync(
-        branchId: AuthService.currentBranchId,
+      allItems = await repo.getMedicines(
+        branchId: branchId,
       );
     }
 
