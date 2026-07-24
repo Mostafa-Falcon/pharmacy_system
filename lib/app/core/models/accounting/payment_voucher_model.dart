@@ -83,6 +83,40 @@ class PaymentVoucherModel {
     'created_at': createdAt.toIso8601String(),
   };
 
+  PaymentVoucherModel copyWith({
+    String? id,
+    int? voucherNumber,
+    VoucherType? voucherType,
+    String? partyId,
+    String? partyName,
+    double? amount,
+    String? paymentMethod,
+    String? referenceNumber,
+    String? description,
+    String? createdById,
+    String? branchId,
+    String? accountId,
+    DateTime? voucherDate,
+    DateTime? createdAt,
+  }) {
+    return PaymentVoucherModel(
+      id: id ?? this.id,
+      voucherNumber: voucherNumber ?? this.voucherNumber,
+      voucherType: voucherType ?? this.voucherType,
+      partyId: partyId ?? this.partyId,
+      partyName: partyName ?? this.partyName,
+      amount: amount ?? this.amount,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      referenceNumber: referenceNumber ?? this.referenceNumber,
+      description: description ?? this.description,
+      createdById: createdById ?? this.createdById,
+      branchId: branchId ?? this.branchId,
+      accountId: accountId ?? this.accountId,
+      voucherDate: voucherDate ?? this.voucherDate,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
   factory PaymentVoucherModel.fromJson(Map<String, dynamic> json) => PaymentVoucherModel(
     id: json['id'] as String,
     voucherNumber: (json['voucher_number'] as num?)?.toInt() ?? 0,

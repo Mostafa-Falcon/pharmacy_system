@@ -2,19 +2,42 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/constants/app_strings.dart';
+import 'package:pharmacy_system/app/shared/constants/strings/home_strings.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
-import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
-import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/shared/constants/ui/app_sizes.dart';
 import '../../../routes/app_routes.dart';
 import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+
+enum HomeQuickActionType {
+  cashier,
+  salesReturn,
+  salesReport,
+  customers,
+  priceQuotes,
+  addPurchase,
+  suppliers,
+  purchaseReturn,
+  expenses,
+  addItem,
+  items,
+  inventoryHealth,
+  stockTransfer,
+  barcodeLabel,
+  settings,
+  activityLog,
+  users,
+  profitLoss,
+  permissions,
+}
 
 class MainPageView extends StatelessWidget {
   const MainPageView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return HomeShell(title: HomeStrings.mainPageTitle, child: const MainPageContent());
+    return HomeShell(
+        title: HomeStrings.mainPageTitle, child: const MainPageContent());
   }
 }
 
@@ -61,7 +84,8 @@ class MainPageContent extends StatelessWidget {
                 AppSpacing.xlH,
               ),
               sliver: SliverToBoxAdapter(
-                child: _QuickSectionsGrid(onActionTap: (type) => _handleAction(context, type)),
+                child: _QuickSectionsGrid(
+                    onActionTap: (type) => _handleAction(context, type)),
               ),
             ),
           ],
@@ -106,7 +130,7 @@ class _QuickSectionsGrid extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final double spacing = 16.w;
-        
+
         if (constraints.maxWidth >= 1000) {
           final columnWidth = (constraints.maxWidth - (spacing * 3)) / 4;
           return Row(
@@ -301,12 +325,12 @@ class _QuickSectionsGrid extends StatelessWidget {
         color: AppColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
-          color: color.withValues(alpha: isDark ? 0.25 : 0.15),
+          color: color.withOpacity(isDark ? 0.25 : 0.15),
           width: 1.5.r,
         ),
         boxShadow: [
           BoxShadow(
-            color: color.withValues(alpha: 0.04),
+            color: color.withOpacity(0.04),
             blurRadius: 16.r,
             offset: Offset(0, 8.h),
           ),
@@ -321,7 +345,7 @@ class _QuickSectionsGrid extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(6.r),
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.12),
+                  color: color.withOpacity(0.12),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(sectionIcon, color: color, size: 18.sp),
@@ -429,7 +453,7 @@ class _HomeActionCardState extends State<_HomeActionCard> {
     return LinearGradient(
       begin: Alignment.topRight,
       end: Alignment.bottomLeft,
-      colors: [baseColor, baseColor.withValues(alpha: 0.85)],
+      colors: [baseColor, baseColor.withOpacity(0.85)],
     );
   }
 
@@ -445,19 +469,20 @@ class _HomeActionCardState extends State<_HomeActionCard> {
         curve: Curves.easeInOut,
         width: double.infinity,
         height: hasSubtitle ? 118.h : 88.h,
-        transform: Matrix4.diagonal3Values(_isHovered ? 1.025 : 1.0, _isHovered ? 1.025 : 1.0, 1.0)
+        transform: Matrix4.diagonal3Values(
+            _isHovered ? 1.025 : 1.0, _isHovered ? 1.025 : 1.0, 1.0)
           ..setTranslationRaw(0.0, _isHovered ? -4.h : 0.0, 0.0),
         decoration: BoxDecoration(
           gradient: _getGradient(widget.baseColor),
           borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
-            color: Colors.white.withValues(alpha: _isHovered ? 0.45 : 0.15),
+            color: Colors.white.withOpacity(_isHovered ? 0.45 : 0.15),
             width: 1.5.r,
           ),
           boxShadow: [
             BoxShadow(
-              color: widget.baseColor.withValues(
-                alpha: _isHovered ? 0.35 : 0.15,
+              color: widget.baseColor.withOpacity(
+                _isHovered ? 0.35 : 0.15,
               ),
               blurRadius: _isHovered ? 12.r : 6.r,
               offset: Offset(0, _isHovered ? 6.h : 3.h),
@@ -469,8 +494,8 @@ class _HomeActionCardState extends State<_HomeActionCard> {
           child: InkWell(
             onTap: widget.onTap,
             borderRadius: BorderRadius.circular(16.r),
-            splashColor: Colors.white.withValues(alpha: 0.12),
-            highlightColor: Colors.white.withValues(alpha: 0.06),
+            splashColor: Colors.white.withOpacity(0.12),
+            highlightColor: Colors.white.withOpacity(0.06),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
               child: Column(
@@ -480,8 +505,8 @@ class _HomeActionCardState extends State<_HomeActionCard> {
                     duration: const Duration(milliseconds: 200),
                     padding: EdgeInsets.all(hasSubtitle ? 8.r : 6.r),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(
-                        alpha: _isHovered ? 0.28 : 0.18,
+                      color: Colors.white.withOpacity(
+                        _isHovered ? 0.28 : 0.18,
                       ),
                       borderRadius: BorderRadius.circular(10.r),
                     ),
@@ -510,7 +535,7 @@ class _HomeActionCardState extends State<_HomeActionCard> {
                       style: TextStyle(
                         fontSize: 10.sp,
                         fontWeight: FontWeight.w500,
-                        color: Colors.white.withValues(alpha: 0.8),
+                        color: Colors.white.withOpacity(0.8),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -537,28 +562,28 @@ class _RowItem {
   final _RowItem? rightItem;
 
   const _RowItem({required this.type, required this.label, required this.icon})
-    : subtitle = null,
-      isSplit = false,
-      leftItem = null,
-      rightItem = null;
+      : subtitle = null,
+        isSplit = false,
+        leftItem = null,
+        rightItem = null;
 
   const _RowItem.full({
     required this.type,
     required this.label,
     this.subtitle,
     required this.icon,
-  }) : isSplit = false,
-       leftItem = null,
-       rightItem = null;
+  })  : isSplit = false,
+        leftItem = null,
+        rightItem = null;
 
-   _RowItem.split({required _RowItem left, required _RowItem right})
-    : type = HomeQuickActionType.cashier,
-      label = '',
-      subtitle = null,
-      icon = Icons.abc,
-      isSplit = true,
-      leftItem = left,
-      rightItem = right;
+  _RowItem.split({required _RowItem left, required _RowItem right})
+      : type = HomeQuickActionType.cashier,
+        label = '',
+        subtitle = null,
+        icon = Icons.abc,
+        isSplit = true,
+        leftItem = left,
+        rightItem = right;
 }
 
 class _HomeWelcomeBanner extends StatelessWidget {
@@ -588,7 +613,7 @@ class _HomeWelcomeBanner extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 24.r,
-            backgroundColor: Colors.white.withValues(alpha: 0.2),
+            backgroundColor: Colors.white.withOpacity(0.2),
             child: Icon(Icons.person_rounded, color: Colors.white, size: 28.sp),
           ),
           SizedBox(width: 16.w),
@@ -598,12 +623,17 @@ class _HomeWelcomeBanner extends StatelessWidget {
               children: [
                 ReusableText(
                   'مرحباً بك، $userName 👋',
-                  style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                 ),
                 SizedBox(height: 4.h),
                 ReusableText(
                   'فرع: $branchName',
-                  style: TextStyle(fontSize: 12.sp, color: Colors.white.withValues(alpha: 0.85)),
+                  style: TextStyle(
+                      fontSize: 12.sp,
+                      color: Colors.white.withOpacity(0.85)),
                 ),
               ],
             ),
@@ -613,8 +643,3 @@ class _HomeWelcomeBanner extends StatelessWidget {
     );
   }
 }
-
-
-
-
-

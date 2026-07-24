@@ -76,6 +76,40 @@ class PayrollModel {
     'notes': notes,
   };
 
+  PayrollModel copyWith({
+    String? id,
+    String? employeeId,
+    String? employeeName,
+    String? monthYear,
+    double? basicSalary,
+    double? allowances,
+    double? deductions,
+    double? advances,
+    double? netSalary,
+    bool? isPaid,
+    DateTime? paidAt,
+    String? accountId,
+    String? branchId,
+    String? notes,
+  }) {
+    return PayrollModel(
+      id: id ?? this.id,
+      employeeId: employeeId ?? this.employeeId,
+      employeeName: employeeName ?? this.employeeName,
+      monthYear: monthYear ?? this.monthYear,
+      basicSalary: basicSalary ?? this.basicSalary,
+      allowances: allowances ?? this.allowances,
+      deductions: deductions ?? this.deductions,
+      advances: advances ?? this.advances,
+      netSalary: netSalary ?? this.netSalary,
+      isPaid: isPaid ?? this.isPaid,
+      paidAt: paidAt ?? this.paidAt,
+      accountId: accountId ?? this.accountId,
+      branchId: branchId ?? this.branchId,
+      notes: notes ?? this.notes,
+    );
+  }
+
   factory PayrollModel.fromJson(Map<String, dynamic> json) => PayrollModel(
     id: json['id'] as String,
     employeeId: json['employee_id'] as String,

@@ -95,6 +95,44 @@ class ExpenseModel implements SyncableEntity {
     'sync_version': syncVersion,
   };
 
+  ExpenseModel copyWith({
+    String? id,
+    int? expenseNumber,
+    String? category,
+    String? description,
+    double? amount,
+    String? paymentMethod,
+    String? createdById,
+    String? createdByName,
+    String? branchId,
+    String? accountId,
+    String? notes,
+    DateTime? expenseDate,
+    DateTime? createdAt,
+    DateTime? lastModified,
+    bool? isDeleted,
+    int? syncVersion,
+  }) {
+    return ExpenseModel(
+      id: id ?? this.id,
+      expenseNumber: expenseNumber ?? this.expenseNumber,
+      category: category ?? this.category,
+      description: description ?? this.description,
+      amount: amount ?? this.amount,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      createdById: createdById ?? this.createdById,
+      createdByName: createdByName ?? this.createdByName,
+      branchId: branchId ?? this.branchId,
+      accountId: accountId ?? this.accountId,
+      notes: notes ?? this.notes,
+      expenseDate: expenseDate ?? this.expenseDate,
+      createdAt: createdAt ?? this.createdAt,
+      lastModified: lastModified ?? this.lastModified,
+      isDeleted: isDeleted ?? this.isDeleted,
+      syncVersion: syncVersion ?? this.syncVersion,
+    );
+  }
+
   factory ExpenseModel.fromJson(Map<String, dynamic> json) => ExpenseModel(
     id: json['id'] as String,
     expenseNumber: (json['expense_number'] as num?)?.toInt() ?? 0,

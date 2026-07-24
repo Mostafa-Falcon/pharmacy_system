@@ -57,6 +57,32 @@ class EmployeeMessageModel {
     'sent_at': sentAt.toIso8601String(),
   };
 
+  EmployeeMessageModel copyWith({
+    String? id,
+    String? title,
+    String? content,
+    String? senderName,
+    List<String>? recipientEmployeeIds,
+    bool? isBroadcast,
+    List<String>? readByEmployeeIds,
+    String? accountId,
+    String? branchId,
+    DateTime? sentAt,
+  }) {
+    return EmployeeMessageModel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      senderName: senderName ?? this.senderName,
+      recipientEmployeeIds: recipientEmployeeIds ?? this.recipientEmployeeIds,
+      isBroadcast: isBroadcast ?? this.isBroadcast,
+      readByEmployeeIds: readByEmployeeIds ?? this.readByEmployeeIds,
+      accountId: accountId ?? this.accountId,
+      branchId: branchId ?? this.branchId,
+      sentAt: sentAt ?? this.sentAt,
+    );
+  }
+
   factory EmployeeMessageModel.fromJson(Map<String, dynamic> json) => EmployeeMessageModel(
     id: json['id'] as String,
     title: json['title'] as String,

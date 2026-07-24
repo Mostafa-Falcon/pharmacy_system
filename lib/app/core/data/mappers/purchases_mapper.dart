@@ -6,50 +6,55 @@ import 'package:pharmacy_system/app/core/models/purchases/supplied_item_model.da
 import '../database/database.dart';
 
 class PurchasesMapper {
-  static PurchaseInvoiceModel purchaseInvoiceFromData(PurchaseInvoicesTableData d) => PurchaseInvoiceModel(
-    id: d.id,
-    invoiceNumber: d.invoiceNumber,
-    supplierId: d.supplierId,
-    supplierName: d.supplierName,
-    items: (jsonDecode(d.items) as List).map((e) => PurchaseItemModel.fromJson(e)).toList(),
-    subtotalAmount: d.subtotalAmount,
-    discountAmount: d.discountAmount,
-    finalAmount: d.finalAmount,
-    paidAmount: d.paidAmount,
-    remainingAmount: d.remainingAmount,
-    paymentMethod: d.paymentMethod,
-    createdBy: d.createdBy,
-    branchId: d.branchId,
-    accountId: d.accountId,
-    notes: d.notes,
-    createdAt: d.createdAt,
-    lastModified: d.lastModified,
-    isDeleted: d.isDeleted,
-    syncVersion: d.syncVersion,
-  );
+  // ─── PurchaseInvoice ───
+  static PurchaseInvoiceModel purchaseInvoiceFromData(PurchaseInvoicesTableData d) => PurchaseInvoiceModel.fromJson({
+    'id': d.id,
+    'invoice_number': d.invoiceNumber,
+    'supplier_id': d.supplierId,
+    'supplier_name': d.supplierName,
+    'items': jsonDecode(d.items),
+    'subtotal_amount': d.subtotalAmount,
+    'discount_amount': d.discountAmount,
+    'final_amount': d.finalAmount,
+    'paid_amount': d.paidAmount,
+    'remaining_amount': d.remainingAmount,
+    'payment_method': d.paymentMethod,
+    'created_by': d.createdBy,
+    'branch_id': d.branchId,
+    'account_id': d.accountId,
+    'notes': d.notes,
+    'created_at': d.createdAt.toIso8601String(),
+    'last_modified': d.lastModified.toIso8601String(),
+    'is_deleted': d.isDeleted,
+    'sync_version': d.syncVersion,
+  });
 
-  static PurchaseInvoicesTableCompanion purchaseInvoiceToCompanion(PurchaseInvoiceModel m) => PurchaseInvoicesTableCompanion(
-    id: Value(m.id),
-    invoiceNumber: Value(m.invoiceNumber),
-    supplierId: Value(m.supplierId),
-    supplierName: Value(m.supplierName),
-    items: Value(jsonEncode(m.items.map((e) => e.toJson()).toList())),
-    subtotalAmount: Value(m.subtotalAmount),
-    discountAmount: Value(m.discountAmount),
-    finalAmount: Value(m.finalAmount),
-    paidAmount: Value(m.paidAmount),
-    remainingAmount: Value(m.remainingAmount),
-    paymentMethod: Value(m.paymentMethod),
-    createdBy: Value(m.createdBy),
-    branchId: Value(m.branchId),
-    accountId: Value(m.accountId),
-    notes: Value(m.notes),
-    createdAt: Value(m.createdAt),
-    lastModified: Value(m.lastModified),
-    isDeleted: Value(m.isDeleted),
-    syncVersion: Value(m.syncVersion),
-  );
+  static PurchaseInvoicesTableCompanion purchaseInvoiceToCompanion(PurchaseInvoiceModel m) {
+    final json = m.toJson();
+    return PurchaseInvoicesTableCompanion(
+      id: Value(m.id),
+      invoiceNumber: Value(m.invoiceNumber),
+      supplierId: Value(m.supplierId),
+      supplierName: Value(m.supplierName),
+      items: Value(jsonEncode(json['items'])),
+      subtotalAmount: Value(m.subtotalAmount),
+      discountAmount: Value(m.discountAmount),
+      finalAmount: Value(m.finalAmount),
+      paidAmount: Value(m.paidAmount),
+      remainingAmount: Value(m.remainingAmount),
+      paymentMethod: Value(m.paymentMethod),
+      createdBy: Value(m.createdBy),
+      branchId: Value(m.branchId),
+      accountId: Value(m.accountId),
+      notes: Value(m.notes),
+      createdAt: Value(m.createdAt),
+      lastModified: Value(m.lastModified),
+      isDeleted: Value(m.isDeleted),
+      syncVersion: Value(m.syncVersion),
+    );
+  }
 
+  // ─── SuppliedItem ───
   static SuppliedItemModel suppliedItemFromData(SuppliedItemsTableData d) => SuppliedItemModel(
     id: d.id,
     contactId: d.supplierId,

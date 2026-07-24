@@ -34,15 +34,24 @@ class ErrorLogModel extends Equatable {
     this.isRead = false,
   });
 
-  ErrorLogModel copyWith({bool? isRead}) {
+  ErrorLogModel copyWith({
+    String? id,
+    String? title,
+    String? message,
+    String? source,
+    String? stackTrace,
+    ErrorSeverity? severity,
+    DateTime? createdAt,
+    bool? isRead,
+  }) {
     return ErrorLogModel(
-      id: id,
-      title: title,
-      message: message,
-      source: source,
-      stackTrace: stackTrace,
-      severity: severity,
-      createdAt: createdAt,
+      id: id ?? this.id,
+      title: title ?? this.title,
+      message: message ?? this.message,
+      source: source ?? this.source,
+      stackTrace: stackTrace ?? this.stackTrace,
+      severity: severity ?? this.severity,
+      createdAt: createdAt ?? this.createdAt,
       isRead: isRead ?? this.isRead,
     );
   }

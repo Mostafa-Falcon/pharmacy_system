@@ -7,6 +7,7 @@ import 'package:pharmacy_system/app/core/models/hr/employee_message_model.dart';
 import '../database/database.dart';
 
 class HrMapper {
+  // ── Attendance ──
   static AttendanceModel attendanceFromData(AttendanceTableData d) => AttendanceModel(
     id: d.id,
     employeeId: d.employeeId,
@@ -37,11 +38,9 @@ class HrMapper {
     accountId: Value(m.accountId),
     branchId: Value(m.branchId),
     notes: Value(m.notes),
-    lastModified: const Value.absent(),
-    isDeleted: const Value.absent(),
-    syncVersion: const Value.absent(),
   );
 
+  // ── Payroll ──
   static PayrollModel payrollFromData(PayrollTableData d) => PayrollModel(
     id: d.id,
     employeeId: d.employeeId,
@@ -74,11 +73,9 @@ class HrMapper {
     accountId: Value(m.accountId),
     branchId: Value(m.branchId),
     notes: Value(m.notes),
-    lastModified: const Value.absent(),
-    isDeleted: const Value.absent(),
-    syncVersion: const Value.absent(),
   );
 
+  // ── EmployeeMessage ──
   static EmployeeMessageModel employeeMessageFromData(EmployeeMessagesTableData d) => EmployeeMessageModel(
     id: d.id,
     title: d.title,
@@ -103,8 +100,5 @@ class HrMapper {
     accountId: Value(m.accountId),
     branchId: Value(m.branchId),
     sentAt: Value(m.sentAt),
-    lastModified: const Value.absent(),
-    isDeleted: const Value.absent(),
-    syncVersion: const Value.absent(),
   );
 }

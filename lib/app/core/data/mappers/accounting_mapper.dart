@@ -9,6 +9,7 @@ import 'package:pharmacy_system/app/core/models/accounting/payment_voucher_model
 import '../database/database.dart';
 
 class AccountingMapper {
+  // ── AccountTree ──
   static AccountTreeModel accountTreeFromData(AccountTreeTableData d) => AccountTreeModel(
     id: d.id,
     accountCode: d.accountCode,
@@ -46,6 +47,7 @@ class AccountingMapper {
     syncVersion: Value(m.syncVersion),
   );
 
+  // ── ExpenseCategory ──
   static ExpenseCategoryModel expenseCategoryFromData(ExpenseCategoriesTableData d) => ExpenseCategoryModel(
     id: d.id,
     name: d.name,
@@ -66,9 +68,9 @@ class AccountingMapper {
     accountId: Value(m.accountId),
     lastModified: Value(m.lastModified),
     isDeleted: Value(m.isDeleted),
-    syncVersion: const Value.absent(),
   );
 
+  // ── Expense ──
   static ExpenseModel expenseFromData(ExpensesTableData d) => ExpenseModel(
     id: d.id,
     expenseNumber: d.expenseNumber,
@@ -107,81 +109,85 @@ class AccountingMapper {
     syncVersion: Value(m.syncVersion),
   );
 
-  static JournalEntryModel journalEntryFromData(JournalEntriesTableData d) => JournalEntryModel(
-    id: d.id,
-    entryNumber: d.entryNumber,
-    entryDate: d.entryDate,
-    entryType: d.entryType,
-    referenceNumber: d.referenceNumber,
-    description: d.description,
-    lines: (jsonDecode(d.lines) as List).map((e) => JournalEntryLineModel.fromJson(e)).toList(),
-    totalDebit: d.totalDebit,
-    totalCredit: d.totalCredit,
-    createdById: d.createdById,
-    branchId: d.branchId,
-    accountId: d.accountId,
-    createdAt: d.createdAt,
-    lastModified: d.lastModified,
-    isDeleted: d.isDeleted,
-    syncVersion: d.syncVersion,
-  );
+  // ── JournalEntry ──
+  static JournalEntryModel journalEntryFromData(JournalEntriesTableData d) => JournalEntryModel.fromJson({
+    'id': d.id,
+    'entry_number': d.entryNumber,
+    'entry_date': d.entryDate.toIso8601String(),
+    'entry_type': d.entryType,
+    'reference_number': d.referenceNumber,
+    'description': d.description,
+    'lines': jsonDecode(d.lines),
+    'total_debit': d.totalDebit,
+    'total_credit': d.totalCredit,
+    'created_by_id': d.createdById,
+    'branch_id': d.branchId,
+    'account_id': d.accountId,
+    'created_at': d.createdAt.toIso8601String(),
+    'last_modified': d.lastModified.toIso8601String(),
+    'is_deleted': d.isDeleted,
+    'sync_version': d.syncVersion,
+  });
 
-  static JournalEntriesTableCompanion journalEntryToCompanion(JournalEntryModel m) => JournalEntriesTableCompanion(
-    id: Value(m.id),
-    entryNumber: Value(m.entryNumber),
-    entryDate: Value(m.entryDate),
-    entryType: Value(m.entryType),
-    referenceNumber: Value(m.referenceNumber),
-    description: Value(m.description),
-    lines: Value(jsonEncode(m.lines.map((e) => e.toJson()).toList())),
-    totalDebit: Value(m.totalDebit),
-    totalCredit: Value(m.totalCredit),
-    createdById: Value(m.createdById),
-    branchId: Value(m.branchId),
-    accountId: Value(m.accountId),
-    createdAt: Value(m.createdAt),
-    lastModified: Value(m.lastModified),
-    isDeleted: Value(m.isDeleted),
-    syncVersion: Value(m.syncVersion),
-  );
+  static JournalEntriesTableCompanion journalEntryToCompanion(JournalEntryModel m) {
+    final json = m.toJson();
+    return JournalEntriesTableCompanion(
+      id: Value(m.id),
+      entryNumber: Value(m.entryNumber),
+      entryDate: Value(m.entryDate),
+      entryType: Value(m.entryType),
+      referenceNumber: Value(m.referenceNumber),
+      description: Value(m.description),
+      lines: Value(jsonEncode(json['lines'])),
+      totalDebit: Value(m.totalDebit),
+      totalCredit: Value(m.totalCredit),
+      createdById: Value(m.createdById),
+      branchId: Value(m.branchId),
+      accountId: Value(m.accountId),
+      createdAt: Value(m.createdAt),
+      lastModified: Value(m.lastModified),
+      isDeleted: Value(m.isDeleted),
+      syncVersion: Value(m.syncVersion),
+    );
+  }
 
-  static PaymentVoucherModel paymentVoucherFromData(PaymentVouchersTableData d) => PaymentVoucherModel(
-    id: d.id,
-    voucherNumber: d.voucherNumber,
-    voucherType: VoucherType.values.firstWhere(
-      (t) => t.name == d.voucherType,
-      orElse: () => VoucherType.receipt,
-    ),
-    partyId: d.partyId,
-    partyName: d.partyName,
-    amount: d.amount,
-    paymentMethod: d.paymentMethod,
-    referenceNumber: d.referenceNumber,
-    description: d.description,
-    createdById: d.createdById,
-    branchId: d.branchId,
-    accountId: d.accountId,
-    voucherDate: d.voucherDate,
-    createdAt: d.createdAt,
-  );
+  // ── PaymentVoucher ──
+  static PaymentVoucherModel paymentVoucherFromData(PaymentVouchersTableData d) => PaymentVoucherModel.fromJson({
+    'id': d.id,
+    'voucher_number': d.voucherNumber,
+    'voucher_type': d.voucherType,
+    'party_id': d.partyId,
+    'party_name': d.partyName,
+    'amount': d.amount,
+    'payment_method': d.paymentMethod,
+    'reference_number': d.referenceNumber,
+    'description': d.description,
+    'created_by_id': d.createdById,
+    'branch_id': d.branchId,
+    'account_id': d.accountId,
+    'voucher_date': d.voucherDate.toIso8601String(),
+    'created_at': d.createdAt.toIso8601String(),
+  });
 
-  static PaymentVouchersTableCompanion paymentVoucherToCompanion(PaymentVoucherModel m) => PaymentVouchersTableCompanion(
-    id: Value(m.id),
-    voucherNumber: Value(m.voucherNumber),
-    voucherType: Value(m.voucherType.name),
-    partyId: Value(m.partyId),
-    partyName: Value(m.partyName),
-    amount: Value(m.amount),
-    paymentMethod: Value(m.paymentMethod),
-    referenceNumber: Value(m.referenceNumber),
-    description: Value(m.description),
-    createdById: Value(m.createdById),
-    branchId: Value(m.branchId),
-    accountId: Value(m.accountId),
-    voucherDate: Value(m.voucherDate),
-    createdAt: Value(m.createdAt),
-    lastModified: const Value.absent(),
-    isDeleted: const Value.absent(),
-    syncVersion: const Value.absent(),
-  );
+  static PaymentVouchersTableCompanion paymentVoucherToCompanion(PaymentVoucherModel m) {
+    return PaymentVouchersTableCompanion(
+      id: Value(m.id),
+      voucherNumber: Value(m.voucherNumber),
+      voucherType: Value(m.voucherType.name),
+      partyId: Value(m.partyId),
+      partyName: Value(m.partyName),
+      amount: Value(m.amount),
+      paymentMethod: Value(m.paymentMethod),
+      referenceNumber: Value(m.referenceNumber),
+      description: Value(m.description),
+      createdById: Value(m.createdById),
+      branchId: Value(m.branchId),
+      accountId: Value(m.accountId),
+      voucherDate: Value(m.voucherDate),
+      createdAt: Value(m.createdAt),
+      lastModified: const Value.absent(),
+      isDeleted: const Value.absent(),
+      syncVersion: const Value.absent(),
+    );
+  }
 }

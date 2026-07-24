@@ -71,6 +71,38 @@ class AttendanceModel {
     'notes': notes,
   };
 
+  AttendanceModel copyWith({
+    String? id,
+    String? employeeId,
+    String? employeeName,
+    DateTime? date,
+    DateTime? checkInTime,
+    DateTime? checkOutTime,
+    double? workHours,
+    double? overtimeHours,
+    int? lateMinutes,
+    String? status,
+    String? accountId,
+    String? branchId,
+    String? notes,
+  }) {
+    return AttendanceModel(
+      id: id ?? this.id,
+      employeeId: employeeId ?? this.employeeId,
+      employeeName: employeeName ?? this.employeeName,
+      date: date ?? this.date,
+      checkInTime: checkInTime ?? this.checkInTime,
+      checkOutTime: checkOutTime ?? this.checkOutTime,
+      workHours: workHours ?? this.workHours,
+      overtimeHours: overtimeHours ?? this.overtimeHours,
+      lateMinutes: lateMinutes ?? this.lateMinutes,
+      status: status ?? this.status,
+      accountId: accountId ?? this.accountId,
+      branchId: branchId ?? this.branchId,
+      notes: notes ?? this.notes,
+    );
+  }
+
   factory AttendanceModel.fromJson(Map<String, dynamic> json) => AttendanceModel(
     id: json['id'] as String,
     employeeId: json['employee_id'] as String,

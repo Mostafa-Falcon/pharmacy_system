@@ -43,6 +43,26 @@ class JournalEntryLineModel {
     'description': description,
   };
 
+  JournalEntryLineModel copyWith({
+    String? id,
+    String? accountId,
+    String? accountName,
+    String? accountCode,
+    double? debit,
+    double? credit,
+    String? description,
+  }) {
+    return JournalEntryLineModel(
+      id: id ?? this.id,
+      accountId: accountId ?? this.accountId,
+      accountName: accountName ?? this.accountName,
+      accountCode: accountCode ?? this.accountCode,
+      debit: debit ?? this.debit,
+      credit: credit ?? this.credit,
+      description: description ?? this.description,
+    );
+  }
+
   factory JournalEntryLineModel.fromJson(Map<String, dynamic> json) => JournalEntryLineModel(
     id: json['id'] as String,
     accountId: json['account_id'] as String,
@@ -151,6 +171,44 @@ class JournalEntryModel implements SyncableEntity {
     'is_deleted': isDeleted,
     'sync_version': syncVersion,
   };
+
+  JournalEntryModel copyWith({
+    String? id,
+    int? entryNumber,
+    DateTime? entryDate,
+    String? entryType,
+    String? referenceNumber,
+    String? description,
+    List<JournalEntryLineModel>? lines,
+    double? totalDebit,
+    double? totalCredit,
+    String? createdById,
+    String? branchId,
+    String? accountId,
+    DateTime? createdAt,
+    DateTime? lastModified,
+    bool? isDeleted,
+    int? syncVersion,
+  }) {
+    return JournalEntryModel(
+      id: id ?? this.id,
+      entryNumber: entryNumber ?? this.entryNumber,
+      entryDate: entryDate ?? this.entryDate,
+      entryType: entryType ?? this.entryType,
+      referenceNumber: referenceNumber ?? this.referenceNumber,
+      description: description ?? this.description,
+      lines: lines ?? this.lines,
+      totalDebit: totalDebit ?? this.totalDebit,
+      totalCredit: totalCredit ?? this.totalCredit,
+      createdById: createdById ?? this.createdById,
+      branchId: branchId ?? this.branchId,
+      accountId: accountId ?? this.accountId,
+      createdAt: createdAt ?? this.createdAt,
+      lastModified: lastModified ?? this.lastModified,
+      isDeleted: isDeleted ?? this.isDeleted,
+      syncVersion: syncVersion ?? this.syncVersion,
+    );
+  }
 
   factory JournalEntryModel.fromJson(Map<String, dynamic> json) => JournalEntryModel(
     id: json['id'] as String,

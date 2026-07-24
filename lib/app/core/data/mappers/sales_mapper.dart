@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:drift/drift.dart';
-import 'package:pharmacy_system/app/core/data/database/tables/sales_tables.dart';
 import 'package:pharmacy_system/app/core/models/sales/sale_invoice_model.dart';
 import 'package:pharmacy_system/app/core/models/sales/invoice_return_model.dart';
 import 'package:pharmacy_system/app/core/models/sales/free_return_model.dart';
@@ -8,143 +7,146 @@ import 'package:pharmacy_system/app/core/models/sales/cashier_shift_model.dart';
 import 'package:pharmacy_system/app/core/models/sales/shipping_order_model.dart';
 import 'package:pharmacy_system/app/core/models/sales/quotation_model.dart';
 import 'package:pharmacy_system/app/core/models/sales/promotion_model.dart';
-import 'package:pharmacy_system/app/core/models/sales/return_model.dart';
 import 'package:pharmacy_system/app/core/models/sales/suspended_sale_model.dart';
-import 'package:pharmacy_system/app/core/data/mappers/base_mapper.dart';
 
 import '../database/database.dart';
 
 class SalesMapper {
-  static SaleInvoiceModel saleInvoiceFromData(SaleInvoicesTableData d) => SaleInvoiceModel(
-    id: d.id,
-    invoiceNumber: d.invoiceNumber,
-    customerName: d.customerName,
-    customerId: d.customerId,
-    cashRegisterId: d.cashRegisterId,
-    items: (jsonDecode(d.items) as List).map((e) => SaleItemModel.fromJson(e)).toList(),
-    subtotalAmount: d.subtotalAmount,
-    discountAmount: d.discountAmount,
-    finalAmount: d.finalAmount,
-    paidAmount: d.paidAmount,
-    remainingAmount: d.remainingAmount,
-    paymentMethod: d.paymentMethod,
-    createdBy: d.createdBy,
-    branchId: d.branchId,
-    accountId: d.accountId,
-    notes: d.notes,
-    createdAt: d.createdAt,
-    lastModified: d.lastModified,
-    isDeleted: d.isDeleted,
-    syncVersion: d.syncVersion,
-  );
+  // ─── SaleInvoice ───
+  static SaleInvoiceModel saleInvoiceFromData(SaleInvoicesTableData d) => SaleInvoiceModel.fromJson({
+    'id': d.id,
+    'invoice_number': d.invoiceNumber,
+    'customer_name': d.customerName,
+    'customer_id': d.customerId,
+    'cash_register_id': d.cashRegisterId,
+    'items': jsonDecode(d.items),
+    'subtotal_amount': d.subtotalAmount,
+    'discount_amount': d.discountAmount,
+    'final_amount': d.finalAmount,
+    'paid_amount': d.paidAmount,
+    'remaining_amount': d.remainingAmount,
+    'payment_method': d.paymentMethod,
+    'created_by': d.createdBy,
+    'branch_id': d.branchId,
+    'account_id': d.accountId,
+    'notes': d.notes,
+    'created_at': d.createdAt.toIso8601String(),
+    'last_modified': d.lastModified.toIso8601String(),
+    'is_deleted': d.isDeleted,
+    'sync_version': d.syncVersion,
+  });
 
-  static SaleInvoicesTableCompanion saleInvoiceToCompanion(SaleInvoiceModel m) => SaleInvoicesTableCompanion(
-    id: Value(m.id),
-    invoiceNumber: Value(m.invoiceNumber),
-    customerName: Value(m.customerName),
-    customerId: Value(m.customerId),
-    cashRegisterId: Value(m.cashRegisterId),
-    items: Value(jsonEncode(m.items.map((e) => e.toJson()).toList())),
-    subtotalAmount: Value(m.subtotalAmount),
-    discountAmount: Value(m.discountAmount),
-    finalAmount: Value(m.finalAmount),
-    paidAmount: Value(m.paidAmount),
-    remainingAmount: Value(m.remainingAmount),
-    paymentMethod: Value(m.paymentMethod),
-    createdBy: Value(m.createdBy),
-    branchId: Value(m.branchId),
-    accountId: Value(m.accountId),
-    notes: Value(m.notes),
-    createdAt: Value(m.createdAt),
-    lastModified: Value(m.lastModified),
-    isDeleted: Value(m.isDeleted),
-    syncVersion: Value(m.syncVersion),
-  );
+  static SaleInvoicesTableCompanion saleInvoiceToCompanion(SaleInvoiceModel m) {
+    final json = m.toJson();
+    return SaleInvoicesTableCompanion(
+      id: Value(m.id),
+      invoiceNumber: Value(m.invoiceNumber),
+      customerName: Value(m.customerName),
+      customerId: Value(m.customerId),
+      cashRegisterId: Value(m.cashRegisterId),
+      items: Value(jsonEncode(json['items'])),
+      subtotalAmount: Value(m.subtotalAmount),
+      discountAmount: Value(m.discountAmount),
+      finalAmount: Value(m.finalAmount),
+      paidAmount: Value(m.paidAmount),
+      remainingAmount: Value(m.remainingAmount),
+      paymentMethod: Value(m.paymentMethod),
+      createdBy: Value(m.createdBy),
+      branchId: Value(m.branchId),
+      accountId: Value(m.accountId),
+      notes: Value(m.notes),
+      createdAt: Value(m.createdAt),
+      lastModified: Value(m.lastModified),
+      isDeleted: Value(m.isDeleted),
+      syncVersion: Value(m.syncVersion),
+    );
+  }
 
-  static InvoiceReturnModel invoiceReturnFromData(InvoiceReturnsTableData d) => InvoiceReturnModel(
-    id: d.id,
-    returnNumber: d.returnNumber,
-    originalInvoiceNumber: d.originalInvoiceNumber,
-    originalInvoiceId: d.originalInvoiceId,
-    customerName: d.customerName,
-    customerId: d.customerId,
-    items: (jsonDecode(d.items) as List).map((e) => InvoiceReturnItemModel.fromJson(e)).toList(),
-    returnDiscount: d.returnDiscount,
-    totalReturnAmount: d.totalReturnAmount,
-    createdBy: d.createdBy,
-    branchId: d.branchId,
-    accountId: d.accountId,
-    notes: d.notes,
-    createdAt: d.createdAt,
-    lastModified: d.lastModified,
-    isDeleted: d.isDeleted,
-    syncVersion: d.syncVersion,
-  );
+  // ─── InvoiceReturn ───
+  static InvoiceReturnModel invoiceReturnFromData(InvoiceReturnsTableData d) => InvoiceReturnModel.fromJson({
+    'id': d.id,
+    'return_number': d.returnNumber,
+    'original_invoice_number': d.originalInvoiceNumber,
+    'original_invoice_id': d.originalInvoiceId,
+    'customer_name': d.customerName,
+    'customer_id': d.customerId,
+    'items': jsonDecode(d.items),
+    'return_discount': d.returnDiscount,
+    'total_return_amount': d.totalReturnAmount,
+    'created_by': d.createdBy,
+    'branch_id': d.branchId,
+    'account_id': d.accountId,
+    'notes': d.notes,
+    'created_at': d.createdAt.toIso8601String(),
+    'last_modified': d.lastModified.toIso8601String(),
+    'is_deleted': d.isDeleted,
+    'sync_version': d.syncVersion,
+  });
 
-  static InvoiceReturnsTableCompanion invoiceReturnToCompanion(InvoiceReturnModel m) => InvoiceReturnsTableCompanion(
-    id: Value(m.id),
-    returnNumber: Value(m.returnNumber),
-    originalInvoiceNumber: Value(m.originalInvoiceNumber),
-    originalInvoiceId: Value(m.originalInvoiceId),
-    customerName: Value(m.customerName),
-    customerId: Value(m.customerId),
-    items: Value(jsonEncode(m.items.map((e) => e.toJson()).toList())),
-    returnDiscount: Value(m.returnDiscount),
-    totalReturnAmount: Value(m.totalReturnAmount),
-    createdBy: Value(m.createdBy),
-    branchId: Value(m.branchId),
-    accountId: Value(m.accountId),
-    notes: Value(m.notes),
-    createdAt: Value(m.createdAt),
-    lastModified: Value(m.lastModified),
-    isDeleted: Value(m.isDeleted),
-    syncVersion: Value(m.syncVersion),
-  );
+  static InvoiceReturnsTableCompanion invoiceReturnToCompanion(InvoiceReturnModel m) {
+    final json = m.toJson();
+    return InvoiceReturnsTableCompanion(
+      id: Value(m.id),
+      returnNumber: Value(m.returnNumber),
+      originalInvoiceNumber: Value(m.originalInvoiceNumber),
+      originalInvoiceId: Value(m.originalInvoiceId),
+      customerName: Value(m.customerName),
+      customerId: Value(m.customerId),
+      items: Value(jsonEncode(json['items'])),
+      returnDiscount: Value(m.returnDiscount),
+      totalReturnAmount: Value(m.totalReturnAmount),
+      createdBy: Value(m.createdBy),
+      branchId: Value(m.branchId),
+      accountId: Value(m.accountId),
+      notes: Value(m.notes),
+      createdAt: Value(m.createdAt),
+      lastModified: Value(m.lastModified),
+      isDeleted: Value(m.isDeleted),
+      syncVersion: Value(m.syncVersion),
+    );
+  }
 
-  static FreeReturnModel freeReturnFromData(FreeReturnsTableData d) => FreeReturnModel(
-    id: d.id,
-    returnNumber: d.returnNumber,
-    returnCategory: FreeReturnCategory.values.firstWhere(
-      (c) => c.name == d.returnCategory,
-      orElse: () => FreeReturnCategory.saleReturn,
-    ),
-    partyType: FreeReturnPartyType.values.firstWhere(
-      (p) => p.name == d.partyType,
-      orElse: () => FreeReturnPartyType.cash,
-    ),
-    partyId: d.partyId,
-    partyName: d.partyName,
-    cashRegisterId: d.cashRegisterId,
-    items: (jsonDecode(d.items) as List).map((e) => FreeReturnItemModel.fromJson(e)).toList(),
-    reasonNotes: d.reasonNotes,
-    totalAmount: d.totalAmount,
-    createdBy: d.createdBy,
-    branchId: d.branchId,
-    accountId: d.accountId,
-    createdAt: d.createdAt,
-    lastModified: d.lastModified,
-  );
+  // ─── FreeReturn ───
+  static FreeReturnModel freeReturnFromData(FreeReturnsTableData d) => FreeReturnModel.fromJson({
+    'id': d.id,
+    'return_number': d.returnNumber,
+    'return_category': d.returnCategory,
+    'party_type': d.partyType,
+    'party_id': d.partyId,
+    'party_name': d.partyName,
+    'cash_register_id': d.cashRegisterId,
+    'items': jsonDecode(d.items),
+    'reason_notes': d.reasonNotes,
+    'total_amount': d.totalAmount,
+    'created_by': d.createdBy,
+    'branch_id': d.branchId,
+    'account_id': d.accountId,
+    'created_at': d.createdAt.toIso8601String(),
+    'last_modified': d.lastModified.toIso8601String(),
+  });
 
-  static FreeReturnsTableCompanion freeReturnToCompanion(FreeReturnModel m) => FreeReturnsTableCompanion(
-    id: Value(m.id),
-    returnNumber: Value(m.returnNumber),
-    returnCategory: Value(m.returnCategory.name),
-    partyType: Value(m.partyType.name),
-    partyId: Value(m.partyId),
-    partyName: Value(m.partyName),
-    cashRegisterId: Value(m.cashRegisterId),
-    items: Value(jsonEncode(m.items.map((e) => e.toJson()).toList())),
-    reasonNotes: Value(m.reasonNotes),
-    totalAmount: Value(m.totalAmount),
-    createdBy: Value(m.createdBy),
-    branchId: Value(m.branchId),
-    accountId: Value(m.accountId),
-    createdAt: Value(m.createdAt),
-    lastModified: Value(m.lastModified),
-    isDeleted: const Value.absent(),
-    syncVersion: const Value.absent(),
-  );
+  static FreeReturnsTableCompanion freeReturnToCompanion(FreeReturnModel m) {
+    final json = m.toJson();
+    return FreeReturnsTableCompanion(
+      id: Value(m.id),
+      returnNumber: Value(m.returnNumber),
+      returnCategory: Value(m.returnCategory.name),
+      partyType: Value(m.partyType.name),
+      partyId: Value(m.partyId),
+      partyName: Value(m.partyName),
+      cashRegisterId: Value(m.cashRegisterId),
+      items: Value(jsonEncode(json['items'])),
+      reasonNotes: Value(m.reasonNotes),
+      totalAmount: Value(m.totalAmount),
+      createdBy: Value(m.createdBy),
+      branchId: Value(m.branchId),
+      accountId: Value(m.accountId),
+      createdAt: Value(m.createdAt),
+      lastModified: Value(m.lastModified),
+    );
+  }
 
+  // ─── CashierShift ───
   static CashierShiftModel cashierShiftFromData(CashierShiftsTableData d) => CashierShiftModel(
     id: d.id,
     shiftNumber: d.shiftNumber,
@@ -186,9 +188,9 @@ class SalesMapper {
     notes: Value(m.notes),
     lastModified: Value(m.lastModified),
     isDeleted: Value(m.isDeleted),
-    syncVersion: const Value.absent(),
   );
 
+  // ─── ShippingOrder ───
   static ShippingOrderModel shippingOrderFromData(ShippingOrdersTableData d) {
     List<String>? urls;
     if (d.documentUrls != null && d.documentUrls!.isNotEmpty) {
@@ -242,125 +244,104 @@ class SalesMapper {
     accountId: Value(m.accountId),
     lastModified: Value(m.lastModified),
     isDeleted: Value(m.isDeleted),
-    syncVersion: const Value.absent(),
   );
 
-  static QuotationModel quotationFromData(QuotationsTableData d) => QuotationModel(
-    id: d.id,
-    quotationNumber: d.quotationNumber,
-    customerName: d.customerName,
-    customerPhone: d.customerPhone,
-    items: (jsonDecode(d.items) as List).map((e) => QuotationItemModel.fromJson(e)).toList(),
-    totalAmount: d.finalAmount,
-    totalQuantity: 0,
-    notes: d.notes,
-    createdBy: d.createdBy,
-    branchId: d.branchId,
-    accountId: d.accountId,
-    createdAt: d.createdAt,
-    lastModified: d.lastModified,
-    isDeleted: d.isDeleted,
-    syncVersion: d.syncVersion,
-  );
+  // ─── Quotation ───
+  static QuotationModel quotationFromData(QuotationsTableData d) => QuotationModel.fromJson({
+    'id': d.id,
+    'quotation_number': d.quotationNumber,
+    'customer_id': d.customerId,
+    'customer_name': d.customerName,
+    'customer_phone': d.customerPhone,
+    'items': jsonDecode(d.items),
+    'total_amount': d.finalAmount,
+    'paid_amount': d.paidAmount,
+    'remaining_amount': d.remainingAmount,
+    'payment_method': d.paymentMethod,
+    'payment_status': d.paymentStatus,
+    'shipping_status': d.shippingStatus,
+    'total_quantity': d.totalQuantity,
+    'created_by': d.createdBy,
+    'branch_id': d.branchId,
+    'account_id': d.accountId,
+    'notes': d.notes,
+    'created_at': d.createdAt.toIso8601String(),
+    'last_modified': d.lastModified.toIso8601String(),
+    'is_deleted': d.isDeleted,
+    'sync_version': d.syncVersion,
+  });
 
-  static QuotationsTableCompanion quotationToCompanion(QuotationModel m) => QuotationsTableCompanion(
-    id: Value(m.id),
-    quotationNumber: Value(m.quotationNumber),
-    customerName: Value(m.customerName),
-    customerPhone: Value(m.customerPhone),
-    items: Value(jsonEncode(m.items.map((e) => e.toJson()).toList())),
-    subtotalAmount: const Value.absent(),
-    discountAmount: const Value.absent(),
-    finalAmount: Value(m.totalAmount),
-    status: const Value.absent(),
-    createdBy: Value(m.createdBy),
-    branchId: Value(m.branchId),
-    accountId: Value(m.accountId),
-    notes: Value(m.notes),
-    createdAt: Value(m.createdAt),
-    lastModified: Value(m.lastModified),
-    isDeleted: Value(m.isDeleted),
-    syncVersion: Value(m.syncVersion),
-  );
+  static QuotationsTableCompanion quotationToCompanion(QuotationModel m) {
+    final json = m.toJson();
+    return QuotationsTableCompanion(
+      id: Value(m.id),
+      quotationNumber: Value(m.quotationNumber),
+      customerId: Value(m.customerId),
+      customerName: Value(m.customerName),
+      customerPhone: Value(m.customerPhone),
+      items: Value(jsonEncode(json['items'])),
+      totalAmount: const Value.absent(), // Mismatch with table? Let's check table
+      paidAmount: Value(m.paidAmount),
+      remainingAmount: Value(m.remainingAmount),
+      paymentMethod: Value(m.paymentMethod),
+      paymentStatus: Value(m.paymentStatus.name),
+      shippingStatus: Value(m.shippingStatus.name),
+      totalQuantity: Value(m.totalQuantity),
+      finalAmount: Value(m.totalAmount),
+      createdBy: Value(m.createdBy),
+      branchId: Value(m.branchId),
+      accountId: Value(m.accountId),
+      notes: Value(m.notes),
+      createdAt: Value(m.createdAt),
+      lastModified: Value(m.lastModified),
+      isDeleted: Value(m.isDeleted),
+      syncVersion: Value(m.syncVersion),
+    );
+  }
 
-  static PromotionModel promotionFromData(PromotionsTableData d) => PromotionModel(
-    id: d.id,
-    name: d.name,
-    selectedMedicineIds: d.selectedMedicineIds != null ? (jsonDecode(d.selectedMedicineIds!) as List).cast<String>() : null,
-    categoryId: d.categoryId,
-    brandId: d.brandId,
-    priority: d.priority,
-    discountType: PromotionDiscountType.values.firstWhere(
-      (t) => t.name == d.discountType,
-      orElse: () => PromotionDiscountType.percentage,
-    ),
-    discountValue: d.discountValue,
-    startDate: d.startDate,
-    endDate: d.endDate,
-    isActive: d.isActive,
-    branchId: d.branchId,
-    accountId: d.accountId,
-    lastModified: d.lastModified,
-    isDeleted: d.isDeleted,
-    syncVersion: d.syncVersion,
-  );
+  // ─── Promotion ───
+  static PromotionModel promotionFromData(PromotionsTableData d) => PromotionModel.fromJson({
+    'id': d.id,
+    'name': d.name,
+    'selected_medicine_ids': d.selectedMedicineIds != null ? jsonDecode(d.selectedMedicineIds!) : null,
+    'category_id': d.categoryId,
+    'brand_id': d.brandId,
+    'priority': d.priority,
+    'discount_type': d.discountType,
+    'discount_value': d.discountValue,
+    'start_date': d.startDate.toIso8601String(),
+    'end_date': d.endDate.toIso8601String(),
+    'is_active': d.isActive,
+    'branch_id': d.branchId,
+    'account_id': d.accountId,
+    'last_modified': d.lastModified.toIso8601String(),
+    'is_deleted': d.isDeleted,
+    'sync_version': d.syncVersion,
+  });
 
-  static PromotionsTableCompanion promotionToCompanion(PromotionModel m) => PromotionsTableCompanion(
-    id: Value(m.id),
-    name: Value(m.name),
-    selectedMedicineIds: Value(m.selectedMedicineIds != null ? jsonEncode(m.selectedMedicineIds) : null),
-    categoryId: Value(m.categoryId),
-    brandId: Value(m.brandId),
-    priority: Value(m.priority),
-    discountType: Value(m.discountType.name),
-    discountValue: Value(m.discountValue),
-    startDate: Value(m.startDate),
-    endDate: Value(m.endDate),
-    isActive: Value(m.isActive),
-    branchId: Value(m.branchId),
-    accountId: Value(m.accountId),
-    lastModified: Value(m.lastModified),
-    isDeleted: Value(m.isDeleted),
-    syncVersion: Value(m.syncVersion),
-  );
+  static PromotionsTableCompanion promotionToCompanion(PromotionModel m) {
+    final json = m.toJson();
+    return PromotionsTableCompanion(
+      id: Value(m.id),
+      name: Value(m.name),
+      selectedMedicineIds: Value(json['selected_medicine_ids'] != null ? jsonEncode(json['selected_medicine_ids']) : null),
+      categoryId: Value(m.categoryId),
+      brandId: Value(m.brandId),
+      priority: Value(m.priority),
+      discountType: Value(m.discountType.name),
+      discountValue: Value(m.discountValue),
+      startDate: Value(m.startDate),
+      endDate: Value(m.endDate),
+      isActive: Value(m.isActive),
+      branchId: Value(m.branchId),
+      accountId: Value(m.accountId),
+      lastModified: Value(m.lastModified),
+      isDeleted: Value(m.isDeleted),
+      syncVersion: Value(m.syncVersion),
+    );
+  }
 
-  static ReturnModel returnFromData(ReturnsTableData d) => ReturnModel(
-    id: d.id,
-    branchId: d.branchId,
-    saleId: d.saleId,
-    purchaseId: d.purchaseId,
-    items: (jsonDecode(d.items) as List).map((e) => ReturnItemModel.fromJson(e)).toList(),
-    totalAmount: d.totalAmount,
-    reason: ReturnReason.values.firstWhere(
-      (r) => r.name == d.reason,
-      orElse: () => ReturnReason.other,
-    ),
-    notes: d.notes,
-    createdBy: d.createdBy,
-    accountId: d.accountId,
-    createdAt: d.createdAt,
-    syncVersion: d.syncVersion,
-    lastModified: d.lastModified,
-    isDeleted: d.isDeleted,
-  );
-
-  static ReturnsTableCompanion returnToCompanion(ReturnModel m) => ReturnsTableCompanion(
-    id: Value(m.id),
-    branchId: Value(m.branchId),
-    saleId: Value(m.saleId),
-    purchaseId: Value(m.purchaseId),
-    items: Value(jsonEncode(m.items.map((e) => e.toJson()).toList())),
-    totalAmount: Value(m.totalAmount),
-    reason: Value(m.reason.name),
-    notes: Value(m.notes),
-    createdBy: Value(m.createdBy),
-    accountId: Value(m.accountId),
-    createdAt: Value(m.createdAt),
-    syncVersion: Value(m.syncVersion),
-    lastModified: Value(m.lastModified),
-    isDeleted: Value(m.isDeleted),
-  );
-
+  // ─── SuspendedSale ───
   static SuspendedSaleModel suspendedSaleFromData(SuspendedSalesTableData d) => SuspendedSaleModel(
     id: d.id,
     referenceNumber: d.referenceNumber,
