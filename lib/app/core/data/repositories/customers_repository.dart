@@ -101,7 +101,7 @@ class CustomersRepository {
 
   Future<void> delete(CustomerModel customer) async {
     final branchId = customer.branchId ?? '';
-    await ArchiveService.record(
+    await ArchiveService.archiveRecord(
       entityType: 'customer',
       entityId: customer.id,
       entityName: customer.name,

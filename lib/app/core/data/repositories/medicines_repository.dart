@@ -104,7 +104,7 @@ class MedicinesRepository {
     MedicineModel medicine, {
     required String branchId,
   }) async {
-    await ArchiveService.record(
+    await ArchiveService.archiveRecord(
       entityType: 'medicine',
       entityId: medicine.id,
       entityName: medicine.name,

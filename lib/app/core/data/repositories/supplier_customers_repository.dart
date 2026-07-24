@@ -143,7 +143,7 @@ class SupplierCustomersRepository {
   }
 
   Future<void> delete(SupplierCustomerModel entity, {required String branchId}) async {
-    await ArchiveService.record(
+    await ArchiveService.archiveRecord(
       entityType: 'supplier_customer',
       entityId: entity.id,
       entityName: entity.name,

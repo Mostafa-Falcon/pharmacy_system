@@ -79,7 +79,13 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
               id: r.id,
               title: r.title,
               message: r.message,
-              type: r.type,
+              type: r.type == 'lowStock'
+                  ? NotificationType.lowStock
+                  : r.type == 'expiryWarning'
+                      ? NotificationType.expiryWarning
+                      : r.type == 'newOrder'
+                          ? NotificationType.newOrder
+                          : NotificationType.systemAlert,
               isRead: r.isRead,
               createdAt: r.createdAt,
             ),

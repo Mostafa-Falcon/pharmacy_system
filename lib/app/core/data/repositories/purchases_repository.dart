@@ -148,7 +148,7 @@ class PurchasesRepository {
     final purchase = await getByIdAsync(purchaseId);
     if (purchase == null) return;
 
-    await ArchiveService.record(
+    await ArchiveService.archiveRecord(
       entityType: 'purchase',
       entityId: purchase.id,
       entityName: 'فاتورة مشتريات #${purchase.invoiceNumber}',
