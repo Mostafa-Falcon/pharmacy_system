@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:pharmacy_system/app/shared/constants/strings/home_strings.dart';
-import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/shared/constants/ui/app_colors.dart';
 import 'package:pharmacy_system/app/shared/constants/ui/app_sizes.dart';
 import '../../../routes/app_routes.dart';
@@ -37,7 +36,9 @@ class MainPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return HomeShell(
-        title: HomeStrings.mainPageTitle, child: const MainPageContent());
+      title: HomeStrings.mainPageTitle,
+      child: const MainPageContent(),
+    );
   }
 }
 
@@ -85,7 +86,8 @@ class MainPageContent extends StatelessWidget {
               ),
               sliver: SliverToBoxAdapter(
                 child: _QuickSectionsGrid(
-                    onActionTap: (type) => _handleAction(context, type)),
+                  onActionTap: (type) => _handleAction(context, type),
+                ),
               ),
             ),
           ],
@@ -135,10 +137,12 @@ class _QuickSectionsGrid extends StatelessWidget {
           final columnWidth = (constraints.maxWidth - (spacing * 3)) / 4;
           return Row(
             mainAxisAlignment: MainAxisAlignment.start,
-            children: _buildResponsiveColumns(context, columnWidth)
-                .expand((w) => [w, SizedBox(width: spacing)])
-                .toList()
-              ..removeLast(),
+            children:
+                _buildResponsiveColumns(
+                    context,
+                    columnWidth,
+                  ).expand((w) => [w, SizedBox(width: spacing)]).toList()
+                  ..removeLast(),
           );
         }
 
@@ -470,8 +474,10 @@ class _HomeActionCardState extends State<_HomeActionCard> {
         width: double.infinity,
         height: hasSubtitle ? 118.h : 88.h,
         transform: Matrix4.diagonal3Values(
-            _isHovered ? 1.025 : 1.0, _isHovered ? 1.025 : 1.0, 1.0)
-          ..setTranslationRaw(0.0, _isHovered ? -4.h : 0.0, 0.0),
+          _isHovered ? 1.025 : 1.0,
+          _isHovered ? 1.025 : 1.0,
+          1.0,
+        )..setTranslationRaw(0.0, _isHovered ? -4.h : 0.0, 0.0),
         decoration: BoxDecoration(
           gradient: _getGradient(widget.baseColor),
           borderRadius: BorderRadius.circular(16.r),
@@ -481,9 +487,7 @@ class _HomeActionCardState extends State<_HomeActionCard> {
           ),
           boxShadow: [
             BoxShadow(
-              color: widget.baseColor.withOpacity(
-                _isHovered ? 0.35 : 0.15,
-              ),
+              color: widget.baseColor.withOpacity(_isHovered ? 0.35 : 0.15),
               blurRadius: _isHovered ? 12.r : 6.r,
               offset: Offset(0, _isHovered ? 6.h : 3.h),
             ),
@@ -505,9 +509,7 @@ class _HomeActionCardState extends State<_HomeActionCard> {
                     duration: const Duration(milliseconds: 200),
                     padding: EdgeInsets.all(hasSubtitle ? 8.r : 6.r),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(
-                        _isHovered ? 0.28 : 0.18,
-                      ),
+                      color: Colors.white.withOpacity(_isHovered ? 0.28 : 0.18),
                       borderRadius: BorderRadius.circular(10.r),
                     ),
                     child: Icon(
@@ -562,38 +564,35 @@ class _RowItem {
   final _RowItem? rightItem;
 
   const _RowItem({required this.type, required this.label, required this.icon})
-      : subtitle = null,
-        isSplit = false,
-        leftItem = null,
-        rightItem = null;
+    : subtitle = null,
+      isSplit = false,
+      leftItem = null,
+      rightItem = null;
 
   const _RowItem.full({
     required this.type,
     required this.label,
     this.subtitle,
     required this.icon,
-  })  : isSplit = false,
-        leftItem = null,
-        rightItem = null;
+  }) : isSplit = false,
+       leftItem = null,
+       rightItem = null;
 
   _RowItem.split({required _RowItem left, required _RowItem right})
-      : type = HomeQuickActionType.cashier,
-        label = '',
-        subtitle = null,
-        icon = Icons.abc,
-        isSplit = true,
-        leftItem = left,
-        rightItem = right;
+    : type = HomeQuickActionType.cashier,
+      label = '',
+      subtitle = null,
+      icon = Icons.abc,
+      isSplit = true,
+      leftItem = left,
+      rightItem = right;
 }
 
 class _HomeWelcomeBanner extends StatelessWidget {
   final String userName;
   final String branchName;
 
-  const _HomeWelcomeBanner({
-    required this.userName,
-    required this.branchName,
-  });
+  const _HomeWelcomeBanner({required this.userName, required this.branchName});
 
   @override
   Widget build(BuildContext context) {
@@ -624,16 +623,18 @@ class _HomeWelcomeBanner extends StatelessWidget {
                 ReusableText(
                   'مرحباً بك، $userName 👋',
                   style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
                 SizedBox(height: 4.h),
                 ReusableText(
                   'فرع: $branchName',
                   style: TextStyle(
-                      fontSize: 12.sp,
-                      color: Colors.white.withOpacity(0.85)),
+                    fontSize: 12.sp,
+                    color: Colors.white.withOpacity(0.85),
+                  ),
                 ),
               ],
             ),

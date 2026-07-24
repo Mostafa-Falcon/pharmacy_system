@@ -2,12 +2,9 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
-import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
-import '../../../core/constants/app_strings.dart';
+import 'package:pharmacy_system/app/shared/ui_core.dart';
 import '../bloc/monitoring_dashboard_bloc.dart';
 import '../bloc/monitoring_dashboard_state.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
@@ -24,10 +21,14 @@ class DashboardView extends StatelessWidget {
           builder: (context, constraints) {
             final isWide = constraints.maxWidth >= 950;
             final isMid = constraints.maxWidth >= 650;
-            final hp = isWide ? AppSpacing.xl.w : (isMid ? AppSpacing.lg.w : AppSpacing.md.w);
+            final hp = isWide
+                ? AppSpacing.xl.w
+                : (isMid ? AppSpacing.lg.w : AppSpacing.md.w);
 
             return CustomScrollView(
-              physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+              physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics(),
+              ),
               slivers: [
                 SliverPadding(
                   padding: EdgeInsetsDirectional.fromSTEB(hp, 16.h, hp, 0),
@@ -61,7 +62,10 @@ class DashboardView extends StatelessWidget {
     );
   }
 
-  Widget _buildWelcomeHeader(BuildContext context, MonitoringDashboardState state) {
+  Widget _buildWelcomeHeader(
+    BuildContext context,
+    MonitoringDashboardState state,
+  ) {
     final scheme = Theme.of(context).colorScheme;
 
     return Container(
@@ -86,7 +90,11 @@ class DashboardView extends StatelessWidget {
               color: scheme.primary.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.dashboard_rounded, size: 28.sp, color: scheme.primary),
+            child: Icon(
+              Icons.dashboard_rounded,
+              size: 28.sp,
+              color: scheme.primary,
+            ),
           ),
           SizedBox(width: 16.w),
           Expanded(
@@ -95,12 +103,16 @@ class DashboardView extends StatelessWidget {
               children: [
                 ReusableText(
                   'لوحة التحليلات والمراقبة الرئيسية',
-                  style: AppTextStyles.title(context).copyWith(fontWeight: FontWeight.bold),
+                  style: AppTextStyles.title(
+                    context,
+                  ).copyWith(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 4.h),
                 ReusableText(
                   'نظرة شاملة ومباشرة على أداء المبيعات، الصافي، الديون، وحركة المخزون.',
-                  style: AppTextStyles.caption(context).copyWith(color: scheme.onSurfaceVariant),
+                  style: AppTextStyles.caption(
+                    context,
+                  ).copyWith(color: scheme.onSurfaceVariant),
                 ),
               ],
             ),
@@ -110,7 +122,13 @@ class DashboardView extends StatelessWidget {
     );
   }
 
-  Widget _buildStatCards(BuildContext context, MonitoringDashboardState state, bool isWide, bool isMid, double hp) {
+  Widget _buildStatCards(
+    BuildContext context,
+    MonitoringDashboardState state,
+    bool isWide,
+    bool isMid,
+    double hp,
+  ) {
     final cards = [
       _MonitoringStatCard(
         title: HomeStrings.totalSales,
@@ -178,7 +196,7 @@ class DashboardView extends StatelessWidget {
 
   Widget _buildCharts(BuildContext context, MonitoringDashboardState state) {
     final isWide = MediaQuery.of(context).size.width >= 950;
-    
+
     final content = [
       _MonitoringChartCard(
         title: HomeStrings.salesMovement30Days,
@@ -197,18 +215,37 @@ class DashboardView extends StatelessWidget {
     if (isWide) {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: content.map((c) => Expanded(child: Padding(padding: EdgeInsetsDirectional.only(end: 16.w), child: c))).toList(),
+        children: content
+            .map(
+              (c) => Expanded(
+                child: Padding(
+                  padding: EdgeInsetsDirectional.only(end: 16.w),
+                  child: c,
+                ),
+              ),
+            )
+            .toList(),
       );
     }
 
     return Column(
-      children: content.map((c) => Padding(padding: EdgeInsets.only(bottom: 16.h), child: c)).toList(),
+      children: content
+          .map(
+            (c) => Padding(
+              padding: EdgeInsets.only(bottom: 16.h),
+              child: c,
+            ),
+          )
+          .toList(),
     );
   }
 
-  Widget _buildDebtTables(BuildContext context, MonitoringDashboardState state) {
+  Widget _buildDebtTables(
+    BuildContext context,
+    MonitoringDashboardState state,
+  ) {
     final isWide = MediaQuery.of(context).size.width >= 950;
-    
+
     final content = [
       _MonitoringTableCard(
         title: HomeStrings.customerDebts,
@@ -235,12 +272,28 @@ class DashboardView extends StatelessWidget {
     if (isWide) {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: content.map((c) => Expanded(child: Padding(padding: EdgeInsetsDirectional.only(end: 16.w), child: c))).toList(),
+        children: content
+            .map(
+              (c) => Expanded(
+                child: Padding(
+                  padding: EdgeInsetsDirectional.only(end: 16.w),
+                  child: c,
+                ),
+              ),
+            )
+            .toList(),
       );
     }
 
     return Column(
-      children: content.map((c) => Padding(padding: EdgeInsets.only(bottom: 16.h), child: c)).toList(),
+      children: content
+          .map(
+            (c) => Padding(
+              padding: EdgeInsets.only(bottom: 16.h),
+              child: c,
+            ),
+          )
+          .toList(),
     );
   }
 
@@ -305,9 +358,19 @@ class _MonitoringStatCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ReusableText(title, style: AppTextStyles.caption(context).copyWith(color: scheme.onSurfaceVariant, fontSize: 11.sp)),
+                ReusableText(
+                  title,
+                  style: AppTextStyles.caption(
+                    context,
+                  ).copyWith(color: scheme.onSurfaceVariant, fontSize: 11.sp),
+                ),
                 SizedBox(height: 2.h),
-                ReusableText(value, style: AppTextStyles.bodyBold(context).copyWith(color: color, fontSize: 13.sp)),
+                ReusableText(
+                  value,
+                  style: AppTextStyles.bodyBold(
+                    context,
+                  ).copyWith(color: color, fontSize: 13.sp),
+                ),
               ],
             ),
           ),
@@ -363,7 +426,12 @@ class _MonitoringTableCard extends StatelessWidget {
           if (rows.isEmpty)
             Padding(
               padding: EdgeInsets.symmetric(vertical: 24.h),
-              child: Center(child: ReusableText('لا توجد ديون مسجلة', style: AppTextStyles.caption(context))),
+              child: Center(
+                child: ReusableText(
+                  'لا توجد ديون مسجلة',
+                  style: AppTextStyles.caption(context),
+                ),
+              ),
             )
           else
             Column(
@@ -376,7 +444,12 @@ class _MonitoringTableCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ReusableText(name, style: AppTextStyles.body(context)),
-                      ReusableText(debt, style: AppTextStyles.bodyBold(context).copyWith(color: AppColors.warning)),
+                      ReusableText(
+                        debt,
+                        style: AppTextStyles.bodyBold(
+                          context,
+                        ).copyWith(color: AppColors.warning),
+                      ),
                     ],
                   ),
                 );
@@ -435,7 +508,12 @@ class _MonitoringChartCard extends StatelessWidget {
               children: [
                 Icon(Icons.show_chart_rounded, color: lineColor, size: 32.sp),
                 SizedBox(width: 8.w),
-                ReusableText('مؤشر الحركة والتحليلات سليم 100%', style: AppTextStyles.caption(context).copyWith(color: scheme.onSurfaceVariant)),
+                ReusableText(
+                  'مؤشر الحركة والتحليلات سليم 100%',
+                  style: AppTextStyles.caption(
+                    context,
+                  ).copyWith(color: scheme.onSurfaceVariant),
+                ),
               ],
             ),
           ),
@@ -444,7 +522,3 @@ class _MonitoringChartCard extends StatelessWidget {
     );
   }
 }
-
-
-
-

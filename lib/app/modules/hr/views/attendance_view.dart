@@ -1,13 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:pharmacy_system/app/core/models/hr/attendance_model.dart';
 import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/tables/shared_table_cells.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pharmacy_system/app/shared/ui_core.dart';
 import '../bloc/hr_bloc.dart';
-import 'package:pharmacy_system/app/modules/hr/models/attendance_model.dart';
-import 'package:pharmacy_system/app/modules/hr/models/employee_model.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
-import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 
 class AttendanceView extends StatelessWidget {
   const AttendanceView({super.key});
@@ -16,7 +13,8 @@ class AttendanceView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HrBloc, HrState>(
       builder: (context, state) {
-        if (state.status == HrStatus.loading && state.attendanceRecords.isEmpty) {
+        if (state.status == HrStatus.loading &&
+            state.attendanceRecords.isEmpty) {
           return const LoadingIndicator();
         }
         final today = DateTime.now().toIso8601String().substring(0, 10);
@@ -27,7 +25,8 @@ class AttendanceView extends StatelessWidget {
         return Scaffold(
           backgroundColor: AppColors.backgroundOf(context),
           body: RefreshIndicator(
-            onRefresh: () async => context.read<HrBloc>().add(const LoadHrData()),
+            onRefresh: () async =>
+                context.read<HrBloc>().add(const LoadHrData()),
             child: ListView(
               padding: EdgeInsets.all(AppSpacing.md.w),
               physics: const BouncingScrollPhysics(),
@@ -36,7 +35,10 @@ class AttendanceView extends StatelessWidget {
                 SizedBox(height: AppSpacing.md.h),
                 _ClockInOutCard(todayRecords: todayRecords),
                 SizedBox(height: AppSpacing.md.h),
-                _AttendanceHistoryCard(records: state.attendanceRecords, employees: state.employees),
+                _AttendanceHistoryCard(
+                  records: state.attendanceRecords,
+                  employees: state.employees,
+                ),
               ],
             ),
           ),
@@ -60,32 +62,35 @@ class _TodaySummaryCard extends StatelessWidget {
         padding: EdgeInsets.all(AppSpacing.md.w),
         child: Column(
           children: [
-            Icon(Icons.access_time_rounded,
-                size: 32.sp, color: AppColors.primary),
+            Icon(
+              Icons.access_time_rounded,
+              size: 32.sp,
+              color: AppColors.primary,
+            ),
             SizedBox(height: AppSpacing.sm.h),
             ReusableText(
               'حضور اليوم',
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: AppSpacing.sm.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _StatItem(
-                    icon: Icons.login_rounded,
-                    label: 'تم الحضور',
-                    value: '$checkedIn'),
+                  icon: Icons.login_rounded,
+                  label: 'تم الحضور',
+                  value: '$checkedIn',
+                ),
                 _StatItem(
-                    icon: Icons.logout_rounded,
-                    label: 'تم الانصراف',
-                    value: '$checkedOut'),
+                  icon: Icons.logout_rounded,
+                  label: 'تم الانصراف',
+                  value: '$checkedOut',
+                ),
                 _StatItem(
-                    icon: Icons.people_rounded,
-                    label: 'الإجمالي',
-                    value: '${todayRecords.length}'),
+                  icon: Icons.people_rounded,
+                  label: 'الإجمالي',
+                  value: '${todayRecords.length}',
+                ),
               ],
             ),
           ],
@@ -99,8 +104,11 @@ class _StatItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
-  const _StatItem(
-      {required this.icon, required this.label, required this.value});
+  const _StatItem({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -108,15 +116,21 @@ class _StatItem extends StatelessWidget {
       children: [
         Icon(icon, size: 20.sp, color: AppColors.primary),
         SizedBox(height: 4.h),
-        ReusableText(value,
-            style: TextStyle(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimaryOf(context))),
-        ReusableText(label,
-            style: TextStyle(
-                fontSize: 11.sp,
-                color: AppColors.textSecondaryOf(context))),
+        ReusableText(
+          value,
+          style: TextStyle(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimaryOf(context),
+          ),
+        ),
+        ReusableText(
+          label,
+          style: TextStyle(
+            fontSize: 11.sp,
+            color: AppColors.textSecondaryOf(context),
+          ),
+        ),
       ],
     );
   }
@@ -153,10 +167,9 @@ class _ClockInOutCard extends StatelessWidget {
                       bloc.add(ClockOut(record.id));
                     } else {
                       final emp = employees.first;
-                      bloc.add(ClockIn(
-                        employeeId: emp.id,
-                        employeeName: emp.name,
-                      ));
+                      bloc.add(
+                        ClockIn(employeeId: emp.id, employeeName: emp.name),
+                      );
                     }
                   },
                 ),
@@ -172,7 +185,10 @@ class _ClockInOutCard extends StatelessWidget {
 class _AttendanceHistoryCard extends StatelessWidget {
   final List<AttendanceModel> records;
   final List<EmployeeModel> employees;
-  const _AttendanceHistoryCard({required this.records, required this.employees});
+  const _AttendanceHistoryCard({
+    required this.records,
+    required this.employees,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -192,13 +208,16 @@ class _AttendanceHistoryCard extends StatelessWidget {
         id: 'in',
         title: 'حضور',
         width: 100.w,
-        textBuilder: (a) => a.clockIn.length > 11 ? a.clockIn.substring(11, 16) : '--',
+        textBuilder: (a) =>
+            a.clockIn.length > 11 ? a.clockIn.substring(11, 16) : '--',
       ),
       ReusableTableColumn<AttendanceModel>(
         id: 'out',
         title: 'انصراف',
         width: 100.w,
-        textBuilder: (a) => (a.clockOut?.length ?? 0) > 11 ? a.clockOut!.substring(11, 16) : '--',
+        textBuilder: (a) => (a.clockOut?.length ?? 0) > 11
+            ? a.clockOut!.substring(11, 16)
+            : '--',
       ),
       ReusableTableColumn<AttendanceModel>(
         id: 'hours',
@@ -210,7 +229,11 @@ class _AttendanceHistoryCard extends StatelessWidget {
         id: 'status',
         title: 'الحالة',
         width: 110.w,
-        cellBuilder: (a) => StatusBadge(label: _statusLabel(a.status), color: _statusColor(context, a.status), icon: _statusIcon(a.status)),
+        cellBuilder: (a) => StatusBadge(
+          label: _statusLabel(a.status),
+          color: _statusColor(context, a.status),
+          icon: _statusIcon(a.status),
+        ),
       ),
     ];
 
@@ -242,23 +265,18 @@ class _AttendanceHistoryCard extends StatelessWidget {
   };
 
   Color _statusColor(BuildContext context, String status) => switch (status) {
-        'present' => AppColors.success,
-        'late' => AppColors.warning,
-        'absent' => AppColors.error,
-        'half-day' => AppColors.info,
-        _ => AppColors.textMutedOf(context),
-      };
+    'present' => AppColors.success,
+    'late' => AppColors.warning,
+    'absent' => AppColors.error,
+    'half-day' => AppColors.info,
+    _ => AppColors.textMutedOf(context),
+  };
 
   IconData _statusIcon(String status) => switch (status) {
-        'present' => Icons.check_circle_rounded,
-        'late' => Icons.warning_amber_rounded,
-        'absent' => Icons.cancel_rounded,
-        'half-day' => Icons.access_time_rounded,
-        _ => Icons.help_rounded,
-      };
+    'present' => Icons.check_circle_rounded,
+    'late' => Icons.warning_amber_rounded,
+    'absent' => Icons.cancel_rounded,
+    'half-day' => Icons.access_time_rounded,
+    _ => Icons.help_rounded,
+  };
 }
-
-
-
-
-

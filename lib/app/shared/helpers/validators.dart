@@ -1,4 +1,4 @@
-import 'package:pharmacy_system/app/shared/constants/strings/auth_strings.dart';
+import 'package:pharmacy_system/app/shared/ui_core.dart';
 
 class AppValidators {
   AppValidators._();
