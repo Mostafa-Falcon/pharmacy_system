@@ -1,7 +1,7 @@
 import 'package:just_audio/just_audio.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
-import 'package:pharmacy_system/app/core/utils/app_utils.dart';
-import 'package:pharmacy_system/app/core/data/database/daos/app_settings_dao.dart';
+import 'package:pharmacy_system/app/shared/ui_core.dart';
+import 'package:pharmacy_system/app/core/data/database/daos/system_dao.dart';
 import 'package:pharmacy_system/app/core/constants/ui/app_assets.dart';
 
 enum SoundEffect {

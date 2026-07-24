@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:pharmacy_system/app/core/injection.dart';
-import 'package:pharmacy_system/app/core/utils/app_utils.dart';
-import 'package:pharmacy_system/app/core/data/database/daos/app_settings_dao.dart';
+import 'package:pharmacy_system/app/shared/ui_core.dart';
+import 'package:pharmacy_system/app/core/data/database/daos/system_dao.dart';
 
 class ThemeService extends ChangeNotifier {
   static final ThemeService instance = ThemeService._();

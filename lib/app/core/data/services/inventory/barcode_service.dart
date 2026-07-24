@@ -1,8 +1,8 @@
 import 'package:pharmacy_system/app/core/injection.dart';
-import 'package:pharmacy_system/app/core/data/database/daos/app_settings_dao.dart';
+import 'package:pharmacy_system/app/core/data/database/daos/system_dao.dart';
 import 'package:pharmacy_system/app/core/data/repositories/medicines_repository.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
-import 'package:pharmacy_system/app/core/utils/app_utils.dart';
+import 'package:pharmacy_system/app/shared/ui_core.dart';
 
 class BarcodeService {
   static const String _prefix = 'PH';
