@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:pharmacy_system/app/core/data/services/config_service.dart';
+import 'package:pharmacy_system/app/core/data/services/system/config_service.dart';
 
 class AppConfig {
   static Future<void> load() async {

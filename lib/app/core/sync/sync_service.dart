@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:drift/drift.dart';
 import 'package:get_it/get_it.dart';
 
-import 'package:pharmacy_system/app/core/sync/sync_config.dart';
+import 'package:pharmacy_system/app/core/sync/config/sync_config.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/sync_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
-import 'package:pharmacy_system/app/core/sync/sync_engine.dart';
-import 'package:pharmacy_system/app/core/sync/sync_models.dart';
+import 'package:pharmacy_system/app/core/sync/engine/sync_engine.dart';
+import 'package:pharmacy_system/app/core/sync/models/sync_models.dart';
 
-export 'package:pharmacy_system/app/core/sync/sync_models.dart';
+export 'package:pharmacy_system/app/core/sync/models/sync_models.dart';
 
 /// A bridge service that exposes SyncEngine functionality to the UI and other modules.
 class SyncService {

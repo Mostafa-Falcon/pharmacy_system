@@ -1,6 +1,6 @@
 import 'package:get_it/get_it.dart';
 
-import '../bloc/import_data_bloc.dart';
+import '../bloc/import/import_data_bloc.dart';
 
 final sl = GetIt.instance;
 

@@ -4,11 +4,9 @@ import 'package:pharmacy_system/app/core/models/auth/user_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_service.dart';
 import 'package:pharmacy_system/app/core/sync/sync_service.dart';
-import 'package:pharmacy_system/app/core/sync/supabase_client.dart';
+import 'package:pharmacy_system/app/core/sync/supabase/supabase_client.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 import '../../../core/injection.dart';
-import '../../layout/bloc/shell_bloc.dart';
-import '../../layout/bloc/shell_event.dart';
 import 'auth_state.dart';
 export 'auth_state.dart';
 

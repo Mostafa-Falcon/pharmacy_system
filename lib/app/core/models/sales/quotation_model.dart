@@ -1,4 +1,4 @@
-import 'package:pharmacy_system/app/core/sync/syncable_entity.dart';
+import 'package:pharmacy_system/app/core/data/database/syncable_entity.dart';
 
 /// Backward Compatibility Type Alias
 typedef QuoteModel = QuotationModel;

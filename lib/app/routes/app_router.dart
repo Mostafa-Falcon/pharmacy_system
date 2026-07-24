@@ -5,23 +5,12 @@ import 'package:go_router/go_router.dart';
 import 'package:pharmacy_system/app/modules/auth/bloc/auth_bloc.dart';
 
 import 'package:pharmacy_system/app/core/injection.dart';
-import 'package:pharmacy_system/app/shared/navigation/route_cubit.dart';
-import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
+import 'package:pharmacy_system/app/core/navigation/route_cubit.dart';
 
+import '../core/data/services/auth/auth_service.dart';
 import 'app_routes.dart';
 import 'route_access_policy.dart';
-import 'sub_routes/accounting_routes.dart';
-import 'sub_routes/admin_routes.dart';
 import 'sub_routes/auth_routes.dart';
-import 'sub_routes/contacts_routes.dart';
-import 'sub_routes/home_routes.dart';
-import 'sub_routes/hr_routes.dart';
-import 'sub_routes/inventory_routes.dart';
-import 'sub_routes/ops_routes.dart';
-import 'sub_routes/purchases_routes.dart';
-import 'sub_routes/reports_routes.dart';
-import 'sub_routes/returns_routes.dart';
-import 'sub_routes/sales_routes.dart';
 
 class AppRouter {
   AppRouter._();
@@ -84,20 +73,6 @@ class AppRouter {
     return null;
   }
 
-  static List<RouteBase> get _routes => [
-    ...authRoutes,
-    ...homeRoutes,
-    ...adminRoutes,
-    ...salesRoutes,
-    ...inventoryRoutes,
-    ...contactsRoutes,
-    ...purchasesRoutes,
-    ...returnsRoutes,
-    ...hrRoutes,
-    ...accountingRoutes,
-    ...reportsRoutes,
-    ...opsRoutes,
-  ];
 }
 
 class _RouteObserver extends NavigatorObserver {

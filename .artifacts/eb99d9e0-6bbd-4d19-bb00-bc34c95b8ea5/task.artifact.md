@@ -1,9 +1,8 @@
-# مهام تطوير وتنظيم الـ NavBar
+# مهام تنظيم مجلد الـ Core
 
-- [x] تحديث نصوص التنبيهات في `notifications_strings.dart`
-- [x] تحديث نصوص الحساب في `auth_strings.dart` (تم التأكد من وجودها)
-- [x] إضافة ويدجت `_NavbarDate` في `home_navbar.dart`
-- [x] تحديث ويدجت `_NotificationBadge` بالتصميم المبوب الجديد
-- [x] تحديث ويدجت `_ProfileBadge` باستخدام `MenuAnchor` والتصميم الجديد
-- [x] إعادة ترتيب عناصر الـ `HomeNavbar` وتحديث الألوان
-- [x] التحقق من تكامل الأكواد وتناسقها مع الصور
+- [x] تنظيم الـ BLoCs في `core/bloc/` لمجلدات فرعية (`base`, `app`, `import`, `mixins`)
+- [x] تنظيم مجلد المزامنة `core/sync/` لمجلدات فرعية (`engine`, `models`, `config`, `supabase`)
+- [x] حذف الملفات المكررة والقديمة (`CorrectionChainCubit`, `BoxHelper`)
+- [x] نقل `SyncableEntity` لمجلد الـ Database
+- [x] تحديث جميع الـ Imports في المشروع (أكثر من 50 ملف) لتعمل مع الهيكلية الجديدة
+- [x] التأكد من سلامة المشروع وخلوه من أخطاء التحليل (Analysis Clean)

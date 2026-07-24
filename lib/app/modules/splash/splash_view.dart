@@ -1,10 +1,10 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pharmacy_system/app/shared/constants/strings/app_strings.dart';
+import 'package:pharmacy_system/app/core/constants/strings/app_strings.dart';
 
-import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/widgets/index.dart';
 import 'package:pharmacy_system/app/routes/app_routes.dart';
 import '../auth/bloc/auth_bloc.dart';
 
@@ -105,7 +105,7 @@ class _SplashViewState extends State<SplashView> {
                           ),
                           SizedBox(height: 12.h),
                           AppButton(
-                            text: 'إعادة المحاولة',
+                            text: '????? ????????',
                             prefixIcon: Icons.refresh_rounded,
                             onPressed: _triggerAuthCheck,
                           ),
@@ -119,7 +119,7 @@ class _SplashViewState extends State<SplashView> {
                         const LoadingIndicator(),
                         SizedBox(height: 16.h),
                         AppText(
-                          'جاري التحقق من التراخيص وتجهيز البيانات...',
+                          '???? ?????? ?? ???????? ?????? ????????...',
                           style: TextStyle(
                             fontSize: 12.sp,
                             color: scheme.onSurfaceVariant,

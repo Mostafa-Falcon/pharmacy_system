@@ -1,4 +1,4 @@
-import 'package:pharmacy_system/app/core/sync/syncable_entity.dart';
+import 'package:pharmacy_system/app/core/data/database/syncable_entity.dart';
 
 /// 📖 موديل سطر قيد اليومية (Journal Entry Line Model)
 class JournalEntryLineModel {

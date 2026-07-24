@@ -1,15 +1,25 @@
 import 'package:get_it/get_it.dart';
-import 'package:pharmacy_system/app/core/sync/sync_engine.dart';
+import 'package:pharmacy_system/app/core/sync/engine/sync_engine.dart';
 
-import '../data/services/lookup_service.dart';
-import '../services/system_health_service.dart';
+import '../data/services/system/lookup_service.dart';
+import '../data/services/system/system_health_service.dart';
+import '../data/services/ui/theme_service.dart';
+import '../data/services/ui/sound_service.dart';
+import '../data/services/system/config_service.dart';
 
 final sl = GetIt.instance;
 
 void registerCoreServiceDependencies() {
   sl.allowReassignment = true;
+  
+  // ─── System Services ───
   _reg<LookupService>(() => LookupService.instance);
   _reg<SystemHealthService>(() => SystemHealthService.instance);
+  _reg<ConfigService>(() => ConfigService.instance);
+  
+  // ─── UI Services ───
+  _reg<ThemeService>(() => ThemeService.instance);
+  _reg<SoundService>(() => SoundService.instance);
 
   // Register SyncEngine singleton
   if (!sl.isRegistered<SyncEngine>()) {

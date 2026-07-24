@@ -1,60 +1,46 @@
-# إعادة تنظيم وتطوير شريط التنقل (NavBar)
+# خطة تنظيم المجلد الرئيسي `lib/app/core`
 
-بناءً على الصور المرفقة، سنقوم بإعادة هيكلة شريط التنقل العلوي (`HomeNavbar`) ليكون أكثر تنظيماً ويحتوي على المميزات المطلوبة: عرض التاريخ، قائمة الملف الشخصي المتطورة، ومركز التنبيهات المبوب.
+بناءً على طلبك يا صقر، هنقوم بتنظيم ملفات الـ `core` عشان تكون المسؤليات واضحة ونشيل أي تكرارات أو ملفات قديمة (Legacy).
 
 ## Proposed Changes
 
-### 🎨 التصميم والهوية البصرية
-*   تعديل لون خلفية الـ NavBar ليكون داكناً ومميزاً كما في الصور.
-*   تحديث الحواف (Border Radius) للأزرار لتكون أكثر استدارة.
-*   دعم كامل للاتجاه من اليمين لليسار (RTL).
+### 📂 1. تنظيم الـ BLoCs (`lib/app/core/bloc/`)
+هنقسم الـ Blocs لمجلدات فرعية حسب النوع:
+*   **`base/`**: للملفات الأساسية (`base_bloc`, `base_state`, `base_paginated_bloc`).
+*   **`app/`**: للـ Cubit العام للمشروع (`app_cubit`, `app_state`, `app_bloc_observer`).
+*   **`import/`**: للـ Logic الخاص باستيراد البيانات (`import_data_bloc`, `import_data_event`, `import_data_state`).
+*   **`mixins/`**: للـ Mixins المشتركة (`sortable_list_mixin`, `table_observer_mixin`).
+
+> [!CAUTION]
+> سيتم حذف النسخة المكررة من `correction_chain_cubit.dart` الموجودة في `lib/app/core/bloc/` والاعتماد على النسخة المحدثة في `lib/app/shared/`.
 
 ---
 
-### 🧱 المكونات الجديدة والمحدثة
-
-#### [MODIFY] [home_navbar.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/shared/presentation/widgets/layouts/home_navbar.dart)
-
-1.  **`_NavbarDate` (مكون جديد)**:
-    *   عرض التاريخ بالصيغة العربية: `اليوم، يوم شهر سنة` (مثال: `الجمعة، 24 يوليو 2026`).
-    *   وضعه في منتصف شريط التنقل.
-
-2.  **`_ProfileBadge` (تحديث جذري)**:
-    *   تحويله من `PopupMenuButton` إلى `MenuAnchor` للتحكم الكامل في التصميم.
-    *   إضافة البريد الإلكتروني للمستخدم في رأس القائمة.
-    *   إضافة خيار "الموظفين" (Employees) و"تسجيل الخروج" (Logout) بتنسيق مطابق للصورة.
-
-3.  **`_NotificationBadge` (تحديث جذري)**:
-    *   إضافة تبويبات (Tabs): "الكل"، "غير مقروء"، "رسائل".
-    *   إضافة زر "تحديد الكل كمقروء" في الأعلى.
-    *   تنسيق عناصر الإشعارات لتطابق الصورة.
-
-4.  **إعادة ترتيب العناصر (Layout)**:
-    *   اليمين (Start): زر القائمة/السايدبار.
-    *   المنتصف: ويدجت التاريخ.
-    *   اليسار (End): (الآلة الحاسبة - الإشعارات - الكاشير - الملف الشخصي).
+### 📂 2. تنظيم البيانات والقاعدة (`lib/app/core/data/`)
+*   **`database/`**: هننقل `syncable_entity.dart` من مجلد الـ `sync` لهنا لأنه بيعبر عن واجهة (Interface) لجداول القاعدة.
+*   **`storage/`**: حذف ملف `box_helper.dart` المكرر والقديم (Hive legacy) لأنه مبقاش مستخدم.
 
 ---
 
-### 📝 النصوص والترجمة
-
-#### [MODIFY] [notifications_strings.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/shared/constants/strings/notifications_strings.dart)
-*   إضافة نصوص للتبويبات: `unread`, `messages`.
-*   تحديث نص `markAllAsRead` إن لزم الأمر.
-
-#### [MODIFY] [auth_strings.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/shared/constants/strings/auth_strings.dart) (للتأكد)
-*   التأكد من وجود نص "تسجيل الخروج".
+### 📂 3. تنظيم المزامنة (`lib/app/core/sync/`)
+المجلد ده فيه ملفات كتير، هننظمه كالتالي:
+*   **`engine/`**: للمحرك والخدمات الفرعية (`sync_engine`, `sync_pull_service`, `sync_push_service`, `sync_compaction_service`, `sync_dead_letter_service`).
+*   **`models/`**: للموديلات (`sync_models`, `sync_queue_item`).
+*   **`config/`**: لإعدادات المزامنة (`sync_config`).
+*   **`supabase/`**: للـ Client الخاص بسوبابيز (`supabase_client`).
 
 ---
+
+### 📂 4. تنظيم الأدوات والخدمات
+*   تحديث الـ Imports في المشروع بالكامل لتعمل مع الهيكلية الجديدة.
+*   إصلاح الـ Imports الضاربة الخاصة بـ `app_utils.dart` (سيتم دمجها أو إنشاء الملف المفقود).
 
 ## Verification Plan
 
 ### Automated Tests
-*   لا يوجد اختبارات مؤتمتة مطلوبة حالياً لهذه التغييرات البصرية، سنعتمد على المعاينة المباشرة.
+*   التأكد من أن المشروع يعمل `Build` و `Analyze` بدون أخطاء "Target of URI doesn't exist".
 
 ### Manual Verification
-1.  التأكد من ظهور التاريخ باللغة العربية وبالتنسيق الصحيح.
-2.  فتح قائمة الملف الشخصي والتأكد من ظهور الإيميل والروابط الجديدة.
-3.  فتح مركز التنبيهات والتنقل بين التبويبات الثلاثة.
-4.  التأكد من استجابة الأزرار عند الضغط عليها.
-5.  التحقق من تناسق الألوان مع التصميم المطلوب في الصور.
+1.  التأكد من أن المزامنة (Sync) لا تزال تعمل بكفاءة بعد نقل ملفات الـ Engine.
+2.  التأكد من أن الـ App Cubit والـ Theme شغالين صح.
+3.  التأكد من أن عمليات استيراد البيانات (Import) شغالة.
