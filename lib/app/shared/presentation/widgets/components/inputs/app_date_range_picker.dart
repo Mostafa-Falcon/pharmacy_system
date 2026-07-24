@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 import 'package:pharmacy_system/app/shared/ui_core.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/display/app_text.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/components/display/app_text.dart';
 
 class DateRangePicker extends StatelessWidget {
   final DateTime? fromDate;

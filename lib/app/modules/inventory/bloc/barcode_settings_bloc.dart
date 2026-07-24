@@ -1,6 +1,6 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+﻿import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/components/feedback/app_snackbar.dart';
 import 'package:pharmacy_system/app/core/models/inventory/barcode_settings_model.dart';
 import '../services/barcode_code_service.dart';
 import '../services/barcode_settings_service.dart';

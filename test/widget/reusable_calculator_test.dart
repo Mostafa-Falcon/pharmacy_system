@@ -1,7 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/components/index.dart';
 
 void main() {
   group('ReusableCalculator', () {

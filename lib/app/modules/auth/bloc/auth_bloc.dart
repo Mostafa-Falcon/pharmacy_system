@@ -5,7 +5,7 @@ import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_service.dart';
 import 'package:pharmacy_system/app/core/sync/supabase_client.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/components/feedback/app_snackbar.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 import '../../../core/injection.dart';
 import '../../layout/bloc/shell_bloc.dart';

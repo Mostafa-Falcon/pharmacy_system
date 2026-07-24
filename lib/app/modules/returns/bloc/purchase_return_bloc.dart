@@ -1,4 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+﻿import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 import 'package:pharmacy_system/app/core/models/base/correction_model.dart';
 import 'package:pharmacy_system/app/core/models/sales/return_model.dart';
@@ -7,7 +7,7 @@ import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service
 import 'package:pharmacy_system/app/core/data/services/accounting/correction_service.dart';
 import 'package:pharmacy_system/app/core/data/services/inventory/stock_mutation_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_ledger_service.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/components/feedback/app_snackbar.dart';
 import 'purchase_return_event.dart';
 import 'purchase_return_state.dart';
 

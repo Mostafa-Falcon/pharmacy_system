@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/shareds/sidebar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/layouts/sidebar.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
 

@@ -6,7 +6,7 @@ import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_ledger_service.dart';
 import 'package:pharmacy_system/app/core/data/services/operations/export_service.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/components/feedback/app_snackbar.dart';
 import 'package:pharmacy_system/app/core/data/repositories/suppliers_repository.dart';
 import '../../../../core/injection.dart';
 import 'suppliers_event.dart';

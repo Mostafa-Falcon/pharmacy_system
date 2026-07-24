@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/shareds/sidebar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/layouts/sidebar.dart';
 import 'package:pharmacy_system/app/core/models/auth/user_model.dart';
 
 enum ShellStatus { initial, loading, loaded, error }

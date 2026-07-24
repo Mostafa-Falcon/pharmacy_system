@@ -9,7 +9,7 @@ import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/extensions/string_ext.dart';
 import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/tables/shared_table_cells.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/components/tables/shared_table_cells.dart';
 import '../bloc/crm_bloc.dart';
 import '../bloc/crm_event.dart';
 import '../bloc/crm_state.dart';

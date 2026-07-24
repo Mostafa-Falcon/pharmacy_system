@@ -6,7 +6,7 @@ import 'package:pharmacy_system/app/core/models/contacts/supplier_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/customer/customer_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_service.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/components/feedback/app_snackbar.dart';
 import 'package:pharmacy_system/app/core/models/accounting/party_payment_enums.dart';
 import 'package:pharmacy_system/app/core/models/accounting/party_payment_model.dart';
 import '../services/party_payment_service.dart';

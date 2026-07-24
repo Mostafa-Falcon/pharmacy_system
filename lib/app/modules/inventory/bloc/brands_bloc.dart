@@ -1,6 +1,6 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+﻿import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/bloc/base_paginated_bloc.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/components/feedback/app_snackbar.dart';
 import 'package:pharmacy_system/app/core/models/inventory/medicine_brand_model.dart';
 import '../services/brand_service.dart';
 

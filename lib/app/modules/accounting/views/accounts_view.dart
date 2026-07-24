@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../bloc/accounting_bloc.dart';
 import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/tables/shared_table_cells.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/components/tables/shared_table_cells.dart';
 import 'package:intl/intl.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/core/models/accounting/journal_entry_model.dart';

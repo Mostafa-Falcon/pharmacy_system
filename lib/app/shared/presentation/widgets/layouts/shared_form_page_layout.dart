@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:pharmacy_system/app/shared/ui_core.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/buttons/app_button.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/display/app_text.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/components/buttons/app_button.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/components/display/app_text.dart';
 
 class SharedFormSection extends StatelessWidget {
   final String title;

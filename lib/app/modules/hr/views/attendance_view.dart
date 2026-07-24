@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:pharmacy_system/app/core/models/hr/attendance_model.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/tables/shared_table_cells.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/components/tables/shared_table_cells.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 import '../bloc/hr_bloc.dart';

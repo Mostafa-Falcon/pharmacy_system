@@ -13,7 +13,7 @@ import 'package:pharmacy_system/app/core/data/services/supplier/supplier_ledger_
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_service.dart';
 import 'package:pharmacy_system/app/core/data/services/inventory/stock_mutation_service.dart';
 import 'package:pharmacy_system/app/core/data/services/sound_service.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/components/feedback/app_snackbar.dart';
 import 'package:pharmacy_system/app/core/data/repositories/purchases_repository.dart';
 import 'package:pharmacy_system/app/core/models/purchases/purchase_invoice_model.dart';
 import '../../../core/injection.dart';

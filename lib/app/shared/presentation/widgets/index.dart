@@ -1,2 +1,2 @@
-export 'shareds/index.dart';
-export 'reusables/index.dart';
+export 'layouts/index.dart';
+export 'components/index.dart';

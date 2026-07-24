@@ -9,7 +9,7 @@ import 'leave_view.dart';
 import 'payroll_view.dart';
 import 'departments_view.dart';
 import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/shareds/home_shell.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/layouts/home_shell.dart';
 
 class HrShellView extends StatelessWidget {
   const HrShellView({super.key});

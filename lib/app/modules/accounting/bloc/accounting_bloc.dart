@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 import 'package:pharmacy_system/app/core/bloc/table_observer_mixin.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/components/feedback/app_snackbar.dart';
 import 'package:pharmacy_system/app/core/models/accounting/expense_model.dart';
 import 'package:pharmacy_system/app/core/models/accounting/journal_entry_model.dart';
 import '../services/accounting_projection_service.dart';

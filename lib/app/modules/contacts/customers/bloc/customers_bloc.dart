@@ -8,7 +8,7 @@ import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/customer/customer_service.dart';
 import 'package:pharmacy_system/app/core/data/services/customer/customer_ledger_service.dart';
 import 'package:pharmacy_system/app/core/data/services/operations/export_service.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/components/feedback/app_snackbar.dart';
 import 'customers_event.dart';
 import 'customers_state.dart';
 

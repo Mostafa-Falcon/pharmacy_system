@@ -5,7 +5,7 @@ import '../bloc/hr_bloc.dart';
 import 'package:pharmacy_system/app/modules/hr/models/employee_model.dart';
 import 'package:pharmacy_system/app/modules/hr/models/department_model.dart';
 import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/tables/shared_table_cells.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/components/tables/shared_table_cells.dart';
 import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
 import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';

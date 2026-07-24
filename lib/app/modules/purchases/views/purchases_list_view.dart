@@ -12,7 +12,7 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/extensions/string_ext.dart';
 import '../../../routes/app_routes.dart';
 import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/tables/shared_table_cells.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/components/tables/shared_table_cells.dart';
 import '../../../core/injection.dart';
 import '../bloc/purchases_bloc.dart';
 import '../bloc/purchases_event.dart';

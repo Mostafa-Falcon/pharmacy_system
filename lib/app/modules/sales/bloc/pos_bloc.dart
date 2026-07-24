@@ -20,7 +20,7 @@ import 'package:pharmacy_system/app/core/data/services/sales/quote_service.dart'
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_ledger_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_service.dart';
 import 'package:pharmacy_system/app/core/data/services/theme_service.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/components/feedback/app_snackbar.dart';
 import 'package:pharmacy_system/app/core/utils/app_utils.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/core/injection.dart';

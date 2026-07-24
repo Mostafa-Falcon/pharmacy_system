@@ -1,4 +1,4 @@
-import 'package:equatable/equatable.dart';
+﻿import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:pharmacy_system/app/core/bloc/base_bloc.dart';
@@ -6,7 +6,7 @@ import 'package:pharmacy_system/app/core/bloc/base_state.dart';
 import 'package:pharmacy_system/app/core/models/sales/cashier_shift_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/sales/cashier_shift_service.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/components/feedback/app_snackbar.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 
 // --- Events ---
