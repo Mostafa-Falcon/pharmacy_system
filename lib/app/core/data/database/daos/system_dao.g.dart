@@ -15,6 +15,8 @@ mixin _$SystemDaoMixin on DatabaseAccessor<AppDatabase> {
   $AuditLogsTableTable get auditLogsTable => attachedDatabase.auditLogsTable;
   $NotificationsTableTable get notificationsTable =>
       attachedDatabase.notificationsTable;
+  $CorrectionsTableTable get correctionsTable =>
+      attachedDatabase.correctionsTable;
   SystemDaoManager get managers => SystemDaoManager(this);
 }
 
@@ -49,5 +51,10 @@ class SystemDaoManager {
       $$NotificationsTableTableTableManager(
         _db.attachedDatabase,
         _db.notificationsTable,
+      );
+  $$CorrectionsTableTableTableManager get correctionsTable =>
+      $$CorrectionsTableTableTableManager(
+        _db.attachedDatabase,
+        _db.correctionsTable,
       );
 }

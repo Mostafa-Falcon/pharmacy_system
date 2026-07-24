@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'package:drift/drift.dart';
-import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/contacts_dao.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
 import 'package:pharmacy_system/app/core/models/contacts/supplier_model.dart';
 import 'package:pharmacy_system/app/core/sync/sync_service.dart';
-import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/modules/archive/services/archive_service.dart';
 
 import '../mappers/contacts_mapper.dart';
