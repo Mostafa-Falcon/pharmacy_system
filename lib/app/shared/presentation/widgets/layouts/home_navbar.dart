@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 import 'package:pharmacy_system/app/core/models/system/app_notification_model.dart';
-
-import 'package:pharmacy_system/app/core/data/services/theme_service.dart';
-import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pharmacy_system/app/modules/notifications/bloc/notifications_bloc.dart';
 import 'package:pharmacy_system/app/modules/notifications/bloc/notifications_event.dart';
 import 'package:pharmacy_system/app/modules/notifications/bloc/notifications_state.dart';
+import 'package:pharmacy_system/app/modules/auth/bloc/auth_bloc.dart';
 import 'package:pharmacy_system/app/routes/app_routes.dart';
 
 class HomeNavbar extends StatelessWidget implements PreferredSizeWidget {
@@ -22,15 +19,10 @@ class HomeNavbar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onMenuPressed;
   final String userName;
   final String userRole;
-  final VoidCallback? onProfileTap;
-  final VoidCallback? onSettingsTap;
-  final VoidCallback? onLogout;
   final int notificationCount;
   final bool isOnline;
-  final VoidCallback? onNotificationTap;
   final VoidCallback? onCalculatorTap;
   final VoidCallback? onCashierTap;
-  final VoidCallback? onSupportTap;
 
   const HomeNavbar({
     super.key,
@@ -41,15 +33,10 @@ class HomeNavbar extends StatelessWidget implements PreferredSizeWidget {
     this.onMenuPressed,
     required this.userName,
     required this.userRole,
-    this.onProfileTap,
-    this.onSettingsTap,
-    this.onLogout,
     this.notificationCount = 0,
     this.isOnline = true,
-    this.onNotificationTap,
     this.onCalculatorTap,
     this.onCashierTap,
-    this.onSupportTap,
   });
 
   @override
@@ -58,157 +45,94 @@ class HomeNavbar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = AppColors.isDark(context);
-    final themeService = ThemeService.instance;
+    // 🎨 استخدام لون داكن موحد للبار العلوي كما في الصور (Olive Dark/Deep Gray)
+    final navbarBg = isDark ? const Color(0xFF1A1D18) : const Color(0xFF2E332A);
+    final foregroundColor = Colors.white;
 
     return Container(
       height: AppDimensions.navbarHeight,
       decoration: BoxDecoration(
-        color: AppColors.surfaceOf(context),
-        border: Border(
-          bottom: BorderSide(
-            color: AppColors.borderOf(
-              context,
-            ).withValues(alpha: isDark ? 0.25 : 0.45),
-            width: AppDimensions.dividerThickness,
-          ),
-        ),
+        color: navbarBg,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.06 : 0.015),
-            blurRadius: 10,
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 8,
             offset: const Offset(0, 2),
           ),
         ],
       ),
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg.w),
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.md.w),
       child: Row(
         children: [
-          _buildMenuButton(context),
-          SizedBox(width: 8.w),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ReusableText(
-                  title,
-                  style: AppTextStyles.body(context).copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimaryOf(context),
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (subtitle.trim().isNotEmpty) ...[
-                  SizedBox(height: 2.h),
-                  ReusableText(
-                    subtitle,
-                    style: AppTextStyles.caption(context).copyWith(
-                      color: AppColors.textSecondaryOf(context),
-                      fontWeight: FontWeight.w500,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ],
-            ),
-          ),
-          SizedBox(width: AppSpacing.md.w),
-
-          _NavbarAction(
+          _buildMenuButton(context, foregroundColor),
+          const Spacer(),
+          // 🗓️ ويدجت التاريخ في المنتصف
+          const _NavbarDate(),
+          const Spacer(),
+          
+          // 🧮 الآلة الحاسبة
+          _NavbarIconButton(
             icon: Icons.calculate_outlined,
             tooltip: GeneralStrings.calculator,
             onTap: onCalculatorTap,
           ),
-          SizedBox(width: 6.w),
-          _NavbarAction(
-            icon: Icons.point_of_sale_outlined,
-            tooltip: GeneralStrings.cashier,
-            onTap: onCashierTap,
-          ),
-          SizedBox(width: 6.w),
-          _NavbarAction(
-            icon: Icons.headphones_outlined,
-            tooltip: GeneralStrings.techSupport,
-            onTap: onSupportTap,
-          ),
-          SizedBox(width: 6.w),
+          SizedBox(width: 8.w),
+
+          // 🔔 مركز التنبيهات
           _NotificationBadge(
             count: notificationCount,
             onSeeMore: () => context.go('/notifications'),
           ),
-          SizedBox(width: 4.w),
-          const _SyncIndicator(),
-          SizedBox(width: 6.w),
-          _ThemeToggle(themeService: themeService),
           SizedBox(width: 8.w),
 
-          Container(
-            height: 18.0,
-            width: 1.w,
-            color: AppColors.borderOf(context).withValues(alpha: 0.25),
+          // 🛒 الكاشير (رابط سريع)
+          _NavbarQuickAction(
+            icon: Icons.grid_view_rounded,
+            label: GeneralStrings.cashier,
+            onTap: onCashierTap,
           ),
-          SizedBox(width: 12.w),
+          SizedBox(width: 8.w),
 
+          // 👤 الملف الشخصي
           _ProfileBadge(
             userName: userName,
             userRole: userRole,
-            isOnline: isOnline,
-            onProfileTap: onProfileTap,
-            onSettingsTap: onSettingsTap,
-            onLogout: onLogout,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildMenuButton(BuildContext context) {
+  Widget _buildMenuButton(BuildContext context, Color color) {
     if (onToggleSidebar != null) {
       return IconButton(
-        key: const ValueKey('toggle'),
         icon: Icon(
           isSidebarVisible ? Icons.menu_open_rounded : Icons.menu_rounded,
-          size: AppDimensions.iconSize,
+          size: 24.sp,
+          color: color,
         ),
         onPressed: onToggleSidebar,
-        tooltip: isSidebarVisible
-            ? GeneralStrings.closeMenu
-            : GeneralStrings.openMenu,
-        style: IconButton.styleFrom(
-          foregroundColor: Theme.of(context).colorScheme.onSurfaceVariant,
-          hoverColor: Theme.of(
-            context,
-          ).colorScheme.primary.withValues(alpha: 0.04),
-        ),
+        tooltip: isSidebarVisible ? GeneralStrings.closeMenu : GeneralStrings.openMenu,
       );
     }
     if (onMenuPressed != null) {
       return IconButton(
-        key: const ValueKey('menu'),
-        icon: Icon(Icons.menu_rounded, size: AppDimensions.iconSize),
+        icon: Icon(Icons.menu_rounded, size: 24.sp, color: color),
         onPressed: onMenuPressed,
         tooltip: GeneralStrings.menu,
-        style: IconButton.styleFrom(
-          foregroundColor: Theme.of(context).colorScheme.onSurfaceVariant,
-          hoverColor: Theme.of(
-            context,
-          ).colorScheme.primary.withValues(alpha: 0.04),
-        ),
       );
     }
-    return const SizedBox.shrink(key: ValueKey('empty'));
+    return const SizedBox.shrink();
   }
 }
 
-class _NavbarAction extends StatelessWidget {
+class _NavbarIconButton extends StatelessWidget {
   final IconData icon;
   final String tooltip;
   final VoidCallback? onTap;
   final int badgeCount;
 
-  const _NavbarAction({
+  const _NavbarIconButton({
     required this.icon,
     required this.tooltip,
     this.onTap,
@@ -217,374 +141,276 @@ class _NavbarAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-
     return Tooltip(
       message: tooltip,
-      child: IconButton(
-        icon: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Icon(icon, size: AppDimensions.iconSize),
-            if (badgeCount > 0)
-              Positioned(
-                right: -4.w,
-                top: -4.w,
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
-                  decoration: BoxDecoration(
-                    color: AppColors.error,
-                    borderRadius: BorderRadius.circular(AppRadius.pill.r),
-                    border: Border.all(
-                      color: AppColors.surfaceOf(context),
-                      width: 1.5.w,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8.r),
+        child: Container(
+          padding: EdgeInsets.all(8.w),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Icon(icon, color: Colors.white, size: 20.sp),
+              if (badgeCount > 0)
+                Positioned(
+                  right: -4.w,
+                  top: -4.w,
+                  child: Container(
+                    padding: EdgeInsets.all(2.w),
+                    decoration: BoxDecoration(
+                      color: AppColors.error,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: const Color(0xFF2E332A), width: 1.w),
                     ),
-                  ),
-                  constraints: BoxConstraints(minWidth: 14.w, minHeight: 14.w),
-                  child: Center(
-                    child: Text(
-                      badgeCount > 99 ? '99+' : badgeCount.toString(),
-                      style: AppTextStyles.caption(context).copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                        height: 1,
+                    constraints: BoxConstraints(minWidth: 14.w, minHeight: 14.w),
+                    child: Center(
+                      child: Text(
+                        badgeCount > 99 ? '99+' : badgeCount.toString(),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 8.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
                 ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NavbarQuickAction extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback? onTap;
+
+  const _NavbarQuickAction({
+    required this.icon,
+    required this.label,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12.r),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: Colors.white, size: 18.sp),
+            SizedBox(width: 8.w),
+            ReusableText(
+              label,
+              style: AppTextStyles.bodyBold(context).copyWith(
+                color: Colors.white,
+                fontSize: 13.sp,
               ),
+            ),
           ],
         ),
-        onPressed: onTap,
-        style: IconButton.styleFrom(
-          foregroundColor: scheme.onSurfaceVariant,
-          hoverColor: scheme.primary.withValues(alpha: 0.04),
-        ),
       ),
     );
   }
 }
 
-class _ThemeToggle extends StatelessWidget {
-  final ThemeService themeService;
-  const _ThemeToggle({required this.themeService});
+class _NavbarDate extends StatelessWidget {
+  const _NavbarDate();
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final now = DateTime.now();
+    final dayName = _getDayName(now.weekday);
+    final day = now.day;
+    final monthName = _getMonthName(now.month);
+    final year = now.year;
 
-    return ListenableBuilder(
-      listenable: themeService,
-      builder: (context, child) {
-        final isDark = themeService.isDark;
-        return Tooltip(
-          message: isDark ? GeneralStrings.lightMode : GeneralStrings.darkMode,
-          child: IconButton(
-            icon: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 250),
-              transitionBuilder: (child, animation) =>
-                  RotationTransition(turns: animation, child: child),
-              child: Icon(
-                isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-                key: ValueKey(isDark),
-                size: AppDimensions.iconSize,
-                color: isDark ? AppColors.warning : scheme.onSurfaceVariant,
-              ),
-            ),
-            onPressed: () {
-              HapticFeedback.lightImpact();
-              themeService.toggleTheme();
-            },
-            style: IconButton.styleFrom(
-              foregroundColor: scheme.onSurfaceVariant,
-              hoverColor: scheme.primary.withValues(alpha: 0.04),
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _SyncIndicator extends StatefulWidget {
-  const _SyncIndicator();
-
-  @override
-  State<_SyncIndicator> createState() => _SyncIndicatorState();
-}
-
-class _SyncIndicatorState extends State<_SyncIndicator>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _spinController;
-
-  @override
-  void initState() {
-    super.initState();
-    _spinController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
-    );
-  }
-
-  @override
-  void dispose() {
-    _spinController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // Ù…ØªØ§Ø¨Ø¹Ø© Ø­ÙŠØ© Ø¹Ø¨Ø± statusStream Ø¹Ø´Ø§Ù† Ø§Ù„Ù…Ø¤Ø´Ø± ÙŠØªØºÙŠØ± ÙÙŠ "Ù†ÙØ³ Ø§Ù„Ù„Ø­Ø¸Ø©"
-    // (Ù…Ø´ Ø¨Ø³ Ù„Ùˆ Ø§Ù„ÙˆÙŠØ¯Ø¬Øª Ø§ØªØ¨Ù†Ù‰ Ù…Ù† ØªØ§Ù†ÙŠ).
-    return StreamBuilder<SyncStatus>(
-      stream: SyncService.statusStream,
-      initialData: SyncStatus(
-        isOnline: SyncService.isOnline,
-        isSyncing: SyncService.isSyncing,
-        lastSyncTime: SyncService.lastSyncTime,
-        lastSyncError: SyncService.lastSyncError,
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(10.r),
       ),
-      builder: (context, snapshot) {
-        final s = snapshot.data!;
-        final isOnline = s.isOnline;
-        final isSyncing = s.isSyncing;
-        final hasError = s.lastSyncError != null;
-
-        IconData icon;
-        Color color;
-        if (hasError) {
-          icon = Icons.cloud_off_rounded;
-          color = AppColors.error;
-        } else if (isSyncing) {
-          icon = Icons.sync_rounded;
-          color = AppColors.warning;
-        } else if (isOnline) {
-          icon = Icons.cloud_done_rounded;
-          color = AppColors.success;
-        } else {
-          icon = Icons.wifi_off_rounded;
-          color = AppColors.error;
-        }
-
-        final label = _getLabel(isOnline, isSyncing, hasError);
-
-        return Tooltip(
-          message: _getTooltipMessage(isOnline, isSyncing, hasError),
-          child: InkWell(
-            onTap: () => context.go(Routes.SYNC_STATUS),
-            borderRadius: BorderRadius.circular(6.r),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(6.r),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  isSyncing
-                      ? RotationTransition(
-                          turns: _spinController,
-                          child: Icon(icon, size: 16.w),
-                        )
-                      : Icon(icon, size: 16.w),
-                  SizedBox(width: 4.w),
-                  ReusableText(
-                    label,
-                    style: AppTextStyles.caption(
-                      context,
-                    ).copyWith(color: color, fontWeight: FontWeight.w600),
-                  ),
-                  if (SyncService.pendingOperationsCount > 0) ...[
-                    SizedBox(width: 4.w),
-                    Container(
-                      width: 6.w,
-                      height: 6.w,
-                      decoration: BoxDecoration(
-                        color: AppColors.warning,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.calendar_month_outlined, color: Colors.white, size: 18.sp),
+          SizedBox(width: 8.w),
+          ReusableText(
+            '$dayName، $day $monthName $year',
+            style: AppTextStyles.body(context).copyWith(
+              color: Colors.white.withValues(alpha: 0.9),
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w500,
             ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
-  String _getTooltipMessage(bool isOnline, bool isSyncing, bool hasError) {
-    if (hasError) return SyncService.lastSyncError ?? GeneralStrings.syncError;
-    if (isSyncing) return GeneralStrings.syncInProgress;
-    if (isOnline) return GeneralStrings.synced;
-    return GeneralStrings.offlineDetailed;
+  String _getDayName(int day) {
+    switch (day) {
+      case DateTime.sunday: return GeneralStrings.sunday;
+      case DateTime.monday: return GeneralStrings.monday;
+      case DateTime.tuesday: return GeneralStrings.tuesday;
+      case DateTime.wednesday: return GeneralStrings.wednesday;
+      case DateTime.thursday: return GeneralStrings.thursday;
+      case DateTime.friday: return GeneralStrings.friday;
+      case DateTime.saturday: return GeneralStrings.saturday;
+      default: return '';
+    }
   }
 
-  String _getLabel(bool isOnline, bool isSyncing, bool hasError) {
-    if (hasError) return GeneralStrings.error;
-    if (isSyncing) return GeneralStrings.syncingShort;
-    if (isOnline) return GeneralStrings.online;
-    return GeneralStrings.offline;
+  String _getMonthName(int month) {
+    switch (month) {
+      case 1: return GeneralStrings.january;
+      case 2: return GeneralStrings.february;
+      case 3: return GeneralStrings.march;
+      case 4: return GeneralStrings.april;
+      case 5: return GeneralStrings.may;
+      case 6: return GeneralStrings.june;
+      case 7: return GeneralStrings.july;
+      case 8: return GeneralStrings.august;
+      case 9: return GeneralStrings.september;
+      case 10: return GeneralStrings.october;
+      case 11: return GeneralStrings.november;
+      case 12: return GeneralStrings.december;
+      default: return '';
+    }
   }
 }
 
-class _NotificationBadge extends StatelessWidget {
+class _NotificationBadge extends StatefulWidget {
   final int count;
   final VoidCallback onSeeMore;
 
   const _NotificationBadge({required this.count, required this.onSeeMore});
 
   @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+  State<_NotificationBadge> createState() => _NotificationBadgeState();
+}
 
+class _NotificationBadgeState extends State<_NotificationBadge> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<NotificationsBloc, NotificationsState>(
       builder: (context, state) {
-        final notifications = state.notifications.take(5).toList();
         final unreadCount = state.unreadCount;
 
         return MenuAnchor(
           style: MenuStyle(
             padding: WidgetStateProperty.all(EdgeInsets.zero),
             shape: WidgetStateProperty.all(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadius.md.r),
-              ),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
             ),
             elevation: WidgetStateProperty.all(12),
           ),
           menuChildren: [
             Container(
-              width: 360.w,
-              constraints: BoxConstraints(maxHeight: 500.h),
+              width: 380.w,
+              constraints: BoxConstraints(maxHeight: 520.h),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  // 🏁 Header
                   Padding(
-                    padding: EdgeInsets.all(16.w),
+                    padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 8.h),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Icon(
-                          Icons.notifications_active_outlined,
-                          size: 20.sp,
-                          color: scheme.primary,
-                        ),
-                        SizedBox(width: 10.w),
                         ReusableText(
-                          NotificationsStrings.notificationsCenterTitle,
-                          style: AppTextStyles.body(
-                            context,
-                          ).copyWith(fontWeight: FontWeight.bold),
+                          NotificationsStrings.notificationsLabel,
+                          style: AppTextStyles.title(context).copyWith(fontSize: 16.sp),
                         ),
-                        const Spacer(),
-                        if (unreadCount > 0)
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 8.w,
-                              vertical: 3.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.error.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(
-                                AppRadius.pill.r,
-                              ),
-                            ),
-                            child: ReusableText(
-                              '$unreadCount ${NotificationsStrings.newNotifications}',
-                              style: AppTextStyles.caption(context).copyWith(
-                                color: AppColors.error,
-                                fontWeight: FontWeight.w900,
-                              ),
+                        TextButton.icon(
+                          onPressed: () {
+                            context.read<NotificationsBloc>().add(const MarkAllAsRead());
+                          },
+                          icon: Icon(Icons.done_all_rounded, size: 16.sp),
+                          label: ReusableText(
+                            NotificationsStrings.markAllAsRead,
+                            style: AppTextStyles.caption(context).copyWith(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.symmetric(horizontal: 8.w),
+                            visualDensity: VisualDensity.compact,
+                          ),
+                        ),
                       ],
                     ),
                   ),
+
+                  // 📑 Tabs
+                  TabBar(
+                    controller: _tabController,
+                    isScrollable: false,
+                    labelColor: AppColors.primary,
+                    unselectedLabelColor: AppColors.textSecondaryOf(context),
+                    indicatorColor: AppColors.primary,
+                    indicatorSize: TabBarIndicatorSize.label,
+                    labelStyle: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold),
+                    tabs: [
+                      Tab(text: NotificationsStrings.all.replaceFirst('%s', '${state.notifications.length}')),
+                      Tab(text: NotificationsStrings.unread.replaceFirst('%s', '$unreadCount')),
+                      Tab(text: NotificationsStrings.messages.replaceFirst('%s', '0')),
+                    ],
+                  ),
                   const Divider(height: 1),
-                  if (state.notifications.isEmpty)
-                    Padding(
-                      padding: EdgeInsets.all(40.w),
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.notifications_none_rounded,
-                            size: AppIconSize.xl.value,
-                            color: Colors.grey.shade300,
-                          ),
-                          SizedBox(height: 16.h),
-                          ReusableText(
-                            NotificationsStrings.noNotificationsCurrent,
-                            style: AppTextStyles.body(
-                              context,
-                            ).copyWith(color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    )
-                  else
-                    Flexible(
-                      child: ListView.separated(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        itemCount: notifications.length,
-                        separatorBuilder: (context, index) =>
-                            const Divider(height: 1),
-                        itemBuilder: (context, index) {
-                          final n = notifications[index];
-                          return _NotificationItem(
-                            notification: n,
-                            onTap: () {
-                              context.read<NotificationsBloc>().add(
-                                MarkAsRead(n.id),
-                              );
-                              if (n.actionRoute != null) {
-                                context.push(n.actionRoute!);
-                              }
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  const Divider(height: 1),
-                  Padding(
-                    padding: EdgeInsets.all(12.w),
-                    child: Row(
+
+                  // 📦 List
+                  Flexible(
+                    child: TabBarView(
+                      controller: _tabController,
                       children: [
-                        Expanded(
-                          child: TextButton(
-                            onPressed: onSeeMore,
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.symmetric(vertical: 12.h),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                  AppRadius.sm.r,
-                                ),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ReusableText(
-                                  NotificationsStrings.viewAll,
-                                  style: AppTextStyles.body(context).copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: scheme.primary,
-                                  ),
-                                ),
-                                SizedBox(width: 6.w),
-                                Icon(
-                                  Icons.arrow_forward_rounded,
-                                  size: AppIconSize.md.value,
-                                  color: scheme.primary,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                        _buildNotificationList(state.notifications),
+                        _buildNotificationList(state.notifications.where((n) => !n.isRead).toList()),
+                        _buildNotificationList([]), // Empty for messages now
                       ],
+                    ),
+                  ),
+
+                  const Divider(height: 1),
+                  // 🔗 Footer
+                  Padding(
+                    padding: EdgeInsets.all(8.w),
+                    child: AppButton(
+                      text: NotificationsStrings.viewAll,
+                      type: ButtonType.text,
+                      width: double.infinity,
+                      onPressed: widget.onSeeMore,
                     ),
                   ),
                 ],
@@ -592,21 +418,50 @@ class _NotificationBadge extends StatelessWidget {
             ),
           ],
           builder: (context, controller, child) {
-            return _NavbarAction(
-              icon: Icons.notifications_outlined,
+            return _NavbarIconButton(
+              icon: Icons.notifications_none_rounded,
               tooltip: NotificationsStrings.notificationsTooltip,
               badgeCount: unreadCount,
-              onTap: () {
-                if (controller.isOpen) {
-                  controller.close();
-                } else {
-                  controller.open();
-                }
-              },
+              onTap: () => controller.isOpen ? controller.close() : controller.open(),
             );
           },
         );
       },
+    );
+  }
+
+  Widget _buildNotificationList(List<AppNotification> items) {
+    if (items.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: EdgeInsets.all(32.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.notifications_off_outlined, size: 48.sp, color: Colors.grey.shade300),
+              SizedBox(height: 12.h),
+              ReusableText(
+                NotificationsStrings.noNotificationsCurrent,
+                style: AppTextStyles.caption(context).copyWith(color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    return ListView.separated(
+      padding: EdgeInsets.zero,
+      itemCount: items.length,
+      separatorBuilder: (context, index) => const Divider(height: 1),
+      itemBuilder: (context, index) => _NotificationItem(
+        notification: items[index],
+        onTap: () {
+          context.read<NotificationsBloc>().add(MarkAsRead(items[index].id));
+          if (items[index].targetRoute != null) {
+            context.push(items[index].targetRoute!);
+          }
+        },
+      ),
     );
   }
 }
@@ -745,103 +600,163 @@ class _NotificationItem extends StatelessWidget {
 class _ProfileBadge extends StatelessWidget {
   final String userName;
   final String userRole;
-  final bool isOnline;
-  final VoidCallback? onProfileTap;
-  final VoidCallback? onSettingsTap;
-  final VoidCallback? onLogout;
 
   const _ProfileBadge({
     required this.userName,
     required this.userRole,
-    required this.isOnline,
-    this.onProfileTap,
-    this.onSettingsTap,
-    this.onLogout,
   });
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final initials = userName.isNotEmpty
-        ? userName.trim().characters.first
-        : '?';
-
-    return PopupMenuButton<String>(
-      icon: CircleAvatar(
-        radius: 16.r,
-        backgroundColor: scheme.primary.withValues(alpha: 0.12),
-        child: Text(
-          initials.toUpperCase(),
-          style: AppTextStyles.caption(
-            context,
-          ).copyWith(fontWeight: FontWeight.bold, color: scheme.primary),
-        ),
-      ),
-      tooltip: GeneralStrings.profile,
-      offset: const Offset(0, 40),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.lg.r),
-      ),
-      onSelected: (value) {
-        switch (value) {
-          case 'profile':
-            onProfileTap?.call();
-          case 'settings':
-            onSettingsTap?.call();
-          case 'logout':
-            onLogout?.call();
-        }
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        final email = state.status == AuthStatus.authenticated 
+            ? state.user?.email ?? '' 
+            : 'pxl-ph@gmail.com';
+        
+        return MenuAnchor(
+          style: MenuStyle(
+            padding: WidgetStateProperty.all(EdgeInsets.zero),
+            shape: WidgetStateProperty.all(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+            ),
+            elevation: WidgetStateProperty.all(12),
+          ),
+          menuChildren: [
+            Container(
+              width: 240.w,
+              padding: EdgeInsets.symmetric(vertical: 8.h),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 📧 User Info
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                    child: ReusableText(
+                      email,
+                      style: AppTextStyles.caption(context).copyWith(
+                        color: AppColors.textSecondaryOf(context),
+                      ),
+                    ),
+                  ),
+                  const Divider(height: 1),
+                  
+                  // 👥 Employees
+                  _ProfileMenuItem(
+                    icon: Icons.people_outline_rounded,
+                    label: 'الموظفين',
+                    onTap: () => context.go(Routes.EMPLOYEES),
+                  ),
+                  
+                  const Divider(height: 1, indent: 16, endIndent: 16),
+                  
+                  // 🚪 Logout
+                  _ProfileMenuItem(
+                    icon: Icons.logout_rounded,
+                    label: AuthStrings.logout,
+                    labelColor: AppColors.error,
+                    onTap: () => _showLogoutDialog(context),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          builder: (context, controller, child) {
+            return InkWell(
+              onTap: () => controller.isOpen ? controller.close() : controller.open(),
+              borderRadius: BorderRadius.circular(12.r),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.account_circle_outlined, color: Colors.white, size: 22.sp),
+                    SizedBox(width: 8.w),
+                    ReusableText(
+                      userName,
+                      style: AppTextStyles.bodyBold(context).copyWith(
+                        color: Colors.white,
+                        fontSize: 13.sp,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
       },
-      itemBuilder: (context) => [
-        PopupMenuItem(
-          value: 'profile',
-          child: Row(
-            children: [
-              Icon(
-                Icons.person_outline_rounded,
-                size: AppIconSize.md.value,
-                color: scheme.onSurface,
-              ),
-              SizedBox(width: 10.w),
-              Text(userName, style: AppTextStyles.body(context)),
-            ],
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    AppDialog.show(
+      context,
+      title: AuthStrings.logoutTitle,
+      headerIcon: const Icon(Icons.logout_rounded, color: AppColors.error),
+      maxWidth: 360,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 4.w),
+          child: ReusableText(
+            AuthStrings.logoutConfirm,
+            style: AppTextStyles.caption(context).copyWith(height: 1.35),
           ),
         ),
-        PopupMenuItem(
-          value: 'settings',
-          child: Row(
-            children: [
-              Icon(
-                Icons.settings_outlined,
-                size: AppIconSize.md.value,
-                color: scheme.onSurface,
-              ),
-              SizedBox(width: 10.w),
-              Text(userRole, style: AppTextStyles.body(context)),
-            ],
-          ),
-        ),
-        const PopupMenuDivider(),
-        PopupMenuItem(
-          value: 'logout',
-          child: Row(
-            children: [
-              Icon(
-                Icons.logout_rounded,
-                size: AppIconSize.md.value,
-                color: AppColors.error,
-              ),
-              SizedBox(width: 10.w),
-              Text(
-                AuthStrings.logout,
-                style: AppTextStyles.body(
-                  context,
-                ).copyWith(color: AppColors.error),
-              ),
-            ],
-          ),
+        SizedBox(height: 24.h),
+        DialogActions(
+          cancelText: AuthStrings.cancelAndBack,
+          confirmText: AuthStrings.yesLogout,
+          confirmType: ButtonType.error,
+          onCancel: () => Navigator.of(context).pop(),
+          onConfirm: () {
+            Navigator.of(context).pop();
+            context.read<AuthBloc>().add(const LogoutRequested());
+          },
         ),
       ],
+    );
+  }
+}
+
+class _ProfileMenuItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color? labelColor;
+  final VoidCallback? onTap;
+
+  const _ProfileMenuItem({
+    required this.icon,
+    required this.label,
+    this.labelColor,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+        child: Row(
+          children: [
+            Icon(icon, size: 20.sp, color: labelColor ?? AppColors.textPrimaryOf(context)),
+            SizedBox(width: 12.w),
+            ReusableText(
+              label,
+              style: AppTextStyles.body(context).copyWith(
+                color: labelColor,
+                fontWeight: labelColor != null ? FontWeight.bold : FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -10,7 +10,10 @@ class NotificationsStrings {
   static const String unreadNotificationsFormat = 'لديك %s تنبيهات غير مقروءة';
   static const String markAllAsRead = 'تحديد الكل كمقروء';
   static const String clearAll = 'مسح الكل';
-  static const String all = 'الكل';
+  static const String all = 'الكل (%s)';
+  static const String unread = 'غير مقروء (%s)';
+  static const String messages = 'رسائل (%s)';
+  static const String notificationsLabel = 'الإشعارات';
   static const String expiry = 'الصلاحية';
   static const String stock = 'المخزون';
   static const String system = 'النظام';

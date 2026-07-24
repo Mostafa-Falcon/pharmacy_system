@@ -88,12 +88,12 @@ class _EditMedicineViewState extends State<EditMedicineView> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ReusableText(
+              AppText(
                 _error ?? InventoryStrings.medicineNotFound,
                 style: AppTextStyles.body(context),
               ),
               SizedBox(height: 16.h),
-              ReusableButton(
+              AppButton(
                 text: '?????? ??????',
                 prefixIcon: Icons.arrow_back_rounded,
                 type: ButtonType.outlined,

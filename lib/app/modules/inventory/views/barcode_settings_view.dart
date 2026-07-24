@@ -126,7 +126,7 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
         SizedBox(
           width: double.infinity,
           height: 52.h,
-          child: ReusableButton(
+          child: AppButton(
             text: InventoryStrings.saveBarcodeSettings,
             prefixIcon: Icons.save_rounded,
             isLoading: state.status == BarcodeSettingsStatus.saving,
@@ -154,7 +154,7 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
           Row(
             children: [
               Expanded(
-                child: ReusableInput(
+                child: AppInput(
                   label: InventoryStrings.barcodePrefixLabel,
                   hint: 'PH',
                   controller: _prefixCtrl,
@@ -164,7 +164,7 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
               ),
               SizedBox(width: AppSpacing.md.w),
               Expanded(
-                child: ReusableInput(
+                child: AppInput(
                   label: InventoryStrings.serialLengthLabel,
                   hint: '8',
                   keyboardType: TextInputType.number,
@@ -207,7 +207,7 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
           ),
           if (state.usePharmacySignature) ...[
             SizedBox(height: AppSpacing.sm.h),
-            ReusableInput(
+            AppInput(
               label: InventoryStrings.pharmacyNameSignature,
               hint: InventoryStrings.pharmacyNameSignatureHint,
               controller: _pharmacyNameCtrl,
@@ -237,7 +237,7 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
           Row(
             children: [
               Expanded(
-                child: ReusableInput(
+                child: AppInput(
                   label: InventoryStrings.labelWidthMm,
                   controller: _widthCtrl,
                   keyboardType: TextInputType.number,
@@ -248,7 +248,7 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
               ),
               SizedBox(width: AppSpacing.md.w),
               Expanded(
-                child: ReusableInput(
+                child: AppInput(
                   label: InventoryStrings.labelHeightMm,
                   controller: _heightCtrl,
                   keyboardType: TextInputType.number,
@@ -260,7 +260,7 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
             ],
           ),
           SizedBox(height: AppSpacing.lg.h),
-          ReusableText(
+          AppText(
             InventoryStrings.labelContents,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13.sp),
           ),
@@ -329,7 +329,7 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
             hintText: InventoryStrings.pageLayoutLabel,
           ),
           SizedBox(height: AppSpacing.md.h),
-          ReusableInput(
+          AppInput(
             label: InventoryStrings.defaultCopiesPerItem,
             controller: _copiesCtrl,
             keyboardType: TextInputType.number,
@@ -496,11 +496,11 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ReusableText(
+                AppText(
                   title,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                ReusableText(subtitle, variant: ReusableTextVariant.caption),
+                AppText(subtitle, variant: AppTextVariant.caption),
               ],
             ),
           ),
@@ -532,7 +532,7 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
             visualDensity: VisualDensity.compact,
           ),
           SizedBox(width: 4.w),
-          ReusableText(
+          AppText(
             label,
             style: TextStyle(
               fontSize: 12.sp,
@@ -562,7 +562,7 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
           ),
           SizedBox(width: 8.w),
           Expanded(
-            child: ReusableText(
+            child: AppText(
               text,
               style: const TextStyle(
                 fontSize: 11,
@@ -574,6 +574,7 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
         ],
       ),
     );
+  }
   }
 }
 

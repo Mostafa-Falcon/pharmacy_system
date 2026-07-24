@@ -233,8 +233,6 @@ class _ShellBody extends StatelessWidget {
                   notificationCount: SyncService.pendingOperationsCount,
                   onCalculatorTap: () => ReusableCalculator.show(context),
                   onCashierTap: () => _navigateToDestination(context, 'pos'),
-                  onSupportTap: () => _showSupportDialog(context),
-                  onLogout: () => _logout(context),
                 ),
                 Expanded(
                   child: Container(
@@ -301,8 +299,6 @@ class _ShellBody extends StatelessWidget {
             notificationCount: SyncService.pendingOperationsCount,
             onCalculatorTap: () => ReusableCalculator.show(context),
             onCashierTap: () => _navigateToDestination(context, 'pos'),
-            onSupportTap: () => _showSupportDialog(context),
-            onLogout: () => _logout(context),
           ),
           Expanded(
             child: Container(

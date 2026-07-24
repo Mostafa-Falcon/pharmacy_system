@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 enum AppTextVariant { h1, h2, h3, subtitle, body, caption }
+typedef ReusableTextVariant = AppTextVariant;
+typedef ReusableText = AppText;
 
 class AppText extends StatelessWidget {
   final String? text;
@@ -15,7 +17,7 @@ class AppText extends StatelessWidget {
   final bool softWrap;
   final StrutStyle? strutStyle;
   final double? height;
-  final ReusableTextVariant variant;
+  final AppTextVariant variant;
   final double? fontSizeOverride;
   final TextSpan? textSpan;
 
@@ -32,7 +34,7 @@ class AppText extends StatelessWidget {
     this.softWrap = true,
     this.strutStyle,
     this.height,
-    this.variant = ReusableTextVariant.body,
+    this.variant = AppTextVariant.body,
     this.fontSizeOverride,
     this.textSpan,
   });
@@ -50,7 +52,7 @@ class AppText extends StatelessWidget {
       AppText(
         text,
         key: key,
-        variant: ReusableTextVariant.h1,
+        variant: AppTextVariant.h1,
         color: color,
         fontWeight: fontWeight,
         textAlign: textAlign,
@@ -72,7 +74,7 @@ class AppText extends StatelessWidget {
       AppText(
         text,
         key: key,
-        variant: ReusableTextVariant.h2,
+        variant: AppTextVariant.h2,
         color: color,
         fontWeight: fontWeight,
         textAlign: textAlign,
@@ -94,7 +96,7 @@ class AppText extends StatelessWidget {
       AppText(
         text,
         key: key,
-        variant: ReusableTextVariant.h3,
+        variant: AppTextVariant.h3,
         color: color,
         fontWeight: fontWeight,
         textAlign: textAlign,
@@ -116,7 +118,7 @@ class AppText extends StatelessWidget {
       AppText(
         text,
         key: key,
-        variant: ReusableTextVariant.subtitle,
+        variant: AppTextVariant.subtitle,
         color: color,
         fontWeight: fontWeight,
         textAlign: textAlign,
@@ -138,7 +140,7 @@ class AppText extends StatelessWidget {
       AppText(
         text,
         key: key,
-        variant: ReusableTextVariant.body,
+        variant: AppTextVariant.body,
         color: color,
         fontWeight: fontWeight,
         textAlign: textAlign,
@@ -160,7 +162,7 @@ class AppText extends StatelessWidget {
       AppText(
         text,
         key: key,
-        variant: ReusableTextVariant.caption,
+        variant: AppTextVariant.caption,
         color: color,
         fontWeight: fontWeight,
         textAlign: textAlign,
@@ -173,33 +175,33 @@ class AppText extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
-    final isCaption = variant == ReusableTextVariant.caption;
+    final isCaption = variant == AppTextVariant.caption;
 
     late TextStyle variantStyle;
     late FontWeight defaultWeight;
 
     switch (variant) {
-      case ReusableTextVariant.h1:
+      case AppTextVariant.h1:
         variantStyle = textTheme.headlineMedium ?? const TextStyle(fontSize: 30);
         defaultWeight = FontWeight.w800;
         break;
-      case ReusableTextVariant.h2:
+      case AppTextVariant.h2:
         variantStyle = textTheme.headlineSmall ?? const TextStyle(fontSize: 24);
         defaultWeight = FontWeight.w700;
         break;
-      case ReusableTextVariant.h3:
+      case AppTextVariant.h3:
         variantStyle = textTheme.titleLarge ?? const TextStyle(fontSize: 20);
         defaultWeight = FontWeight.w700;
         break;
-      case ReusableTextVariant.subtitle:
+      case AppTextVariant.subtitle:
         variantStyle = textTheme.titleMedium ?? const TextStyle(fontSize: 16);
         defaultWeight = FontWeight.w600;
         break;
-      case ReusableTextVariant.body:
+      case AppTextVariant.body:
         variantStyle = textTheme.bodyMedium ?? const TextStyle(fontSize: 14);
         defaultWeight = FontWeight.w400;
         break;
-      case ReusableTextVariant.caption:
+      case AppTextVariant.caption:
         variantStyle = textTheme.bodySmall ?? const TextStyle(fontSize: 12);
         defaultWeight = FontWeight.w400;
         break;
@@ -246,5 +248,3 @@ class AppText extends StatelessWidget {
     );
   }
 }
-
-

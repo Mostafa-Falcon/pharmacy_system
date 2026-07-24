@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
-import 'package:pharmacy_system/app/modules/notifications/models/app_notification_model.dart';
+import 'package:pharmacy_system/app/core/models/system/app_notification_model.dart';
 
 enum NotificationsStatus { initial, loading, loaded, error }
 
 class NotificationsState extends Equatable {
   final NotificationsStatus status;
-  final List<AppNotification> notifications;
+  final List<AppNotificationModel> notifications;
   final String? error;
 
   const NotificationsState({
@@ -18,7 +18,7 @@ class NotificationsState extends Equatable {
 
   NotificationsState copyWith({
     NotificationsStatus? status,
-    List<AppNotification>? notifications,
+    List<AppNotificationModel>? notifications,
     String? error,
   }) {
     return NotificationsState(

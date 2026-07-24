@@ -17,6 +17,7 @@ import 'package:pharmacy_system/app/core/sync/sync_engine.dart';
 import 'package:pharmacy_system/app/core/sync/supabase_client.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/database/drift_init.dart';
+import 'package:pharmacy_system/app/core/services/system_health_service.dart';
 import 'package:pharmacy_system/app/shared/presentation/theme/app_theme.dart';
 import 'package:pharmacy_system/app/core/data/services/sound_service.dart';
 import 'app/routes/app_router.dart';
@@ -50,7 +51,13 @@ Future<void> main() async {
   ]);
   // Sound service يبدأ في الخلفية — متحملش كل الأصوات دلوقتي
   SoundService.instance.initialize();
-  SyncEngine.instance.initialize();
+
+  final syncEngine = SyncEngine.instance;
+  syncEngine.initialize();
+  syncEngine.initialSync(delaySeconds: 5);
+
+  // فحص صحة المنظومة بعد التهيئة
+  SystemHealthService.instance.checkHealth();
 
   runApp(const PharmacyApp());
 }

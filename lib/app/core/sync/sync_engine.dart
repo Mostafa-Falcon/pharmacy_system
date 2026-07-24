@@ -44,6 +44,9 @@ class SyncEngine {
   String? _lastSyncError;
   Timer? _periodicTimer;
   Timer? _pushDebouncer;
+  Timer? _retryTimer;
+  int _retryAttempt = 0;
+  bool _initialSyncDone = false;
 
   /// Stream of table updates (table, branchId)
   Stream<(String, String)> get tableUpdateStream => _tableUpdateController.stream;
@@ -97,6 +100,18 @@ class SyncEngine {
     _emitStatus();
   }
 
+  Future<void> initialSync({int delaySeconds = 5}) async {
+    if (_initialSyncDone) return;
+    _initialSyncDone = true;
+
+    await Future.delayed(Duration(seconds: delaySeconds));
+    if (!isOnline) return;
+
+    safeDebugPrint('SyncEngine: Starting initial sync...');
+    await syncAll();
+    safeDebugPrint('SyncEngine: Initial sync complete.');
+  }
+
   void _startPeriodicSync() {
     _periodicTimer?.cancel();
     _periodicTimer = Timer.periodic(SyncConfig.periodicInterval, (_) {
@@ -108,12 +123,47 @@ class SyncEngine {
 
   void _initConnectivityListener({Connectivity? connectivity}) {
     (connectivity ?? Connectivity()).onConnectivityChanged.listen((result) {
+      final wasOffline = !isOnline;
       final isConnected = result != ConnectivityResult.none;
       isOnline = isConnected;
       _onlineController.add(isConnected);
       _emitStatus();
+
       if (isConnected) {
+        _retryAttempt = 0;
+        _retryTimer?.cancel();
+        if (wasOffline) {
+          safeDebugPrint('SyncEngine: Connection restored. Running sync...');
+        }
         pullAllTables();
+      } else {
+        _startRetryBackoff();
+      }
+    });
+  }
+
+  void _startRetryBackoff() {
+    _retryTimer?.cancel();
+    if (_retryAttempt >= 5) return;
+
+    final delay = Duration(seconds: [10, 30, 60, 120, 300][_retryAttempt]);
+    _retryAttempt++;
+    safeDebugPrint('SyncEngine: Retry $_retryAttempt/5 in ${delay.inSeconds}s...');
+
+    _retryTimer = Timer(delay, () async {
+      try {
+        final connectivity = await Connectivity().checkConnectivity();
+        if (connectivity != ConnectivityResult.none) {
+          isOnline = true;
+          _onlineController.add(true);
+          _emitStatus();
+          _retryAttempt = 0;
+          pullAllTables();
+        } else {
+          _startRetryBackoff();
+        }
+      } catch (_) {
+        _startRetryBackoff();
       }
     });
   }

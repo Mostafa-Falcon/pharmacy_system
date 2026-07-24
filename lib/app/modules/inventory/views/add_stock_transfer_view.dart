@@ -216,14 +216,14 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ReusableText(
+                      AppText(
                         med.name,
                         style: TextStyle(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w700,
                             color: scheme.onSurface),
                       ),
-                      ReusableText(
+                      AppText(
                         '??????: ${med.quantity}',
                         style: TextStyle(
                             fontSize: 11.sp,
@@ -234,7 +234,7 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
                 ),
                 SizedBox(
                   width: 120.w,
-                  child: ReusableInput(
+                  child: AppInput(
                     controller: _qtyController,
                     label: '??????',
                     hint: '0',
@@ -244,7 +244,7 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
                 ),
                 SizedBox(
                   width: 140.w,
-                  child: ReusableInput(
+                  child: AppInput(
                     controller: _costController,
                     hint: '????? ??????',
                     label: '??? ???????',
@@ -256,7 +256,7 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
                 ),
                 SizedBox(
                   width: 180.w,
-                  child: ReusableInput(
+                  child: AppInput(
                     controller: _batchNumberController,
                     hint: '??? ??????',
                     label: '?????? (???????)',
@@ -268,7 +268,7 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
             SizedBox(height: AppSpacing.md.h),
             Align(
               alignment: AlignmentDirectional.centerEnd,
-              child: ReusableButton(
+              child: AppButton(
                 text: '????? ?????',
                 onPressed: () => _addItem(med),
                 prefixIcon: Icons.add_rounded,
@@ -302,7 +302,7 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
               contentPadding: EdgeInsets.zero,
               leading: Icon(Icons.medication_rounded,
                   size: 20.sp, color: scheme.primary),
-              title: ReusableText(
+              title: AppText(
                 item.medicineName,
                 style: TextStyle(
                     fontSize: 13.sp,
@@ -311,7 +311,7 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
               ),
               subtitle: Row(
                 children: [
-                  ReusableText(
+                  AppText(
                     '${item.quantity} × ${item.unitCost.toStringAsFixed(2)} ?.?',
                     style: TextStyle(
                         fontSize: 11.sp,
@@ -323,7 +323,7 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
                         size: 12.sp,
                         color: scheme.onSurfaceVariant),
                     SizedBox(width: 2.w),
-                    ReusableText(
+                    AppText(
                       '????: ${item.batchNumber}',
                       style: TextStyle(
                           fontSize: 10.sp,
@@ -345,7 +345,7 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
   }
 
   Widget _buildNotesField(BuildContext context) {
-    return ReusableInput(
+    return AppInput(
       controller: _notesController,
       label: '???????',
       hint: '??????? ?????? (???????)',

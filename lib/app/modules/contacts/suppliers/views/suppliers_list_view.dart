@@ -35,9 +35,9 @@ class _SuppliersBody extends StatelessWidget {
         if (state.status == SuppliersStatus.error) {
           return HomeShell(
             title: SuppliersStrings.suppliersTitle,
-            child: ReusableStateView(
+            child: AppText(
               message: state.error ?? SuppliersStrings.errorLoadingSuppliers,
-              action: ReusableButton(
+              action: AppButton(
                 text: GeneralStrings.refresh,
                 onPressed: () => context.read<SuppliersBloc>().add(const LoadSuppliers()),
               ),
@@ -59,18 +59,18 @@ class _SuppliersBody extends StatelessWidget {
   List<Widget> _buildActions(BuildContext context) {
     final bloc = context.read<SuppliersBloc>();
     return [
-      ReusableButton(
+      AppButton(
         text: SuppliersStrings.addSupplier,
         prefixIcon: Icons.add_rounded,
         onPressed: () => context.push(Routes.SUPPLIER_ADD),
       ),
-      ReusableButton(
+      AppButton(
         text: GeneralStrings.export,
         prefixIcon: Icons.download_rounded,
         type: ButtonType.outlined,
         onPressed: () => bloc.add(const ExportSuppliers()),
       ),
-      ReusableButton(
+      AppButton(
         text: 'استيراد من Excel',
         prefixIcon: Icons.file_upload_rounded,
         type: ButtonType.outlined,
@@ -104,7 +104,7 @@ class _SuppliersBody extends StatelessWidget {
   Widget _buildFilters(BuildContext context) {
     return AppCard(
       padding: EdgeInsets.all(AppSpacing.md.w),
-      child: ReusableInput(
+      child: AppInput(
         hint: SuppliersStrings.searchSupplierHint,
         prefixIcon: const Icon(Icons.search_rounded, size: 20),
         showClearButton: true,
@@ -119,7 +119,7 @@ class _SuppliersBody extends StatelessWidget {
     final f = NumberFormat('#,##0.##');
 
     final columns = [
-      ReusableTableColumn<SupplierModel>(
+      AppTableColumn<SupplierModel>(
         id: 'name',
         title: SuppliersStrings.supplierLabelTable,
         flex: 1,
@@ -131,19 +131,19 @@ class _SuppliersBody extends StatelessWidget {
           iconColor: s.isActive ? AppColors.success : AppColors.error,
         ),
       ),
-      ReusableTableColumn<SupplierModel>(
+      AppTableColumn<SupplierModel>(
         id: 'phone',
         title: SuppliersStrings.phoneLabel,
         width: 130.w,
-        cellBuilder: (s) => ReusableText(s.phone ?? '-', style: AppTextStyles.caption(context)),
+        cellBuilder: (s) => AppText(s.phone ?? '-', style: AppTextStyles.caption(context)),
       ),
-      ReusableTableColumn<SupplierModel>(
+      AppTableColumn<SupplierModel>(
         id: 'company',
         title: SuppliersStrings.companyLabel,
         width: 150.w,
-        cellBuilder: (s) => ReusableText(s.companyName ?? '-', style: AppTextStyles.caption(context)),
+        cellBuilder: (s) => AppText(s.companyName ?? '-', style: AppTextStyles.caption(context)),
       ),
-      ReusableTableColumn<SupplierModel>(
+      AppTableColumn<SupplierModel>(
         id: 'balance',
         title: SuppliersStrings.balanceLabel,
         width: 130.w,
@@ -158,27 +158,27 @@ class _SuppliersBody extends StatelessWidget {
           );
         },
       ),
-      ReusableTableColumn<SupplierModel>(
+      AppTableColumn<SupplierModel>(
         id: 'creditLimit',
         title: SuppliersStrings.creditLimitLabel,
         width: 130.w,
         isNumeric: true,
         textBuilder: (s) => s.creditLimit > 0 ? '${f.format(s.creditLimit)} ${GeneralStrings.currency}' : '-',
       ),
-      ReusableTableColumn<SupplierModel>(
+      AppTableColumn<SupplierModel>(
         id: 'discount',
         title: SuppliersStrings.discountLabelTable,
         width: 80.w,
         isNumeric: true,
         textBuilder: (s) => s.discountPercent > 0 ? '${s.discountPercent}%' : '-',
       ),
-      ReusableTableColumn<SupplierModel>(
+      AppTableColumn<SupplierModel>(
         id: 'type',
         title: SuppliersStrings.typeLabel,
         width: 100.w,
         cellBuilder: (s) => Tag(label: SuppliersStrings.supplierType, color: AppColors.info),
       ),
-      ReusableTableColumn<SupplierModel>(
+      AppTableColumn<SupplierModel>(
         id: 'status',
         title: SuppliersStrings.statusLabel,
         width: 90.w,
@@ -189,7 +189,7 @@ class _SuppliersBody extends StatelessWidget {
       ),
     ];
 
-    return ReusableTable<SupplierModel>(
+    return AppTable<SupplierModel>(
       columns: columns,
       items: state.pagedSuppliers,
       sortColumnId: state.sortColumnId,
@@ -222,7 +222,7 @@ class _SuppliersBody extends StatelessWidget {
 
   List<Widget> _buildBulkActions(BuildContext context, SuppliersBloc bloc, SuppliersState state) {
     return [
-      ReusableButton(
+      AppButton(
         text: GeneralStrings.delete,
         type: ButtonType.outlined,
         color: AppColors.error,
@@ -234,14 +234,14 @@ class _SuppliersBody extends StatelessWidget {
           onConfirm: () => bloc.add(const BulkDeleteSuppliers()),
         ),
       ),
-      ReusableButton(
+      AppButton(
         text: GeneralStrings.deactivateLabel,
         type: ButtonType.outlined,
         color: AppColors.warning,
         prefixIcon: Icons.block_flipped,
         onPressed: () => bloc.add(const BulkToggleSuppliersActive(false)),
       ),
-      ReusableButton(
+      AppButton(
         text: CustomersStrings.activate,
         type: ButtonType.outlined,
         color: AppColors.success,
@@ -282,10 +282,10 @@ class _SuppliersBody extends StatelessWidget {
         }
       },
       menuItems: [
-        PopupMenuItem(value: 'ledger', child: ReusableText(SuppliersStrings.accountStatement)),
-        PopupMenuItem(value: 'edit', child: ReusableText(GeneralStrings.edit)),
-        PopupMenuItem(value: 'toggle', child: ReusableText(s.isActive ? GeneralStrings.deactivateLabel : CustomersStrings.activate)),
-        PopupMenuItem(value: 'delete', child: ReusableText(GeneralStrings.delete, color: AppColors.error)),
+        PopupMenuItem(value: 'ledger', child: AppText(SuppliersStrings.accountStatement)),
+        PopupMenuItem(value: 'edit', child: AppText(GeneralStrings.edit)),
+        PopupMenuItem(value: 'toggle', child: AppText(s.isActive ? GeneralStrings.deactivateLabel : CustomersStrings.activate)),
+        PopupMenuItem(value: 'delete', child: AppText(GeneralStrings.delete, color: AppColors.error)),
       ],
     );
   }
@@ -300,7 +300,7 @@ class _SuppliersBody extends StatelessWidget {
         const Divider(height: 1),
         ListTile(
           leading: const Icon(Icons.receipt_long_rounded),
-          title: const ReusableText(SuppliersStrings.accountStatement),
+          title: const AppText(SuppliersStrings.accountStatement),
           onTap: () {
             Navigator.pop(context);
             bloc.add(LoadSupplierLedger(s.id));
@@ -315,7 +315,7 @@ class _SuppliersBody extends StatelessWidget {
         ),
         ListTile(
           leading: const Icon(Icons.edit_rounded),
-          title: const ReusableText(GeneralStrings.edit),
+          title: const AppText(GeneralStrings.edit),
           onTap: () {
             Navigator.pop(context);
             context.push(Routes.SUPPLIER_ADD);
@@ -323,7 +323,7 @@ class _SuppliersBody extends StatelessWidget {
         ),
         ListTile(
           leading: Icon(s.isActive ? Icons.toggle_off_outlined : Icons.toggle_on_outlined),
-          title: ReusableText(s.isActive ? GeneralStrings.deactivateLabel : CustomersStrings.activate),
+          title: AppText(s.isActive ? GeneralStrings.deactivateLabel : CustomersStrings.activate),
           onTap: () {
             Navigator.pop(context);
             bloc.add(ToggleSupplierActive(s.id));
@@ -332,7 +332,7 @@ class _SuppliersBody extends StatelessWidget {
         if (isArchived)
           ListTile(
             leading: const Icon(Icons.restore_rounded),
-            title: const ReusableText(GeneralStrings.restoreLabel),
+            title: const AppText(GeneralStrings.restoreLabel),
             onTap: () {
               Navigator.pop(context);
               bloc.add(RestoreSupplier(s.id));
@@ -341,7 +341,7 @@ class _SuppliersBody extends StatelessWidget {
         else
           ListTile(
             leading: const Icon(Icons.archive_rounded),
-            title: const ReusableText(GeneralStrings.archive),
+            title: const AppText(GeneralStrings.archive),
             onTap: () {
               Navigator.pop(context);
               bloc.add(ArchiveSupplier(s.id));
@@ -349,15 +349,15 @@ class _SuppliersBody extends StatelessWidget {
           ),
         ListTile(
           leading: const Icon(Icons.delete_forever_rounded, color: AppColors.error),
-          title: ReusableText(GeneralStrings.delete, color: AppColors.error),
+          title: AppText(GeneralStrings.delete, color: AppColors.error),
           onTap: () {
             Navigator.pop(context);
-            ReusableDialog.show(
+            AppDialog.show(
               context,
               title: SuppliersStrings.deleteSupplierConfirmTitle,
               headerIcon: const Icon(Icons.delete_forever_rounded, color: AppColors.error),
               children: [
-                const ReusableText(SuppliersStrings.deleteSupplierPermanentMessage),
+                const AppText(SuppliersStrings.deleteSupplierPermanentMessage),
                 SizedBox(height: 24.h),
                 DialogActions(
                   confirmText: SuppliersStrings.permanentDeleteAction,
@@ -406,12 +406,12 @@ class _SupplierLedgerDialogState extends State<SupplierLedgerDialog> {
     final bloc = context.read<SuppliersBloc>();
     final scheme = Theme.of(context).colorScheme;
 
-    return ReusableDialog(
+    return AppDialog(
       title: '${SuppliersStrings.accountStatement}: ${widget.supplierName}',
       headerIcon: const Icon(Icons.receipt_long_rounded),
       maxWidth: 750,
       footerActions: [
-        ReusableButton(
+        AppButton(
           text: GeneralStrings.exit,
           type: ButtonType.text,
           onPressed: () {
@@ -439,8 +439,8 @@ class _SupplierLedgerDialogState extends State<SupplierLedgerDialog> {
                   ),
                   child: Row(
                     children: [
-                      ReusableText(SuppliersStrings.currentBalanceLabel, style: AppTextStyles.bodyBold(context)),
-                      ReusableText(
+                      AppText(SuppliersStrings.currentBalanceLabel, style: AppTextStyles.bodyBold(context)),
+                      AppText(
                         '${f.format(balance)} ${GeneralStrings.currency}',
                         style: AppTextStyles.bodyBold(context).copyWith(
                           color: balance > 0 ? AppColors.error : AppColors.success,
@@ -454,7 +454,7 @@ class _SupplierLedgerDialogState extends State<SupplierLedgerDialog> {
                   children: [
                     Expanded(
                       flex: 2,
-                      child: ReusableInput(
+                      child: AppInput(
                         controller: amountCtrl,
                         label: SuppliersStrings.amountLabel,
                         hint: '0.00',
@@ -464,7 +464,7 @@ class _SupplierLedgerDialogState extends State<SupplierLedgerDialog> {
                     SizedBox(width: AppSpacing.sm.w),
                     Expanded(
                       flex: 3,
-                      child: ReusableInput(
+                      child: AppInput(
                         controller: notesCtrl,
                         label: SuppliersStrings.notesLabel,
                         hint: SuppliersStrings.enterTransactionDetailsHint,
@@ -477,31 +477,31 @@ class _SupplierLedgerDialogState extends State<SupplierLedgerDialog> {
                   spacing: 8.w,
                   runSpacing: 8.h,
                   children: [
-                    ReusableButton(
+                    AppButton(
                       text: SuppliersStrings.cashPayment,
                       type: ButtonType.tonal,
                       prefixIcon: Icons.payments_rounded,
                       onPressed: () => _recordCashPayment(bloc),
                     ),
-                    ReusableButton(
+                    AppButton(
                       text: SuppliersStrings.additionNotice,
                       type: ButtonType.tonal,
                       prefixIcon: Icons.add_circle_rounded,
                       onPressed: () => _recordAddition(bloc),
                     ),
-                    ReusableButton(
+                    AppButton(
                       text: SuppliersStrings.discountNotice,
                       type: ButtonType.tonal,
                       prefixIcon: Icons.remove_circle_rounded,
                       onPressed: () => _recordDiscount(bloc),
                     ),
-                    ReusableButton(
+                    AppButton(
                       text: SuppliersStrings.checkPayment,
                       type: ButtonType.tonal,
                       prefixIcon: Icons.account_balance_rounded,
                       onPressed: () => _showCheckFields(context, bloc, true),
                     ),
-                    ReusableButton(
+                    AppButton(
                       text: SuppliersStrings.checkReceipt,
                       type: ButtonType.tonal,
                       prefixIcon: Icons.account_balance_wallet_rounded,
@@ -513,7 +513,7 @@ class _SupplierLedgerDialogState extends State<SupplierLedgerDialog> {
                 const SectionHeader(icon: Icons.history_rounded, title: SuppliersStrings.recentLedgerEntries),
                 SizedBox(height: AppSpacing.sm.h),
                 if (state.ledgerEntries.isEmpty)
-                  const ReusableStateView.empty(message: SuppliersStrings.noLedgerEntries, compact: true)
+                  const AppText.empty(message: SuppliersStrings.noLedgerEntries, compact: true)
                 else
                   SizedBox(
                     height: 350.h,
@@ -524,12 +524,12 @@ class _SupplierLedgerDialogState extends State<SupplierLedgerDialog> {
                         final e = state.ledgerEntries[i];
                         return ListTile(
                           contentPadding: EdgeInsets.symmetric(horizontal: 4.w),
-                          title: ReusableText(e.type.label, style: const TextStyle(fontWeight: FontWeight.bold)),
-                          subtitle: ReusableText(
+                          title: AppText(e.type.label, style: const TextStyle(fontWeight: FontWeight.bold)),
+                          subtitle: AppText(
                             DateFormat('yyyy-MM-dd HH:mm').format(e.entryDate),
                             style: TextStyle(fontSize: 10.sp, color: scheme.onSurfaceVariant),
                           ),
-                          trailing: ReusableText(
+                          trailing: AppText(
                             '${f.format(e.debit > 0 ? e.debit : -e.credit)} ${GeneralStrings.currency}',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -545,6 +545,7 @@ class _SupplierLedgerDialogState extends State<SupplierLedgerDialog> {
           },
         ),
       ],
+    );
     );
   }
 
@@ -601,7 +602,7 @@ class _SupplierLedgerDialogState extends State<SupplierLedgerDialog> {
     }
     showDialog(
       context: context,
-      builder: (context) => ReusableDialog(
+      builder: (context) => AppDialog(
         title: isPayment ? SuppliersStrings.checkPaymentDataTitle : SuppliersStrings.checkReceiptDataTitle,
         headerIcon: const Icon(Icons.account_balance_rounded),
         footerActions: [
@@ -637,22 +638,23 @@ class _SupplierLedgerDialogState extends State<SupplierLedgerDialog> {
           ),
         ],
         children: [
-          ReusableInput(
+          AppInput(
             controller: checkNoCtrl,
             label: CustomersStrings.checkNumber,
           ),
           SizedBox(height: AppSpacing.sm.h),
-          ReusableInput(
+          AppInput(
             controller: bankCtrl,
             label: CustomersStrings.bankName,
           ),
           SizedBox(height: AppSpacing.sm.h),
-          ReusableInput(
+          AppInput(
             controller: dueDateCtrl,
             label: CustomersStrings.dueDate,
           ),
         ],
       ),
     );
+  }
   }
 }

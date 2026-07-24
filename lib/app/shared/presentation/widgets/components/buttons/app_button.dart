@@ -234,6 +234,8 @@ class AppButton extends StatelessWidget {
   }
 }
 
+typedef ReusableButton = AppButton;
+
 /// أنيميشن سبرينج احترافي عند التحويم أو الضغط لإعطاء الزرار طابع حيوي وممتاز
 class _ButtonScaleWrapper extends StatefulWidget {
   const _ButtonScaleWrapper({required this.child, required this.isEnabled});
@@ -316,7 +318,3 @@ class AppAddButton extends StatelessWidget {
     );
   }
 }
-
-
-
-

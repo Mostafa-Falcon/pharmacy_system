@@ -138,7 +138,7 @@ class _QuickActionsTab extends StatelessWidget {
                 title: HrStrings.hrAttendance,
               ),
               SizedBox(height: AppSpacing.md.h),
-              ReusableButton(
+              AppButton(
                 text: attendanceId == null
                     ? HrStrings.hrCheckIn
                     : HrStrings.hrCheckOut,
@@ -165,7 +165,7 @@ class _QuickActionsTab extends StatelessWidget {
                 title: HomeStrings.sidebarPos,
               ),
               SizedBox(height: AppSpacing.md.h),
-              ReusableButton(
+              AppButton(
                 text: HomeStrings.employeeOpenPos,
                 prefixIcon: Icons.shopping_cart_rounded,
                 type: ButtonType.primary,

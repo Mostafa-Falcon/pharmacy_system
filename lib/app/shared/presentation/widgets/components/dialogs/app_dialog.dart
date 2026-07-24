@@ -154,6 +154,8 @@ class AppDialog extends StatelessWidget {
   }
 }
 
+typedef ReusableDialog = AppDialog;
+
 /// صف الأزرار القياسي أسفل أي حوار: (إلغاء - تأكيد).
 /// بيرجّع [Widget] جاهز يُحط جوه الـ [AppDialog].
 class DialogActions extends StatelessWidget {

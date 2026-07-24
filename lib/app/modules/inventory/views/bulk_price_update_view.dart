@@ -130,7 +130,7 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
           )),
         ),
         if (state.categories.isNotEmpty) ...[
-          ReusableText('?? ???? ?????:', style: AppTextStyles.caption(context)),
+          AppText('?? ???? ?????:', style: AppTextStyles.caption(context)),
           SizedBox(
             width: 250.w,
             child: ReusableDropdown<String>(
@@ -159,7 +159,7 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ReusableText('????? ??????? ??????:', style: AppTextStyles.bodyBold(context)),
+        AppText('????? ??????? ??????:', style: AppTextStyles.bodyBold(context)),
         SizedBox(height: 12.h),
         Wrap(
           spacing: 10.w,
@@ -189,7 +189,7 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ReusableText('??? ??????? ????????:', style: AppTextStyles.bodyBold(context)),
+        AppText('??? ??????? ????????:', style: AppTextStyles.bodyBold(context)),
         SizedBox(height: 12.h),
         Wrap(
           spacing: 10.w,
@@ -204,6 +204,7 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
         ),
       ],
     );
+  }
   }
 
   void _updateApply(BulkPriceUpdateState state, {String? field, String? op, double? val}) {
@@ -221,7 +222,7 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Expanded(
-          child: ReusableInput(
+          child: AppInput(
             label: isPercent ? InventoryStrings.bulkPriceUpdatePercentage : InventoryStrings.bulkPriceUpdateValue,
             hint: isPercent ? '????: 10' : '0.00',
             controller: _valueController,
@@ -238,7 +239,7 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
               color: AppColors.info.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppRadius.md.r),
             ),
-            child: ReusableText('???? ?????? ?????? ?? ????? ??????', style: AppTextStyles.caption(context).copyWith(color: AppColors.info)),
+            child: AppText('???? ?????? ?????? ?? ????? ??????', style: AppTextStyles.caption(context).copyWith(color: AppColors.info)),
           ),
         ],
       ],
@@ -258,7 +259,7 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
           const Icon(Icons.analytics_rounded, color: AppColors.warning),
           SizedBox(width: 12.w),
           Expanded(
-            child: ReusableText(
+            child: AppText(
               '???? ????? ????? ${state.affectedCount} ??? ????? ??? ????????? ???????.',
               style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold),
             ),
@@ -272,7 +273,7 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
     return Row(
       children: [
         Expanded(
-          child: ReusableButton(
+          child: AppButton(
             text: InventoryStrings.bulkPriceUpdateApply,
             prefixIcon: Icons.check_circle_rounded,
             size: ButtonSize.large,
@@ -282,7 +283,7 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
           ),
         ),
         SizedBox(width: 16.w),
-        ReusableButton(
+        AppButton(
           text: '????? ?????',
           type: ButtonType.outlined,
           onPressed: () {
@@ -295,13 +296,13 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
   }
 
   void _confirmApply(BuildContext context, BulkPriceUpdateState state) {
-    ReusableDialog.show(
+    AppDialog.show(
       context,
       title: '????? ??????? ???????',
       headerIcon: const Icon(Icons.warning_amber_rounded, color: AppColors.warning),
       children: [
-        ReusableText('?? ??? ????? ?? ????? ?? ????? ????? ${state.affectedCount} ????'),
-        ReusableText('??? ??????? ????? ??? ???? ?????? ?????? ?????? ??????? ????????.', style: AppTextStyles.caption(context).copyWith(color: AppColors.error)),
+        AppText('?? ??? ????? ?? ????? ?? ????? ????? ${state.affectedCount} ????'),
+        AppText('??? ??????? ????? ??? ???? ?????? ?????? ?????? ??????? ????????.', style: AppTextStyles.caption(context).copyWith(color: AppColors.error)),
         SizedBox(height: 24.h),
         DialogActions(
           confirmText: '???? ?? ???????? ????',
@@ -328,7 +329,7 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
           borderRadius: BorderRadius.circular(8.r),
           border: Border.all(color: isSelected ? scheme.primary : scheme.outlineVariant.withValues(alpha: 0.5)),
         ),
-        child: ReusableText(
+        child: AppText(
           label,
           style: AppTextStyles.caption(context).copyWith(
             fontWeight: FontWeight.bold,
@@ -337,6 +338,7 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
         ),
       ),
     );
+  }
   }
 }
 

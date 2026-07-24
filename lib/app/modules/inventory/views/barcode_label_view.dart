@@ -54,16 +54,16 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
       child: ExpansionTile(
         shape: const Border(),
         leading: const Icon(Icons.settings_rounded, color: AppColors.primary),
-        title: ReusableText(
+        title: AppText(
           InventoryStrings.labelSettingsAndSizes,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13.sp),
         ),
-        subtitle: ReusableText(
+        subtitle: AppText(
           InventoryStrings.labelSizeCopiesFormat
               .replaceFirst('%s', labelWidth.toString())
               .replaceFirst('%s', labelHeight.toString())
               .replaceFirst('%s', defaultCopies.toString()),
-          variant: ReusableTextVariant.caption,
+          variant: AppTextVariant.caption,
         ),
         children: [
           Padding(
@@ -81,7 +81,7 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
                   children: [
                     SizedBox(
                       width: 250.w,
-                      child: ReusableInput(
+                      child: AppInput(
                         label: InventoryStrings.labelWidthMm,
                         keyboardType: TextInputType.number,
                         prefixIcon: const Icon(
@@ -98,7 +98,7 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
                     ),
                     SizedBox(
                       width: 250.w,
-                      child: ReusableInput(
+                      child: AppInput(
                         label: InventoryStrings.labelHeightMm,
                         keyboardType: TextInputType.number,
                         prefixIcon: const Icon(Icons.height_rounded, size: 18),
@@ -113,7 +113,7 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
                   ],
                 ),
                 SizedBox(height: AppSpacing.md.h),
-                ReusableInput(
+                AppInput(
                   label: InventoryStrings.copiesPerItemLabel,
                   keyboardType: TextInputType.number,
                   prefixIcon: const Icon(Icons.copy_all_rounded, size: 18),
@@ -168,7 +168,7 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ReusableInput(
+              AppInput(
                 hint: InventoryStrings.searchMedicineToPrintHint,
                 prefixIcon: const Icon(Icons.search_rounded),
                 textDirection: TextDirection.rtl,
@@ -193,15 +193,15 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
                       final m = state.searchResults[i];
                       return ListTile(
                         dense: true,
-                        title: ReusableText(
+                        title: AppText(
                           m.name,
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        subtitle: ReusableText(
+                        subtitle: AppText(
                           m.barcodes.isNotEmpty
                               ? m.barcodes.first
                               : InventoryStrings.noBarcode,
-                          variant: ReusableTextVariant.caption,
+                          variant: AppTextVariant.caption,
                         ),
                         trailing: Icon(
                           Icons.add_circle_outline_rounded,
@@ -264,13 +264,13 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ReusableText(
+                        AppText(
                           m.name,
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        ReusableText(
+                        AppText(
                           '${m.barcodes.firstOrNull ?? '---'} | ${InventoryStrings.stockBalanceFormat.replaceFirst('%s', m.quantity.toString())}',
-                          variant: ReusableTextVariant.caption,
+                          variant: AppTextVariant.caption,
                         ),
                       ],
                     ),
@@ -327,29 +327,29 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ReusableText(
+                  AppText(
                     InventoryStrings.totalLabelsFormat(totalLabels.toString()),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  ReusableText(
+                  AppText(
                     InventoryStrings.differentItemsFormat(
                       state.selectedMedicines.length.toString(),
                     ),
-                    variant: ReusableTextVariant.caption,
+                    variant: AppTextVariant.caption,
                   ),
                 ],
               ),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ReusableButton(
+                  AppButton(
                     text: GeneralStrings.view,
                     prefixIcon: Icons.preview_rounded,
                     type: ButtonType.outlined,
                     onPressed: () => _showPreviewDialog(context),
                   ),
                   SizedBox(width: AppSpacing.md.w),
-                  ReusableButton(
+                  AppButton(
                     text: InventoryStrings.startPrinting,
                     prefixIcon: Icons.print_rounded,
                     onPressed: () => bloc.add(const PrintLabels()),
@@ -368,11 +368,11 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
 
     showDialog(
       context: context,
-      builder: (_) => ReusableDialog(
+      builder: (_) => AppDialog(
         title: InventoryStrings.labelPreviewDialogTitle,
         headerIcon: const Icon(Icons.preview_rounded),
         footerActions: [
-          ReusableButton(
+          AppButton(
             text: InventoryStrings.closePreview,
             type: ButtonType.text,
             onPressed: () => Navigator.pop(context),
@@ -410,7 +410,7 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       if (showName)
-                        ReusableText(
+                        AppText(
                           firstSelected.medicine.name,
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -420,7 +420,7 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
                           ),
                         ),
                       if (showPrice)
-                        ReusableText(
+                        AppText(
                           '${firstSelected.medicine.sellPrice.toStringAsFixed(2)} ${GeneralStrings.currency}',
                           style: TextStyle(
                             fontSize: 9.sp,
@@ -429,7 +429,7 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
                           ),
                         ),
                       if (showUnit && firstSelected.medicine.units.isNotEmpty)
-                        ReusableText(
+                        AppText(
                           firstSelected.medicine.units.first.name,
                           style: TextStyle(
                             fontSize: 7.sp,
@@ -439,7 +439,7 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
                       if (showBarcode &&
                           firstSelected.medicine.barcodes.isNotEmpty) ...[
                         SizedBox(height: 4.h),
-                        ReusableText(
+                        AppText(
                           '||||||||||||||||',
                           style: TextStyle(
                             fontSize: 16.sp,
@@ -447,7 +447,7 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
                             letterSpacing: 1,
                           ),
                         ),
-                        ReusableText(
+                        AppText(
                           firstSelected.medicine.barcodes.first,
                           style: TextStyle(fontSize: 6.sp, color: Colors.black),
                         ),
@@ -460,14 +460,15 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
           ),
           SizedBox(height: 12.h),
           const Center(
-            child: ReusableText(
+            child: AppText(
               InventoryStrings.previewMagnifiedNote,
-              variant: ReusableTextVariant.caption,
+              variant: AppTextVariant.caption,
             ),
           ),
         ],
       ),
     );
+  }
   }
 }
 

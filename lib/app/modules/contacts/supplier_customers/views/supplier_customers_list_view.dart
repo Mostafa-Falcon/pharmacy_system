@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:pharmacy_system/app/shared/constants/strings/crm_strings.dart';
+import 'package:pharmacy_system/app/shared/constants/strings/general_strings.dart';
 import 'package:pharmacy_system/app/shared/presentation/widgets/components/tables/shared_table_cells.dart';
 
 import 'package:pharmacy_system/app/core/models/contacts/supplier_customer_model.dart';

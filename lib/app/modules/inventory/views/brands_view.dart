@@ -44,13 +44,13 @@ class BrandsView extends StatelessWidget {
   Widget _buildHeader(BuildContext context, PaginatedState<MedicineBrandModel> state) {
     return Row(
       children: [
-        ReusableButton(
+        AppButton(
           text: 'Ø¥Ø¶Ø§ÙØ© Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ©',
           prefixIcon: Icons.add_rounded,
           onPressed: () => _showBrandDialog(context),
         ),
         const Spacer(),
-        ReusableText(
+        AppText(
           '${state.items.length} Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ©',
           style: TextStyle(
             fontSize: 12.sp,
@@ -59,6 +59,7 @@ class BrandsView extends StatelessWidget {
         ),
       ],
     );
+  }
   }
 
   Widget _buildSearchBar(BuildContext context, PaginatedState<MedicineBrandModel> state) {
@@ -140,16 +141,16 @@ class BrandsView extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (context) => ReusableDialog(
+      builder: (context) => AppDialog(
         title: isEditing ? 'ØªØ¹Ø¯ÙŠÙ„ Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ©' : 'Ø¥Ø¶Ø§ÙØ© Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ© Ø¬Ø¯ÙŠØ¯Ø©',
         children: [
-          ReusableInput.text(
+          AppInput.text(
             controller: nameCtrl,
             label: 'Ø§Ù„Ø§Ø³Ù… *',
             textDirection: TextDirection.rtl,
           ),
           SizedBox(height: AppSpacing.sm.h),
-          ReusableInput.text(
+          AppInput.text(
             controller: descCtrl,
             label: 'Ø§Ù„ÙˆØµÙ',
             maxLines: 2,
