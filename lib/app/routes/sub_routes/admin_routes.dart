@@ -10,7 +10,6 @@ import 'package:pharmacy_system/app/modules/admin/views/document_control_view.da
 import 'package:pharmacy_system/app/modules/admin/views/employees_management.dart';
 import 'package:pharmacy_system/app/modules/admin/views/permissions_management.dart';
 import 'package:pharmacy_system/app/modules/admin/views/settings_view.dart';
-import 'package:pharmacy_system/app/modules/admin/views/user_profile_view.dart';
 import 'package:pharmacy_system/app/modules/employee/views/employee_dashboard.dart';
 
 import 'package:pharmacy_system/app/core/injection.dart';
@@ -82,12 +81,14 @@ final List<RouteBase> adminRoutes = [
   GoRoute(
     path: Routes.EMPLOYEE_DASHBOARD,
     name: 'employee_dashboard',
-    pageBuilder: (context, state) => fadePage(state, const EmployeeDashboardView()),
+    pageBuilder: (context, state) =>
+        fadePage(state, const EmployeeDashboardView()),
   ),
   GoRoute(
     path: Routes.DOCUMENT_CONTROL,
     name: 'document_control',
-    pageBuilder: (context, state) => fadePage(state, const DocumentControlView()),
+    pageBuilder: (context, state) =>
+        fadePage(state, const DocumentControlView()),
   ),
   GoRoute(
     path: Routes.ACTIVITY_LOG,
@@ -95,4 +96,3 @@ final List<RouteBase> adminRoutes = [
     pageBuilder: (context, state) => fadePage(state, const ActivityLogView()),
   ),
 ];
-

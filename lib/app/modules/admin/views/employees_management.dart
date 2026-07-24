@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:collection/collection.dart';
 import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/modules/auth/models/user_model.dart';
+import 'package:pharmacy_system/app/core/models/auth/user_model.dart';
 import 'package:pharmacy_system/app/core/data/services/sound_service.dart';
 import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
 import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
@@ -441,6 +441,7 @@ class _EmployeeCard extends StatelessWidget {
     );
   }
 }
+
 
 
 

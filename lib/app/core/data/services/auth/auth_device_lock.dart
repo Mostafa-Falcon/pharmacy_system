@@ -94,11 +94,11 @@ class AuthDeviceLock {
         params: {'p_user_id': userId, 'p_device_id': '__any__'},
       );
       // نحدّث جدول users محلياً ليعكس إن مفيش قفل.
-      final usersDao = sl<UsersDao>();
-      final existing = await usersDao.getById(userId);
+      final systemDao = sl<SystemDao>();
+      final existing = await systemDao.getUserById(userId);
       if (existing != null) {
         final updated = AuthService._userFromTable(existing).copyWith(activeDeviceId: null);
-        await usersDao.upsert(AuthService._userToCompanion(updated));
+        await systemDao.upsertUser(AuthService._userToCompanion(updated));
       }
       return {'success': true, 'message': AuthStrings.remoteLogoutSuccess};
     } catch (e) {
@@ -123,6 +123,3 @@ class AuthDeviceLock {
     return null;
   }
 }
-
-
-

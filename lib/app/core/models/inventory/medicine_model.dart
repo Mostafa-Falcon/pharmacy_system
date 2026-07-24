@@ -286,6 +286,9 @@ class MedicineModel implements SyncableEntity {
       ? null
       : (barcodes.firstWhereOrNull((b) => b.isPrimary)?.code ??
             barcodes.first.code);
+  String? get category => therapeuticGroup.name;
+  DateTime? get expiryDate => expiryDates?.firstOrNull;
+  DateTime get createdAt => lastModified;
 
   @override
   String? get syncBranchId => branchId;
@@ -415,7 +418,6 @@ class MedicineModel implements SyncableEntity {
     >
     list = [];
 
-    // الوحدة الكبرى دائماً موجودة
     list.add((
       id: 'unit1',
       name: itemLevels.unit1Name,

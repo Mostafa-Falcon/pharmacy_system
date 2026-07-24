@@ -1,3 +1,5 @@
+import 'package:pharmacy_system/app/core/sync/syncable_entity.dart';
+
 /// 👑 رتبة ووظيفة المستخدم/الموظف
 enum UserRole {
   owner,    // مالك الصيدلية / مدير النظام (صاحب الكلمة الأولى)
@@ -5,7 +7,7 @@ enum UserRole {
 }
 
 /// 👤 موديل بيانات المستخدم والموظف الموحد بالكامل
-class UserModel {
+class UserModel implements SyncableEntity {
   // 🆔 المعرف الفريد للمستخدم (Primary Key)
   final String id;
 
@@ -43,10 +45,15 @@ class UserModel {
   final int syncVersion;
 
   // 🕒 تاريخ ووقت آخر تعديل
+  @override
   final DateTime lastModified;
 
   // 🗑️ حالة الحذف المنطقي للمستخدم
+  @override
   final bool isDeleted;
+
+  @override
+  String? get syncBranchId => assignedBranchId;
 
   UserModel({
     required this.id,
@@ -148,5 +155,3 @@ class UserModel {
     isDeleted: json['is_deleted'] as bool? ?? false,
   );
 }
-
-

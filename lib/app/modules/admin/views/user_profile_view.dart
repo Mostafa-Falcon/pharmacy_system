@@ -1,9 +1,9 @@
-﻿// views/user_profile_view.dart
+// views/user_profile_view.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/modules/auth/models/user_model.dart';
+import 'package:pharmacy_system/app/core/models/auth/user_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
 import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
@@ -309,7 +309,7 @@ class _DeviceStatusTile extends StatelessWidget {
                 ),
                 SizedBox(height: 2.h),
                 ReusableText(
-                  '?????? ??????: ${currentDeviceId != null ? currentDeviceId!.substring(0, 8) : '??? ?????'}…',
+                  '?????? ??????: ${currentDeviceId != null ? currentDeviceId!.substring(0, 8) : '??? ?????'}�',
                   style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.textPrimaryOf(context)),
                 ),
               ],
@@ -385,6 +385,7 @@ class _ActionTile extends StatelessWidget {
     );
   }
 }
+
 
 
 

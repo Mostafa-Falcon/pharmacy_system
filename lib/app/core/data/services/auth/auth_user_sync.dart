@@ -12,9 +12,9 @@ class AuthUserSync {
     UserRole? role,
     String? assignedBranchId,
   }) async {
-    final usersDao = sl<UsersDao>();
+    final systemDao = sl<SystemDao>();
 
-    final existingData = await usersDao.getById(user.id);
+    final existingData = await systemDao.getUserById(user.id);
     UserModel? existing = existingData != null
         ? AuthService._userFromTable(existingData)
         : null;
@@ -42,7 +42,7 @@ class AuthUserSync {
       }
     }
 
-    final base = remoteUser; // هنا existing أكيد null
+    final base = remoteUser;
 
     if (base == null) {
       final metaRole = user.userMetadata?['role']?.toString().toLowerCase();
@@ -66,7 +66,7 @@ class AuthUserSync {
         assignedBranchId: assignedBranchId,
         createdAt: DateTime.now(),
       );
-      await usersDao.upsert(AuthService._userToCompanion(newUser));
+      await systemDao.upsertUser(AuthService._userToCompanion(newUser));
       return newUser;
     }
 
@@ -77,7 +77,7 @@ class AuthUserSync {
       lastModified: DateTime.now(),
     );
 
-    await usersDao.upsert(AuthService._userToCompanion(updated));
+    await systemDao.upsertUser(AuthService._userToCompanion(updated));
     return updated;
   }
 
@@ -90,9 +90,9 @@ class AuthUserSync {
           .eq('id', userId)
           .maybeSingle();
       if (response != null) {
-        final usersDao = sl<UsersDao>();
+        final systemDao = sl<SystemDao>();
         final remoteUser = UserModel.fromJson(response);
-        await usersDao.upsert(AuthService._userToCompanion(remoteUser));
+        await systemDao.upsertUser(AuthService._userToCompanion(remoteUser));
       }
     } catch (e) {
       safeDebugPrint('AuthService: Background user refresh failed: $e');
@@ -100,15 +100,11 @@ class AuthUserSync {
   }
 
   /// كتابة/تحديث صف المستخدم في جدول public.users بـ Supabase.
-  /// الـ trigger بيعمل الصف تلقائياً عند signUp، والـ upsert هنا بيحدّث
-  /// (يربط الفرع مثلاً). الـ RLS تسمح للمستخدم المصادق بكتابة صفه فقط
-  /// (id = auth.uid())، لذا نضمن تطابق الـ id مع الـ auth user.
   static Future<void> pushUserToSupabase(Map<String, dynamic> data) async {
     final payload = Map<String, dynamic>.from(data);
     if (!payload.containsKey('last_modified')) {
       payload['last_modified'] = DateTime.now().toIso8601String();
     }
-    // نتأكد إن الـ id يتطابق مع مستخدم المصادقة الحالي (يحل مشكلة RLS).
     final authUid = Supabase.instance.client.auth.currentUser?.id;
     if (authUid != null && authUid.isNotEmpty) {
       payload['id'] = authUid;
@@ -118,14 +114,13 @@ class AuthUserSync {
 
   /// ينشئ الفرع الافتراضي (الفرع الرئيسي) ويربطه باليوزر.
   static Future<BranchModel> createDefaultBranch(String userId, String userName) async {
-    final branchesDao = sl<BranchesDao>();
+    final systemDao = sl<SystemDao>();
 
-    final existingData = await branchesDao.getById('main_$userId');
+    final existingData = await systemDao.getBranchById('main_$userId');
     if (existingData != null) {
       return AuthService._branchFromTable(existingData);
     }
 
-    // 2. إذا كنا أونلاين، نحاول جلب الفرع من السيرفر قبل إنشاء فرع جديد
     if (await AuthService._isOnline()) {
       try {
         final response = await Supabase.instance.client
@@ -136,7 +131,7 @@ class AuthUserSync {
 
         if (response != null) {
           final branch = BranchModel.fromJson(response);
-          await branchesDao.upsert(AuthService._branchToCompanion(branch));
+          await systemDao.upsertBranch(AuthService._branchToCompanion(branch));
           return branch;
         }
       } catch (e) {
@@ -144,7 +139,6 @@ class AuthUserSync {
       }
     }
 
-    // 3. إنشاء الفرع الرئيسي
     final branchId = 'main_$userId';
     final branch = BranchModel(
       id: branchId,
@@ -155,9 +149,8 @@ class AuthUserSync {
       createdAt: DateTime.now(),
     );
 
-    await branchesDao.upsert(AuthService._branchToCompanion(branch));
+    await systemDao.upsertBranch(AuthService._branchToCompanion(branch));
 
-    // مزامنة الفرع الجديد
     try {
       await SyncService.queueOperation(
         type: SyncOperationType.create,
@@ -172,5 +165,3 @@ class AuthUserSync {
     return branch;
   }
 }
-
-

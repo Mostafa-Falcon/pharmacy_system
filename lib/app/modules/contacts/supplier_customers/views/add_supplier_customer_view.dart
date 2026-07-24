@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -125,7 +125,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
                     SizedBox(height: AppSpacing.md.h),
                     _buildFinancialSection(),
                     SizedBox(height: AppSpacing.lg.h),
-                    const SectionHeader(icon: Icons.account_balance_outlined, title: CrmStrings.openingBalanceAtStart),
+                    SectionHeader(icon: Icons.account_balance_outlined, title: CrmStrings.openingBalanceAtStart),
                     SizedBox(height: AppSpacing.md.h),
                     _buildOpeningBalanceSection(),
                     SizedBox(height: AppSpacing.lg.h),

@@ -1,5 +1,7 @@
+import 'package:pharmacy_system/app/core/sync/syncable_entity.dart';
+
 /// 🏬 موديل بيانات فرع الصيدلية (المؤسسة/الفروع)
-class BranchModel {
+class BranchModel implements SyncableEntity {
   // 🆔 المعرف الفريد للفرع (Primary Key)
   final String id;
 
@@ -25,10 +27,15 @@ class BranchModel {
   final int syncVersion;
 
   // 🕒 تاريخ ووقت آخر تعديل
+  @override
   final DateTime lastModified;
 
   // 🗑️ حالة الحذف المنطقي للفرع
+  @override
   final bool isDeleted;
+
+  @override
+  String? get syncBranchId => id;
 
   BranchModel({
     required this.id,
@@ -97,5 +104,3 @@ class BranchModel {
     isDeleted: json['is_deleted'] as bool? ?? false,
   );
 }
-
-

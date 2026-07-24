@@ -31,6 +31,9 @@ class SystemDao extends DatabaseAccessor<AppDatabase> with _$SystemDaoMixin {
   Future<List<BranchesTableData>> getAllBranches() =>
       (select(branchesTable)..where((t) => t.isDeleted.not())).get();
 
+  Future<BranchesTableData?> getBranchById(String id) =>
+      (select(branchesTable)..where((t) => t.id.equals(id))).getSingleOrNull();
+
   Future<void> upsertBranch(BranchesTableCompanion branch) async {
     await into(branchesTable).insertOnConflictUpdate(branch);
   }
@@ -67,6 +70,12 @@ class SystemDao extends DatabaseAccessor<AppDatabase> with _$SystemDaoMixin {
   Future<void> insertNotification(NotificationsTableCompanion notification) async {
     await into(notificationsTable).insertOnConflictUpdate(notification);
   }
+
+  // ─── 4. الصلاحيات ───
+  Future<List<PermissionsTableData>> getPermissionsByUser(String userId) =>
+      (select(permissionsTable)..where((t) => t.userId.equals(userId))).get();
+
+  Future<void> upsertPermission(PermissionsTableCompanion permission) async {
+    await into(permissionsTable).insertOnConflictUpdate(permission);
+  }
 }
-
-

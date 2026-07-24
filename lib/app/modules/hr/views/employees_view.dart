@@ -104,7 +104,7 @@ class EmployeesView extends StatelessWidget {
                 },
                 menuItems: [
                   const PopupMenuItem(value: 'edit', child: ReusableText('????? ????????')),
-                  const PopupMenuItem(value: 'delete', child: ReusableText('??? ?????', color: AppColors.error)),
+                  PopupMenuItem(value: 'delete', child: ReusableText('??? ?????', color: AppColors.error)),
                 ],
               ),
             ),

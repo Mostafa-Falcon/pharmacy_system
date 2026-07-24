@@ -134,7 +134,7 @@ List<SidebarGroup> getAdminSidebarGroups() {
   // 4. ─── المبيعات ───
   if (AuthService.hasPermission('sales.view')) {
     groups.add(
-      const SidebarGroup(
+      SidebarGroup(
         id: 'group_sales',
         label: AdminStrings.sidebarGroupSales,
         icon: Icons.shopping_cart_rounded,
@@ -145,27 +145,27 @@ List<SidebarGroup> getAdminSidebarGroups() {
             icon: Icons.shopping_cart_rounded,
             label: HomeStrings.sidebarPos,
           ),
-          SidebarItem(
+          const SidebarItem(
             id: 'cashier_shifts',
             icon: Icons.access_time_rounded,
             label: HomeStrings.sidebarCashierShifts,
           ),
-          SidebarItem(
+          const SidebarItem(
             id: 'sales_invoice',
             icon: Icons.description_rounded,
             label: HomeStrings.sidebarSalesInvoices,
           ),
-          SidebarItem(
+          const SidebarItem(
             id: 'sales_return',
             icon: Icons.currency_exchange_rounded,
             label: HomeStrings.sidebarSalesReturns,
           ),
-          SidebarItem(
+          const SidebarItem(
             id: 'price_quotes',
             icon: Icons.sell_outlined,
             label: HomeStrings.sidebarPriceQuotes,
           ),
-          SidebarItem(
+          const SidebarItem(
             id: 'customers',
             icon: Icons.group_outlined,
             label: HomeStrings.sidebarCustomers,

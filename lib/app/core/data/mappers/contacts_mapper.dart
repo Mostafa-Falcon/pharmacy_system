@@ -2,14 +2,14 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart';
 
-import 'package:pharmacy_system/app/core/data/database/tables/contacts_tables.dart';
 import 'package:pharmacy_system/app/core/models/contacts/customer_group_model.dart';
 import 'package:pharmacy_system/app/core/models/contacts/customer_model.dart';
 import 'package:pharmacy_system/app/core/models/contacts/supplier_model.dart';
 import 'package:pharmacy_system/app/core/models/contacts/supplier_customer_model.dart';
 import 'package:pharmacy_system/app/core/models/contacts/sales_agent_model.dart';
 import 'package:pharmacy_system/app/core/models/contacts/contact_ledger_model.dart';
-import 'package:pharmacy_system/app/core/data/mappers/base_mapper.dart';
+
+import '../database/database.dart';
 
 class ContactsMapper {
   // ── CustomerGroup ──────────────────────────────────────────────────────────

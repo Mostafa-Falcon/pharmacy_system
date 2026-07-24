@@ -7,7 +7,7 @@ import 'package:pharmacy_system/app/core/data/database/daos/stock_transfers_dao.
 import 'package:pharmacy_system/app/core/data/database/daos/branches_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 
-import 'package:pharmacy_system/app/modules/auth/models/branch_model.dart';
+import 'package:pharmacy_system/app/core/models/auth/branch_model.dart';
 import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
@@ -344,6 +344,7 @@ class StockTransferBloc extends Bloc<StockTransferEvent, StockTransferState> {
     }
   }
 }
+
 
 
 

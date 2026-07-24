@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:pharmacy_system/app/modules/auth/models/user_model.dart';
+import 'package:pharmacy_system/app/core/models/auth/user_model.dart';
 
 part 'auth_state.freezed.dart';
 
@@ -20,6 +20,7 @@ abstract class AuthState with _$AuthState {
     String? emailAttempt,
   }) = _AuthState;
 }
+
 
 
 

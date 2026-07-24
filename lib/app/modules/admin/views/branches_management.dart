@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/injection.dart';
 import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/modules/auth/models/branch_model.dart';
+import 'package:pharmacy_system/app/core/models/auth/branch_model.dart';
 import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
 import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
@@ -262,6 +262,7 @@ class _BranchesManagementBody extends StatelessWidget {
     );
   }
 }
+
 
 
 

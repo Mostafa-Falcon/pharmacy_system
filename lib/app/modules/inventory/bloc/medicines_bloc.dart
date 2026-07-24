@@ -1,19 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pharmacy_system/app/core/utils/app_utils.dart';
+import 'package:pharmacy_system/app/core/data/repositories/medicines_repository.dart';
+import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
+import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
+import 'package:pharmacy_system/app/core/data/services/excel_import/excel_import_service.dart';
+import 'package:pharmacy_system/app/core/data/services/inventory/stock_mutation_service.dart';
+import 'package:pharmacy_system/app/core/data/services/sound_service.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/stock_adjustment_model.dart';
+import 'package:pharmacy_system/app/shared/ui_core.dart';
 
 import '../../../core/injection.dart';
-import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
-import 'package:pharmacy_system/app/core/data/repositories/medicines_repository.dart';
-import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
-import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
-import 'package:pharmacy_system/app/core/data/services/excel_import_service.dart';
-import 'package:pharmacy_system/app/core/data/services/sound_service.dart';
-import 'package:pharmacy_system/app/core/data/services/inventory/stock_mutation_service.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
-import 'package:pharmacy_system/app/core/models/inventory/inventory_enums.dart';
-import 'package:pharmacy_system/app/core/models/inventory/stock_adjustment_model.dart';
 import '../services/inventory_transaction_service.dart';
 import 'medicines_event.dart';
 import 'medicines_state.dart';
@@ -21,8 +19,8 @@ import 'medicines_state.dart';
 export 'medicines_event.dart';
 export 'medicines_state.dart';
 
-/// Bloc ????? ?????? ???? ???????: ?????? ???????? ????????
-/// ???????? ??????? ???????? ??? ?????? CRUD ?? ????? ?????.
+/// Bloc إدارة قائمة الأدوية والمخزون: معالجة الاستعلامات والفلترة
+/// والترتيب والمزامنة والعمليات على الأدوية (CRUD وتعديل الرصيد).
 class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
   StreamSubscription? _subscription;
 
@@ -46,9 +44,10 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     on<AdjustMedicineQuantity>(_onAdjustQuantity);
     on<ImportMedicinesFromExcel>(_onImportExcel);
     on<UpdateImportProgress>(_onUpdateImportProgress);
-    
-    // ?????? ?? ????????? ????? ?? ????????
-    _subscription = sl<MedicinesRepository>().watchMedicines(_branchId).listen((data) {
+
+    _subscription = sl<MedicinesRepository>().watchMedicines(_branchId).listen((
+      data,
+    ) {
       if (!isClosed) {
         add(const LoadMedicines());
       }
@@ -65,83 +64,106 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
 
   String get _branchId => AuthService.currentBranchId ?? '';
 
-  // --- ????? ??????? ????????? ---
   static const int _expiringThresholdDays = 90;
+
   // ---------------- Load ----------------
-  Future<void> _onLoad(LoadMedicines event, Emitter<MedicinesState> emit) async {
-    // ???? ???? ??????? ??? ??? ???? ??????? ????? ????? ?????? (Flicker) ??? ??????? ????????
+  Future<void> _onLoad(
+    LoadMedicines event,
+    Emitter<MedicinesState> emit,
+  ) async {
     if (state.allMedicines.isEmpty) {
       emit(state.copyWith(isLoading: true));
     }
-    
+
     try {
-      // ????? ???? ????? ??????? ????? ??????? ???? Hive
       await Future.delayed(Duration.zero);
 
-      final all = (await BranchDataService.getMedicinesAsync(branchId: _branchId))
-          .where((m) => !m.isDeleted)
-          .toList()
-        ..sort((a, b) {
-          if (a.expiryDate == null && b.expiryDate == null) return 0;
-          if (a.expiryDate == null) return 1;
-          if (b.expiryDate == null) return -1;
-          return a.expiryDate!.compareTo(b.expiryDate!);
-        });
+      final all =
+          (await BranchDataService.getMedicinesAsync(
+            branchId: _branchId,
+          )).where((m) => !m.isDeleted).toList()..sort((a, b) {
+            if (a.expiryDate == null && b.expiryDate == null) return 0;
+            if (a.expiryDate == null) return 1;
+            if (b.expiryDate == null) return -1;
+            return a.expiryDate!.compareTo(b.expiryDate!);
+          });
 
       final filtered = _applyFilterAndSort(all);
       final totalPages = _computePages(filtered.length, state.pageSize);
       final safePage = state.currentPage.clamp(0, totalPages - 1);
-      emit(state.copyWith(
-        data: all,
-        filteredMedicines: filtered,
-        currentPage: safePage,
-        totalPages: totalPages,
-        pagedMedicines: _paginate(filtered, safePage, state.pageSize),
-        selectedIds: const {},
-        isLoadingAction: false,
-        isLoading: false,
-      ));
+      emit(
+        state.copyWith(
+          data: all,
+          filteredMedicines: filtered,
+          currentPage: safePage,
+          totalPages: totalPages,
+          pagedMedicines: _paginate(filtered, safePage, state.pageSize),
+          selectedIds: const {},
+          isLoadingAction: false,
+          isLoading: false,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        errorMessage: '??? ?? ????? ???????: $e',
-        isLoadingAction: false,
-        isLoading: false,
-      ));
+      emit(
+        state.copyWith(
+          errorMessage: 'حدث خطأ في تحميل الأدوية: $e',
+          isLoadingAction: false,
+          isLoading: false,
+        ),
+      );
     }
   }
 
   // ---------------- Search / Filter / Sort ----------------
   void _onSearch(SearchMedicines event, Emitter<MedicinesState> emit) {
-    final filtered = _applyFilterAndSort(state.allMedicines, query: event.query);
-    emit(state.copyWith(
-      searchQuery: event.query,
-      filteredMedicines: filtered,
-      currentPage: 0,
-      totalPages: _computePages(filtered.length, state.pageSize),
-      pagedMedicines: _paginate(filtered, 0, state.pageSize),
-    ));
+    final filtered = _applyFilterAndSort(
+      state.allMedicines,
+      query: event.query,
+    );
+    emit(
+      state.copyWith(
+        searchQuery: event.query,
+        filteredMedicines: filtered,
+        currentPage: 0,
+        totalPages: _computePages(filtered.length, state.pageSize),
+        pagedMedicines: _paginate(filtered, 0, state.pageSize),
+      ),
+    );
   }
 
   void _onFilter(FilterMedicines event, Emitter<MedicinesState> emit) {
-    final filtered = _applyFilterAndSort(state.allMedicines, filter: event.filter);
-    emit(state.copyWith(
-      selectedFilter: event.filter,
-      filteredMedicines: filtered,
-      currentPage: 0,
-      totalPages: _computePages(filtered.length, state.pageSize),
-      pagedMedicines: _paginate(filtered, 0, state.pageSize),
-    ));
+    final filtered = _applyFilterAndSort(
+      state.allMedicines,
+      filter: event.filter,
+    );
+    emit(
+      state.copyWith(
+        selectedFilter: event.filter,
+        filteredMedicines: filtered,
+        currentPage: 0,
+        totalPages: _computePages(filtered.length, state.pageSize),
+        pagedMedicines: _paginate(filtered, 0, state.pageSize),
+      ),
+    );
   }
 
-  void _onFilterByCategory(FilterByCategory event, Emitter<MedicinesState> emit) {
-    final filtered = _applyFilterAndSort(state.allMedicines, category: event.category);
-    emit(state.copyWith(
-      selectedCategory: event.category,
-      filteredMedicines: filtered,
-      currentPage: 0,
-      totalPages: _computePages(filtered.length, state.pageSize),
-      pagedMedicines: _paginate(filtered, 0, state.pageSize),
-    ));
+  void _onFilterByCategory(
+    FilterByCategory event,
+    Emitter<MedicinesState> emit,
+  ) {
+    final filtered = _applyFilterAndSort(
+      state.allMedicines,
+      category: event.category,
+    );
+    emit(
+      state.copyWith(
+        selectedCategory: event.category,
+        filteredMedicines: filtered,
+        currentPage: 0,
+        totalPages: _computePages(filtered.length, state.pageSize),
+        pagedMedicines: _paginate(filtered, 0, state.pageSize),
+      ),
+    );
   }
 
   void _onSort(SortMedicines event, Emitter<MedicinesState> emit) {
@@ -156,14 +178,16 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
       sortColumnId: event.columnId,
       ascending: ascending,
     );
-    emit(state.copyWith(
-      sortColumnId: event.columnId,
-      isSortAscending: ascending,
-      filteredMedicines: filtered,
-      currentPage: 0,
-      totalPages: _computePages(filtered.length, state.pageSize),
-      pagedMedicines: _paginate(filtered, 0, state.pageSize),
-    ));
+    emit(
+      state.copyWith(
+        sortColumnId: event.columnId,
+        isSortAscending: ascending,
+        filteredMedicines: filtered,
+        currentPage: 0,
+        totalPages: _computePages(filtered.length, state.pageSize),
+        pagedMedicines: _paginate(filtered, 0, state.pageSize),
+      ),
+    );
   }
 
   // ---------------- Pagination ----------------
@@ -171,40 +195,60 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     final filtered = state.filteredMedicines;
     final totalPages = _computePages(filtered.length, event.pageSize);
     final safePage = state.currentPage.clamp(0, totalPages - 1);
-    
-    emit(state.copyWith(
-      pageSize: event.pageSize,
-      currentPage: safePage,
-      totalPages: totalPages,
-      pagedMedicines: _paginate(filtered, safePage, event.pageSize),
-    ));
+
+    emit(
+      state.copyWith(
+        pageSize: event.pageSize,
+        currentPage: safePage,
+        totalPages: totalPages,
+        pagedMedicines: _paginate(filtered, safePage, event.pageSize),
+      ),
+    );
   }
 
   void _onGoToPage(GoToPage event, Emitter<MedicinesState> emit) {
     final page = event.page.clamp(0, state.totalPages - 1);
-    emit(state.copyWith(
-      currentPage: page,
-      pagedMedicines: _paginate(state.filteredMedicines, page, state.pageSize),
-    ));
+    emit(
+      state.copyWith(
+        currentPage: page,
+        pagedMedicines: _paginate(
+          state.filteredMedicines,
+          page,
+          state.pageSize,
+        ),
+      ),
+    );
   }
 
   void _onNextPage(NextPage event, Emitter<MedicinesState> emit) {
     if (state.currentPage < state.totalPages - 1) {
       final page = state.currentPage + 1;
-      emit(state.copyWith(
-        currentPage: page,
-        pagedMedicines: _paginate(state.filteredMedicines, page, state.pageSize),
-      ));
+      emit(
+        state.copyWith(
+          currentPage: page,
+          pagedMedicines: _paginate(
+            state.filteredMedicines,
+            page,
+            state.pageSize,
+          ),
+        ),
+      );
     }
   }
 
   void _onPreviousPage(PreviousPage event, Emitter<MedicinesState> emit) {
     if (state.currentPage > 0) {
       final page = state.currentPage - 1;
-      emit(state.copyWith(
-        currentPage: page,
-        pagedMedicines: _paginate(state.filteredMedicines, page, state.pageSize),
-      ));
+      emit(
+        state.copyWith(
+          currentPage: page,
+          pagedMedicines: _paginate(
+            state.filteredMedicines,
+            page,
+            state.pageSize,
+          ),
+        ),
+      );
     }
   }
 
@@ -236,27 +280,33 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     await _performAction(
       emit,
       action: () => BranchDataService.addMedicine(event.medicine),
-      successMessage: '?? ????? ?????? "${event.medicine.name}" ?????',
-      errorMessage: '??? ?? ????? ??????',
+      successMessage: 'تم إضافة الصنف "${event.medicine.name}" بنجاح',
+      errorMessage: 'حدث خطأ أثناء الإضافة',
       soundEffect: SoundEffect.itemAdded,
     );
   }
 
-  Future<void> _onUpdate(UpdateMedicine event, Emitter<MedicinesState> emit) async {
+  Future<void> _onUpdate(
+    UpdateMedicine event,
+    Emitter<MedicinesState> emit,
+  ) async {
     await _performAction(
       emit,
       action: () => BranchDataService.updateMedicine(event.medicine),
-      successMessage: '?? ????? ?????? ?????? "${event.medicine.name}"',
-      errorMessage: '??? ?? ????? ??????',
+      successMessage: 'تم تحديث بيانات الصنف "${event.medicine.name}"',
+      errorMessage: 'حدث خطأ أثناء التحديث',
     );
   }
 
-  Future<void> _onDelete(DeleteMedicine event, Emitter<MedicinesState> emit) async {
+  Future<void> _onDelete(
+    DeleteMedicine event,
+    Emitter<MedicinesState> emit,
+  ) async {
     await _performAction(
       emit,
       action: () => BranchDataService.deleteMedicine(event.medicine),
-      successMessage: '?? ??? ?????? "${event.medicine.name}" ?????',
-      errorMessage: '??? ?? ??? ??????',
+      successMessage: 'تم حذف الصنف "${event.medicine.name}" بنجاح',
+      errorMessage: 'حدث خطأ أثناء الحذف',
       soundEffect: SoundEffect.error,
     );
   }
@@ -266,45 +316,46 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     Emitter<MedicinesState> emit,
   ) async {
     if (state.selectedIds.isEmpty) return;
-    
+
     final selectedIdsList = state.selectedIds.toList();
     final total = selectedIdsList.length;
-    
-    emit(state.copyWith(
-      isLoadingAction: true, 
-      bulkActionProgress: 0.0,
-      bulkActionTitle: '???? ??? ??????? ???????...',
-    ));
+
+    emit(
+      state.copyWith(
+        isLoadingAction: true,
+        bulkActionProgress: 0.0,
+        bulkActionTitle: 'جاري حذف الأصناف المحددة...',
+      ),
+    );
 
     try {
-      // ????? ??????: ????? ??????? ???? ????? ?????? O(1) ????? ?? ????? ??????? O(N)
-      final medicineMap = {for (var m in state.allMedicines) m.id.toString(): m};
-      
+      final medicineMap = {
+        for (var m in state.allMedicines) m.id.toString(): m,
+      };
+
       int successCount = 0;
       for (int i = 0; i < total; i++) {
         final idStr = selectedIdsList[i];
         final medicine = medicineMap[idStr];
-        
+
         if (medicine != null) {
           await BranchDataService.deleteMedicine(medicine);
           successCount++;
         }
 
-        // ????? ?????? ????? ??????
         emit(state.copyWith(bulkActionProgress: (i + 1) / total));
-        
-        // ????? ???? ??????? ?????? ??????? ???? ?????? (Microtask yield)
+
         if (i % 5 == 0) await Future.delayed(Duration.zero);
       }
 
       SoundService.instance.play(SoundEffect.error);
-      AppSnackbar.success('?? ??? $successCount ???? ?????', title: '???');
-      
+      AppSnackbar.success('تم حذف $successCount صنف بنجاح', title: 'نجاح');
+
       emit(state.copyWith(isLoadingAction: false, bulkActionProgress: 1.0));
       if (!isClosed) add(const LoadMedicines());
     } catch (e) {
       SoundService.instance.play(SoundEffect.error);
-      AppSnackbar.error('??? ?? ??? ??????? ???????: $e', title: '???');
+      AppSnackbar.error('حدث خطأ أثناء حذف الأصناف: $e', title: 'خطأ');
       emit(state.copyWith(isLoadingAction: false, bulkActionProgress: 0));
     }
   }
@@ -316,19 +367,20 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     final total = state.allMedicines.length;
     if (total == 0) return;
 
-    emit(state.copyWith(
-      isLoadingAction: true, 
-      bulkActionProgress: 0.0,
-      bulkActionTitle: '???? ??? ???? ??????? ???????...',
-    ));
+    emit(
+      state.copyWith(
+        isLoadingAction: true,
+        bulkActionProgress: 0.0,
+        bulkActionTitle: 'جاري حذف جميع الأصناف...',
+      ),
+    );
 
     try {
-      // ??? ??? ??? ??????? ?????? ????? ???? ?????? ??? ????? ?????? ?????? ????? ???????
       if (total > 50) {
         final allList = state.allMedicines.toList();
         for (int i = 0; i < total; i++) {
           await BranchDataService.deleteMedicine(allList[i]);
-          
+
           if (i % 10 == 0 || i == total - 1) {
             emit(state.copyWith(bulkActionProgress: (i + 1) / total));
             await Future.delayed(Duration.zero);
@@ -341,13 +393,19 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
         }
       }
 
-      emit(state.copyWith(isLoadingAction: false, bulkActionProgress: 1.0, selectedIds: const {}));
+      emit(
+        state.copyWith(
+          isLoadingAction: false,
+          bulkActionProgress: 1.0,
+          selectedIds: const {},
+        ),
+      );
       SoundService.instance.play(SoundEffect.error);
-      AppSnackbar.success('?? ??? ?? ??????? ?????', title: '???');
+      AppSnackbar.success('تم حذف جميع الأصناف بنجاح', title: 'نجاح');
       if (!isClosed) add(const LoadMedicines());
     } catch (e) {
       SoundService.instance.play(SoundEffect.error);
-      AppSnackbar.error('??? ?? ??? ?? ???????: $e', title: '???');
+      AppSnackbar.error('حدث خطأ أثناء الحذف الكامل: $e', title: 'خطأ');
       emit(state.copyWith(isLoadingAction: false, bulkActionProgress: 0));
     }
   }
@@ -364,44 +422,43 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     await _performAction(
       emit,
       action: () async {
-        // ????? ?????? ??? StockMutationService (????? + ????? ????????)
         await StockMutationService.adjustStock(
           medicineId: event.medicine.id,
           delta: diff,
-          branchId: event.medicine.branchId,
+          branchId: event.medicine.branchId ?? _branchId,
         );
-        // ????? ???? ??????? ?? ??? ??????? (audit trail)
+
         final now = DateTime.now();
         await InventoryTransactionService.to.adjustStock(
           adjustment: StockAdjustmentModel(
             id: 'adj_${now.millisecondsSinceEpoch}',
-            pharmacyId: event.medicine.branchId,
-            branchId: event.medicine.branchId,
             adjustmentNumber: 'ADJ-${now.millisecondsSinceEpoch}',
-            adjustmentDate: now,
-            createdAt: now,
-            updatedAt: now,
-            createdById: AuthService.currentUser?.id,
-            createdByName: AuthService.currentUser?.name,
+            adjustmentType: diff > 0
+                ? AdjustmentType.surplus
+                : AdjustmentType.shortage,
             items: [
               StockAdjustmentItemModel(
-                id: event.medicine.id,
-                itemId: event.medicine.id,
-                itemName: event.medicine.name,
-                quantity: diff.abs().toDouble(),
-                type: diff > 0
-                    ? AdjustmentType.addition
-                    : AdjustmentType.reduction,
-                reason: AdjustmentReason.other,
-                unitCost: event.medicine.buyPrice,
+                medicineId: event.medicine.id,
+                medicineName: event.medicine.name,
+                unitLevel: 1,
+                unitName: event.medicine.itemLevels.unit1Name,
+                quantity: diff.abs(),
+                buyPrice: event.medicine.buyPrice,
+                totalPrice: diff.abs() * event.medicine.buyPrice,
+                itemReason: 'تسوية رصيد الصنف',
               ),
             ],
+            totalAmount: diff.abs() * event.medicine.buyPrice,
+            adjustedBy: AuthService.currentUser?.name ?? '',
+            branchId: event.medicine.branchId ?? _branchId,
+            accountId: AuthService.currentUser?.accountId ?? '',
+            notes: 'تسوية رصيد صنف',
           ),
           actorId: AuthService.currentUser?.id ?? '',
         );
       },
-      successMessage: '?? ????? ???? "${event.medicine.name}" ?????',
-      errorMessage: '??? ?? ????? ??????',
+      successMessage: 'تم تعديل رصيد "${event.medicine.name}" بنجاح',
+      errorMessage: 'حدث خطأ أثناء تعديل الرصيد',
     );
   }
 
@@ -409,11 +466,13 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     ImportMedicinesFromExcel event,
     Emitter<MedicinesState> emit,
   ) async {
-    emit(state.copyWith(
-      isLoadingAction: true, 
-      bulkActionProgress: 0, 
-      bulkActionTitle: '???? ??????? ???????? ?? Excel...',
-    ));
+    emit(
+      state.copyWith(
+        isLoadingAction: true,
+        bulkActionProgress: 0,
+        bulkActionTitle: 'جاري استيراد الأدوية من Excel...',
+      ),
+    );
     try {
       final count = await ExcelImportService.importFromExcel(
         event.fileBytes != null ? null : event.filePath,
@@ -423,17 +482,20 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
         },
       );
       SoundService.instance.play(SoundEffect.itemAdded);
-      AppSnackbar.success('?? ??????? $count ??? ?????', title: '???');
+      AppSnackbar.success('تم استيراد $count صنف بنجاح', title: 'نجاح');
       emit(state.copyWith(isLoadingAction: false, bulkActionProgress: 1.0));
       if (!isClosed) add(const LoadMedicines());
     } catch (e) {
       SoundService.instance.play(SoundEffect.error);
-      AppSnackbar.error('??? ?????????: $e', title: '???');
+      AppSnackbar.error('فشل الاستيراد: $e', title: 'خطأ');
       emit(state.copyWith(isLoadingAction: false, bulkActionProgress: 0));
     }
   }
 
-  void _onUpdateImportProgress(UpdateImportProgress event, Emitter<MedicinesState> emit) {
+  void _onUpdateImportProgress(
+    UpdateImportProgress event,
+    Emitter<MedicinesState> emit,
+  ) {
     emit(state.copyWith(bulkActionProgress: event.progress));
   }
 
@@ -449,9 +511,8 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     try {
       await action();
       if (soundEffect != null) SoundService.instance.play(soundEffect);
-      AppSnackbar.success(successMessage, title: '???');
-      
-      // ????? ?? ???? ??? Bloc ??? ????? ?????
+      AppSnackbar.success(successMessage, title: 'نجاح');
+
       if (!isClosed) {
         try {
           add(const LoadMedicines());
@@ -462,7 +523,7 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     } catch (e) {
       if (isClosed) return;
       SoundService.instance.play(SoundEffect.error);
-      AppSnackbar.error('$errorMessage: $e', title: '???');
+      AppSnackbar.error('$errorMessage: $e', title: 'خطأ');
       emit(state.copyWith(isLoadingAction: false));
     }
   }
@@ -488,7 +549,7 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
       result = result.where((m) => _isMatch(m, q)).toList();
     }
 
-    if (cat != null && cat != '????') {
+    if (cat != null && cat != 'الكل') {
       result = result.where((m) => m.category == cat).toList();
     }
 
@@ -497,7 +558,10 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     switch (f) {
       case 'low_stock':
         result = result
-            .where((m) => m.alertEnabled && m.quantity <= m.minStock && m.quantity > 0)
+            .where(
+              (m) =>
+                  m.alertEnabled && m.quantity <= m.minStock && m.quantity > 0,
+            )
             .toList();
         break;
       case 'out_of_stock':
@@ -512,7 +576,6 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     }
 
     if (col != null) {
-      // ????? ???? ???????: ???? ???????? ??? ??? ??????
       final sortedList = List<MedicineModel>.from(result);
       sortedList.sort((a, b) => _compareByColumn(col, a, b));
       result = asc ? sortedList : sortedList.reversed.toList();
@@ -522,20 +585,17 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
   }
 
   bool _isMatch(MedicineModel m, String query) {
-    // ??? ??? ????? (?????? ????? ???????? ????????? ?????? ??????? ??????)
     if (m.name.toLowerCase().contains(query)) return true;
     if (m.nameEn?.toLowerCase().contains(query) ?? false) return true;
-    
-    // ????? ?? ????? ?????????? ????????
-    if (m.barcodes.any((b) => b.toLowerCase().contains(query))) return true;
-    
-    // ????? ?? ???????? ??????? (fallback)
-    if (m.units.any((u) => u.barcode?.toLowerCase().contains(query) ?? false)) return true;
+
+    if (m.barcodes.any((b) => b.code.toLowerCase().contains(query))) {
+      return true;
+    }
 
     if (m.category?.toLowerCase().contains(query) ?? false) return true;
     if (m.manufacturer?.toLowerCase().contains(query) ?? false) return true;
     if (m.location?.toLowerCase().contains(query) ?? false) return true;
-    
+
     return false;
   }
 
@@ -557,8 +617,8 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
       case 'name':
         return a.name.toLowerCase().compareTo(b.name.toLowerCase());
       case 'barcode':
-        final ba = a.barcodes.firstOrNull ?? a.units.firstOrNull?.barcode ?? '';
-        final bb = b.barcodes.firstOrNull ?? b.units.firstOrNull?.barcode ?? '';
+        final ba = a.primaryBarcode ?? '';
+        final bb = b.primaryBarcode ?? '';
         return ba.compareTo(bb);
       case 'category':
         return (a.category ?? '').compareTo(b.category ?? '');
@@ -575,15 +635,19 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
         return a.expiryDate!.compareTo(b.expiryDate!);
       case 'createdDate':
       case 'createdTime':
-        final ca = a.createdAt ?? DateTime(0);
-        final cb = b.createdAt ?? DateTime(0);
+        final ca = a.createdAt;
+        final cb = b.createdAt;
         return ca.compareTo(cb);
       default:
         return 0;
     }
   }
 
-  List<MedicineModel> _paginate(List<MedicineModel> list, int page, int pageSize) {
+  List<MedicineModel> _paginate(
+    List<MedicineModel> list,
+    int page,
+    int pageSize,
+  ) {
     if (list.isEmpty) return const [];
     final start = (page * pageSize).clamp(0, list.length);
     final end = (start + pageSize).clamp(0, list.length);
@@ -595,8 +659,3 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     return (total / pageSize).ceil().clamp(1, 1000000);
   }
 }
-
-
-
-
-

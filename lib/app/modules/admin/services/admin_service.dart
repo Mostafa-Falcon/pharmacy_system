@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'package:uuid/uuid.dart';
 import 'package:get_it/get_it.dart';
 import 'package:drift/drift.dart';
@@ -6,7 +6,7 @@ import 'package:pharmacy_system/app/modules/admin/models/permission_catalog.dart
 import 'package:pharmacy_system/app/modules/admin/models/role_definition_model.dart';
 import 'package:pharmacy_system/app/modules/admin/models/pharmacy_member_model.dart';
 import 'package:pharmacy_system/app/modules/admin/models/audit_log_model.dart';
-import 'package:pharmacy_system/app/modules/auth/models/branch_model.dart';
+import 'package:pharmacy_system/app/core/models/auth/branch_model.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/branches_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/admin_roles_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/admin_members_dao.dart';
@@ -25,7 +25,7 @@ class AdminService {
   static AdminService get to => GetIt.instance<AdminService>();
   final _uuid = const Uuid();
 
-  // â”€â”€â”€ Converters â”€â”€â”€
+  // ─── Converters ───
 
   BranchesTableCompanion _branchToCompanion(BranchModel m) {
     return BranchesTableCompanion(
@@ -106,7 +106,7 @@ class AdminService {
     );
   }
 
-  // â”€â”€â”€ Branches â”€â”€â”€
+  // ─── Branches ───
 
   Future<List<BranchModel>> getBranches() async {
     final list = await sl<BranchesDao>().getAll();
@@ -194,7 +194,7 @@ class AdminService {
     );
   }
 
-  // â”€â”€â”€ Members â”€â”€â”€
+  // ─── Members ───
 
   Future<List<PharmacyMemberModel>> getMembers() async {
     final list = await sl<AdminMembersDao>().getAll();
@@ -296,7 +296,7 @@ class AdminService {
     );
   }
 
-  // â”€â”€â”€ Roles â”€â”€â”€
+  // ─── Roles ───
 
   Future<List<RoleDefinitionModel>> getRoles() async {
     final rolesDao = sl<AdminRolesDao>();
@@ -357,7 +357,7 @@ class AdminService {
     await sl<AdminRolesDao>().upsert(_roleToCompanion(updated));
   }
 
-  // â”€â”€â”€ Audit Log â”€â”€â”€
+  // ─── Audit Log ───
 
   Future<List<AuditLogModel>> getAuditLogs() async {
     final list = await sl<AuditLogsDao>().getAll();
@@ -385,14 +385,14 @@ class AdminService {
     );
   }
 
-  // â”€â”€â”€ Private â”€â”€â”€
+  // ─── Private ───
 
   List<RoleDefinitionModel> _systemRoles() {
     final now = DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
     return [
       RoleDefinitionModel(
         id: 'owner',
-        name: 'Ã™â€¦Ã˜Â§Ã™â€žÃ™Æ’ Ã˜Â§Ã™â€žÃ˜ÂµÃ™Å Ã˜Â¯Ã™â€žÃ™Å Ã˜Â©',
+        name: 'Ù…Ø§Ù„Ùƒ Ø§Ù„ØµÙŠØ¯Ù„ÙŠØ©',
         permissions: {PermissionCatalog.wildcard},
         isSystem: true,
         createdAt: now,
@@ -400,7 +400,7 @@ class AdminService {
       ),
       RoleDefinitionModel(
         id: 'manager',
-        name: 'Ã™â€¦Ã˜Â¯Ã™Å Ã˜Â±',
+        name: 'Ù…Ø¯ÙŠØ±',
         permissions: {...PermissionCatalog.all},
         isSystem: true,
         createdAt: now,
@@ -408,7 +408,7 @@ class AdminService {
       ),
       RoleDefinitionModel(
         id: 'pharmacist',
-        name: 'Ã˜ÂµÃ™Å Ã˜Â¯Ã™â€žÃ™Å ',
+        name: 'ØµÙŠØ¯Ù„ÙŠ',
         permissions: PermissionCatalog.defaultsForRole('pharmacist'),
         isSystem: true,
         createdAt: now,
@@ -416,7 +416,7 @@ class AdminService {
       ),
       RoleDefinitionModel(
         id: 'accountant',
-        name: 'Ã™â€¦Ã˜Â­Ã˜Â§Ã˜Â³Ã˜Â¨',
+        name: 'Ù…Ø­Ø§Ø³Ø¨',
         permissions: PermissionCatalog.defaultsForRole('accountant'),
         isSystem: true,
         createdAt: now,
@@ -424,7 +424,7 @@ class AdminService {
       ),
       RoleDefinitionModel(
         id: 'cashier',
-        name: 'Ã™Æ’Ã˜Â§Ã˜Â´Ã™Å Ã˜Â±',
+        name: 'ÙƒØ§Ø´ÙŠØ±',
         permissions: PermissionCatalog.defaultsForRole('cashier'),
         isSystem: true,
         createdAt: now,
@@ -433,6 +433,7 @@ class AdminService {
     ];
   }
 }
+
 
 
 

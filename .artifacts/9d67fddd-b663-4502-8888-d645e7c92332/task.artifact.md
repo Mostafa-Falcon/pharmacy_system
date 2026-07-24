@@ -1,6 +1,13 @@
-- `[ ]` تحديث قائمة الجداول في `SyncEngine`
-- `[ ]` تحديث `SyncPullService` ليعتمد على الموديلات (Model-Driven Mapping)
-- `[ ]` استكمال الماربات (Mappers) لكافة الجداول المتبقية
-- `[ ]` تحديث `SyncPushService` وتفعيل حماية التعارض الشاملة
-- `[ ]` التحقق من أسماء الجداول في Drift ومطابقتها للسيرفر
-- `[ ]` إعادة بناء الكود (build_runner) والتحقق النهائي
+- `[x]` Refactor Auth Module to Seed Architecture
+    - `[x]` Update Core Auth Models
+        - `[x]` `UserModel`
+        - `[x]` `BranchModel`
+        - `[x]` `PermissionModel`
+    - `[x]` Refactor Auth Services & Logic
+        - `[x]` `AuthService` imports & converters
+        - `[x]` `AuthSession` serialization
+    - `[x]` Polish Auth UI
+        - `[x]` `LoginView` validation & feedback
+        - `[x]` `SignupView` flow & loading states
+    - `[x]` Global Cleanup (Auth Related)
+        - `[x]` Fix broken imports project-wide

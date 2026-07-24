@@ -1,5 +1,7 @@
+import 'package:pharmacy_system/app/core/sync/syncable_entity.dart';
+
 /// 🔑 موديل صلاحيات المستخدمين والموظفين (Permissions Model)
-class PermissionModel {
+class PermissionModel implements SyncableEntity {
   // 🆔 المعرف الفريد لسجل الصلاحية (Primary Key)
   final String id;
 
@@ -22,10 +24,15 @@ class PermissionModel {
   final int syncVersion;
 
   // 🕒 تاريخ ووقت آخر تعديل
+  @override
   final DateTime lastModified;
 
   // 🗑️ حالة الحذف المنطقي
+  @override
   final bool isDeleted;
+
+  @override
+  String? get syncBranchId => null; // Permissions are typically global per account
 
   PermissionModel({
     required this.id,
@@ -58,7 +65,7 @@ class PermissionModel {
       accountId: accountId ?? this.accountId,
       createdAt: createdAt ?? this.createdAt,
       syncVersion: syncVersion ?? this.syncVersion,
-      lastModified: lastModified ?? DateTime.now(),
+      lastModified: lastModified ?? this.lastModified,
       isDeleted: isDeleted ?? this.isDeleted,
     );
   }
@@ -89,5 +96,3 @@ class PermissionModel {
     isDeleted: json['is_deleted'] as bool? ?? false,
   );
 }
-
-

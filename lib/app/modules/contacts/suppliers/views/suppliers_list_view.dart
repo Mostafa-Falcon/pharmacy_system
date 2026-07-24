@@ -290,10 +290,10 @@ class _SuppliersBody extends StatelessWidget {
         }
       },
       menuItems: [
-        const PopupMenuItem(value: 'ledger', child: ReusableText(SuppliersStrings.accountStatement)),
-        const PopupMenuItem(value: 'edit', child: ReusableText(GeneralStrings.edit)),
+        PopupMenuItem(value: 'ledger', child: ReusableText(SuppliersStrings.accountStatement)),
+        PopupMenuItem(value: 'edit', child: ReusableText(GeneralStrings.edit)),
         PopupMenuItem(value: 'toggle', child: ReusableText(s.isActive ? GeneralStrings.deactivateLabel : CustomersStrings.activate)),
-        const PopupMenuItem(value: 'delete', child: ReusableText(GeneralStrings.delete, color: AppColors.error)),
+        PopupMenuItem(value: 'delete', child: ReusableText(GeneralStrings.delete, color: AppColors.error)),
       ],
     );
   }

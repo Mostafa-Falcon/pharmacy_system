@@ -1,4 +1,4 @@
-import 'package:pharmacy_system/app/modules/auth/models/branch_model.dart';
+import 'package:pharmacy_system/app/core/models/auth/branch_model.dart';
 import '../../../core/bloc/base_state.dart';
 
 class BranchesState extends BaseState<List<BranchModel>> {
@@ -42,6 +42,7 @@ class BranchesState extends BaseState<List<BranchModel>> {
         toDate,
       ];
 }
+
 
 
 

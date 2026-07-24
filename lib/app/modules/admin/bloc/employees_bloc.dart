@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/users_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import '../../../core/injection.dart';
-import 'package:pharmacy_system/app/modules/auth/models/user_model.dart';
+import 'package:pharmacy_system/app/core/models/auth/user_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/permission_service.dart';
@@ -182,6 +182,7 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
     activeDeviceId: d.activeDeviceId,
   );
 }
+
 
 
 

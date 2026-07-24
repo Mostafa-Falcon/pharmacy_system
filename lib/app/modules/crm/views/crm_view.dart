@@ -170,7 +170,7 @@ class _CrmBody extends StatelessWidget {
           for (final s in CrmLeadStatus.values.where((s) => s != l.status))
             PopupMenuItem<String>(value: 'status:${s.name}', child: ReusableText('نقل إلى: ${_statusLabel(s)}')),
           const PopupMenuItem(value: 'edit', child: ReusableText(AdminStrings.editData)),
-          const PopupMenuItem(value: 'followup', child: ReusableText(CrmStrings.crmAddFollowUp)),
+          PopupMenuItem(value: 'followup', child: ReusableText(CrmStrings.crmAddFollowUp)),
         ],
       ),
     );

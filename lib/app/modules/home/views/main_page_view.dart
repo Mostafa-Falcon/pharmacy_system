@@ -551,7 +551,7 @@ class _RowItem {
        leftItem = null,
        rightItem = null;
 
-  const _RowItem.split({required _RowItem left, required _RowItem right})
+   _RowItem.split({required _RowItem left, required _RowItem right})
     : type = HomeQuickActionType.cashier,
       label = '',
       subtitle = null,

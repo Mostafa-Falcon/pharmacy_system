@@ -1,20 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:drift/drift.dart';
+import 'package:pharmacy_system/app/shared/ui_core.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
-import 'package:pharmacy_system/app/modules/auth/models/user_model.dart';
-import 'package:pharmacy_system/app/modules/auth/models/branch_model.dart';
-import 'package:pharmacy_system/app/core/data/database/daos/users_dao.dart';
-import 'package:pharmacy_system/app/core/data/database/daos/branches_dao.dart';
-import 'package:pharmacy_system/app/core/data/database/daos/permissions_dao.dart';
-import 'package:pharmacy_system/app/core/data/database/daos/app_settings_dao.dart';
+import 'package:pharmacy_system/app/core/models/auth/user_model.dart';
+import 'package:pharmacy_system/app/core/models/auth/branch_model.dart';
+import 'package:pharmacy_system/app/core/data/database/daos/system_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'password_hasher.dart';
 import 'secure_storage_helper.dart';
-import 'package:pharmacy_system/app/core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/utils/app_utils.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
 
 part 'auth_session.dart';
@@ -41,14 +37,7 @@ class AuthService {
   static bool get isInitialized => _initialized;
 
   static Future<String?> _getDeviceId() async {
-    final dao = sl<AppSettingsDao>();
-    final result = await dao.get('device_id');
-    var deviceId = result?.value;
-    if (deviceId == null || deviceId.isEmpty) {
-      deviceId = const Uuid().v4();
-      await dao.set('device_id', deviceId);
-    }
-    return deviceId;
+    return const Uuid().v4();
   }
 
   static bool _isLoginThrottled() {
@@ -89,9 +78,17 @@ class AuthService {
     });
   }
 
-  static Future<bool> _isOnline() async {
-    return SyncService.isOnline;
-  }
+  static Future<bool> _isOnline() async => SyncService.isOnline;
+
+  // --- Password Hashing Utility ---
+
+  static Future<String> hashPassword(String password) =>
+      PasswordHasher.hash(password);
+
+  static Future<bool> verifyPassword(String password, String storedHash) =>
+      PasswordHasher.verify(password, storedHash);
+
+  // --- Session Delegation ---
 
   static Future<void> init() => AuthSession.init();
 
@@ -100,31 +97,23 @@ class AuthService {
     required String password,
   }) async {
     if (_isLoginThrottled()) {
-      return {
-        'success': false,
-        'message': AuthStrings.tooManyAttempts,
-      };
+      return {'success': false, 'message': AuthStrings.tooManyAttempts};
     }
 
     if (!await AuthService._isOnline()) {
       _startLoginThrottle();
-      return {
-        'success': false,
-        'message': AuthStrings.loginRequiresInternet,
-      };
+      return {'success': false, 'message': AuthStrings.loginRequiresInternet};
     }
 
     try {
-      final result = await AuthSession.login(email: email, password: password);
-      if (result['success'] == true) {
-        _startLoginThrottle();
-      } else {
+      final res = await AuthSession.login(email: email, password: password);
+      if (!(res['success'] as bool? ?? false)) {
         _startLoginThrottle();
       }
-      return result;
+      return res;
     } catch (e) {
       _startLoginThrottle();
-      rethrow;
+      return {'success': false, 'message': e.toString()};
     }
   }
 
@@ -132,41 +121,33 @@ class AuthService {
     required String name,
     required String email,
     required String password,
-    required UserRole role,
+    UserRole role = UserRole.employee,
     String? assignedBranchId,
   }) async {
     if (_isRegisterThrottled()) {
-      return {
-        'success': false,
-        'message': AuthStrings.tooManyAttempts,
-      };
+      return {'success': false, 'message': AuthStrings.tooManyAttempts};
     }
 
     if (!await AuthService._isOnline()) {
       _startRegisterThrottle();
-      return {
-        'success': false,
-        'message': AuthStrings.registerRequiresInternet,
-      };
+      return {'success': false, 'message': AuthStrings.loginRequiresInternet};
     }
 
     try {
-      final result = await AuthSession.register(
+      final res = await AuthSession.register(
         name: name,
         email: email,
         password: password,
         role: role,
         assignedBranchId: assignedBranchId,
       );
-      if (result['success'] == true) {
-        _startRegisterThrottle();
-      } else {
+      if (!(res['success'] as bool? ?? false)) {
         _startRegisterThrottle();
       }
-      return result;
+      return res;
     } catch (e) {
       _startRegisterThrottle();
-      rethrow;
+      return {'success': false, 'message': e.toString()};
     }
   }
 
@@ -175,47 +156,32 @@ class AuthService {
   static Future<Map<String, dynamic>> changePassword({
     required String currentPassword,
     required String newPassword,
-  }) =>
-      AuthSession.changePassword(
-        currentPassword: currentPassword,
-        newPassword: newPassword,
-      );
+  }) => AuthSession.changePassword(
+    currentPassword: currentPassword,
+    newPassword: newPassword,
+  );
 
   static Future<void> selectBranch(String branchId) =>
       AuthSession.selectBranch(branchId);
 
-  static void refreshCurrentBranch() {
-    if (currentBranchId == null || currentBranchId!.isEmpty) return;
-    try {
-      final branch = _branchFromCache[currentBranchId];
-      if (branch != null) {
-        _currentBranch = branch;
-      }
-    } catch (_) {}
-  }
-
-  // --- Converters --------------------------------------------------
-
-  static final Map<String, BranchModel> _branchFromCache = {};
+  // --- Converters ---
 
   static UserModel _userFromTable(UsersTableData d) {
     return UserModel(
       id: d.id,
       name: d.name,
       email: d.email,
-      passwordHash: d.passwordHash,
+      passwordHash: '',
       role: UserRole.values.firstWhere(
         (r) => r.name == d.role,
         orElse: () => UserRole.employee,
       ),
       assignedBranchId: d.assignedBranchId,
-      isActive: d.isActive,
+      activeDeviceId: d.activeDeviceId,
       createdAt: d.createdAt,
-      lastLogin: d.lastLogin,
-      syncVersion: d.syncVersion,
       lastModified: d.lastModified,
       isDeleted: d.isDeleted,
-      activeDeviceId: d.activeDeviceId,
+      syncVersion: d.syncVersion,
     );
   }
 
@@ -224,16 +190,13 @@ class AuthService {
       id: Value(m.id),
       name: Value(m.name),
       email: Value(m.email),
-      passwordHash: Value(m.passwordHash),
       role: Value(m.role.name),
       assignedBranchId: Value(m.assignedBranchId),
-      isActive: Value(m.isActive),
+      activeDeviceId: Value(m.activeDeviceId),
       createdAt: Value(m.createdAt),
-      lastLogin: Value(m.lastLogin),
-      syncVersion: Value(m.syncVersion),
       lastModified: Value(m.lastModified),
       isDeleted: Value(m.isDeleted),
-      activeDeviceId: Value(m.activeDeviceId),
+      syncVersion: Value(m.syncVersion),
     );
   }
 
@@ -244,8 +207,8 @@ class AuthService {
       address: d.address,
       phone: d.phone,
       isActive: d.isActive,
-      createdAt: d.createdAt,
-      syncVersion: d.syncVersion,
+      accountId: d.accountId,
+      createdAt: d.lastModified,
       lastModified: d.lastModified,
       isDeleted: d.isDeleted,
     );
@@ -258,31 +221,36 @@ class AuthService {
       address: Value(m.address),
       phone: Value(m.phone),
       isActive: Value(m.isActive),
-      createdAt: Value(m.createdAt),
-      syncVersion: Value(m.syncVersion),
+      accountId: Value(m.accountId),
       lastModified: Value(m.lastModified),
       isDeleted: Value(m.isDeleted),
     );
   }
 
-  static Future<List<BranchModel>> getAllBranches() =>
-      AuthSession.getAllBranches();
+  // --- Permissions ---
 
-  static Future<Map<String, dynamic>> getDashboardStats() =>
-      AuthSession.getDashboardStats();
-
-  static Future<Map<String, dynamic>> resendConfirmation(String email) =>
-      AuthSession.resendConfirmation(email);
-
-  static bool hasPermission(String permissionKey) =>
+  static Future<bool> hasPermission(String permissionKey) =>
       AuthSession.hasPermission(permissionKey);
 
   static Future<void> refreshPermissionCache() =>
-      AuthSession._refreshPermissionCache(
-        _currentUser?.id ?? '',
-      );
+      AuthSession._refreshPermissionCache(_currentUser?.id ?? '');
 
-  // --- Device Lock (??????? ??????) ---
+  // --- Device Lock ---
+
+  static Future<bool> acquireServerSessionLock(
+    String userId,
+    String deviceId,
+  ) => AuthDeviceLock.acquireServerSessionLock(userId, deviceId);
+
+  static Future<void> ensureServerSessionLock(
+    String userId,
+    String deviceId,
+  ) => AuthDeviceLock.ensureServerSessionLock(userId, deviceId);
+
+  static Future<void> releaseServerSessionLock(
+    String userId,
+    String deviceId,
+  ) => AuthDeviceLock.releaseServerSessionLock(userId, deviceId);
 
   static Future<Map<String, dynamic>> forceReleaseLock() =>
       AuthDeviceLock.forceReleaseLock();
@@ -290,9 +258,3 @@ class AuthService {
   static Future<String?> fetchLockedDevice(String userId) =>
       AuthDeviceLock.fetchLockedDevice(userId);
 }
-
-
-
-
-
-

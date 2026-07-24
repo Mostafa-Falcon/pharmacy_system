@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -225,7 +225,7 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
     return BlocBuilder<BarcodeLabelBloc, BarcodeLabelState>(
       builder: (context, state) {
         if (state.selectedMedicines.isEmpty) {
-          return const EmptyState(
+          return EmptyState(
             icon: Icons.local_print_shop_outlined,
             title: InventoryStrings.emptyPrintListTitle,
             subtitle: InventoryStrings.emptyPrintListSubtitle,

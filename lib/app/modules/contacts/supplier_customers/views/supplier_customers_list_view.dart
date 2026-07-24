@@ -287,7 +287,7 @@ class _LedgerDialogContent extends StatelessWidget {
   Widget _buildLedgerTable(ColorScheme scheme, SupplierCustomersState state) {
     if (state.isLoadingLedger) return const LoadingIndicator();
     final entries = state.combinedLedger;
-    if (entries.isEmpty) return const EmptyState(icon: Icons.account_balance_wallet_outlined, title: CustomersStrings.noFinancialMovements);
+    if (entries.isEmpty) return EmptyState(icon: Icons.account_balance_wallet_outlined, title: CustomersStrings.noFinancialMovements);
 
     return ListView.separated(
       itemCount: entries.length,

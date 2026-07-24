@@ -1,6 +1,6 @@
 ﻿import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:pharmacy_system/app/core/utils/app_utils.dart';
+import 'package:pharmacy_system/app/shared/ui_core.dart';
 
 class SecureStorageHelper {
   SecureStorageHelper._();
@@ -119,7 +119,10 @@ class SecureStorageHelper {
 
   static Future<void> saveActiveSession(String userId, String deviceId) async {
     try {
-      await _storage.write(key: '$_activeSessionPrefix$userId', value: deviceId);
+      await _storage.write(
+        key: '$_activeSessionPrefix$userId',
+        value: deviceId,
+      );
     } catch (e) {
       safeDebugPrint('SecureStorage: saveActiveSession failed — $e');
     }
@@ -199,5 +202,3 @@ class SecureStorageHelper {
     }
   }
 }
-
-
