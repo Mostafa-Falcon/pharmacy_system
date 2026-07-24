@@ -1,0 +1,5 @@
+- [ ] تحديث `InventoryMapper` ليشمل الجداول المفقودة (Barcodes, Units, Settings)
+- [ ] تحديث `SalesMapper` ليشمل جداول المرتجعات العامة
+- [ ] تحديث `SystemMapper` ليشمل جداول النظام (Audit, Lookups, Errors, Notifications, Corrections)
+- [ ] مراجعة وتحديث `AccountingMapper` لضمان التوافق الكامل
+- [ ] التحقق من عدم وجود أخطاء في الـ Compile
