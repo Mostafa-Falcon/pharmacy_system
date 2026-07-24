@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 
-import '../display/app_text.dart';
 
 /// صف (Label ↔ Value) الموحّد المستخدم في ملخصات الفواتير وكشوف الحساب والورديات.
 /// بيلغي تكرار `_totalRow` / `_financeRow` / `_summaryRow` / `_Row` في كل الشاشات.

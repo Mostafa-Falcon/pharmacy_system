@@ -106,7 +106,7 @@ class SaleDetailsDialog extends StatelessWidget {
                   _totalRow(
                     context,
                     WidgetStrings.salePayments,
-                    formatMoney(sale.paidAmount ?? sale.finalAmount),
+                    formatMoney(sale.paidAmount),
                   ),
                   _totalRow(
                     context,

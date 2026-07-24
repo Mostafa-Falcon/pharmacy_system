@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 
-import '../display/app_text.dart';
 
 /// عنصر قائمة (PopupMenuItem) موحّد لكل أكشنات الـ Overflow/Context menus
 /// في المنظومة (تعديل / حذف / تفعيل / تعطيل / تعيين افتراضي ... إلخ).

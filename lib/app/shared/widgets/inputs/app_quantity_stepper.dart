@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 
-import '../display/app_text.dart';
 
 /// عدّاد كمية موحّد (- [قيمة] +).
 /// بيلغي تكرار أزرار الزيادة/النقصان في السلة وطباعة الباركود.

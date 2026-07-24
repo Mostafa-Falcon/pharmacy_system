@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 
-import '../display/app_text.dart';
 
 /// شِـِّـل (Bottom Sheet) موحّد لكل المنظومة.
 /// بيلفّ المحتوى بكارت مظبوط (حواف ناعمة + ظل + بوردر ديناميكي حسب الثيم)

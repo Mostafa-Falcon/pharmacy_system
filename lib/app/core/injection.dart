@@ -9,6 +9,7 @@ import 'di/bloc_di.dart';
 
 // ── Module Dependencies ──
 import '../modules/auth/injection.dart';
+import '../modules/layout/injection.dart';
 
 
 final sl = GetIt.instance;
@@ -23,6 +24,7 @@ Future<void> initInjection() async {
   registerCoreBlocDependencies();
 
   registerAuthDependencies();
+  registerLayoutDependencies();
 
 }
 

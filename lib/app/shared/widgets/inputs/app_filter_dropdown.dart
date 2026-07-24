@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:pharmacy_system/app/shared/ui_core.dart';
-import 'package:pharmacy_system/app/shared/widgets/display/app_text.dart';
-import 'package:pharmacy_system/app/shared/widgets/inputs/app_dropdown.dart';
 
 class FilterDropdown<T> extends StatelessWidget {
   final String label;

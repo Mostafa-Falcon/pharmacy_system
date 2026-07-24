@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:pharmacy_system/app/shared/ui_core.dart';
-import 'package:pharmacy_system/app/shared/widgets/index.dart';
 
 class AppTableFooter extends StatelessWidget {
   final int totalItems;

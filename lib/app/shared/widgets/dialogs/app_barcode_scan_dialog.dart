@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 
-import '../display/app_text.dart';
 
 class BarcodeScanDialog extends StatefulWidget {
   const BarcodeScanDialog({super.key});

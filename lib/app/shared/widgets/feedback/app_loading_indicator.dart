@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 
-import '../display/app_text.dart';
 
 /// مؤشر تحميل موحّد بديل التكرار اليدوي لـ `Center(child: CircularProgressIndicator())`.
 /// بيلغي تكرار الـ loading spinner في الـ 51 شاشة ويوفّر شكل ثابت في كل الثيمز.

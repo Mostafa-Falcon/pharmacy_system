@@ -18,29 +18,6 @@ part 'system_dao.g.dart';
 class SystemDao extends DatabaseAccessor<AppDatabase> with _$SystemDaoMixin {
   SystemDao(super.db);
 
-  // ... (previous methods)
-
-  // ─── 5. سجل التصحيحات (Corrections) ───
-  Future<void> insertCorrection(CorrectionsTableCompanion correction) async {
-    await into(correctionsTable).insert(correction);
-  }
-
-  Future<List<CorrectionsTableData>> getCorrectionsByReference(
-    String type,
-    String id,
-  ) =>
-      (select(correctionsTable)
-            ..where((t) => t.referenceType.equals(type) & t.referenceId.equals(id))
-            ..orderBy([(t) => OrderingTerm.desc(t.timestamp)]))
-          .get();
-
-  Future<List<CorrectionsTableData>> getAllCorrections({int limit = 100}) =>
-      (select(correctionsTable)
-            ..orderBy([(t) => OrderingTerm.desc(t.timestamp)])
-            ..limit(limit))
-          .get();
-}
-
   // ─── 1. المستخدمين والفروع الصريحة ───
   Future<List<UsersTableData>> getAllUsers() =>
       (select(usersTable)..where((t) => t.isDeleted.not())).get();
@@ -102,4 +79,24 @@ class SystemDao extends DatabaseAccessor<AppDatabase> with _$SystemDaoMixin {
   Future<void> upsertPermission(PermissionsTableCompanion permission) async {
     await into(permissionsTable).insertOnConflictUpdate(permission);
   }
+
+  // ─── 5. سجل التصحيحات (Corrections) ───
+  Future<void> insertCorrection(CorrectionsTableCompanion correction) async {
+    await into(correctionsTable).insert(correction);
+  }
+
+  Future<List<CorrectionsTableData>> getCorrectionsByReference(
+    String type,
+    String id,
+  ) =>
+      (select(correctionsTable)
+            ..where((t) => t.referenceType.equals(type) & t.referenceId.equals(id))
+            ..orderBy([(t) => OrderingTerm.desc(t.timestamp)]))
+          .get();
+
+  Future<List<CorrectionsTableData>> getAllCorrections({int limit = 100}) =>
+      (select(correctionsTable)
+            ..orderBy([(t) => OrderingTerm.desc(t.timestamp)])
+            ..limit(limit))
+          .get();
 }

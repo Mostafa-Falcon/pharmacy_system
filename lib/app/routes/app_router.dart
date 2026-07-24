@@ -12,6 +12,10 @@ import 'app_routes.dart';
 import 'route_access_policy.dart';
 import 'sub_routes/auth_routes.dart';
 
+final List<RouteBase> _routes = [
+  ...authRoutes,
+];
+
 class AppRouter {
   AppRouter._();
 

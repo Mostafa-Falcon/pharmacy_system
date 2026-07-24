@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:pharmacy_system/app/core/theme/design_system.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
-import 'package:pharmacy_system/app/shared/widgets/index.dart';
 
 class ReusablePagination extends StatelessWidget {
   final int currentPage;

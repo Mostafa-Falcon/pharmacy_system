@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pharmacy_system/app/shared/widgets/display/app_text.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 
 import 'package:pharmacy_system/app/core/data/services/ui/sound_service.dart';
 import 'package:pharmacy_system/app/core/theme/sidebar_theme.dart';
-import 'package:pharmacy_system/app/shared/widgets/index.dart';
 
 class SidebarItem {
   final String id;

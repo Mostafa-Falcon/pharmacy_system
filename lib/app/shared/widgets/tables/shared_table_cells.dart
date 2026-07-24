@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
-import 'package:pharmacy_system/app/shared/widgets/index.dart';
 
 /// صندوق أيقونة مميز للاستخدام داخل خلايا الجدول [TableIconBox].
 class TableIconBox extends StatelessWidget {

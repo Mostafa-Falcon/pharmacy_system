@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
-import 'package:pharmacy_system/app/shared/widgets/index.dart';
 
 /// تخطيط معياري موحد لصفحات المنظومة.
 /// يضمن ثبات المسافات، توزيع العناصر، وتطبيق الثيم اللوني للقطاع.

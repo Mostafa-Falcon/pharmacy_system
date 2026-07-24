@@ -3,7 +3,6 @@ import 'package:toastification/toastification.dart';
 
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 
-import '../display/app_text.dart';
 
 /// المكون الموحد لإظهار الـ Snackbar ضمن مكتبة المكونات المشتركة (Reusables).
 class AppSnackbar {

@@ -5,7 +5,6 @@ import '../data/services/system/lookup_service.dart';
 import '../data/services/system/system_health_service.dart';
 import '../data/services/ui/theme_service.dart';
 import '../data/services/ui/sound_service.dart';
-import '../data/services/system/config_service.dart';
 
 final sl = GetIt.instance;
 
@@ -15,7 +14,7 @@ void registerCoreServiceDependencies() {
   // ─── System Services ───
   _reg<LookupService>(() => LookupService.instance);
   _reg<SystemHealthService>(() => SystemHealthService.instance);
-  _reg<ConfigService>(() => ConfigService.instance);
+  // ConfigService is static-only; no DI registration needed.
   
   // ─── UI Services ───
   _reg<ThemeService>(() => ThemeService.instance);
