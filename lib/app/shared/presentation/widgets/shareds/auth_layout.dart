@@ -18,8 +18,8 @@ class AuthLayout extends StatelessWidget {
     required this.title,
     required this.subtitle,
     this.promoIcon = Icons.local_pharmacy_rounded,
-    this.promoTitle = 'نظام Logixa الصيدلي المتكامل',
-    this.promoSubtitle = 'إدارة المبيعات والمخزون والمزامنة السحابية والحسابات بأعلى درجات السرعة والأمان.',
+    this.promoTitle = AuthStrings.promoTitleDefault,
+    this.promoSubtitle = AuthStrings.promoSubtitleDefault,
     this.promoGradient,
     this.showBackButton = false,
   });

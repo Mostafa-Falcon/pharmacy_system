@@ -23,6 +23,7 @@ export 'package:pharmacy_system/app/shared/helpers/app_utils.dart';
 export 'package:pharmacy_system/app/shared/helpers/format_utils.dart';
 export 'package:pharmacy_system/app/shared/helpers/money_helper.dart';
 export 'package:pharmacy_system/app/shared/helpers/search_normalizer.dart';
+export 'package:pharmacy_system/app/shared/helpers/validators.dart';
 
 // 5. Themes & Design System
 export 'package:pharmacy_system/app/shared/presentation/theme/app_theme.dart';

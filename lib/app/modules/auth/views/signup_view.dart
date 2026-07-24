@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 import '../bloc/auth_bloc.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../../../routes/app_routes.dart';
 
 class SignupView extends StatefulWidget {
@@ -20,7 +19,6 @@ class _SignupViewState extends State<SignupView> {
   final _passwordCtrl = TextEditingController();
   final _confirmPasswordCtrl = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -46,8 +44,6 @@ class _SignupViewState extends State<SignupView> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final isWeb = size.width >= 900;
     final scheme = Theme.of(context).colorScheme;
 
     return BlocListener<AuthBloc, AuthState>(
@@ -71,169 +67,78 @@ class _SignupViewState extends State<SignupView> {
             break;
         }
       },
-      child: AppScaffold(
-        showBackButton: false,
-        body: Row(
-          children: [
-            if (isWeb)
-              Expanded(
-                flex: 10,
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [scheme.primary, scheme.secondary],
-                      begin: Alignment.topRight,
-                      end: Alignment.bottomLeft,
-                    ),
-                  ),
-                  child: Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(40.w),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.person_add_rounded,
-                            size: 80.sp,
-                            color: Colors.white,
-                          ),
-                          SizedBox(height: 24.h),
-                          ReusableText(
-                            'إنشاء حساب جديد في المنظومة',
-                            style: TextStyle(
-                              fontSize: 24.sp,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          SizedBox(height: 12.h),
-                          ReusableText(
-                            'ادخل بيانات المستخدم والتخصص للبدء في استخدام الصيدلية وإدارة الصلاحيات.',
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              color: Colors.white.withValues(alpha: 0.8),
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+      child: AuthLayout(
+        title: AuthStrings.signupTitle,
+        subtitle: AuthStrings.signupSubtitle,
+        promoIcon: Icons.person_add_rounded,
+        promoTitle: AuthStrings.signupPromoTitle,
+        promoSubtitle: AuthStrings.signupPromoSubtitle,
+        promoGradient: [scheme.primary, scheme.secondary],
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ReusableInput.text(
+                controller: _nameCtrl,
+                label: AuthStrings.fullNameLabel,
+                hint: AuthStrings.nameHint,
+                prefixIcon: const Icon(Icons.badge_outlined),
+                validator: AppValidators.validateFullName,
               ),
-            Expanded(
-              flex: 8,
-              child: Center(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.all(32.w),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: 420.w),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ReusableText.h2(
-                            'إنشاء حساب جديد',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: AppSpacing.xs.h),
-                          ReusableText.caption(
-                            'قم بتعبئة البيانات التالية لإنشاء الحساب',
-                          ),
-                          SizedBox(height: AppSpacing.xl.h),
-                          ReusableInput.text(
-                            controller: _nameCtrl,
-                            label: 'الاسم الكامل',
-                            prefixIcon: const Icon(Icons.badge_outlined),
-                            validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
-                                return 'يرجى إدخال الاسم بالكامل';
-                              }
-                              return null;
-                            },
-                          ),
-                          SizedBox(height: AppSpacing.md.h),
-                          ReusableInput.email(
-                            controller: _emailCtrl,
-                            label: 'البريد الإلكتروني',
-                            prefixIcon: const Icon(Icons.email_outlined),
-                            validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
-                                return 'يرجى إدخال البريد الإلكتروني';
-                              }
-                              if (!RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$')
-                                  .hasMatch(value)) {
-                                return 'بريد إلكتروني غير صالح';
-                              }
-                              return null;
-                            },
-                          ),
-                          SizedBox(height: AppSpacing.md.h),
-                          ReusableInput.password(
-                            controller: _passwordCtrl,
-                            label: 'كلمة المرور',
-                            prefixIcon: const Icon(Icons.lock_outline_rounded),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'يرجى إدخال كلمة المرور';
-                              }
-                              if (value.length < 6) {
-                                return 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
-                              }
-                              return null;
-                            },
-                          ),
-                          SizedBox(height: AppSpacing.md.h),
-                          ReusableInput.password(
-                            controller: _confirmPasswordCtrl,
-                            label: 'تأكيد كلمة المرور',
-                            prefixIcon: const Icon(Icons.lock_clock_outlined),
-                            textInputAction: TextInputAction.done,
-                            onFieldSubmitted: (_) => _onSignup(),
-                            validator: (value) {
-                              if (value != _passwordCtrl.text) {
-                                return 'كلمات المرور غير متطابقة';
-                              }
-                              return null;
-                            },
-                          ),
-                          SizedBox(height: AppSpacing.xl.h),
-                          BlocBuilder<AuthBloc, AuthState>(
-                            builder: (context, state) {
-                              return ReusableButton(
-                                text: 'إنشاء الحساب',
-                                isLoading: state.status == AuthStatus.loading,
-                                onPressed: _onSignup,
-                              );
-                            },
-                          ),
-                          SizedBox(height: AppSpacing.lg.h),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ReusableText.caption(
-                                AuthStrings.alreadyHaveAccount,
-                              ),
-                              TextButton(
-                                onPressed: () => context.go(Routes.LOGIN),
-                                child: ReusableText.caption(
-                                  AuthStrings.loginNow,
-                                  fontWeight: FontWeight.bold,
-                                  color: scheme.primary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+              SizedBox(height: AppSpacing.md.h),
+              ReusableInput.email(
+                controller: _emailCtrl,
+                label: AuthStrings.emailLabel,
+                hint: AuthStrings.emailHint,
+                prefixIcon: const Icon(Icons.email_outlined),
+                validator: AppValidators.validateEmail,
+              ),
+              SizedBox(height: AppSpacing.md.h),
+              ReusableInput.password(
+                controller: _passwordCtrl,
+                label: AuthStrings.passwordLabel,
+                prefixIcon: const Icon(Icons.lock_outline_rounded),
+                validator: AppValidators.validatePassword,
+              ),
+              SizedBox(height: AppSpacing.md.h),
+              ReusableInput.password(
+                controller: _confirmPasswordCtrl,
+                label: AuthStrings.confirmPasswordLabel,
+                prefixIcon: const Icon(Icons.lock_clock_outlined),
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (_) => _onSignup(),
+                validator: (value) => AppValidators.validateConfirmPassword(value, _passwordCtrl.text),
+              ),
+              SizedBox(height: AppSpacing.xl.h),
+              BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, state) {
+                  return ReusableButton(
+                    text: AuthStrings.signupButton,
+                    isLoading: state.status == AuthStatus.loading,
+                    onPressed: _onSignup,
+                  );
+                },
+              ),
+              SizedBox(height: AppSpacing.lg.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ReusableText.caption(
+                    AuthStrings.alreadyHaveAccount,
+                  ),
+                  TextButton(
+                    onPressed: () => context.go(Routes.LOGIN),
+                    child: ReusableText.caption(
+                      AuthStrings.loginNow,
+                      fontWeight: FontWeight.bold,
+                      color: scheme.primary,
                     ),
                   ),
-                ),
+                ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

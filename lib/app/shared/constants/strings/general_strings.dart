@@ -93,6 +93,10 @@ class GeneralStrings {
   static const String searchNoResults = 'لا توجد نتائج مطابقة';
   static const String noRecords = 'لا يوجد سجل';
   static const String noDataAvailableShort = 'لا تتوفر بيانات';
+  static const String personalAndBasicInfo = 'البيانات الشخصية والأساسية';
+  static const String financialDataAndPositions = 'البيانات والمراكز المالية';
+  static const String additionalNotesSection = 'ملاحظات إضافية';
+  static const String atLeastTwoNames = 'يرجى إدخال الاسم ثنائياً على الأقل';
 
   // ─── Dialogs & Confirmation ───
   static const String confirmExitTitle = 'تأكيد الخروج';

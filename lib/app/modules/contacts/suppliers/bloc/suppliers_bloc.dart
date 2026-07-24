@@ -85,8 +85,8 @@ class SuppliersBloc extends Bloc<SuppliersEvent, SuppliersState> {
       }
       emit(state.copyWith(selectedIds: {}));
       add(const LoadSuppliers());
-      AppSnackbar.success('?? ??? ??????? ???????');
-    } catch (e) { AppSnackbar.error('??? ?? ????? ???????: $e'); }
+      AppSnackbar.success(CrmStrings.msgDeletedSuccess);
+    } catch (e) { AppSnackbar.error('${CrmStrings.msgDeleteFailed}$e'); }
   }
 
   Future<void> _onBulkToggleActive(BulkToggleSuppliersActive event, Emitter<SuppliersState> emit) async {
@@ -103,8 +103,8 @@ class SuppliersBloc extends Bloc<SuppliersEvent, SuppliersState> {
       }
       emit(state.copyWith(selectedIds: {}));
       add(const LoadSuppliers());
-      AppSnackbar.success('?? ????? ???? ??????? ???????');
-    } catch (e) { AppSnackbar.error('??? ?? ??????? ???????: $e'); }
+      AppSnackbar.success(CrmStrings.msgUpdatedSuccess);
+    } catch (e) { AppSnackbar.error('${CrmStrings.msgUpdateFailed}$e'); }
   }
 
   String get _branchId => AuthService.currentBranchId ?? '';
@@ -167,10 +167,10 @@ class SuppliersBloc extends Bloc<SuppliersEvent, SuppliersState> {
       }
       add(const LoadSuppliers());
       emit(state.copyWith(status: SuppliersStatus.success));
-      AppSnackbar.success('?? ????? ?????? ?????');
+      AppSnackbar.success(CrmStrings.msgPartyAdded);
     } catch (e) {
       emit(state.copyWith(status: SuppliersStatus.error, error: e.toString()));
-      AppSnackbar.error('??? ?? ????? ??????: $e');
+      AppSnackbar.error('${CrmStrings.msgAddFailed}$e');
     }
   }
 
@@ -179,10 +179,10 @@ class SuppliersBloc extends Bloc<SuppliersEvent, SuppliersState> {
       await SupplierService.update(event.supplier);
       add(const LoadSuppliers());
       emit(state.copyWith(status: SuppliersStatus.success));
-      AppSnackbar.success('?? ????? ?????? ??????');
+      AppSnackbar.success(CrmStrings.msgUpdatedSuccess);
     } catch (e) {
       emit(state.copyWith(status: SuppliersStatus.error, error: e.toString()));
-      AppSnackbar.error('??? ?? ???????: $e');
+      AppSnackbar.error('${CrmStrings.msgUpdateFailed}$e');
     }
   }
 
@@ -217,9 +217,9 @@ class SuppliersBloc extends Bloc<SuppliersEvent, SuppliersState> {
       if (s != null) {
         await SupplierService.update(s.copyWith(isDeleted: true));
         add(const LoadSuppliers());
-        AppSnackbar.success('?? ??? ??????');
+        AppSnackbar.success(CrmStrings.msgDeletedSuccess);
       }
-    } catch (e) { AppSnackbar.error('??? ?? ?????: $e'); }
+    } catch (e) { AppSnackbar.error('${CrmStrings.msgDeleteFailed}$e'); }
   }
 
   void _onSelect(SelectSupplier event, Emitter<SuppliersState> emit) {
@@ -238,40 +238,40 @@ class SuppliersBloc extends Bloc<SuppliersEvent, SuppliersState> {
     try {
       await SupplierLedgerService.recordSupplierPayment(supplierId: event.supplierId, branchId: _branchId, amount: event.amount, createdBy: AuthService.currentUser?.id ?? '', notes: event.notes);
       add(LoadSupplierLedger(event.supplierId));
-      AppSnackbar.success('?? ????? ??? ?????');
-    } catch (e) { AppSnackbar.error('??? ?? ???????: $e'); }
+      AppSnackbar.success(CrmStrings.msgPaymentRecorded);
+    } catch (e) { AppSnackbar.error('${CrmStrings.msgPaymentFailed}$e'); }
   }
 
   Future<void> _onAddition(RecordSupplierAdditionNotice event, Emitter<SuppliersState> emit) async {
     try {
       await SupplierLedgerService.recordAdditionNotice(supplierId: event.supplierId, branchId: _branchId, amount: event.amount, createdBy: AuthService.currentUser?.id ?? '', notes: event.notes);
       add(LoadSupplierLedger(event.supplierId));
-      AppSnackbar.success('?? ????? ????? ???????');
-    } catch (e) { AppSnackbar.error('??? ?? ???????: $e'); }
+      AppSnackbar.success(CrmStrings.msgAdditionRecorded);
+    } catch (e) { AppSnackbar.error('${CrmStrings.msgAdditionFailed}$e'); }
   }
 
   Future<void> _onDiscount(RecordSupplierDiscountNotice event, Emitter<SuppliersState> emit) async {
     try {
       await SupplierLedgerService.recordDiscountNotice(supplierId: event.supplierId, branchId: _branchId, amount: event.amount, createdBy: AuthService.currentUser?.id ?? '', notes: event.notes);
       add(LoadSupplierLedger(event.supplierId));
-      AppSnackbar.success('?? ????? ????? ?????');
-    } catch (e) { AppSnackbar.error('??? ?? ???????: $e'); }
+      AppSnackbar.success(CrmStrings.msgDiscountRecorded);
+    } catch (e) { AppSnackbar.error('${CrmStrings.msgDiscountFailed}$e'); }
   }
 
   Future<void> _onCheckPayment(RecordSupplierCheckPayment event, Emitter<SuppliersState> emit) async {
     try {
       await SupplierLedgerService.recordCheckPayment(supplierId: event.supplierId, branchId: _branchId, amount: event.amount, createdBy: AuthService.currentUser?.id ?? '', checkNumber: event.checkNumber, bankName: event.bankName, dueDate: event.dueDate, notes: event.notes);
       add(LoadSupplierLedger(event.supplierId));
-      AppSnackbar.success('?? ????? ??? ?????');
-    } catch (e) { AppSnackbar.error('??? ?? ???????: $e'); }
+      AppSnackbar.success(CrmStrings.msgCheckPaymentRecorded);
+    } catch (e) { AppSnackbar.error('${CrmStrings.msgCheckPaymentFailed}$e'); }
   }
 
   Future<void> _onCheckReceipt(RecordSupplierCheckReceipt event, Emitter<SuppliersState> emit) async {
     try {
       await SupplierLedgerService.recordCheckReceipt(supplierId: event.supplierId, branchId: _branchId, amount: event.amount, createdBy: AuthService.currentUser?.id ?? '', checkNumber: event.checkNumber, bankName: event.bankName, dueDate: event.dueDate, notes: event.notes);
       add(LoadSupplierLedger(event.supplierId));
-      AppSnackbar.success('?? ????? ?????? ?????');
-    } catch (e) { AppSnackbar.error('??? ?? ???????: $e'); }
+      AppSnackbar.success(CrmStrings.msgCheckReceiptRecorded);
+    } catch (e) { AppSnackbar.error('${CrmStrings.msgCheckReceiptFailed}$e'); }
   }
 
   void _onNextPage(NextSupplierPage event, Emitter<SuppliersState> emit) {
@@ -296,8 +296,8 @@ class SuppliersBloc extends Bloc<SuppliersEvent, SuppliersState> {
   Future<void> _onExport(ExportSuppliers event, Emitter<SuppliersState> emit) async {
     try {
       await ExportService.exportSuppliersToXlsx(suppliers: state.allSuppliers);
-      AppSnackbar.success('?? ????? ???????? ?????');
-    } catch (e) { AppSnackbar.error('??? ?? ???????: $e'); }
+      AppSnackbar.success(CrmStrings.msgExportSuccess);
+    } catch (e) { AppSnackbar.error('${CrmStrings.msgExportFailed}$e'); }
   }
 
   void _onClearLedger(ClearSupplierLedger event, Emitter<SuppliersState> emit) {

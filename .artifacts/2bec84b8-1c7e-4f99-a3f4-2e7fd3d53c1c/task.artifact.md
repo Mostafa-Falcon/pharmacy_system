@@ -7,4 +7,11 @@
 - [x] Update `AuthBloc` (added `AuthService.init()` to `AppStarted`)
 - [x] Fix `AuthDeviceLock` and `AuthService` device ID persistence
 - [x] Fix `SecureStorageHelper` missing `clearBranchId` method
+- [x] Unify Auth Views & Shared Components
+- [x] Unify Contacts Module
+- [x] Clean up hardcoded Arabic strings using `@constants`
+    - [x] Added missing promo and section strings to `AuthStrings` and `GeneralStrings`
+    - [x] Refactored `AuthLayout` and `AppValidators` to use constants
+    - [x] Refactored `AddCustomerView` and `AddSupplierView` to use constants
+    - [x] Fixed encoding issues and used constants in `CustomersBloc` and `SuppliersBloc`
 - [x] Verify changes with a manual flow test

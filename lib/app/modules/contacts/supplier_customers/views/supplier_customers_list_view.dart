@@ -192,7 +192,7 @@ class SupplierCustomersListView extends StatelessWidget {
         },
         menuItems: [
           const PopupMenuItem(value: 'ledger', child: ReusableText(CustomersStrings.ledgerTitle)),
-          const PopupMenuItem(value: 'edit', child: ReusableText(GeneralStrings.edit)),
+          PopupMenuItem(value: 'edit', child: ReusableText(GeneralStrings.edit)),
           PopupMenuItem(value: 'delete', child: ReusableText(GeneralStrings.delete, color: AppColors.error)),
         ],
       ),

@@ -48,6 +48,7 @@ class AuthStrings {
   static const String resendLink = 'إرسال الرابط مرة أخرى';
   static const String resetSentTitle = 'تم إرسال رابط إعادة التعيين';
   static const String resetSentSubtitle = 'يرجى فحص بريدك الإلكتروني واتباع الرابط لإعادة تعيين كلمة المرور.';
+  static const String resetInstructionsSent = 'تم إرسال تعليمات إعادة التعيين بريدياً';
   static const String resetPasswordTitle = 'استعادة كلمة المرور';
   static const String resetPasswordSubtitle = 'أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة تعيين كلمة المرور.';
   static const String resetPasswordButton = 'إرسال رابط إعادة التعيين';
@@ -57,6 +58,10 @@ class AuthStrings {
   // ─── Auth: Promo ───
   static const String pharmacySystem = 'نظام إدارة الصيدليات الذكي';
   static const String pharmacySystemDesc = 'المنصة الشاملة لإدارة المبيعات والمخازن والتقارير الطبية.';
+  static const String promoTitleDefault = 'نظام Logixa الصيدلي المتكامل';
+  static const String promoSubtitleDefault = 'إدارة المبيعات والمخزون والمزامنة السحابية والحسابات بأعلى درجات السرعة والأمان.';
+  static const String signupPromoTitle = 'إنشاء حساب جديد في المنظومة';
+  static const String signupPromoSubtitle = 'ادخل بيانات المستخدم والتخصص للبدء في استخدام الصيدلية وإدارة الصلاحيات.';
   static const String appNameSplash = 'نظام الصيدليات';
   static const String appDescSplash = 'المنصة الذكية المتكاملة لإدارة الصيدلية';
 

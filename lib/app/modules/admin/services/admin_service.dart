@@ -14,8 +14,7 @@ import 'package:pharmacy_system/app/core/data/database/daos/audit_logs_dao.dart'
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
-import '../../../core/injection.dart'
-import '../../../core/models/auth/branch_model.dart';;
+import '../../../core/injection.dart';
 
 class AdminService {
   static final AdminService _instance = AdminService._internal();

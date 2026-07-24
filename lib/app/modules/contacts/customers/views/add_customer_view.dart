@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pharmacy_system/app/shared/ui_core.dart';
 import 'package:pharmacy_system/app/modules/contacts/customers/bloc/customers_state.dart';
-
-import 'package:pharmacy_system/app/core/models/contacts/customer_model.dart';
-import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
-import '../../../../core/constants/app_strings.dart';
-import '../../../../core/extensions/string_ext.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../bloc/customers_bloc.dart';
 import '../bloc/customers_event.dart';
 
@@ -53,21 +48,10 @@ class _AddCustomerViewState extends State<AddCustomerView> {
 
   Future<bool> _confirmExit() async {
     if (nameCtrl.text.isEmpty && phoneCtrl.text.isEmpty) return true;
-    final res = await showDialog<bool>(
-      context: context,
-      builder: (context) => ReusableDialog(
-        title: GeneralStrings.confirmExitTitle,
-        children: [
-          const ReusableText(GeneralStrings.unsavedChangesConfirm),
-          SizedBox(height: 16.h),
-          DialogActions(
-            cancelText: GeneralStrings.stayButton,
-            confirmText: GeneralStrings.exitAndIgnoreButton,
-            onCancel: () => Navigator.pop(context, false),
-            onConfirm: () => Navigator.pop(context, true),
-          ),
-        ],
-      ),
+    final res = await ConfirmDeleteDialog.show(
+      context,
+      title: GeneralStrings.confirmExitTitle,
+      message: GeneralStrings.unsavedChangesConfirm,
     );
     return res ?? false;
   }
@@ -75,7 +59,9 @@ class _AddCustomerViewState extends State<AddCustomerView> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<CustomersBloc, CustomersState>(
-      listenWhen: (prev, current) => prev.isSuccess != current.isSuccess || prev.errorMessage != current.errorMessage,
+      listenWhen: (prev, current) =>
+          prev.isSuccess != current.isSuccess ||
+          prev.errorMessage != current.errorMessage,
       listener: (context, state) {
         if (state.isSuccess) {
           Navigator.pop(context);
@@ -101,11 +87,15 @@ class _AddCustomerViewState extends State<AddCustomerView> {
           isSaving: isSaving,
           confirmText: CustomersStrings.saveCustomerData,
           onConfirm: _submit,
-          onCancel: () => Navigator.pop(context),
+          onCancel: () async {
+            if (await _confirmExit()) {
+              if (mounted) Navigator.pop(context);
+            }
+          },
           children: [
             const SectionHeader(
               icon: Icons.person_outline_rounded,
-              title: '???????? ??????? ?????????',
+              title: GeneralStrings.personalAndBasicInfo,
             ),
             Row(
               children: [
@@ -115,13 +105,10 @@ class _AddCustomerViewState extends State<AddCustomerView> {
                     label: CustomersStrings.fullNameRequired,
                     hint: CustomersStrings.customerNameExampleHint,
                     controller: nameCtrl,
-                    textDirection: TextDirection.rtl,
-                    validator: (v) => v?.trim().isEmpty == true
-                        ? CustomersStrings.nameIsRequired
-                        : null,
+                    validator: AppValidators.validateFullName,
                   ),
                 ),
-                SizedBox(width: AppSpacing.md),
+                SizedBox(width: AppSpacing.md.w),
                 Expanded(
                   child: ReusableDropdown<CustomerKind>(
                     labelText: CustomersStrings.interactionType,
@@ -140,7 +127,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
                 ),
               ],
             ),
-            SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md.h),
             Row(
               children: [
                 Expanded(
@@ -151,7 +138,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
                     prefixIcon: const Icon(Icons.phone_android_rounded),
                   ),
                 ),
-                SizedBox(width: AppSpacing.md),
+                SizedBox(width: AppSpacing.md.w),
                 Expanded(
                   child: ReusableInput(
                     label: CustomersStrings.companyOrInstitution,
@@ -161,18 +148,17 @@ class _AddCustomerViewState extends State<AddCustomerView> {
                 ),
               ],
             ),
-            SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md.h),
             Row(
               children: [
                 Expanded(
-                  child: ReusableInput(
+                  child: ReusableInput.email(
                     label: AuthStrings.emailLabel,
                     controller: emailCtrl,
-                    keyboardType: TextInputType.emailAddress,
-                    prefixIcon: const Icon(Icons.email_outlined),
+                    validator: (v) => v != null && v.isNotEmpty ? AppValidators.validateEmail(v) : null,
                   ),
                 ),
-                SizedBox(width: AppSpacing.md),
+                SizedBox(width: AppSpacing.md.w),
                 Expanded(
                   child: ReusableInput(
                     label: CustomersStrings.taxIdLabel,
@@ -182,16 +168,16 @@ class _AddCustomerViewState extends State<AddCustomerView> {
                 ),
               ],
             ),
-            SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md.h),
             ReusableInput(
               label: CustomersStrings.detailedAddress,
               controller: addressCtrl,
               prefixIcon: const Icon(Icons.location_on_outlined),
             ),
-            SizedBox(height: AppSpacing.lg),
+            SizedBox(height: AppSpacing.lg.h),
             const SectionHeader(
               icon: Icons.account_balance_wallet_rounded,
-              title: CustomersStrings.financialSettings,
+              title: GeneralStrings.financialDataAndPositions,
             ),
             Row(
               children: [
@@ -204,7 +190,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
                     hint: '0.00',
                   ),
                 ),
-                SizedBox(width: AppSpacing.md),
+                SizedBox(width: AppSpacing.md.w),
                 Expanded(
                   child: ReusableInput(
                     label: CustomersStrings.discountPercentLabel,
@@ -214,7 +200,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
                     hint: '0',
                   ),
                 ),
-                SizedBox(width: AppSpacing.md),
+                SizedBox(width: AppSpacing.md.w),
                 Expanded(
                   child: ReusableInput(
                     label: CustomersStrings.paymentTermDaysLabel,
@@ -226,7 +212,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
                 ),
               ],
             ),
-            SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md.h),
             Row(
               children: [
                 Expanded(
@@ -237,7 +223,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
                     hint: '0.00',
                   ),
                 ),
-                SizedBox(width: AppSpacing.md),
+                SizedBox(width: AppSpacing.md.w),
                 Expanded(
                   child: ReusableDropdown<bool>(
                     labelText: CustomersStrings.balanceStatusLabel,
@@ -255,13 +241,13 @@ class _AddCustomerViewState extends State<AddCustomerView> {
                 ),
               ],
             ),
-            SizedBox(height: AppSpacing.lg),
+            SizedBox(height: AppSpacing.lg.h),
             const SectionHeader(
               icon: Icons.notes_rounded,
-              title: CustomersStrings.additionalNotes,
+              title: GeneralStrings.additionalNotesSection,
             ),
             ReusableInput(
-              label: CustomersStrings.additionalNotes,
+              label: GeneralStrings.additionalNotesSection,
               controller: notesCtrl,
               maxLines: 3,
             ),
@@ -291,9 +277,3 @@ class _AddCustomerViewState extends State<AddCustomerView> {
         ));
   }
 }
-
-
-
-
-
-

@@ -212,7 +212,7 @@ List<SidebarGroup> getAdminSidebarGroups() {
   // 6. ─── المستخدمين ───
   if (AuthService.hasPermission('admin_panel')) {
     groups.add(
-      const SidebarGroup(
+      SidebarGroup(
         id: 'group_users',
         label: 'المستخدمين',
         icon: Icons.people_outline_rounded,
@@ -222,7 +222,7 @@ List<SidebarGroup> getAdminSidebarGroups() {
             icon: Icons.people_rounded,
             label: HomeStrings.sidebarEmployees,
           ),
-          SidebarItem(
+          const SidebarItem(
             id: 'permissions',
             icon: Icons.security_rounded,
             label: HomeStrings.sidebarPermissions,

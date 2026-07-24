@@ -41,67 +41,39 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
           context.read<AuthBloc>().add(const AuthErrorDisplayed());
         }
         if (state.isResetSent) {
-          AppSnackbar.success('تم إرسال تعليمات إعادة التعيين بريدياً');
+          AppSnackbar.success(AuthStrings.resetInstructionsSent);
           context.pop();
         }
       },
-      child: AppScaffold(
+      child: AuthLayout(
+        title: AuthStrings.resetPasswordTitle,
+        subtitle: AuthStrings.resetPasswordSubtitle,
         showBackButton: true,
-        body: Center(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(24.w),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 420.w),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.lock_reset_rounded,
-                        size: 64.sp, color: scheme.primary),
-                    SizedBox(height: 16.h),
-                    ReusableText.h3(
-                      'إعادة تعيين كلمة المرور',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: AppSpacing.xs.h),
-                    ReusableText.caption(
-                      'أدخل البريد الإلكتروني المسجل لارسال رابط إعادة التعيين.',
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: AppSpacing.xl.h),
-                    ReusableInput.email(
-                      controller: _emailCtrl,
-                      label: 'البريد الإلكتروني',
-                      prefixIcon: const Icon(Icons.email_outlined),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'يرجى إدخال البريد الإلكتروني';
-                        }
-                        if (!RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$')
-                            .hasMatch(value)) {
-                          return 'بريد إلكتروني غير صالح';
-                        }
-                        return null;
-                      },
-                      onFieldSubmitted: (_) => _onSubmit(),
-                    ),
-                    SizedBox(height: AppSpacing.xl.h),
-                    BlocBuilder<AuthBloc, AuthState>(
-                      builder: (context, state) {
-                        return ReusableButton(
-                          text: 'إرسال رابط التعيين',
-                          isLoading: state.status == AuthStatus.loading,
-                          onPressed: _onSubmit,
-                        );
-                      },
-                    ),
-                  ],
-                ),
+        promoIcon: Icons.lock_reset_rounded,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ReusableInput.email(
+                controller: _emailCtrl,
+                label: AuthStrings.emailLabel,
+                hint: AuthStrings.emailHint,
+                prefixIcon: const Icon(Icons.email_outlined),
+                validator: AppValidators.validateEmail,
+                onFieldSubmitted: (_) => _onSubmit(),
               ),
-            ),
+              SizedBox(height: AppSpacing.xl.h),
+              BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, state) {
+                  return ReusableButton(
+                    text: AuthStrings.resetPasswordButton,
+                    isLoading: state.status == AuthStatus.loading,
+                    onPressed: _onSubmit,
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ),

@@ -1,18 +1,11 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:go_router/go_router.dart';
+import 'package:pharmacy_system/app/shared/ui_core.dart';
 import 'package:pharmacy_system/app/core/models/contacts/customer_model.dart';
-import 'package:pharmacy_system/app/core/models/contacts/customer_ledger_model.dart';
 import 'package:pharmacy_system/app/core/data/services/operations/export_service.dart';
-import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
-import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
-import '../../../../../app/core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
-import '../../../../core/extensions/string_ext.dart';
-import '../../../../shared/presentation/widgets/reusables/tables/shared_table_cells.dart';
-import '../../../../routes/app_routes.dart';
+import '../../../../../routes/app_routes.dart';
 import '../bloc/customers_bloc.dart';
 import '../bloc/customers_state.dart';
 import '../bloc/customers_event.dart';
@@ -78,7 +71,7 @@ class _CustomersBody extends StatelessWidget {
         onPressed: () => bloc.add(const ExportCustomers()),
       ),
       ReusableButton(
-        text: '??????? ?? Excel',
+        text: 'استيراد من Excel',
         prefixIcon: Icons.file_upload_rounded,
         type: ButtonType.outlined,
         onPressed: () => context.push(Routes.CUSTOMERS_IMPORT),
@@ -102,7 +95,7 @@ class _CustomersBody extends StatelessWidget {
       SummaryCard(
         icon: Icons.monetization_on_outlined,
         label: CustomersStrings.totalDebt,
-        value: '${state.totalBalance.toStringAsFixed(0)} ?.?',
+        value: '${state.totalBalance.toStringAsFixed(0)} ${GeneralStrings.currency}',
         color: AppColors.warning,
       ),
     ];
@@ -110,12 +103,11 @@ class _CustomersBody extends StatelessWidget {
 
   Widget _buildFilters(BuildContext context) {
     return AppCard(
-      padding: EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md.w),
       child: ReusableInput(
         hint: CustomersStrings.searchCustomerHintInput,
         prefixIcon: const Icon(Icons.search_rounded, size: 20),
         showClearButton: true,
-        textDirection: TextDirection.rtl,
         onChanged: (q) => context.read<CustomersBloc>().add(SearchCustomers(q)),
         onClear: () => context.read<CustomersBloc>().add(const SearchCustomers('')),
       ),
@@ -171,7 +163,7 @@ class _CustomersBody extends StatelessWidget {
         width: 120.w,
         isSortable: true,
         isNumeric: true,
-        textBuilder: (c) => c.creditLimit > 0 ? '${c.creditLimit.toStringAsFixed(0)} ?.?' : '-',
+        textBuilder: (c) => c.creditLimit > 0 ? '${c.creditLimit.toStringAsFixed(0)} ${GeneralStrings.currency}' : '-',
       ),
       ReusableTableColumn<CustomerModel>(
         id: 'discount',
@@ -234,8 +226,8 @@ class _CustomersBody extends StatelessWidget {
         prefixIcon: Icons.delete_outline_rounded,
         onPressed: () => ConfirmDeleteDialog.show(
           context,
-          title: '??? ??????',
-          message: '?? ??? ????? ?? ??? ${state.selectedIds.length} ?? ????????',
+          title: 'حذف العملاء',
+          message: 'هل أنت متأكد من حذف ${state.selectedIds.length} من العملاء؟',
           onConfirm: () => bloc.add(const BulkDeleteCustomers()),
         ),
       ),
@@ -363,7 +355,6 @@ class _CustomersBody extends StatelessWidget {
                     label: '${GeneralStrings.name} *',
                     hint: CustomersStrings.customerNameHint,
                     controller: nameCtrl,
-                    textDirection: TextDirection.rtl,
                   ),
                   SizedBox(height: AppSpacing.sm.h),
                   ReusableDropdown<CustomerKind>(
@@ -381,13 +372,11 @@ class _CustomersBody extends StatelessWidget {
                     label: GeneralStrings.phone,
                     controller: phoneCtrl,
                     keyboardType: TextInputType.phone,
-                    textDirection: TextDirection.rtl,
                   ),
                   SizedBox(height: AppSpacing.sm.h),
                   ReusableInput(
                     label: GeneralStrings.company,
                     controller: companyCtrl,
-                    textDirection: TextDirection.rtl,
                   ),
                   SizedBox(height: AppSpacing.sm.h),
                   ReusableInput.email(
@@ -398,13 +387,11 @@ class _CustomersBody extends StatelessWidget {
                   ReusableInput(
                     label: CustomersStrings.taxIdLabel,
                     controller: taxCtrl,
-                    textDirection: TextDirection.rtl,
                   ),
                   SizedBox(height: AppSpacing.sm.h),
                   ReusableInput(
                     label: CustomersStrings.address,
                     controller: addressCtrl,
-                    textDirection: TextDirection.rtl,
                   ),
                   SizedBox(height: AppSpacing.sm.h),
                   ReusableInput(
@@ -437,7 +424,6 @@ class _CustomersBody extends StatelessWidget {
                     label: SuppliersStrings.notesLabel,
                     controller: notesCtrl,
                     maxLines: 2,
-                    textDirection: TextDirection.rtl,
                   ),
                 ],
               ),
@@ -521,7 +507,7 @@ class _LedgerDialogContent extends StatelessWidget {
                       if (customer.creditLimit > 0)
                         InfoChip(
                           icon: Icons.credit_card_rounded,
-                          label: '${CustomersStrings.creditLimit}: ${customer.creditLimit.toStringAsFixed(0)} ?.?',
+                          label: '${CustomersStrings.creditLimit}: ${customer.creditLimit.toStringAsFixed(0)} ${GeneralStrings.currency}',
                           color: AppColors.info,
                         ),
                     ],
@@ -749,7 +735,6 @@ void _showAdjustmentDialog(
           label: SuppliersStrings.notesLabel,
           controller: notesCtrl,
           maxLines: 2,
-          textDirection: TextDirection.rtl,
         ),
       ],
     ),
@@ -830,13 +815,11 @@ void _showCheckDialog(
         ReusableInput(
           label: CustomersStrings.checkNumber,
           controller: checkNumberCtrl,
-          textDirection: TextDirection.rtl,
         ),
         SizedBox(height: AppSpacing.sm.h),
         ReusableInput(
           label: CustomersStrings.bankName,
           controller: bankNameCtrl,
-          textDirection: TextDirection.rtl,
         ),
         SizedBox(height: AppSpacing.sm.h),
         ReusableInput(
@@ -849,7 +832,6 @@ void _showCheckDialog(
           label: SuppliersStrings.notesLabel,
           controller: notesCtrl,
           maxLines: 2,
-          textDirection: TextDirection.rtl,
         ),
       ],
     ),
@@ -862,12 +844,3 @@ void _showCheckDialog(
     notesCtrl.dispose();
   });
 }
-
-
-
-
-
-
-
-
-

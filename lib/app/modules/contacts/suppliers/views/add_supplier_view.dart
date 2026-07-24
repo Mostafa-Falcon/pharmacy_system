@@ -1,12 +1,8 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pharmacy_system/app/shared/ui_core.dart';
 import 'package:pharmacy_system/app/modules/contacts/suppliers/bloc/suppliers_state.dart';
-import '../../../../shared/navigation/app_navigator.dart';
-
-import 'package:pharmacy_system/app/core/models/contacts/supplier_model.dart';
-import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
-import '../../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../bloc/suppliers_bloc.dart';
 import '../bloc/suppliers_event.dart';
 
@@ -64,123 +60,135 @@ class _AddSupplierViewState extends State<AddSupplierView> {
       child: StandardFormLayout(
         title: SuppliersStrings.addNewSupplierTitle,
         formKey: _formKey,
-        maxWidth: 550,
+        maxWidth: 650,
         isSaving: isSaving,
         onConfirm: _submit,
-        onCancel: () => AppNavigator.back(),
+        onCancel: () => Navigator.pop(context),
         confirmText: GeneralStrings.save,
-        cancelText: GeneralStrings.cancel,
         children: [
           const SectionHeader(
             icon: Icons.info_outline_rounded,
-            title: '???????? ????????',
+            title: CrmStrings.personalAndBasicInfo,
           ),
-          ReusableInput(
-            label: SuppliersStrings.nameLabelRequired,
-            hint: SuppliersStrings.supplierNameHint,
-            controller: nameCtrl,
-            textDirection: TextDirection.rtl,
-            validator: (v) => v?.trim().isEmpty == true
-                ? SuppliersStrings.nameRequired
-                : null,
-          ),
-          SizedBox(height: AppSpacing.md),
-          StatefulBuilder(
-          builder: (context, setLocalState) => ReusableDropdown<SupplierPartyType>(
-            labelText: SuppliersStrings.partyTypeLabel,
-            hintText: SuppliersStrings.selectPartyTypeHint,
-            items: const [
-              SupplierPartyType.company,
-              SupplierPartyType.individual,
+          Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: ReusableInput(
+                  label: SuppliersStrings.nameLabelRequired,
+                  hint: SuppliersStrings.supplierNameHint,
+                  controller: nameCtrl,
+                  validator: (v) => v?.trim().isEmpty == true
+                      ? SuppliersStrings.nameRequired
+                      : null,
+                ),
+              ),
+              SizedBox(width: AppSpacing.md.w),
+              Expanded(
+                child: ReusableDropdown<SupplierPartyType>(
+                  labelText: SuppliersStrings.partyTypeLabel,
+                  hintText: SuppliersStrings.selectPartyTypeHint,
+                  items: const [
+                    SupplierPartyType.company,
+                    SupplierPartyType.individual,
+                  ],
+                  value: partyType,
+                  itemAsString: (t) => t == SupplierPartyType.company
+                      ? GeneralStrings.enumPartyTypeCompany
+                      : GeneralStrings.enumPartyTypeIndividual,
+                  onChanged: (v) {
+                    if (v != null) setState(() => partyType = v);
+                  },
+                ),
+              ),
             ],
-            value: partyType,
-            itemAsString: (t) => t == SupplierPartyType.company
-                ? GeneralStrings.enumPartyTypeCompany
-                : GeneralStrings.enumPartyTypeIndividual,
-            onChanged: (v) {
-              if (v != null) setLocalState(() => partyType = v);
-            },
           ),
+          SizedBox(height: AppSpacing.md.h),
+          Row(
+            children: [
+              Expanded(
+                child: ReusableInput(
+                  label: SuppliersStrings.phoneLabelInput,
+                  controller: phoneCtrl,
+                  keyboardType: TextInputType.phone,
+                  prefixIcon: const Icon(Icons.phone_android_rounded),
+                ),
+              ),
+              SizedBox(width: AppSpacing.md.w),
+              Expanded(
+                child: ReusableInput(
+                  label: SuppliersStrings.companyLabelInput,
+                  controller: companyCtrl,
+                  prefixIcon: const Icon(Icons.business_rounded),
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: AppSpacing.md),
-          ReusableInput(
-            label: SuppliersStrings.phoneLabelInput,
-            controller: phoneCtrl,
-            keyboardType: TextInputType.phone,
-            textDirection: TextDirection.rtl,
+          SizedBox(height: AppSpacing.md.h),
+          Row(
+            children: [
+              Expanded(
+                child: ReusableInput.email(
+                  label: SuppliersStrings.emailLabelInput,
+                  controller: emailCtrl,
+                  validator: (v) => v != null && v.isNotEmpty ? AppValidators.validateEmail(v) : null,
+                ),
+              ),
+              SizedBox(width: AppSpacing.md.w),
+              Expanded(
+                child: ReusableInput(
+                  label: SuppliersStrings.taxIdLabelInput,
+                  controller: taxCtrl,
+                  prefixIcon: const Icon(Icons.assignment_ind_outlined),
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: AppSpacing.lg),
-          const SectionHeader(
-            icon: Icons.business_rounded,
-            title: '?????? ????? ???????',
-          ),
-          ReusableInput(
-            label: SuppliersStrings.companyLabelInput,
-            controller: companyCtrl,
-            textDirection: TextDirection.rtl,
-          ),
-          SizedBox(height: AppSpacing.md),
-          ReusableInput(
-            label: SuppliersStrings.emailLabelInput,
-            controller: emailCtrl,
-            keyboardType: TextInputType.emailAddress,
-            textDirection: TextDirection.ltr,
-          ),
-          SizedBox(height: AppSpacing.md),
-          ReusableInput(
-            label: SuppliersStrings.taxIdLabelInput,
-            controller: taxCtrl,
-            textDirection: TextDirection.ltr,
-          ),
-          SizedBox(height: AppSpacing.md),
+          SizedBox(height: AppSpacing.md.h),
           ReusableInput(
             label: SuppliersStrings.addressLabelInput,
             controller: addressCtrl,
-            maxLines: 2,
-            textDirection: TextDirection.rtl,
+            prefixIcon: const Icon(Icons.location_on_outlined),
           ),
-          SizedBox(height: AppSpacing.md),
-          StatefulBuilder(
-            builder: (context, setLocalState) =>
-                ReusableDropdown<SupplierPartyType>(
-              labelText: SuppliersStrings.partyTypeLabel,
-              hintText: SuppliersStrings.selectPartyTypeHint,
-              items: const [
-                SupplierPartyType.company,
-                SupplierPartyType.individual
-              ],
-              value: partyType,
-              itemAsString: (p) => p == SupplierPartyType.company
-                  ? GeneralStrings.enumPartyTypeCompany
-                  : GeneralStrings.enumPartyTypeIndividual,
-              onChanged: (v) {
-                if (v != null) setLocalState(() => partyType = v);
-              },
-            ),
-          ),
-          SizedBox(height: AppSpacing.lg),
+          SizedBox(height: AppSpacing.lg.h),
           const SectionHeader(
             icon: Icons.account_balance_wallet_rounded,
-            title: '???????? ??????? ?????????',
+            title: CrmStrings.financialAndCreditPolicies,
           ),
-          ReusableInput(
-            label: SuppliersStrings.creditLimitLabelInput,
-            controller: creditLimitCtrl,
-            keyboardType: TextInputType.number,
+          Row(
+            children: [
+              Expanded(
+                child: ReusableInput(
+                  label: SuppliersStrings.creditLimitLabelInput,
+                  controller: creditLimitCtrl,
+                  keyboardType: TextInputType.number,
+                  prefixIcon: const Icon(Icons.speed_rounded),
+                  hint: '0.00',
+                ),
+              ),
+              SizedBox(width: AppSpacing.md.w),
+              Expanded(
+                child: ReusableInput(
+                  label: SuppliersStrings.discountPercentLabelInput,
+                  controller: discountCtrl,
+                  keyboardType: TextInputType.number,
+                  prefixIcon: const Icon(Icons.percent_rounded),
+                  hint: '0',
+                ),
+              ),
+              SizedBox(width: AppSpacing.md.w),
+              Expanded(
+                child: ReusableInput(
+                  label: SuppliersStrings.paymentTermDaysLabelInput,
+                  controller: paymentDaysCtrl,
+                  keyboardType: TextInputType.number,
+                  prefixIcon: const Icon(Icons.calendar_today_rounded),
+                  hint: '0',
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: AppSpacing.md),
-          ReusableInput(
-            label: SuppliersStrings.discountPercentLabelInput,
-            controller: discountCtrl,
-            keyboardType: TextInputType.number,
-          ),
-          SizedBox(height: AppSpacing.md),
-          ReusableInput(
-            label: SuppliersStrings.paymentTermDaysLabelInput,
-            controller: paymentDaysCtrl,
-            keyboardType: TextInputType.number,
-          ),
-          SizedBox(height: AppSpacing.md),
+          SizedBox(height: AppSpacing.md.h),
           Row(
             children: [
               Expanded(
@@ -188,37 +196,35 @@ class _AddSupplierViewState extends State<AddSupplierView> {
                   label: SuppliersStrings.openingBalanceLabelInput,
                   controller: openingBalanceCtrl,
                   keyboardType: TextInputType.number,
+                  hint: '0.00',
                 ),
               ),
-              SizedBox(width: AppSpacing.md),
+              SizedBox(width: AppSpacing.md.w),
               Expanded(
-                child: StatefulBuilder(
-                  builder: (context, setLocalState) => ReusableDropdown<bool>(
-                    labelText: SuppliersStrings.balanceDirectionLabel,
-                    hintText: GeneralStrings.select,
-                    items: const [true, false],
-                    value: openingBalanceDirection,
-                    itemAsString: (d) => d
-                        ? SuppliersStrings.debitDirection
-                        : SuppliersStrings.creditDirection,
-                    onChanged: (v) {
-                      if (v != null) setLocalState(() => openingBalanceDirection = v);
-                    },
-                  ),
+                child: ReusableDropdown<bool>(
+                  labelText: SuppliersStrings.balanceDirectionLabel,
+                  hintText: GeneralStrings.select,
+                  items: const [true, false],
+                  value: openingBalanceDirection,
+                  itemAsString: (d) => d
+                      ? SuppliersStrings.debitDirection
+                      : SuppliersStrings.creditDirection,
+                  onChanged: (v) {
+                    if (v != null) setState(() => openingBalanceDirection = v);
+                  },
                 ),
               ),
             ],
           ),
-          SizedBox(height: AppSpacing.lg),
+          SizedBox(height: AppSpacing.lg.h),
           const SectionHeader(
             icon: Icons.notes_rounded,
-            title: '??????? ??????',
+            title: CrmStrings.crmAdditionalNotes,
           ),
           ReusableInput(
             label: SuppliersStrings.notesLabelInput,
             controller: notesCtrl,
             maxLines: 3,
-            textDirection: TextDirection.rtl,
           ),
         ],
       ),
@@ -231,26 +237,17 @@ class _AddSupplierViewState extends State<AddSupplierView> {
     context.read<SuppliersBloc>().add(AddSupplier(
       name: nameCtrl.text.trim(),
       partyType: partyType,
-      phone: phoneCtrl.text.trim().isEmpty ? null : phoneCtrl.text.trim(),
-      address: addressCtrl.text.trim().isEmpty ? null : addressCtrl.text.trim(),
-      companyName: companyCtrl.text.trim().isEmpty ? null : companyCtrl.text.trim(),
-      email: emailCtrl.text.trim().isEmpty ? null : emailCtrl.text.trim(),
-      taxId: taxCtrl.text.trim().isEmpty ? null : taxCtrl.text.trim(),
+      phone: phoneCtrl.text.trim().nullIfEmpty,
+      address: addressCtrl.text.trim().nullIfEmpty,
+      companyName: companyCtrl.text.trim().nullIfEmpty,
+      email: emailCtrl.text.trim().nullIfEmpty,
+      taxId: taxCtrl.text.trim().nullIfEmpty,
       creditLimit: double.tryParse(creditLimitCtrl.text) ?? 0,
       discountPercent: double.tryParse(discountCtrl.text) ?? 0,
       paymentTermDays: int.tryParse(paymentDaysCtrl.text) ?? 0,
       openingBalance: double.tryParse(openingBalanceCtrl.text) ?? 0,
       openingBalanceIsDebit: openingBalanceDirection,
-      notes: notesCtrl.text.trim().isEmpty ? null : notesCtrl.text.trim(),
+      notes: notesCtrl.text.trim().nullIfEmpty,
     ));
   }
 }
-
-
-
-
-
-
-
-
-

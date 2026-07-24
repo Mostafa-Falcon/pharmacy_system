@@ -7,7 +7,7 @@ class AppValidators {
     if (value == null || value.trim().isEmpty) {
       return AuthStrings.emailRequired;
     }
-    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    final emailRegex = RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (!emailRegex.hasMatch(value.trim())) {
       return AuthStrings.emailInvalid;
     }
@@ -36,7 +36,7 @@ class AppValidators {
       return AuthStrings.nameRequired;
     }
     if (value.trim().split(' ').length < 2) {
-      return 'يرجى إدخال الاسم ثنائياً على الأقل';
+      return GeneralStrings.atLeastTwoNames;
     }
     return null;
   }

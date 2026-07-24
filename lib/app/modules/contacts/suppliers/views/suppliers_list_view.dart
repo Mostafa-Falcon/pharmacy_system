@@ -3,16 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import 'package:go_router/go_router.dart';
-import '../../../../core/constants/app_strings.dart';
-import '../../../../shared/navigation/app_navigator.dart';
-
+import 'package:pharmacy_system/app/shared/ui_core.dart';
 import 'package:pharmacy_system/app/core/models/contacts/supplier_model.dart';
-import 'package:pharmacy_system/app/core/models/contacts/supplier_ledger_model.dart';
-import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
-import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/tables/shared_table_cells.dart';
-import '../../../../routes/app_routes.dart';
+import '../../../../../routes/app_routes.dart';
 import '../bloc/suppliers_bloc.dart';
 import '../bloc/suppliers_state.dart';
 import '../bloc/suppliers_event.dart';
@@ -78,7 +71,7 @@ class _SuppliersBody extends StatelessWidget {
         onPressed: () => bloc.add(const ExportSuppliers()),
       ),
       ReusableButton(
-        text: '??????? ?? Excel',
+        text: 'استيراد من Excel',
         prefixIcon: Icons.file_upload_rounded,
         type: ButtonType.outlined,
         onPressed: () => context.push(Routes.SUPPLIERS_IMPORT),
@@ -110,12 +103,11 @@ class _SuppliersBody extends StatelessWidget {
 
   Widget _buildFilters(BuildContext context) {
     return AppCard(
-      padding: EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md.w),
       child: ReusableInput(
         hint: SuppliersStrings.searchSupplierHint,
-        prefixIcon: const Icon(Icons.search_rounded, size: 20), // ????? ?? AppIconSize.md.value ?? ??? ???? ?? ??????? .value ??? ??? const
+        prefixIcon: const Icon(Icons.search_rounded, size: 20),
         showClearButton: true,
-        textDirection: TextDirection.rtl,
         onChanged: (q) => context.read<SuppliersBloc>().add(SearchSuppliers(q)),
         onClear: () => context.read<SuppliersBloc>().add(const SearchSuppliers('')),
       ),
@@ -162,7 +154,7 @@ class _SuppliersBody extends StatelessWidget {
           return TableMoneyCell(
             amount: balance,
             currency: GeneralStrings.currency,
-            isNegative: balance > 0, // In suppliers, debit balance usually means we owe them
+            isNegative: balance > 0,
           );
         },
       ),
@@ -237,8 +229,8 @@ class _SuppliersBody extends StatelessWidget {
         prefixIcon: Icons.delete_outline_rounded,
         onPressed: () => ConfirmDeleteDialog.show(
           context,
-          title: '??? ??????',
-          message: '?? ??? ????? ?? ??? ${state.selectedIds.length} ?? ?????????',
+          title: 'حذف الموردين',
+          message: 'هل أنت متأكد من حذف ${state.selectedIds.length} من الموردين؟',
           onConfirm: () => bloc.add(const BulkDeleteSuppliers()),
         ),
       ),
@@ -274,7 +266,7 @@ class _SuppliersBody extends StatelessWidget {
             );
             break;
           case 'edit':
-            AppNavigator.to(Routes.SUPPLIER_ADD);
+            context.push(Routes.SUPPLIER_ADD);
             break;
           case 'toggle':
             bloc.add(ToggleSupplierActive(s.id));
@@ -282,8 +274,8 @@ class _SuppliersBody extends StatelessWidget {
           case 'delete':
             ConfirmDeleteDialog.show(
               context,
-              title: '??? ??????',
-              message: '?? ??? ????? ?? ??? ${s.name}?',
+              title: 'حذف المورد',
+              message: 'هل أنت متأكد من حذف المورد ${s.name}؟',
               onConfirm: () => bloc.add(DeleteSupplier(s.id)),
             );
             break;
@@ -326,7 +318,7 @@ class _SuppliersBody extends StatelessWidget {
           title: const ReusableText(GeneralStrings.edit),
           onTap: () {
             Navigator.pop(context);
-            AppNavigator.to(Routes.SUPPLIER_ADD);
+            context.push(Routes.SUPPLIER_ADD);
           },
         ),
         ListTile(
@@ -439,7 +431,7 @@ class _SupplierLedgerDialogState extends State<SupplierLedgerDialog> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: EdgeInsets.all(AppSpacing.md),
+                  padding: EdgeInsets.all(AppSpacing.md.w),
                   decoration: BoxDecoration(
                     color: balance > 0 ? AppColors.error.withValues(alpha: 0.05) : AppColors.success.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(AppRadius.card),
@@ -476,7 +468,6 @@ class _SupplierLedgerDialogState extends State<SupplierLedgerDialog> {
                         controller: notesCtrl,
                         label: SuppliersStrings.notesLabel,
                         hint: SuppliersStrings.enterTransactionDetailsHint,
-                        textDirection: TextDirection.rtl,
                       ),
                     ),
                   ],
@@ -649,31 +640,19 @@ class _SupplierLedgerDialogState extends State<SupplierLedgerDialog> {
           ReusableInput(
             controller: checkNoCtrl,
             label: CustomersStrings.checkNumber,
-            textDirection: TextDirection.rtl,
           ),
           SizedBox(height: AppSpacing.sm.h),
           ReusableInput(
             controller: bankCtrl,
             label: CustomersStrings.bankName,
-            textDirection: TextDirection.rtl,
           ),
           SizedBox(height: AppSpacing.sm.h),
           ReusableInput(
             controller: dueDateCtrl,
             label: CustomersStrings.dueDate,
-            hint: CrmStrings.dueDateHint,
           ),
         ],
       ),
     );
   }
 }
-
-
-
-
-
-
-
-
-

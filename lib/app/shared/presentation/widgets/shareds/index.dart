@@ -1,4 +1,5 @@
 export 'app_scaffold.dart';
+export 'auth_layout.dart';
 export 'home_navbar.dart';
 export 'home_shell.dart';
 export 'sidebar.dart';

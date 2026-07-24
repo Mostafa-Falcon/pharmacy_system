@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../bloc/hr_bloc.dart';
@@ -322,7 +322,7 @@ class _LeaveRequestTile extends StatelessWidget {
               ReusableDialog.show(
                 context,
                 title: '??? ???????',
-                headerIcon: const Icon(Icons.cancel_rounded, color: AppColors.error),
+                headerIcon: Icon(Icons.cancel_rounded, color: AppColors.error),
                 children: [
                   ReusableText('?? ??? ????? ?? ????? ?? ??? ??? ??????? ?????? "${leave.employeeName}"?'),
                   SizedBox(height: 24.h),

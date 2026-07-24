@@ -85,10 +85,10 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
       if (isClosed) return;
       emit(state.copyWith(selectedIds: {}));
       add(const LoadCustomers());
-      AppSnackbar.success('?? ??? ??????? ???????');
+      AppSnackbar.success(CrmStrings.msgDeletedSuccess);
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('??? ?? ????? ???????: $e');
+      AppSnackbar.error('${CrmStrings.msgDeleteFailed}$e');
     }
   }
 
@@ -104,10 +104,10 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
       if (isClosed) return;
       emit(state.copyWith(selectedIds: {}));
       add(const LoadCustomers());
-      AppSnackbar.success('?? ????? ???? ??????? ???????');
+      AppSnackbar.success(CrmStrings.msgUpdatedSuccess);
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('??? ?? ??????? ???????: $e');
+      AppSnackbar.error('${CrmStrings.msgUpdateFailed}$e');
     }
   }
 
@@ -189,11 +189,11 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
       }
       if (!isClosed) add(const LoadCustomers());
       emit(state.copyWith(isSuccess: true));
-      AppSnackbar.success('?? ????? ?????? ?????');
+      AppSnackbar.success(CrmStrings.msgPartyAdded);
     } catch (e) {
       if (isClosed) return;
       emit(state.copyWith(errorMessage: e.toString()));
-      AppSnackbar.error('??? ?? ????? ??????: $e');
+      AppSnackbar.error('${CrmStrings.msgAddFailed}$e');
     }
   }
 
@@ -202,11 +202,11 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
       await CustomerService.update(event.customer);
       if (!isClosed) add(const LoadCustomers());
       emit(state.copyWith(isSuccess: true));
-      AppSnackbar.success('?? ????? ?????? ??????');
+      AppSnackbar.success(CrmStrings.msgUpdatedSuccess);
     } catch (e) {
       if (isClosed) return;
       emit(state.copyWith(errorMessage: e.toString()));
-      AppSnackbar.error('??? ?? ????? ??????: $e');
+      AppSnackbar.error('${CrmStrings.msgUpdateFailed}$e');
     }
   }
 
@@ -226,10 +226,10 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
     try {
       await CustomerService.hardDelete(event.id);
       if (!isClosed) add(const LoadCustomers());
-      AppSnackbar.success('?? ??? ??????');
+      AppSnackbar.success(CrmStrings.msgDeletedSuccess);
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('??? ?? ??? ??????: $e');
+      AppSnackbar.error('${CrmStrings.msgDeleteFailed}$e');
     }
   }
 
@@ -254,7 +254,7 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
     } catch (e) {
       if (isClosed) return;
       emit(state.copyWith(isLoadingLedger: false));
-      AppSnackbar.error('??? ?? ????? ??? ??????: $e');
+      AppSnackbar.error(e.toString());
     }
   }
 
@@ -268,10 +268,10 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
         notes: event.notes,
       );
       if (!isClosed) add(LoadLedger(event.customerId));
-      AppSnackbar.success('?? ????? ??? ?????');
+      AppSnackbar.success(CrmStrings.msgReceiptRecorded);
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('??? ?? ????? ??? ?????: $e');
+      AppSnackbar.error('${CrmStrings.msgReceiptFailed}$e');
     }
   }
 
@@ -285,10 +285,10 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
         notes: event.notes,
       );
       if (!isClosed) add(LoadLedger(event.customerId));
-      AppSnackbar.success('?? ????? ????? ???????');
+      AppSnackbar.success(CrmStrings.msgAdditionRecorded);
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('??? ?? ????? ???????: $e');
+      AppSnackbar.error('${CrmStrings.msgAdditionFailed}$e');
     }
   }
 
@@ -302,10 +302,10 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
         notes: event.notes,
       );
       if (!isClosed) add(LoadLedger(event.customerId));
-      AppSnackbar.success('?? ????? ????? ?????');
+      AppSnackbar.success(CrmStrings.msgDiscountRecorded);
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('??? ?? ????? ?????: $e');
+      AppSnackbar.error('${CrmStrings.msgDiscountFailed}$e');
     }
   }
 
@@ -322,10 +322,10 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
         notes: event.notes,
       );
       if (!isClosed) add(LoadLedger(event.customerId));
-      AppSnackbar.success('?? ????? ?????? ?????');
+      AppSnackbar.success(CrmStrings.msgCheckReceiptRecorded);
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('??? ?? ????? ?????: $e');
+      AppSnackbar.error('${CrmStrings.msgCheckReceiptFailed}$e');
     }
   }
 
@@ -342,10 +342,10 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
         notes: event.notes,
       );
       if (!isClosed) add(LoadLedger(event.customerId));
-      AppSnackbar.success('?? ????? ??? ?????');
+      AppSnackbar.success(CrmStrings.msgCheckPaymentRecorded);
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('??? ?? ????? ??? ?????: $e');
+      AppSnackbar.error('${CrmStrings.msgCheckPaymentFailed}$e');
     }
   }
 
@@ -413,9 +413,9 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
         'isActive': c.isActive,
       }).toList();
       await ExportService.exportCustomersToXlsx(entries: entries);
-      AppSnackbar.success('?? ????? ??????? ?????');
+      AppSnackbar.success(CrmStrings.msgExportSuccess);
     } catch (e) {
-      AppSnackbar.error('??? ?? ???????: $e');
+      AppSnackbar.error('${CrmStrings.msgExportFailed}$e');
     }
   }
 

@@ -1,57 +1,34 @@
-# Implementation Plan - Auth Unified Block
+# Implementation Plan - Unifying Contacts Module
 
-هظبطلك مرحلة الـ Auth من أول الـ UI لحد الـ Database (Local & Remote) والموديلات عشان يكونوا شغالين كـ "كتلة واحدة" متناغمة، مع التأكد من كمال الـ `copyWith` وتوحيد الرسايل.
+تهدف هذه الخطة إلى توحيد موديول جهات التعامل (Contacts) ليشمل العملاء والموردين والمناديب، وربطهم بشكل متكامل مع قواعد البيانات (Local & Remote) وتوحيد النصوص والواجهات.
 
 ## User Review Required
 > [!IMPORTANT]
-> - الـ Auth بيعتمد على Supabase (Remote) و Drift (Local).
-> - المزامنة بتتم عن طريق `AuthUserSync` اللي بيحدث الـ Local DB بمجرد تسجيل الدخول.
-> - الـ `copyWith` موجود في الـ Models الأساسية، وهتأكد لو فيه أي Nested Models محتاجة تظبيط.
+> - سيتم استخدام `ContactsDao` كمركز وحيد لإدارة كافة العمليات المحلية لجهات التعامل.
+> - سيتم تفعيل المزامنة التلقائية (Sync) عبر الـ Repositories.
+> - سيتم توحيد شكل الفورم (Add/Edit) والجداول لجميع جهات التعامل.
 
 ## Proposed Changes
 
 ### 1. Models Layer (النماذج)
-مراجعة الـ Models الأساسية للتأكد من شمولية الـ `copyWith` وتوافقها مع الـ JSON والـ Database Companions.
+مراجعة وتحديث النماذج لضمان التوافق التام مع نظام المزامنة.
+- [MODIFY] [customer_model.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/models/contacts/customer_model.dart)
+- [MODIFY] [supplier_model.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/models/contacts/supplier_model.dart)
 
-#### [MODIFY] [user_model.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/models/auth/user_model.dart)
-- التأكد من أن `copyWith` يشمل كل الحقول الجديدة.
+### 2. Repositories & Services (المنطق والبيانات)
+إنشاء أو تحديث المستودعات لتعمل كـ "كتلة واحدة" تربط Drift بـ Supabase.
+- [MODIFY] [customers_repository.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/data/repositories/customers_repository.dart)
+- [MODIFY] [suppliers_repository.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/data/repositories/suppliers_repository.dart)
 
-#### [MODIFY] [branch_model.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/models/auth/branch_model.dart)
-- إضافة أو تحسين `copyWith` لو لزم الأمر.
-
-#### [MODIFY] [permission_model.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/models/auth/permission_model.dart)
-- التأكد من وجود `copyWith` متكامل.
-
----
-
-### 2. Service Layer (الخدمات والربط مع قاعدة البيانات)
-تحديث منطق الجلسة والمزامنة لضمان التدفق السلس للبيانات.
-
-#### [MODIFY] [auth_service.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/data/services/auth/auth_service.dart)
-- تحسين إدارة الحالة الثابتة (Static state) للمستخدم والفرع الحالي.
-
-#### [MODIFY] [auth_session.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/data/services/auth/auth_session.dart)
-- ربط الـ Login والـ Register بشكل أعمق مع الـ `AuthUserSync` لضمان أن البيانات المحلية دائمًا محدثة فور النجاح.
-
-#### [MODIFY] [auth_user_sync.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/data/services/auth/auth_user_sync.dart)
-- التأكد من أن الـ `upsert` للبيانات المحلية بيتم بشكل صحيح وبدون تعارضات (Conflict Resolution).
-
----
-
-### 3. Presentation Layer (منطق الواجهة)
-تحديث الـ `AuthBloc` ليكون هو المايسترو اللي بيحرك الـ "كتلة الواحدة".
-
-#### [MODIFY] [auth_bloc.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/auth/bloc/auth_bloc.dart)
-- التأكد من أن كل الـ Events (Login, Register, Logout) بتمر بدورة حياة كاملة (Remote -> Local -> State).
-- استخدام `AuthStrings` حصرياً لكل التنبيهات.
+### 3. Presentation Layer (الواجهات والنصوص)
+توحيد الواجهات واستخدام `AppStrings` المخصصة لكل موديول.
+- [MODIFY] كافة ملفات الواجهات في `lib/app/modules/contacts/views/` لاستخدام `ReusableInput`, `ReusableButton`, و `StandardModuleLayout`.
+- [MODIFY] التأكد من سحب كافة النصوص من `CustomersStrings` و `SuppliersStrings`.
 
 ## Verification Plan
 
-### Automated Tests
-- تشغيل `test/bloc/auth_bloc_test.dart` للتأكد من عدم وجود تراجعات (Regressions).
-
 ### Manual Verification
-1. **Login Flow:** إدخال بيانات صحيحة -> التأكد من الحفظ في Drift -> الانتقال للـ Home.
-2. **Offline Support:** فصل الإنترنت بعد تسجيل الدخول -> التأكد من أن الـ Session ما زالت شغالة من الـ Cache.
-3. **Register Flow:** إنشاء حساب جديد -> التأكد من إنشاء الـ Main Branch محلياً ومزامنته مع Supabase.
-4. **Error Handling:** إدخال بيانات غلط -> التأكد من ظهور الرسالة الصحيحة من `AuthStrings`.
+1. **العملاء:** إضافة عميل جديد -> التأكد من الحفظ في Drift -> التأكد من ظهوره في القائمة -> المزامنة مع Supabase.
+2. **الموردين:** تعديل بيانات مورد -> التأكد من تحديث الـ `lastModified` والـ `syncVersion`.
+3. **كشف الحساب:** التأكد من ربط الحركات المالية بالعميل/المورد الصحيح وظهورها في دفتر الأستاذ.
+4. **النصوص:** مراجعة الواجهات للتأكد من عدم وجود نصوص Hardcoded.
