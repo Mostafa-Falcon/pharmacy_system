@@ -59,6 +59,39 @@ class SuppliedItemModel {
     DateTime? date,
   }) : date = date ?? DateTime.now();
 
+  SuppliedItemModel copyWith({
+    String? id,
+    String? contactId,
+    String? medicineId,
+    String? medicineName,
+    int? unitLevel,
+    String? unitName,
+    double? quantity,
+    double? unitPrice,
+    String? discountType,
+    double? discountValue,
+    double? taxAmount,
+    double? priceWithTax,
+    double? totalAmount,
+    DateTime? date,
+  }) =>
+      SuppliedItemModel(
+        id: id ?? this.id,
+        contactId: contactId ?? this.contactId,
+        medicineId: medicineId ?? this.medicineId,
+        medicineName: medicineName ?? this.medicineName,
+        unitLevel: unitLevel ?? this.unitLevel,
+        unitName: unitName ?? this.unitName,
+        quantity: quantity ?? this.quantity,
+        unitPrice: unitPrice ?? this.unitPrice,
+        discountType: discountType ?? this.discountType,
+        discountValue: discountValue ?? this.discountValue,
+        taxAmount: taxAmount ?? this.taxAmount,
+        priceWithTax: priceWithTax ?? this.priceWithTax,
+        totalAmount: totalAmount ?? this.totalAmount,
+        date: date ?? this.date,
+      );
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'contact_id': contactId,

@@ -13,6 +13,21 @@ class MedicineUnitModel {
     required this.conversionFactor,
   });
 
+  MedicineUnitModel copyWith({
+    String? id,
+    String? name,
+    double? buyPrice,
+    double? sellPrice,
+    int? conversionFactor,
+  }) =>
+      MedicineUnitModel(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        buyPrice: buyPrice ?? this.buyPrice,
+        sellPrice: sellPrice ?? this.sellPrice,
+        conversionFactor: conversionFactor ?? this.conversionFactor,
+      );
+
   Map<String, dynamic> toJson() => {
         'id': id,
         'name': name,

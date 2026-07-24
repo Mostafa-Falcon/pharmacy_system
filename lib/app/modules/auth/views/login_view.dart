@@ -128,34 +128,19 @@ class _LoginViewState extends State<LoginView> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          ReusableText(
+                          ReusableText.h2(
                             'تسجيل الدخول',
-                            style: TextStyle(
-                              fontSize: 24.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          SizedBox(height: 8.h),
-                          ReusableText(
+                          SizedBox(height: AppSpacing.xs.h),
+                          ReusableText.caption(
                             'أدخل بيانات حسابك للمتابعة إلى النظام',
-                            style: TextStyle(
-                              fontSize: 13.sp,
-                              color: scheme.onSurfaceVariant,
-                            ),
                           ),
-                          SizedBox(height: 28.h),
-                          TextFormField(
+                          SizedBox(height: AppSpacing.xl.h),
+                          ReusableInput.email(
                             controller: _emailCtrl,
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: InputDecoration(
-                              labelText: 'البريد الإلكتروني / اسم المستخدم',
-                              prefixIcon: const Icon(
-                                Icons.person_outline_rounded,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                            ),
+                            label: 'البريد الإلكتروني / اسم المستخدم',
+                            prefixIcon: const Icon(Icons.person_outline_rounded),
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
                                 return 'يرجى إدخال البريد الإلكتروني';
@@ -163,45 +148,36 @@ class _LoginViewState extends State<LoginView> {
                               return null;
                             },
                           ),
-                          SizedBox(height: 16.h),
-                          TextFormField(
+                          SizedBox(height: AppSpacing.md.h),
+                          ReusableInput.password(
                             controller: _passwordCtrl,
-                            obscureText: _obscurePassword,
-                            decoration: InputDecoration(
-                              labelText: 'كلمة المرور',
-                              prefixIcon: const Icon(Icons.lock_outline_rounded),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscurePassword
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                ),
-                                onPressed: () => setState(
-                                  () => _obscurePassword = !_obscurePassword,
-                                ),
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                            ),
+                            label: 'كلمة المرور',
+                            prefixIcon: const Icon(Icons.lock_outline_rounded),
+                            onFieldSubmitted: (_) => _onLogin(),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'يرجى إدخال كلمة المرور';
                               }
                               return null;
                             },
-                            onFieldSubmitted: (_) => _onLogin(),
                           ),
-                          SizedBox(height: 12.h),
+                          SizedBox(height: AppSpacing.xs.h),
                           Align(
                             alignment: Alignment.centerLeft,
                             child: TextButton(
-                              onPressed: () =>
-                                  context.push(Routes.FORGOT_PASSWORD),
-                              child: const Text('نسيت كلمة المرور؟'),
+                              onPressed: () => context.push(Routes.FORGOT_PASSWORD),
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.zero,
+                                visualDensity: VisualDensity.compact,
+                              ),
+                              child: ReusableText.caption(
+                                'نسيت كلمة المرور؟',
+                                color: scheme.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                          SizedBox(height: 20.h),
+                          SizedBox(height: AppSpacing.lg.h),
                           BlocBuilder<AuthBloc, AuthState>(
                             builder: (context, state) {
                               return ReusableButton(
@@ -211,26 +187,19 @@ class _LoginViewState extends State<LoginView> {
                               );
                             },
                           ),
-                          SizedBox(height: 20.h),
+                          SizedBox(height: AppSpacing.lg.h),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
+                              ReusableText.caption(
                                 AuthStrings.noAccount,
-                                style: TextStyle(
-                                  fontSize: 13.sp,
-                                  color: scheme.onSurfaceVariant,
-                                ),
                               ),
                               TextButton(
                                 onPressed: () => context.go(Routes.SIGNUP),
-                                child: Text(
+                                child: ReusableText.caption(
                                   AuthStrings.signupLink,
-                                  style: TextStyle(
-                                    fontSize: 13.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: scheme.primary,
-                                  ),
+                                  fontWeight: FontWeight.bold,
+                                  color: scheme.primary,
                                 ),
                               ),
                             ],

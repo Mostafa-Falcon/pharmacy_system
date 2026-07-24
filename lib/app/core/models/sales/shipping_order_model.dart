@@ -92,6 +92,68 @@ class ShippingOrderModel {
   })  : shippingDate = shippingDate ?? DateTime.now(),
         lastModified = lastModified ?? DateTime.now();
 
+  ShippingOrderModel copyWith({
+    String? id,
+    String? invoiceNumber,
+    String? invoiceId,
+    DateTime? shippingDate,
+    String? customerName,
+    bool clearCustomerPhone = false,
+    String? customerPhone,
+    String? shippingAddress,
+    bool clearShippingDetails = false,
+    String? shippingDetails,
+    bool clearDeliveredTo = false,
+    String? deliveredTo,
+    bool clearDeliveryAgentId = false,
+    String? deliveryAgentId,
+    bool clearDeliveryAgentName = false,
+    String? deliveryAgentName,
+    ShippingStatus? shippingStatus,
+    bool? isPaid,
+    bool clearNotes = false,
+    String? notes,
+    bool clearDocumentUrls = false,
+    List<String>? documentUrls,
+    String? createdBy,
+    String? branchId,
+    String? accountId,
+    DateTime? lastModified,
+    bool? isDeleted,
+  }) =>
+      ShippingOrderModel(
+        id: id ?? this.id,
+        invoiceNumber: invoiceNumber ?? this.invoiceNumber,
+        invoiceId: invoiceId ?? this.invoiceId,
+        shippingDate: shippingDate ?? this.shippingDate,
+        customerName: customerName ?? this.customerName,
+        customerPhone:
+            clearCustomerPhone ? null : (customerPhone ?? this.customerPhone),
+        shippingAddress: shippingAddress ?? this.shippingAddress,
+        shippingDetails: clearShippingDetails
+            ? null
+            : (shippingDetails ?? this.shippingDetails),
+        deliveredTo:
+            clearDeliveredTo ? null : (deliveredTo ?? this.deliveredTo),
+        deliveryAgentId: clearDeliveryAgentId
+            ? null
+            : (deliveryAgentId ?? this.deliveryAgentId),
+        deliveryAgentName: clearDeliveryAgentName
+            ? null
+            : (deliveryAgentName ?? this.deliveryAgentName),
+        shippingStatus: shippingStatus ?? this.shippingStatus,
+        isPaid: isPaid ?? this.isPaid,
+        notes: clearNotes ? null : (notes ?? this.notes),
+        documentUrls: clearDocumentUrls
+            ? null
+            : (documentUrls ?? this.documentUrls),
+        createdBy: createdBy ?? this.createdBy,
+        branchId: branchId ?? this.branchId,
+        accountId: accountId ?? this.accountId,
+        lastModified: lastModified ?? this.lastModified,
+        isDeleted: isDeleted ?? this.isDeleted,
+      );
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'invoice_number': invoiceNumber,

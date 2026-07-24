@@ -1,4 +1,4 @@
-// auth_session.dart — جزء من AuthService
+// Auth_session.dart — جزء من AuthService
 // يدير دورة حياة الجلسة: التهيئة، تسجيل الدخول/الخروج، التسجيل،
 // تغيير كلمة المرور، الفروع، والصلاحيات.
 
@@ -14,10 +14,21 @@ class AuthSession {
     try {
       final supabaseUser = Supabase.instance.client.auth.currentUser;
       if (supabaseUser != null) {
+        // جلب أو تحديث بيانات المستخدم من السيرفر/المحلي
         final cached = await AuthUserSync.loadOrCreateUser(supabaseUser);
         AuthService._currentUser = cached;
         AuthService.currentBranchId = cached.assignedBranchId;
         AuthService._currentDeviceId = await AuthService._getDeviceId();
+        
+        if (AuthService.currentBranchId != null) {
+          await selectBranch(AuthService.currentBranchId!);
+        }
+
+        // تحديث حالة الجلسة على السيرفر (last_login)
+        if (AuthService._currentDeviceId != null) {
+          await AuthDeviceLock.ensureServerSessionLock(cached.id, AuthService._currentDeviceId!);
+        }
+
         await _saveSession(cached);
         await _refreshPermissionCache(cached.id);
         AuthService._initialized = true;
@@ -35,7 +46,14 @@ class AuthSession {
         AuthService._currentUser = user;
         AuthService.currentBranchId = await SecureStorageHelper.getBranchId() ?? user.assignedBranchId;
         AuthService._currentDeviceId = await AuthService._getDeviceId();
-        _refreshPermissionCache(user.id);
+        
+        if (AuthService.currentBranchId != null) {
+          await selectBranch(AuthService.currentBranchId!);
+        }
+
+        await _refreshPermissionCache(user.id);
+        AuthService._initialized = true;
+        return;
       }
     } catch (e, s) {
       safeDebugPrint('AuthService.init cached session failed: $e\n$s');
@@ -68,18 +86,28 @@ class AuthSession {
       var cached = await AuthUserSync.loadOrCreateUser(user);
       final passwordHash = await PasswordHasher.hash(password);
 
-      cached = cached.copyWith(lastLogin: DateTime.now());
+      // تحديث بيانات الجلسة الأخيرة والجهاز النشط
+      cached = cached.copyWith(
+        lastLogin: DateTime.now(),
+        activeDeviceId: deviceId,
+      );
 
+      // حفظ التحديثات محلياً وفى السيرفر (RPC acquire_session_lock يحدّث last_login أيضاً)
+      final systemDao = sl<SystemDao>();
+      await systemDao.upsertUser(SystemMapper.userToCompanion(cached));
+      
       AuthService._currentUser = cached;
       AuthService.currentBranchId = cached.assignedBranchId;
       AuthService._currentDeviceId = deviceId;
+
+      if (AuthService.currentBranchId != null) {
+        await selectBranch(AuthService.currentBranchId!);
+      }
 
       await _refreshPermissionCache(cached.id);
 
       await Future.wait([
         _saveSession(cached),
-        if (AuthService.currentBranchId != null)
-          SecureStorageHelper.saveBranchId(AuthService.currentBranchId!),
         _saveCredentials(email: email, passwordHash: passwordHash),
       ]);
 
@@ -141,10 +169,21 @@ class AuthSession {
       if (cached.assignedBranchId == null || cached.assignedBranchId!.isEmpty) {
         final defaultBranch = await AuthUserSync.createDefaultBranch(cached.id, cached.name);
         cached = cached.copyWith(assignedBranchId: defaultBranch.id);
+        
+        // تحديث بيانات المستخدم في قاعدة البيانات المحلية بالفرع الجديد
+        final systemDao = sl<SystemDao>();
+        await systemDao.upsertUser(SystemMapper.userToCompanion(cached));
       }
 
       AuthService._currentUser = cached;
       AuthService.currentBranchId = cached.assignedBranchId;
+      AuthService._currentDeviceId = await AuthService._getDeviceId();
+      
+      if (AuthService.currentBranchId != null) {
+        await selectBranch(AuthService.currentBranchId!);
+      }
+      
+      await _refreshPermissionCache(cached.id);
       await _saveSession(cached);
 
       final passwordHash = await PasswordHasher.hash(password);
@@ -169,9 +208,28 @@ class AuthSession {
     await SecureStorageHelper.saveBranchId(branchId);
     
     final systemDao = sl<SystemDao>();
-    final branchData = await systemDao.getBranchById(branchId);
+    var branchData = await systemDao.getBranchById(branchId);
+
+    // إذا لم يوجد الفرع محلياً، نحاول جلب بياناته من السيرفر
+    if (branchData == null && await AuthService._isOnline()) {
+      try {
+        final response = await Supabase.instance.client
+            .from('branches')
+            .select()
+            .eq('id', branchId)
+            .maybeSingle();
+        if (response != null) {
+          final branch = BranchModel.fromJson(response);
+          await systemDao.upsertBranch(SystemMapper.branchToCompanion(branch));
+          branchData = await systemDao.getBranchById(branchId);
+        }
+      } catch (e) {
+        safeDebugPrint('AuthService.selectBranch: failed to fetch branch online: $e');
+      }
+    }
+
     if (branchData != null) {
-      AuthService._currentBranch = AuthService._branchFromTable(branchData);
+      AuthService._currentBranch = SystemMapper.branchFromData(branchData);
     }
   }
 
@@ -180,10 +238,13 @@ class AuthSession {
   static Future<void> logout() async {
     AuthService._currentUser = null;
     AuthService.currentBranchId = null;
+    AuthService._currentBranch = null;
     AuthService._currentDeviceId = null;
+    _permissionCache.clear();
     
     await SecureStorageHelper.clearSession();
     await SecureStorageHelper.clearCredentials();
+    await SecureStorageHelper.clearBranchId();
     
     try {
       await Supabase.instance.client.auth.signOut();
@@ -256,7 +317,7 @@ class AuthSession {
   static Future<List<BranchModel>> getAllBranches() async {
     final systemDao = sl<SystemDao>();
     final list = await systemDao.getAllBranches();
-    return list.map(AuthService._branchFromTable).toList();
+    return list.map(SystemMapper.branchFromData).toList();
   }
 
   static Future<Map<String, dynamic>> getDashboardStats() async {

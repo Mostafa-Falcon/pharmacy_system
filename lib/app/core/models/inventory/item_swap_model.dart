@@ -35,6 +35,27 @@ class SwapItemModel {
     required this.totalPrice,
   });
 
+  SwapItemModel copyWith({
+    String? medicineId,
+    String? medicineName,
+    int? unitLevel,
+    String? unitName,
+    int? quantity,
+    double? unitPrice,
+    double? discountAmount,
+    double? totalPrice,
+  }) =>
+      SwapItemModel(
+        medicineId: medicineId ?? this.medicineId,
+        medicineName: medicineName ?? this.medicineName,
+        unitLevel: unitLevel ?? this.unitLevel,
+        unitName: unitName ?? this.unitName,
+        quantity: quantity ?? this.quantity,
+        unitPrice: unitPrice ?? this.unitPrice,
+        discountAmount: discountAmount ?? this.discountAmount,
+        totalPrice: totalPrice ?? this.totalPrice,
+      );
+
   Map<String, dynamic> toJson() => {
     'medicine_id': medicineId,
     'medicine_name': medicineName,
@@ -131,6 +152,51 @@ class ItemSwapModel {
     DateTime? lastModified,
   })  : swapDate = swapDate ?? DateTime.now(),
         lastModified = lastModified ?? DateTime.now();
+
+  ItemSwapModel copyWith({
+    String? id,
+    String? swapNumber,
+    String? partyType,
+    bool clearPartyId = false,
+    String? partyId,
+    String? partyName,
+    bool clearCashRegisterId = false,
+    String? cashRegisterId,
+    List<SwapItemModel>? incomingItems,
+    List<SwapItemModel>? outgoingItems,
+    double? totalIncomingAmount,
+    double? totalOutgoingAmount,
+    double? netCashDifference,
+    String? createdBy,
+    String? branchId,
+    String? accountId,
+    bool clearNotes = false,
+    String? notes,
+    DateTime? swapDate,
+    DateTime? lastModified,
+  }) =>
+      ItemSwapModel(
+        id: id ?? this.id,
+        swapNumber: swapNumber ?? this.swapNumber,
+        partyType: partyType ?? this.partyType,
+        partyId: clearPartyId ? null : (partyId ?? this.partyId),
+        partyName: partyName ?? this.partyName,
+        cashRegisterId:
+            clearCashRegisterId ? null : (cashRegisterId ?? this.cashRegisterId),
+        incomingItems: incomingItems ?? this.incomingItems,
+        outgoingItems: outgoingItems ?? this.outgoingItems,
+        totalIncomingAmount:
+            totalIncomingAmount ?? this.totalIncomingAmount,
+        totalOutgoingAmount:
+            totalOutgoingAmount ?? this.totalOutgoingAmount,
+        netCashDifference: netCashDifference ?? this.netCashDifference,
+        createdBy: createdBy ?? this.createdBy,
+        branchId: branchId ?? this.branchId,
+        accountId: accountId ?? this.accountId,
+        notes: clearNotes ? null : (notes ?? this.notes),
+        swapDate: swapDate ?? this.swapDate,
+        lastModified: lastModified ?? this.lastModified,
+      );
 
   Map<String, dynamic> toJson() => {
     'id': id,

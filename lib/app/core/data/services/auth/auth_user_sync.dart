@@ -16,7 +16,7 @@ class AuthUserSync {
 
     final existingData = await systemDao.getUserById(user.id);
     UserModel? existing = existingData != null
-        ? AuthService._userFromTable(existingData)
+        ? SystemMapper.userFromData(existingData)
         : null;
 
     // إذا كان اليوزر موجود محلياً، نرجعه فوراً ونحدثه في الخلفية عشان سرعة الدخول
@@ -66,7 +66,7 @@ class AuthUserSync {
         assignedBranchId: assignedBranchId,
         createdAt: DateTime.now(),
       );
-      await systemDao.upsertUser(AuthService._userToCompanion(newUser));
+      await systemDao.upsertUser(SystemMapper.userToCompanion(newUser));
       return newUser;
     }
 
@@ -77,7 +77,7 @@ class AuthUserSync {
       lastModified: DateTime.now(),
     );
 
-    await systemDao.upsertUser(AuthService._userToCompanion(updated));
+    await systemDao.upsertUser(SystemMapper.userToCompanion(updated));
     return updated;
   }
 
@@ -92,7 +92,7 @@ class AuthUserSync {
       if (response != null) {
         final systemDao = sl<SystemDao>();
         final remoteUser = UserModel.fromJson(response);
-        await systemDao.upsertUser(AuthService._userToCompanion(remoteUser));
+        await systemDao.upsertUser(SystemMapper.userToCompanion(remoteUser));
       }
     } catch (e) {
       safeDebugPrint('AuthService: Background user refresh failed: $e');
@@ -118,7 +118,7 @@ class AuthUserSync {
 
     final existingData = await systemDao.getBranchById('main_$userId');
     if (existingData != null) {
-      return AuthService._branchFromTable(existingData);
+      return SystemMapper.branchFromData(existingData);
     }
 
     if (await AuthService._isOnline()) {
@@ -131,7 +131,7 @@ class AuthUserSync {
 
         if (response != null) {
           final branch = BranchModel.fromJson(response);
-          await systemDao.upsertBranch(AuthService._branchToCompanion(branch));
+          await systemDao.upsertBranch(SystemMapper.branchToCompanion(branch));
           return branch;
         }
       } catch (e) {
@@ -143,13 +143,14 @@ class AuthUserSync {
     final branch = BranchModel(
       id: branchId,
       name: 'الفرع الرئيسي',
+      isMainBranch: true,
       address: null,
       phone: null,
       isActive: true,
       createdAt: DateTime.now(),
     );
 
-    await systemDao.upsertBranch(AuthService._branchToCompanion(branch));
+    await systemDao.upsertBranch(SystemMapper.branchToCompanion(branch));
 
     try {
       await SyncService.queueOperation(

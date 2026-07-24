@@ -1,43 +1,29 @@
-# ملخص استكمال نظام الـ Mappers وتوافق الموديلات
+# Walkthrough - Auth Unified Block & Session Fixes 🚀
 
-تم الانتهاء من تحديث واستكمال جميع ملفات الـ Mappers لضمان التوافق الكامل بين جداول قاعدة البيانات (Drift) والموديلات البرمجية (Models)، مما يسهل عمليات المزامنة والحفاظ على نظافة الكود (Clean Architecture).
+تم الانتهاء من ضبط وتصحيح مرحلة الـ Auth بالكامل، مع التركيز على استقرار الجلسة وتكامل البيانات بين السيرفر والمحلي.
 
-## التغييرات التي تمت
+## التغييرات الرئيسية
 
-### 1. تحديث `InventoryMapper`
-- إضافة دعم كامل لجداول:
-  - `BarcodeSettingsTable` -> `BarcodeSettingsModel`
-  - `MedicineBarcodesTable` -> `MedicineBarcodeModel`
-  - `MedicineUnitsTable` -> `MedicineUnitModel`
-- تحديث تحويل `MedicinesTable` ليشمل حقل `createdAt` المفقود.
+### 1. تصحيح الـ Auth Session و SecureStorage 🛠️
+- **إصلاح أخطاء الكومبيلر:** تم إضافة ميثود `clearBranchId` المفقودة في [SecureStorageHelper](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/data/services/auth/secure_storage_helper.dart)، والتي كانت تسبب خطأ في عملية تسجيل الخروج.
+- **تكامل المزامنة في الـ Login:** تم تحديث ميثود `login` في [auth_session.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/data/services/auth/auth_session.dart) لتقوم بتحديث وقت آخر ظهور (`lastLogin`) ومعرف الجهاز النشط في قاعدة البيانات المحلية والسيرفر فور نجاح الدخول.
+- **دعم الفروع المفقودة:** تم تطوير `selectBranch` لتقوم بجلب بيانات الفرع من Supabase تلقائياً إذا لم تكن موجودة في قاعدة البيانات المحلية (Drift) وقت الاختيار.
+- **تثبيت الجلسة في الـ Register:** تم تحديث عملية التسجيل لتقوم بتهيئة الجلسة بالكامل (الفرع، الصلاحيات، والجهاز) وحفظها، بحيث لا يحتاج المستخدم لتسجيل الدخول يدوياً بعد إنشاء الحساب.
 
-### 2. تحديث `SalesMapper`
-- إضافة دعم لجدول المرتجعات العامة الجديد:
-  - `ReturnsTable` -> `ReturnModel`
+### 2. استقرار معرف الجهاز (Device Lock) 🔒
+- تم تثبيت الـ `deviceId` في الـ `SecureStorage` لضمان عدم تغيره عند إعادة تشغيل التطبيق، مما يحمي الجلسة من الطرد التلقائي.
 
-### 3. تحديث `SystemMapper`
-- إضافة دعم لمجموعة واسعة من جداول النظام والأدوات:
-  - `AuditLogsTable` -> `AuditLogModel` (مع معالجة البيانات الإضافية في `actionDetails`)
-  - `NotificationsTable` -> `AppNotificationModel`
-  - `LookupsTable` -> `LookupModel`
-  - `ErrorLogsTable` -> `ErrorLogModel`
-  - `CorrectionsTable` -> `CorrectionEntry`
+### 3. تحسين الأداء ⚡
+- تم استخدام `unawaited` لتحديث السيرفر في الخلفية، وإضافة `await` المفقودة في عمليات تهيئة الصلاحيات لضمان عدم ظهور واجهات فارغة عند الدخول.
 
-### 4. تحديث `AccountingMapper` و `HrMapper` و `PurchasesMapper`
-- التأكد من شمول جميع الحقول الأساسية للمزامنة مثل `lastModified`, `isDeleted`, و `syncVersion` في جميع التحويلات لضمان عدم فقدان بيانات أثناء عمليات الـ Upsert في الداتابيز.
+## التحقق من العمل ✅
 
-## التحقق من العمل
-
-- [x] مطابقة أنواع البيانات (Data Types) بين الموديلات والجداول.
-- [x] التأكد من تحويل حقول الـ Enum والـ JSON بشكل صحيح (Encoding/Decoding).
-- [x] التحقق من تغطية جميع جداول قاعدة البيانات الـ 53 في نظام الـ Mappers.
-
-> [!TIP]
-> الآن يمكنك استخدام الـ Mappers في أي Repository أو Service بسهولة، مثلاً:
-> ```dart
-> final companion = InventoryMapper.medicineToCompanion(medicineModel);
-> await _dao.upsertMedicine(companion);
-> ```
+- [x] **تسجيل الخروج:** يعمل الآن بسلاسة وبدون أخطاء (تم مسح بيانات الفرع والجلسة والاعتمادات).
+- [x] **تسجيل حساب جديد:** يقوم بإنشاء الفرع، ربطه بالمستخدم، تفعيل الصلاحيات، والدخول فوراً.
+- [x] **اختيار الفرع:** يجلب البيانات من السيرفر لو مش موجودة محلياً.
+- [x] **ثبات البيانات:** الـ `lastLogin` و الـ `activeDeviceId` بيتحفظوا صح في الـ DB.
 
 > [!IMPORTANT]
-> تم توحيد نمط التحويل ليكون دائماً `Static Methods` داخل كلاس الـ Mapper، مما يقلل من استهلاك الذاكرة ويبسط الكود.
+> تم توحيد تدفق البيانات بحيث أن الـ `AuthService` هو المصدر الوحيد للحقيقة (Single Source of Truth) سواء كنت أونلاين أو أوفلاين.
+
+جاهز لأي اختبارات تانية يا صقر! 🦅

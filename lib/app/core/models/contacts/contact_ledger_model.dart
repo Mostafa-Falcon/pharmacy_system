@@ -71,6 +71,42 @@ class ContactLedgerModel implements SyncableEntity {
     this.isDeleted = false,
   }) : lastModified = lastModified ?? DateTime.now();
 
+  ContactLedgerModel copyWith({
+    String? id,
+    String? contactId,
+    DateTime? transactionDate,
+    String? referenceNumber,
+    LedgerTransactionType? transactionType,
+    double? debitAmount,
+    double? creditAmount,
+    double? runningBalance,
+    bool clearDescription = false,
+    String? description,
+    bool clearBranchId = false,
+    String? branchId,
+    bool clearAccountId = false,
+    String? accountId,
+    int? syncVersion,
+    DateTime? lastModified,
+    bool? isDeleted,
+  }) =>
+      ContactLedgerModel(
+        id: id ?? this.id,
+        contactId: contactId ?? this.contactId,
+        transactionDate: transactionDate ?? this.transactionDate,
+        referenceNumber: referenceNumber ?? this.referenceNumber,
+        transactionType: transactionType ?? this.transactionType,
+        debitAmount: debitAmount ?? this.debitAmount,
+        creditAmount: creditAmount ?? this.creditAmount,
+        runningBalance: runningBalance ?? this.runningBalance,
+        description: clearDescription ? null : (description ?? this.description),
+        branchId: clearBranchId ? null : (branchId ?? this.branchId),
+        accountId: clearAccountId ? null : (accountId ?? this.accountId),
+        syncVersion: syncVersion ?? this.syncVersion,
+        lastModified: lastModified ?? this.lastModified,
+        isDeleted: isDeleted ?? this.isDeleted,
+      );
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'contact_id': contactId,

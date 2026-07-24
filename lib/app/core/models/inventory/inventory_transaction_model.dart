@@ -32,6 +32,42 @@ class InventoryTransactionModel {
   })  : createdAt = createdAt ?? DateTime.now(),
         lastModified = lastModified ?? DateTime.now();
 
+  InventoryTransactionModel copyWith({
+    String? id,
+    String? medicineId,
+    String? transactionType,
+    String? referenceId,
+    bool clearReferenceNumber = false,
+    String? referenceNumber,
+    int? quantityChange,
+    int? quantityAfter,
+    double? unitPrice,
+    String? branchId,
+    bool clearAccountId = false,
+    String? accountId,
+    DateTime? createdAt,
+    DateTime? lastModified,
+    bool? isDeleted,
+    int? syncVersion,
+  }) =>
+      InventoryTransactionModel(
+        id: id ?? this.id,
+        medicineId: medicineId ?? this.medicineId,
+        transactionType: transactionType ?? this.transactionType,
+        referenceId: referenceId ?? this.referenceId,
+        referenceNumber:
+            clearReferenceNumber ? null : (referenceNumber ?? this.referenceNumber),
+        quantityChange: quantityChange ?? this.quantityChange,
+        quantityAfter: quantityAfter ?? this.quantityAfter,
+        unitPrice: unitPrice ?? this.unitPrice,
+        branchId: branchId ?? this.branchId,
+        accountId: clearAccountId ? null : (accountId ?? this.accountId),
+        createdAt: createdAt ?? this.createdAt,
+        lastModified: lastModified ?? this.lastModified,
+        isDeleted: isDeleted ?? this.isDeleted,
+        syncVersion: syncVersion ?? this.syncVersion,
+      );
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'medicine_id': medicineId,

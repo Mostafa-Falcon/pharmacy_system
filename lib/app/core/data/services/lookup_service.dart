@@ -1,11 +1,10 @@
 import 'package:drift/drift.dart';
 
 import 'package:pharmacy_system/app/core/injection.dart';
-import 'package:pharmacy_system/app/core/utils/app_utils.dart';
-import 'package:pharmacy_system/app/core/data/database/daos/lookups_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/models/base/lookup_model.dart';
+import 'package:pharmacy_system/app/shared/ui_core.dart';
 
 class LookupService {
   static final List<LookupModel> _cache = [];
@@ -147,7 +146,9 @@ class LookupService {
     try {
       final q = query.trim().toLowerCase();
       if (q.isEmpty) return getAll(type: type);
-      return getAll(type: type).where((l) => l.name.toLowerCase().contains(q)).toList();
+      return getAll(
+        type: type,
+      ).where((l) => l.name.toLowerCase().contains(q)).toList();
     } catch (e, s) {
       safeDebugPrint('LookupService.search failed: $e\n$s');
       return [];
@@ -156,14 +157,12 @@ class LookupService {
 
   static bool nameExists(String name, {required LookupType type}) {
     try {
-      return getAll(type: type).any(
-            (l) => l.name.trim().toLowerCase() == name.trim().toLowerCase(),
-      );
+      return getAll(
+        type: type,
+      ).any((l) => l.name.trim().toLowerCase() == name.trim().toLowerCase());
     } catch (e, s) {
       safeDebugPrint('LookupService.nameExists failed: $e\n$s');
       return false;
     }
   }
 }
-
-

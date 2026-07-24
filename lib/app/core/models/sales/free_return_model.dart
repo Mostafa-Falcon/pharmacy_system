@@ -49,6 +49,29 @@ class FreeReturnItemModel {
     required this.totalPrice,
   });
 
+  FreeReturnItemModel copyWith({
+    String? medicineId,
+    String? medicineName,
+    int? unitLevel,
+    String? unitName,
+    int? quantity,
+    double? unitPrice,
+    bool clearExpiryDate = false,
+    DateTime? expiryDate,
+    double? totalPrice,
+  }) =>
+      FreeReturnItemModel(
+        medicineId: medicineId ?? this.medicineId,
+        medicineName: medicineName ?? this.medicineName,
+        unitLevel: unitLevel ?? this.unitLevel,
+        unitName: unitName ?? this.unitName,
+        quantity: quantity ?? this.quantity,
+        unitPrice: unitPrice ?? this.unitPrice,
+        expiryDate:
+            clearExpiryDate ? null : (expiryDate ?? this.expiryDate),
+        totalPrice: totalPrice ?? this.totalPrice,
+      );
+
   Map<String, dynamic> toJson() => {
     'medicine_id': medicineId,
     'medicine_name': medicineName,
@@ -137,6 +160,44 @@ class FreeReturnModel {
     DateTime? lastModified,
   })  : createdAt = createdAt ?? DateTime.now(),
         lastModified = lastModified ?? DateTime.now();
+
+  FreeReturnModel copyWith({
+    String? id,
+    String? returnNumber,
+    FreeReturnCategory? returnCategory,
+    FreeReturnPartyType? partyType,
+    bool clearPartyId = false,
+    String? partyId,
+    String? partyName,
+    String? cashRegisterId,
+    bool clearReasonNotes = false,
+    String? reasonNotes,
+    List<FreeReturnItemModel>? items,
+    double? totalAmount,
+    String? createdBy,
+    String? branchId,
+    String? accountId,
+    DateTime? createdAt,
+    DateTime? lastModified,
+  }) =>
+      FreeReturnModel(
+        id: id ?? this.id,
+        returnNumber: returnNumber ?? this.returnNumber,
+        returnCategory: returnCategory ?? this.returnCategory,
+        partyType: partyType ?? this.partyType,
+        partyId: clearPartyId ? null : (partyId ?? this.partyId),
+        partyName: partyName ?? this.partyName,
+        cashRegisterId: cashRegisterId ?? this.cashRegisterId,
+        reasonNotes:
+            clearReasonNotes ? null : (reasonNotes ?? this.reasonNotes),
+        items: items ?? this.items,
+        totalAmount: totalAmount ?? this.totalAmount,
+        createdBy: createdBy ?? this.createdBy,
+        branchId: branchId ?? this.branchId,
+        accountId: accountId ?? this.accountId,
+        createdAt: createdAt ?? this.createdAt,
+        lastModified: lastModified ?? this.lastModified,
+      );
 
   Map<String, dynamic> toJson() => {
     'id': id,

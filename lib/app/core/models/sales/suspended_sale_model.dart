@@ -30,6 +30,40 @@ class SuspendedSaleModel {
   })  : createdAt = createdAt ?? DateTime.now(),
         lastModified = lastModified ?? DateTime.now();
 
+  SuspendedSaleModel copyWith({
+    String? id,
+    String? referenceNumber,
+    String? customerName,
+    bool clearCustomerId = false,
+    String? customerId,
+    String? itemsJson,
+    double? totalAmount,
+    String? cashierId,
+    String? branchId,
+    bool clearAccountId = false,
+    String? accountId,
+    DateTime? createdAt,
+    DateTime? lastModified,
+    bool? isDeleted,
+    int? syncVersion,
+  }) =>
+      SuspendedSaleModel(
+        id: id ?? this.id,
+        referenceNumber: referenceNumber ?? this.referenceNumber,
+        customerName: customerName ?? this.customerName,
+        customerId:
+            clearCustomerId ? null : (customerId ?? this.customerId),
+        itemsJson: itemsJson ?? this.itemsJson,
+        totalAmount: totalAmount ?? this.totalAmount,
+        cashierId: cashierId ?? this.cashierId,
+        branchId: branchId ?? this.branchId,
+        accountId: clearAccountId ? null : (accountId ?? this.accountId),
+        createdAt: createdAt ?? this.createdAt,
+        lastModified: lastModified ?? this.lastModified,
+        isDeleted: isDeleted ?? this.isDeleted,
+        syncVersion: syncVersion ?? this.syncVersion,
+      );
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'reference_number': referenceNumber,

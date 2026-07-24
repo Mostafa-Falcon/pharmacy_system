@@ -112,7 +112,51 @@ class AppDatabase extends _$AppDatabase {
       : super(executor ?? LazyDatabase(createDriftExecutor));
 
   @override
-  int get schemaVersion => 4; // v4: Added Lookups, ErrorLogs, Corrections, MedicineBarcodes, MedicineUnits, Returns tables
+  int get schemaVersion => 5; // v5: Added columns to Branches, Permissions, Quotations, Stocktaking tables
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onUpgrade: (m, from, to) async {
+      if (from < 5) {
+        await m.alterTable(TableMigration(branchesTable,
+          columnTransformer: {
+            branchesTable.createdAt: branchesTable.lastModified,
+            branchesTable.syncVersion: const Constant(1),
+            branchesTable.isDeleted: const Constant(false),
+          }));
+        await m.alterTable(TableMigration(permissionsTable,
+          columnTransformer: {
+            permissionsTable.createdAt: permissionsTable.lastModified,
+            permissionsTable.syncVersion: const Constant(1),
+            permissionsTable.isDeleted: const Constant(false),
+          }));
+        await m.alterTable(TableMigration(stocktakingTable,
+          columnTransformer: {
+            stocktakingTable.status: const Constant('draft'),
+            stocktakingTable.totalDifferenceValue: const Constant(0.0),
+            stocktakingTable.categoryId: const Constant(null),
+            stocktakingTable.brandId: const Constant(null),
+            stocktakingTable.items: const Constant('[]'),
+          }));
+        await m.alterTable(TableMigration(quotationsTable,
+          columnTransformer: {
+            quotationsTable.customerId: const Constant(null),
+            quotationsTable.paidAmount: const Constant(0.0),
+            quotationsTable.remainingAmount: const Constant(0.0),
+            quotationsTable.paymentMethod: const Constant(null),
+            quotationsTable.paymentStatus: const Constant('unpaid'),
+            quotationsTable.shippingStatus: const Constant('pending'),
+            quotationsTable.totalQuantity: const Constant(0.0),
+          }));
+      }
+    },
+    beforeOpen: (details) async {
+      if (details.wasCreated) {
+        await customStatement('PRAGMA journal_mode=WAL');
+        await customStatement('PRAGMA foreign_keys=ON');
+      }
+    },
+  );
 }
 
 

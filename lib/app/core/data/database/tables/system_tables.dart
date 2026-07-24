@@ -30,8 +30,10 @@ class BranchesTable extends Table {
   BoolColumn get isMainBranch => boolean().withDefault(const Constant(false))();
   BoolColumn get isActive => boolean().withDefault(const Constant(true))();
   TextColumn get accountId => text().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get lastModified => dateTime()();
   BoolColumn get isDeleted => boolean().withDefault(const Constant(false))();
+  IntColumn get syncVersion => integer().withDefault(const Constant(1))();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -44,7 +46,10 @@ class PermissionsTable extends Table {
   TextColumn get permissionKey => text()();
   BoolColumn get isAllowed => boolean().withDefault(const Constant(true))();
   TextColumn get accountId => text().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get lastModified => dateTime()();
+  BoolColumn get isDeleted => boolean().withDefault(const Constant(false))();
+  IntColumn get syncVersion => integer().withDefault(const Constant(1))();
 
   @override
   Set<Column> get primaryKey => {id};

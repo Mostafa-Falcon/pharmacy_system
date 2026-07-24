@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:pharmacy_system/app/core/models/contacts/customer_group_model.dart';
 import 'package:pharmacy_system/app/core/models/contacts/customer_model.dart';
@@ -164,7 +163,6 @@ class ContactsMapper {
     accountId: Value(m.accountId),
     lastModified: Value(m.lastModified),
     isDeleted: Value(m.isDeleted),
-    syncVersion: const Value.absent(), // Table missing syncVersion?
   );
 
   // ── SalesAgent ──

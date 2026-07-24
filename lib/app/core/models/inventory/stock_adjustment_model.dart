@@ -44,6 +44,28 @@ class StockAdjustmentItemModel {
     this.itemReason,
   });
 
+  StockAdjustmentItemModel copyWith({
+    String? medicineId,
+    String? medicineName,
+    int? unitLevel,
+    String? unitName,
+    int? quantity,
+    double? buyPrice,
+    double? totalPrice,
+    bool clearItemReason = false,
+    String? itemReason,
+  }) =>
+      StockAdjustmentItemModel(
+        medicineId: medicineId ?? this.medicineId,
+        medicineName: medicineName ?? this.medicineName,
+        unitLevel: unitLevel ?? this.unitLevel,
+        unitName: unitName ?? this.unitName,
+        quantity: quantity ?? this.quantity,
+        buyPrice: buyPrice ?? this.buyPrice,
+        totalPrice: totalPrice ?? this.totalPrice,
+        itemReason: clearItemReason ? null : (itemReason ?? this.itemReason),
+      );
+
   Map<String, dynamic> toJson() => {
     'medicine_id': medicineId,
     'medicine_name': medicineName,
@@ -132,6 +154,38 @@ class StockAdjustmentModel implements SyncableEntity {
     this.syncVersion = 1,
   })  : createdAt = createdAt ?? DateTime.now(),
         lastModified = lastModified ?? DateTime.now();
+
+  StockAdjustmentModel copyWith({
+    String? id,
+    String? adjustmentNumber,
+    AdjustmentType? adjustmentType,
+    List<StockAdjustmentItemModel>? items,
+    double? totalAmount,
+    String? adjustedBy,
+    String? branchId,
+    String? accountId,
+    bool clearNotes = false,
+    String? notes,
+    DateTime? createdAt,
+    DateTime? lastModified,
+    bool? isDeleted,
+    int? syncVersion,
+  }) =>
+      StockAdjustmentModel(
+        id: id ?? this.id,
+        adjustmentNumber: adjustmentNumber ?? this.adjustmentNumber,
+        adjustmentType: adjustmentType ?? this.adjustmentType,
+        items: items ?? this.items,
+        totalAmount: totalAmount ?? this.totalAmount,
+        adjustedBy: adjustedBy ?? this.adjustedBy,
+        branchId: branchId ?? this.branchId,
+        accountId: accountId ?? this.accountId,
+        notes: clearNotes ? null : (notes ?? this.notes),
+        createdAt: createdAt ?? this.createdAt,
+        lastModified: lastModified ?? this.lastModified,
+        isDeleted: isDeleted ?? this.isDeleted,
+        syncVersion: syncVersion ?? this.syncVersion,
+      );
 
   Map<String, dynamic> toJson() => {
     'id': id,

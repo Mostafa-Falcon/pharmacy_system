@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 
 import '../database/database.dart';
-import 'base_mapper.dart';
 import 'package:pharmacy_system/app/core/models/auth/user_model.dart';
 import 'package:pharmacy_system/app/core/models/auth/branch_model.dart';
 import 'package:pharmacy_system/app/core/models/auth/permission_model.dart';
@@ -52,41 +51,48 @@ class SystemMapper {
   );
 
   // ── Branch ──
-  static BranchModel branchFromData(BranchesTableData d) => BranchModel.fromJson({
-    'id': d.id,
-    'name': d.name,
-    'account_id': d.accountId,
-    'address': d.address,
-    'phone': d.phone,
-    'is_active': d.isActive,
-    'created_at': d.lastModified.toIso8601String(), // Placeholder
-    'sync_version': 1,
-    'last_modified': d.lastModified.toIso8601String(),
-    'is_deleted': d.isDeleted,
-  });
+  static BranchModel branchFromData(BranchesTableData d) => BranchModel(
+    id: d.id,
+    name: d.name,
+    code: d.code,
+    isMainBranch: d.isMainBranch,
+    accountId: d.accountId,
+    address: d.address,
+    phone: d.phone,
+    isActive: d.isActive,
+    createdAt: d.createdAt,
+    syncVersion: d.syncVersion,
+    lastModified: d.lastModified,
+    isDeleted: d.isDeleted,
+  );
 
   static BranchesTableCompanion branchToCompanion(BranchModel m) => BranchesTableCompanion(
     id: Value(m.id),
     name: Value(m.name),
+    code: Value(m.code),
+    isMainBranch: Value(m.isMainBranch),
     address: Value(m.address),
     phone: Value(m.phone),
     isActive: Value(m.isActive),
     accountId: Value(m.accountId),
+    createdAt: Value(m.createdAt),
     lastModified: Value(m.lastModified),
     isDeleted: Value(m.isDeleted),
+    syncVersion: Value(m.syncVersion),
   );
 
   // ── Permission ──
-  static PermissionModel permissionFromData(PermissionsTableData d) => PermissionModel.fromJson({
-    'id': d.id,
-    'user_id': d.userId,
-    'permission_key': d.permissionKey,
-    'is_allowed': d.isAllowed,
-    'account_id': d.accountId,
-    'sync_version': 1,
-    'last_modified': d.lastModified.toIso8601String(),
-    'is_deleted': false,
-  });
+  static PermissionModel permissionFromData(PermissionsTableData d) => PermissionModel(
+    id: d.id,
+    userId: d.userId,
+    permissionKey: d.permissionKey,
+    isAllowed: d.isAllowed,
+    accountId: d.accountId,
+    createdAt: d.createdAt,
+    syncVersion: d.syncVersion,
+    lastModified: d.lastModified,
+    isDeleted: d.isDeleted,
+  );
 
   static PermissionsTableCompanion permissionToCompanion(PermissionModel m) => PermissionsTableCompanion(
     id: Value(m.id),
@@ -94,7 +100,10 @@ class SystemMapper {
     permissionKey: Value(m.permissionKey),
     isAllowed: Value(m.isAllowed),
     accountId: Value(m.accountId),
+    createdAt: Value(m.createdAt),
     lastModified: Value(m.lastModified),
+    isDeleted: Value(m.isDeleted),
+    syncVersion: Value(m.syncVersion),
   );
 
   // ── AppSettings ──
@@ -238,5 +247,154 @@ class SystemMapper {
     lastModified: Value(m.lastModified),
     syncVersion: Value(m.syncVersion),
     isDeleted: Value(m.isDeleted),
+  );
+
+  // ── AuditLog ──
+  static AuditLogModel auditLogFromData(AuditLogsTableData d) {
+    Map<String, dynamic>? summary;
+    String entityType = '';
+    String entityId = '';
+    try {
+      final details = jsonDecode(d.actionDetails) as Map<String, dynamic>;
+      summary = details['summary'] as Map<String, dynamic>?;
+      entityType = details['entity_type'] as String? ?? '';
+      entityId = details['entity_id'] as String? ?? '';
+    } catch (_) {}
+
+    return AuditLogModel(
+      id: d.id,
+      action: d.actionType,
+      entityType: entityType,
+      entityId: entityId,
+      actorId: d.performedById,
+      actorName: d.performedByName,
+      branchId: d.branchId,
+      summary: summary,
+      occurredAt: d.createdAt,
+    );
+  }
+
+  static AuditLogsTableCompanion auditLogToCompanion(AuditLogModel m) {
+    final details = {
+      'entity_type': m.entityType,
+      'entity_id': m.entityId,
+      'summary': m.summary,
+    };
+    return AuditLogsTableCompanion(
+      id: Value(m.id),
+      actionType: Value(m.action),
+      actionDetails: Value(jsonEncode(details)),
+      performedById: Value(m.actorId),
+      performedByName: Value(m.actorName ?? ''),
+      branchId: Value(m.branchId ?? ''),
+      accountId: const Value.absent(),
+      createdAt: Value(m.occurredAt),
+    );
+  }
+
+  // ── Notification ──
+  static AppNotificationModel notificationFromData(NotificationsTableData d) => AppNotificationModel(
+    id: d.id,
+    title: d.title,
+    message: d.message,
+    type: NotificationType.values.firstWhere(
+      (t) => t.name == d.type,
+      orElse: () => NotificationType.systemAlert,
+    ),
+    targetRoute: d.targetRoute,
+    isRead: d.isRead,
+    accountId: d.accountId,
+    branchId: d.branchId,
+    createdAt: d.createdAt,
+  );
+
+  static NotificationsTableCompanion notificationToCompanion(AppNotificationModel m) => NotificationsTableCompanion(
+    id: Value(m.id),
+    title: Value(m.title),
+    message: Value(m.message),
+    type: Value(m.type.name),
+    targetRoute: Value(m.targetRoute),
+    isRead: Value(m.isRead),
+    accountId: Value(m.accountId),
+    branchId: Value(m.branchId),
+    createdAt: Value(m.createdAt),
+  );
+
+  // ── Lookup ──
+  static LookupModel lookupFromData(LookupsTableData d) => LookupModel(
+    id: d.id,
+    name: d.name,
+    type: d.type,
+    isActive: d.isActive,
+    branchId: d.branchId,
+    syncVersion: d.syncVersion,
+    lastModified: d.lastModified,
+    isDeleted: d.isDeleted,
+  );
+
+  static LookupsTableCompanion lookupToCompanion(LookupModel m) => LookupsTableCompanion(
+    id: Value(m.id),
+    name: Value(m.name),
+    type: Value(m.type),
+    isActive: Value(m.isActive),
+    branchId: Value(m.branchId),
+    syncVersion: Value(m.syncVersion),
+    lastModified: Value(m.lastModified),
+    isDeleted: Value(m.isDeleted),
+  );
+
+  // ── ErrorLog ──
+  static ErrorLogModel errorLogFromData(ErrorLogsTableData d) => ErrorLogModel(
+    id: d.id,
+    title: d.title,
+    message: d.message,
+    source: d.source,
+    stackTrace: d.stackTrace,
+    severity: ErrorSeverity.values.firstWhere(
+      (s) => s.name == d.severity,
+      orElse: () => ErrorSeverity.warning,
+    ),
+    createdAt: d.createdAt,
+    isRead: d.isRead,
+  );
+
+  static ErrorLogsTableCompanion errorLogToCompanion(ErrorLogModel m) => ErrorLogsTableCompanion(
+    id: Value(m.id),
+    title: Value(m.title),
+    message: Value(m.message),
+    source: Value(m.source),
+    stackTrace: Value(m.stackTrace),
+    severity: Value(m.severity.name),
+    createdAt: Value(m.createdAt),
+    isRead: Value(m.isRead),
+  );
+
+  // ── Correction ──
+  static CorrectionEntry correctionFromData(CorrectionsTableData d) => CorrectionEntry(
+    id: d.id,
+    referenceType: CorrectionReferenceType.values.firstWhere(
+      (t) => t.name == d.referenceType,
+      orElse: () => CorrectionReferenceType.sale,
+    ),
+    referenceId: d.referenceId,
+    action: CorrectionAction.values.firstWhere(
+      (a) => a.name == d.action,
+      orElse: () => CorrectionAction.modified,
+    ),
+    userId: d.userId,
+    userDisplayName: d.userDisplayName,
+    timestamp: d.timestamp,
+    details: d.details,
+  );
+
+  static CorrectionsTableCompanion correctionToCompanion(CorrectionEntry m) => CorrectionsTableCompanion(
+    id: Value(m.id),
+    referenceType: Value(m.referenceType.name),
+    referenceId: Value(m.referenceId),
+    action: Value(m.action.name),
+    userId: Value(m.userId),
+    userDisplayName: Value(m.userDisplayName),
+    timestamp: Value(m.timestamp),
+    details: Value(m.details),
   );
 }

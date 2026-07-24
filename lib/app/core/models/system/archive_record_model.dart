@@ -103,7 +103,50 @@ class ArchiveRecordModel {
   })  : deletedAt = deletedAt ?? DateTime.now(),
         lastModified = lastModified ?? DateTime.now();
 
-  // 🟢 هل العنصر مفعل حالياً في الأرشيف (غير مسترجع وغير محذوف نهائياً)
+  ArchiveRecordModel copyWith({
+    String? id,
+    ArchiveEntityType? entityType,
+    String? entityId,
+    String? entityName,
+    Map<String, dynamic>? entityData,
+    String? deletedBy,
+    String? deletedByName,
+    DateTime? deletedAt,
+    String? branchId,
+    bool clearAccountId = false,
+    String? accountId,
+    bool clearRestoredAt = false,
+    DateTime? restoredAt,
+    bool clearRestoredBy = false,
+    String? restoredBy,
+    bool clearPermanentlyDeletedAt = false,
+    DateTime? permanentlyDeletedAt,
+    int? syncVersion,
+    DateTime? lastModified,
+  }) =>
+      ArchiveRecordModel(
+        id: id ?? this.id,
+        entityType: entityType ?? this.entityType,
+        entityId: entityId ?? this.entityId,
+        entityName: entityName ?? this.entityName,
+        entityData: entityData ?? this.entityData,
+        deletedBy: deletedBy ?? this.deletedBy,
+        deletedByName: deletedByName ?? this.deletedByName,
+        deletedAt: deletedAt ?? this.deletedAt,
+        branchId: branchId ?? this.branchId,
+        accountId:
+            clearAccountId ? null : (accountId ?? this.accountId),
+        restoredAt:
+            clearRestoredAt ? null : (restoredAt ?? this.restoredAt),
+        restoredBy:
+            clearRestoredBy ? null : (restoredBy ?? this.restoredBy),
+        permanentlyDeletedAt: clearPermanentlyDeletedAt
+            ? null
+            : (permanentlyDeletedAt ?? this.permanentlyDeletedAt),
+        syncVersion: syncVersion ?? this.syncVersion,
+        lastModified: lastModified ?? this.lastModified,
+      );
+
   bool get isActiveInArchive => restoredAt == null && permanentlyDeletedAt == null;
 
   Map<String, dynamic> toJson() => {

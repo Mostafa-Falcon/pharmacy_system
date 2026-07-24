@@ -8,6 +8,12 @@ class BranchModel implements SyncableEntity {
   // 🏬 اسم الفرع (مثال: الفرع الرئيسي / فرع المعادي / فرع 2)
   final String name;
 
+  // 🔢 كود الفرع (اختياري)
+  final String? code;
+
+  // 🏠 هل هذا هو الفرع الرئيسي للمؤسسة
+  final bool isMainBranch;
+
   // 🏢 معرف الحساب الرئيسي / المؤسسة التابع لها الفرع (Tenant ID)
   final String? accountId;
 
@@ -40,6 +46,8 @@ class BranchModel implements SyncableEntity {
   BranchModel({
     required this.id,
     required this.name,
+    this.code,
+    this.isMainBranch = false,
     this.accountId,
     this.address,
     this.phone,
@@ -53,6 +61,8 @@ class BranchModel implements SyncableEntity {
   BranchModel copyWith({
     String? id,
     String? name,
+    String? code,
+    bool? isMainBranch,
     String? accountId,
     String? address,
     String? phone,
@@ -65,6 +75,8 @@ class BranchModel implements SyncableEntity {
     return BranchModel(
       id: id ?? this.id,
       name: name ?? this.name,
+      code: code ?? this.code,
+      isMainBranch: isMainBranch ?? this.isMainBranch,
       accountId: accountId ?? this.accountId,
       address: address ?? this.address,
       phone: phone ?? this.phone,
@@ -79,6 +91,8 @@ class BranchModel implements SyncableEntity {
   Map<String, dynamic> toJson() => {
     'id': id,
     'name': name,
+    'code': code,
+    'is_main_branch': isMainBranch,
     'account_id': accountId,
     'address': address,
     'phone': phone,
@@ -92,6 +106,8 @@ class BranchModel implements SyncableEntity {
   factory BranchModel.fromJson(Map<String, dynamic> json) => BranchModel(
     id: json['id'] as String,
     name: json['name'] as String,
+    code: json['code'] as String?,
+    isMainBranch: json['is_main_branch'] as bool? ?? false,
     accountId: json['account_id'] as String?,
     address: json['address'] as String?,
     phone: json['phone'] as String?,

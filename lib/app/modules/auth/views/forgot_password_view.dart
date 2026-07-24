@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 import '../bloc/auth_bloc.dart';
-import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
 class ForgotPasswordView extends StatefulWidget {
   const ForgotPasswordView({super.key});
@@ -62,29 +61,21 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                     Icon(Icons.lock_reset_rounded,
                         size: 64.sp, color: scheme.primary),
                     SizedBox(height: 16.h),
-                    ReusableText(
+                    ReusableText.h3(
                       'إعادة تعيين كلمة المرور',
-                      style: TextStyle(
-                          fontSize: 22.sp, fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: 8.h),
-                    ReusableText(
+                    SizedBox(height: AppSpacing.xs.h),
+                    ReusableText.caption(
                       'أدخل البريد الإلكتروني المسجل لارسال رابط إعادة التعيين.',
-                      style: TextStyle(
-                          fontSize: 13.sp, color: scheme.onSurfaceVariant),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: 28.h),
-                    TextFormField(
+                    SizedBox(height: AppSpacing.xl.h),
+                    ReusableInput.email(
                       controller: _emailCtrl,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        labelText: 'البريد الإلكتروني',
-                        prefixIcon: const Icon(Icons.email_outlined),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.r)),
-                      ),
+                      label: 'البريد الإلكتروني',
+                      prefixIcon: const Icon(Icons.email_outlined),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return 'يرجى إدخال البريد الإلكتروني';
@@ -97,7 +88,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                       },
                       onFieldSubmitted: (_) => _onSubmit(),
                     ),
-                    SizedBox(height: 24.h),
+                    SizedBox(height: AppSpacing.xl.h),
                     BlocBuilder<AuthBloc, AuthState>(
                       builder: (context, state) {
                         return ReusableButton(

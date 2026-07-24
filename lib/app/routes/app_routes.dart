@@ -3,6 +3,7 @@
 abstract class Routes {
   Routes._();
 
+  static const INITIAL = HOME;
   static const SPLASH = '/splash';
   static const LOGIN = '/login';
   static const FORGOT_PASSWORD = '/forgot-password';

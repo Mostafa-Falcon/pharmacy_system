@@ -4,6 +4,51 @@ import 'package:pharmacy_system/app/shared/ui_core.dart';
 import 'base_state.dart';
 import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 
+mixin BlocEffectMixin<E, S> on Bloc<E, S> {
+  final _effectController = StreamController<BaseEffect>.broadcast();
+  Stream<BaseEffect> get effectStream => _effectController.stream;
+
+  void emitEffect(BaseEffect effect) {
+    if (!_effectController.isClosed) {
+      _effectController.add(effect);
+    }
+  }
+
+  @override
+  Future<void> close() async {
+    await _effectController.close();
+    return super.close();
+  }
+}
+
+/// دالة مساعدة لتنفيذ العمليات مع معالجة الأخطاء وحالة التحميل
+Future<void> handleOperation<S extends BaseState<T>, T>(
+  Emitter<S> emit,
+  Future<T> Function() operation, {
+  bool showLoading = true,
+  String? customErrorMessage,
+  S Function()? loadingState,
+  S Function(T data)? successState,
+  S Function(String error)? errorState,
+}) async {
+  if (showLoading) {
+    if (loadingState != null) {
+      emit(loadingState());
+    }
+  }
+  try {
+    final result = await operation();
+    if (successState != null) {
+      emit(successState(result));
+    }
+  } catch (e, stack) {
+    safeDebugPrint('Bloc Error: $e\n$stack');
+    if (errorState != null) {
+      emit(errorState(customErrorMessage ?? e.toString()));
+    }
+  }
+}
+
 abstract class BaseBloc<E, T> extends Bloc<E, BaseState<T>> {
   BaseBloc() : super(const BaseState.initial());
 
@@ -18,7 +63,6 @@ abstract class BaseBloc<E, T> extends Bloc<E, BaseState<T>> {
     }
   }
 
-  /// الاستماع لتحديثات جداول معينة في قاعدة البيانات (من المزامنة أو محلياً) مع تجميع التحديثات المتتالية (Debounce)
   void observeTables(
     List<String> tables,
     FutureOr<void> Function() onUpdate, {
@@ -50,8 +94,6 @@ abstract class BaseBloc<E, T> extends Bloc<E, BaseState<T>> {
     return super.close();
   }
 
-  /// Helper لتنفيذ العمليات مع معالجة الأخطاء وحالة التحميل.
-  /// يتم تمرير [emit] لتجنب تحذيرات الوصول للأعضاء المحمية.
   Future<void> handleOperation(
     Emitter<BaseState<T>> emit,
     Future<T> Function() operation, {

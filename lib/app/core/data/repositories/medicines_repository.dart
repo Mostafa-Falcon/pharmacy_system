@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
-import 'package:drift/drift.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/inventory_dao.dart';
-import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
 import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
 import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'package:pharmacy_system/app/modules/archive/services/archive_service.dart';
+import 'package:pharmacy_system/app/core/data/mappers/mappers.dart';
 
 class MedicinesRepository {
   InventoryDao get _dao => sl<InventoryDao>();
@@ -26,90 +24,13 @@ class MedicinesRepository {
     });
   }
 
-  MedicineModel _toModel(MedicinesTableData d) {
-    return MedicineModel.fromJson({
-      'id': d.id,
-      'name': d.name,
-      'name_en': d.nameEn,
-      'item_types': jsonDecode(d.itemTypes),
-      'therapeutic_group': jsonDecode(d.therapeuticGroup),
-      'barcodes': jsonDecode(d.barcodes),
-      'item_levels': jsonDecode(d.itemLevels),
-      'expiry_dates': d.expiryDates != null ? jsonDecode(d.expiryDates!) : null,
-      'supplier_id': d.supplierId,
-      'manufacturer': d.manufacturer,
-      'dosage_form': d.dosageForm,
-      'strength': d.strength,
-      'package_size': d.packageSize,
-      'container_shape': d.containerShape,
-      'location': d.location,
-      'is_taxable': d.isTaxable,
-      'tax_type': d.taxType,
-      'tax_value': d.taxValue,
-      'prices_include_tax': d.pricesIncludeTax,
-      'alert_enabled': d.alertEnabled,
-      'min_stock': d.minStock,
-      'expiry_tracking_enabled': d.expiryTrackingEnabled,
-      'allow_negative_stock': d.allowNegativeStock,
-      'is_active': d.isActive,
-      'image_url': d.imageUrl,
-      'description': d.description,
-      'account_id': d.accountId,
-      'branch_id': d.branchId,
-      'sync_version': d.syncVersion,
-      'last_modified': d.lastModified.toIso8601String(),
-      'is_deleted': d.isDeleted,
-      'created_at': d.createdAt.toIso8601String(),
-    });
-  }
-
-  MedicinesTableCompanion _toCompanion(MedicineModel m) {
-    final json = m.toJson();
-    return MedicinesTableCompanion(
-      id: Value(m.id),
-      name: Value(m.name),
-      nameEn: Value(m.nameEn),
-      itemTypes: Value(jsonEncode(json['item_types'])),
-      therapeuticGroup: Value(jsonEncode(json['therapeutic_group'])),
-      barcodes: Value(jsonEncode(json['barcodes'])),
-      itemLevels: Value(jsonEncode(json['item_levels'])),
-      expiryDates: m.expiryDates != null
-          ? Value(jsonEncode(json['expiry_dates']))
-          : const Value.absent(),
-      supplierId: Value(m.supplierId),
-      manufacturer: Value(m.manufacturer),
-      dosageForm: Value(m.dosageForm),
-      strength: Value(m.strength),
-      packageSize: Value(m.packageSize),
-      containerShape: Value(m.containerShape),
-      location: Value(m.location),
-      isTaxable: Value(m.isTaxable),
-      taxType: Value(m.taxType),
-      taxValue: Value(m.taxValue),
-      pricesIncludeTax: Value(m.pricesIncludeTax),
-      alertEnabled: Value(m.alertEnabled),
-      minStock: Value(m.minStock),
-      expiryTrackingEnabled: Value(m.expiryTrackingEnabled),
-      allowNegativeStock: Value(m.allowNegativeStock),
-      isActive: Value(m.isActive),
-      imageUrl: Value(m.imageUrl),
-      description: Value(m.description),
-      accountId: Value(m.accountId),
-      branchId: Value(m.branchId),
-      syncVersion: Value(m.syncVersion),
-      lastModified: Value(m.lastModified),
-      isDeleted: Value(m.isDeleted),
-      createdAt: Value(DateTime.now()), // Or keep original
-    );
-  }
-
   Future<List<MedicineModel>> getMedicines({
     required String branchId,
     String? searchQuery,
     bool includeDeleted = false,
   }) async {
     final items = await _dao.getAllMedicines();
-    var data = items.map(_toModel).toList();
+    var data = items.map(InventoryMapper.medicineFromData).toList();
     _updateCache(branchId, data);
 
     if (searchQuery != null && searchQuery.isNotEmpty) {
@@ -126,7 +47,7 @@ class MedicinesRepository {
 
   Stream<List<MedicineModel>> watchMedicines(String branchId) {
     return _dao.watchAllMedicines().map((rows) {
-      final result = rows.map(_toModel).toList();
+      final result = rows.map(InventoryMapper.medicineFromData).toList();
       _updateCache(branchId, result);
       return result;
     });
@@ -134,7 +55,7 @@ class MedicinesRepository {
 
   Future<MedicineModel?> getByIdAsync(String id) async {
     final data = await _dao.getMedicineById(id);
-    return data != null ? _toModel(data) : null;
+    return data != null ? InventoryMapper.medicineFromData(data) : null;
   }
 
   MedicineModel? getById(String id) {
@@ -150,7 +71,7 @@ class MedicinesRepository {
     required String branchId,
   }) async {
     final model = medicine.copyWith(lastModified: DateTime.now());
-    await _dao.upsertMedicine(_toCompanion(model));
+    await _dao.upsertMedicine(InventoryMapper.medicineToCompanion(model));
     SyncService.notifyTableUpdated('medicines', branchId);
     unawaited(
       SyncService.queueOperation(
@@ -167,7 +88,7 @@ class MedicinesRepository {
     required String branchId,
   }) async {
     final model = medicine.copyWith(lastModified: DateTime.now());
-    await _dao.upsertMedicine(_toCompanion(model));
+    await _dao.upsertMedicine(InventoryMapper.medicineToCompanion(model));
     SyncService.notifyTableUpdated('medicines', branchId);
     unawaited(
       SyncService.queueOperation(
@@ -199,7 +120,7 @@ class MedicinesRepository {
     bool skipSync = false,
   }) async {
     for (var m in medicines) {
-      await _dao.upsertMedicine(_toCompanion(m));
+      await _dao.upsertMedicine(InventoryMapper.medicineToCompanion(m));
       if (!skipSync) {
         unawaited(
           SyncService.queueOperation(
@@ -220,7 +141,7 @@ class MedicinesRepository {
     bool skipSync = false,
   }) async {
     for (var m in medicines) {
-      await _dao.upsertMedicine(_toCompanion(m));
+      await _dao.upsertMedicine(InventoryMapper.medicineToCompanion(m));
       if (!skipSync) {
         unawaited(
           SyncService.queueOperation(

@@ -13,6 +13,21 @@ class SyncStateModel {
     required this.branchId,
   });
 
+  SyncStateModel copyWith({
+    String? id,
+    String? targetTable,
+    DateTime? lastSyncedAt,
+    int? lastSyncedVersion,
+    String? branchId,
+  }) =>
+      SyncStateModel(
+        id: id ?? this.id,
+        targetTable: targetTable ?? this.targetTable,
+        lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
+        lastSyncedVersion: lastSyncedVersion ?? this.lastSyncedVersion,
+        branchId: branchId ?? this.branchId,
+      );
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'target_table': targetTable,

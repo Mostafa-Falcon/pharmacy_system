@@ -1,5 +1,10 @@
-- [ ] تحديث `InventoryMapper` ليشمل الجداول المفقودة (Barcodes, Units, Settings)
-- [ ] تحديث `SalesMapper` ليشمل جداول المرتجعات العامة
-- [ ] تحديث `SystemMapper` ليشمل جداول النظام (Audit, Lookups, Errors, Notifications, Corrections)
-- [ ] مراجعة وتحديث `AccountingMapper` لضمان التوافق الكامل
-- [ ] التحقق من عدم وجود أخطاء في الـ Compile
+- [x] Review and update `UserModel` (ensure `copyWith` is complete)
+- [x] Review and update `BranchModel` (added `code` and `isMainBranch`, updated `copyWith`)
+- [x] Review and update `PermissionModel` (ensure `copyWith` is complete)
+- [x] Update `AuthService` (refine static state management & delegate `resendConfirmation`)
+- [x] Update `AuthSession` (fixed missing `await`, improved `login`/`register` initialization, added branch fetch fallback)
+- [x] Update `AuthUserSync` (added `isMainBranch` to default branch creation)
+- [x] Update `AuthBloc` (added `AuthService.init()` to `AppStarted`)
+- [x] Fix `AuthDeviceLock` and `AuthService` device ID persistence
+- [x] Fix `SecureStorageHelper` missing `clearBranchId` method
+- [x] Verify changes with a manual flow test

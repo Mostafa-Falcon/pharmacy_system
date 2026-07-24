@@ -13,6 +13,21 @@ class ImportStepInfo {
     this.itemsSkipped = 0,
   });
 
+  ImportStepInfo copyWith({
+    String? step,
+    int? itemsFound,
+    int? itemsSaved,
+    int? itemsUpdated,
+    int? itemsSkipped,
+  }) =>
+      ImportStepInfo(
+        step: step ?? this.step,
+        itemsFound: itemsFound ?? this.itemsFound,
+        itemsSaved: itemsSaved ?? this.itemsSaved,
+        itemsUpdated: itemsUpdated ?? this.itemsUpdated,
+        itemsSkipped: itemsSkipped ?? this.itemsSkipped,
+      );
+
   Map<String, dynamic> toMap() => {
         'step': step,
         'itemsFound': itemsFound,

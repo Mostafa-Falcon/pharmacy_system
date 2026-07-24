@@ -185,9 +185,8 @@ class AccountingMapper {
       accountId: Value(m.accountId),
       voucherDate: Value(m.voucherDate),
       createdAt: Value(m.createdAt),
-      lastModified: const Value.absent(),
-      isDeleted: const Value.absent(),
-      syncVersion: const Value.absent(),
+      isDeleted: const Value(false),
+      syncVersion: const Value(1),
     );
   }
 }

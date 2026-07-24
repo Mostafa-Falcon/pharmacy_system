@@ -11,6 +11,7 @@ import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'password_hasher.dart';
 import 'secure_storage_helper.dart';
+import 'package:pharmacy_system/app/core/data/mappers/mappers.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
 
 part 'auth_session.dart';
@@ -37,7 +38,14 @@ class AuthService {
   static bool get isInitialized => _initialized;
 
   static Future<String?> _getDeviceId() async {
-    return const Uuid().v4();
+    // محاولة جلب المعرف المحفوظ من الـ SecureStorage أولاً
+    String? deviceId = await SecureStorageHelper.getDeviceId();
+    if (deviceId == null || deviceId.isEmpty) {
+      // إذا لم يوجد، ننشئ واحد جديد ونحفظه
+      deviceId = const Uuid().v4();
+      await SecureStorageHelper.saveDeviceId(deviceId);
+    }
+    return deviceId;
   }
 
   static bool _isLoginThrottled() {
@@ -164,72 +172,12 @@ class AuthService {
   static Future<void> selectBranch(String branchId) =>
       AuthSession.selectBranch(branchId);
 
-  // --- Converters ---
-
-  static UserModel _userFromTable(UsersTableData d) {
-    return UserModel(
-      id: d.id,
-      name: d.name,
-      email: d.email,
-      passwordHash: '',
-      role: UserRole.values.firstWhere(
-        (r) => r.name == d.role,
-        orElse: () => UserRole.employee,
-      ),
-      assignedBranchId: d.assignedBranchId,
-      activeDeviceId: d.activeDeviceId,
-      createdAt: d.createdAt,
-      lastModified: d.lastModified,
-      isDeleted: d.isDeleted,
-      syncVersion: d.syncVersion,
-    );
-  }
-
-  static UsersTableCompanion _userToCompanion(UserModel m) {
-    return UsersTableCompanion(
-      id: Value(m.id),
-      name: Value(m.name),
-      email: Value(m.email),
-      role: Value(m.role.name),
-      assignedBranchId: Value(m.assignedBranchId),
-      activeDeviceId: Value(m.activeDeviceId),
-      createdAt: Value(m.createdAt),
-      lastModified: Value(m.lastModified),
-      isDeleted: Value(m.isDeleted),
-      syncVersion: Value(m.syncVersion),
-    );
-  }
-
-  static BranchModel _branchFromTable(BranchesTableData d) {
-    return BranchModel(
-      id: d.id,
-      name: d.name,
-      address: d.address,
-      phone: d.phone,
-      isActive: d.isActive,
-      accountId: d.accountId,
-      createdAt: d.lastModified,
-      lastModified: d.lastModified,
-      isDeleted: d.isDeleted,
-    );
-  }
-
-  static BranchesTableCompanion _branchToCompanion(BranchModel m) {
-    return BranchesTableCompanion(
-      id: Value(m.id),
-      name: Value(m.name),
-      address: Value(m.address),
-      phone: Value(m.phone),
-      isActive: Value(m.isActive),
-      accountId: Value(m.accountId),
-      lastModified: Value(m.lastModified),
-      isDeleted: Value(m.isDeleted),
-    );
-  }
+  static Future<Map<String, dynamic>> resendConfirmation(String email) =>
+      AuthSession.resendConfirmation(email);
 
   // --- Permissions ---
 
-  static Future<bool> hasPermission(String permissionKey) =>
+  static bool hasPermission(String permissionKey) =>
       AuthSession.hasPermission(permissionKey);
 
   static Future<void> refreshPermissionCache() =>

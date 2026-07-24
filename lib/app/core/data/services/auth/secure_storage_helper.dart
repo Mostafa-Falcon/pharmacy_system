@@ -117,6 +117,14 @@ class SecureStorageHelper {
     }
   }
 
+  static Future<void> clearBranchId() async {
+    try {
+      await _storage.delete(key: _branchIdKey);
+    } catch (e) {
+      safeDebugPrint('SecureStorage: clearBranchId failed — $e');
+    }
+  }
+
   static Future<void> saveActiveSession(String userId, String deviceId) async {
     try {
       await _storage.write(

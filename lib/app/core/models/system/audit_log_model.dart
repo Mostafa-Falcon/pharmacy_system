@@ -39,7 +39,33 @@ class AuditLogModel {
     DateTime? occurredAt,
   }) : occurredAt = occurredAt ?? DateTime.now();
 
-  // 🗣️ تسمية الحركة باللغة العربية المباشرة للعرض في شاشات المراقبة
+  AuditLogModel copyWith({
+    String? id,
+    String? action,
+    String? entityType,
+    String? entityId,
+    String? actorId,
+    bool clearActorName = false,
+    String? actorName,
+    bool clearBranchId = false,
+    String? branchId,
+    bool clearSummary = false,
+    Map<String, dynamic>? summary,
+    DateTime? occurredAt,
+  }) =>
+      AuditLogModel(
+        id: id ?? this.id,
+        action: action ?? this.action,
+        entityType: entityType ?? this.entityType,
+        entityId: entityId ?? this.entityId,
+        actorId: actorId ?? this.actorId,
+        actorName:
+            clearActorName ? null : (actorName ?? this.actorName),
+        branchId: clearBranchId ? null : (branchId ?? this.branchId),
+        summary: clearSummary ? null : (summary ?? this.summary),
+        occurredAt: occurredAt ?? this.occurredAt,
+      );
+
   String get actionLabelAr {
     switch (action) {
       case 'branch.saved':

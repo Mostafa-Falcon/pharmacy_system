@@ -1,43 +1,57 @@
-# استكمال وتطوير نظام الـ Mappers لتوافق كامل مع الموديلات
+# Implementation Plan - Auth Unified Block
 
-الهدف هو استكمال ملفات الـ Mappers في مجلد `lib/app/core/data/mappers` لتغطية جميع الجداول الموجودة في قاعدة البيانات (Drift) وضمان توافقها الكامل مع الـ Models المستخدمة في التطبيق. سيتم أيضاً توحيد نمط التحويل لتسهيل استخدامه في الـ Repositories.
+هظبطلك مرحلة الـ Auth من أول الـ UI لحد الـ Database (Local & Remote) والموديلات عشان يكونوا شغالين كـ "كتلة واحدة" متناغمة، مع التأكد من كمال الـ `copyWith` وتوحيد الرسايل.
 
 ## User Review Required
-
 > [!IMPORTANT]
-> سيتم إضافة المappers للجداول الجديدة التي تم إضافتها مؤخراً في النسخة الرابعة من قاعدة البيانات (v4) مثل `Returns`, `AuditLogs`, `Lookups`, `ErrorLogs`, وغيرها.
-
-> [!NOTE]
-> سيتم الالتزام بنمط الـ Static Methods الحالي لسهولة الاستخدام المباشر دون الحاجة لعمل Instance من الـ Mapper، مع التأكد من مطابقة أسماء الحقول بدقة بين الـ TableData والـ Model.
+> - الـ Auth بيعتمد على Supabase (Remote) و Drift (Local).
+> - المزامنة بتتم عن طريق `AuthUserSync` اللي بيحدث الـ Local DB بمجرد تسجيل الدخول.
+> - الـ `copyWith` موجود في الـ Models الأساسية، وهتأكد لو فيه أي Nested Models محتاجة تظبيط.
 
 ## Proposed Changes
 
-### [Mappers Layer]
+### 1. Models Layer (النماذج)
+مراجعة الـ Models الأساسية للتأكد من شمولية الـ `copyWith` وتوافقها مع الـ JSON والـ Database Companions.
 
-#### [MODIFY] [inventory_mapper.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/data/mappers/inventory_mapper.dart)
-- إضافة تحويل لـ `BarcodeSettingsTable` -> `BarcodeSettingsModel`.
-- إضافة تحويل لـ `MedicineBarcodesTable` -> `MedicineBarcodeModel`.
-- إضافة تحويل لـ `MedicineUnitsTable` -> `MedicineUnitModel`.
-- تحديث `medicineFromData` ليشمل حقل `created_at`.
+#### [MODIFY] [user_model.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/models/auth/user_model.dart)
+- التأكد من أن `copyWith` يشمل كل الحقول الجديدة.
 
-#### [MODIFY] [sales_mapper.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/data/mappers/sales_mapper.dart)
-- إضافة تحويل لـ `ReturnsTable` -> `ReturnModel`.
+#### [MODIFY] [branch_model.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/models/auth/branch_model.dart)
+- إضافة أو تحسين `copyWith` لو لزم الأمر.
 
-#### [MODIFY] [system_mapper.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/data/mappers/system_mapper.dart)
-- إضافة تحويل لـ `AuditLogsTable` -> `AuditLogModel`.
-- إضافة تحويل لـ `NotificationsTable` -> `AppNotificationModel`.
-- إضافة تحويل لـ `LookupsTable` -> `LookupModel`.
-- إضافة تحويل لـ `ErrorLogsTable` -> `ErrorLogModel`.
-- إضافة تحويل لـ `CorrectionsTable` -> `CorrectionEntry`.
+#### [MODIFY] [permission_model.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/models/auth/permission_model.dart)
+- التأكد من وجود `copyWith` متكامل.
 
-#### [MODIFY] [accounting_mapper.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/data/mappers/accounting_mapper.dart)
-- تحديث التحويلات للتأكد من شمول جميع الحقول المحدثة في الموديلات.
+---
+
+### 2. Service Layer (الخدمات والربط مع قاعدة البيانات)
+تحديث منطق الجلسة والمزامنة لضمان التدفق السلس للبيانات.
+
+#### [MODIFY] [auth_service.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/data/services/auth/auth_service.dart)
+- تحسين إدارة الحالة الثابتة (Static state) للمستخدم والفرع الحالي.
+
+#### [MODIFY] [auth_session.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/data/services/auth/auth_session.dart)
+- ربط الـ Login والـ Register بشكل أعمق مع الـ `AuthUserSync` لضمان أن البيانات المحلية دائمًا محدثة فور النجاح.
+
+#### [MODIFY] [auth_user_sync.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/core/data/services/auth/auth_user_sync.dart)
+- التأكد من أن الـ `upsert` للبيانات المحلية بيتم بشكل صحيح وبدون تعارضات (Conflict Resolution).
+
+---
+
+### 3. Presentation Layer (منطق الواجهة)
+تحديث الـ `AuthBloc` ليكون هو المايسترو اللي بيحرك الـ "كتلة الواحدة".
+
+#### [MODIFY] [auth_bloc.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/modules/auth/bloc/auth_bloc.dart)
+- التأكد من أن كل الـ Events (Login, Register, Logout) بتمر بدورة حياة كاملة (Remote -> Local -> State).
+- استخدام `AuthStrings` حصرياً لكل التنبيهات.
 
 ## Verification Plan
 
 ### Automated Tests
-- التأكد من عدم وجود أخطاء compile بعد إضافة التحويلات الجديدة.
-- التحقق من توافق أنواع البيانات (Data Types) بين الموديلات والجداول.
+- تشغيل `test/bloc/auth_bloc_test.dart` للتأكد من عدم وجود تراجعات (Regressions).
 
 ### Manual Verification
-- مراجعة الكود للتأكد من أن جميع الجداول الـ 53 المذكورة في `AppDatabase` لها ما يقابلها في الـ Mappers.
+1. **Login Flow:** إدخال بيانات صحيحة -> التأكد من الحفظ في Drift -> الانتقال للـ Home.
+2. **Offline Support:** فصل الإنترنت بعد تسجيل الدخول -> التأكد من أن الـ Session ما زالت شغالة من الـ Cache.
+3. **Register Flow:** إنشاء حساب جديد -> التأكد من إنشاء الـ Main Branch محلياً ومزامنته مع Supabase.
+4. **Error Handling:** إدخال بيانات غلط -> التأكد من ظهور الرسالة الصحيحة من `AuthStrings`.

@@ -161,6 +161,11 @@ class StocktakingTable extends Table {
   TextColumn get id => text()();
   TextColumn get stocktakingNumber => text()();
   TextColumn get title => text()();
+  TextColumn get status => text().withDefault(const Constant('draft'))();
+  RealColumn get totalDifferenceValue => real().withDefault(const Constant(0.0))();
+  TextColumn get categoryId => text().nullable()();
+  TextColumn get brandId => text().nullable()();
+  TextColumn get items => text()(); // StocktakingItemModel[] as JSON
   TextColumn get createdBy => text()();
   TextColumn get branchId => text().withDefault(const Constant(''))();
   TextColumn get accountId => text().withDefault(const Constant(''))();

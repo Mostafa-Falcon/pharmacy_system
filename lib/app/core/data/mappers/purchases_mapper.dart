@@ -77,8 +77,8 @@ class PurchasesMapper {
     totalQuantitySupplied: Value(m.quantity.toInt()),
     branchId: const Value.absent(),
     accountId: const Value.absent(),
-    lastModified: const Value.absent(),
-    isDeleted: const Value.absent(),
-    syncVersion: const Value.absent(),
+    lastModified: Value(m.date),
+    isDeleted: const Value(false),
+    syncVersion: const Value(1),
   );
 }

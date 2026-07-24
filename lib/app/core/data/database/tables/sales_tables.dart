@@ -149,15 +149,22 @@ class ShippingOrdersTable extends Table {
 class QuotationsTable extends Table {
   TextColumn get id => text()();
   TextColumn get quotationNumber => text()();
+  TextColumn get customerId => text().nullable()();
   TextColumn get customerName => text()();
   TextColumn get customerPhone => text().nullable()();
   
   // JSON Fields
-  TextColumn get items => text()(); // List<QuotationItemModel>
+  TextColumn get items => text()(); // QuotationItemModel[]
   
   RealColumn get subtotalAmount => real().withDefault(const Constant(0.0))();
   RealColumn get discountAmount => real().withDefault(const Constant(0.0))();
   RealColumn get finalAmount => real().withDefault(const Constant(0.0))();
+  RealColumn get paidAmount => real().withDefault(const Constant(0.0))();
+  RealColumn get remainingAmount => real().withDefault(const Constant(0.0))();
+  TextColumn get paymentMethod => text().nullable()();
+  TextColumn get paymentStatus => text().withDefault(const Constant('unpaid'))();
+  TextColumn get shippingStatus => text().withDefault(const Constant('pending'))();
+  RealColumn get totalQuantity => real().withDefault(const Constant(0.0))();
   TextColumn get status => text().withDefault(const Constant('draft'))();
   TextColumn get createdBy => text()();
   TextColumn get branchId => text().withDefault(const Constant(''))();

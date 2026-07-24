@@ -1,13 +1,16 @@
 import 'dart:convert';
 import 'package:drift/drift.dart';
+import 'package:pharmacy_system/app/core/models/inventory/barcode_settings_model.dart';
 import 'package:pharmacy_system/app/core/models/inventory/inventory_transaction_model.dart';
 import 'package:pharmacy_system/app/core/models/inventory/item_batch_model.dart';
 import 'package:pharmacy_system/app/core/models/inventory/item_category_model.dart';
 import 'package:pharmacy_system/app/core/models/inventory/item_swap_model.dart';
 import 'package:pharmacy_system/app/core/models/inventory/item_variant_model.dart';
 import 'package:pharmacy_system/app/core/models/inventory/item_warranty_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_barcode_model.dart';
 import 'package:pharmacy_system/app/core/models/inventory/medicine_brand_model.dart';
 import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_unit_model.dart';
 import 'package:pharmacy_system/app/core/models/inventory/opening_stock_model.dart';
 import 'package:pharmacy_system/app/core/models/inventory/price_group_model.dart';
 import 'package:pharmacy_system/app/core/models/inventory/stock_adjustment_model.dart';
@@ -49,6 +52,7 @@ class InventoryMapper {
     'sync_version': d.syncVersion,
     'last_modified': d.lastModified.toIso8601String(),
     'is_deleted': d.isDeleted,
+    'created_at': d.createdAt.toIso8601String(),
   });
 
   static MedicinesTableCompanion medicineToCompanion(MedicineModel m) {
@@ -85,7 +89,7 @@ class InventoryMapper {
       syncVersion: Value(m.syncVersion),
       lastModified: Value(m.lastModified),
       isDeleted: Value(m.isDeleted),
-      createdAt: Value(m.lastModified), // Fallback
+      createdAt: Value(m.createdAt),
     );
   }
 
@@ -103,7 +107,6 @@ class InventoryMapper {
     createdAt: d.createdAt,
     lastModified: d.lastModified,
     isDeleted: d.isDeleted,
-    syncVersion: d.syncVersion,
   );
 
   static ItemBatchesTableCompanion itemBatchToCompanion(ItemBatchModel m) => ItemBatchesTableCompanion(
@@ -120,7 +123,7 @@ class InventoryMapper {
     createdAt: Value(m.createdAt),
     lastModified: Value(m.lastModified),
     isDeleted: Value(m.isDeleted),
-    syncVersion: Value(m.syncVersion),
+    syncVersion: const Value(1),
   );
 
   // ─── ItemCategory ───
@@ -134,7 +137,6 @@ class InventoryMapper {
     accountId: d.accountId,
     lastModified: d.lastModified,
     isDeleted: d.isDeleted,
-    syncVersion: d.syncVersion,
   );
 
   static ItemCategoriesTableCompanion itemCategoryToCompanion(ItemCategoryModel m) => ItemCategoriesTableCompanion(
@@ -147,7 +149,6 @@ class InventoryMapper {
     accountId: Value(m.accountId),
     lastModified: Value(m.lastModified),
     isDeleted: Value(m.isDeleted),
-    syncVersion: Value(m.syncVersion),
   );
 
   // ─── MedicineBrand ───
@@ -160,7 +161,6 @@ class InventoryMapper {
     accountId: d.accountId,
     lastModified: d.lastModified,
     isDeleted: d.isDeleted,
-    syncVersion: d.syncVersion,
   );
 
   static MedicineBrandsTableCompanion medicineBrandToCompanion(MedicineBrandModel m) => MedicineBrandsTableCompanion(
@@ -172,7 +172,6 @@ class InventoryMapper {
     accountId: Value(m.accountId),
     lastModified: Value(m.lastModified),
     isDeleted: Value(m.isDeleted),
-    syncVersion: Value(m.syncVersion),
   );
 
   // ─── ItemVariant ───
@@ -184,7 +183,6 @@ class InventoryMapper {
     accountId: d.accountId,
     lastModified: d.lastModified,
     isDeleted: d.isDeleted,
-    syncVersion: d.syncVersion,
   );
 
   static ItemVariantsTableCompanion itemVariantToCompanion(ItemVariantModel m) => ItemVariantsTableCompanion(
@@ -195,7 +193,6 @@ class InventoryMapper {
     accountId: Value(m.accountId),
     lastModified: Value(m.lastModified),
     isDeleted: Value(m.isDeleted),
-    syncVersion: Value(m.syncVersion),
   );
 
   // ─── ItemWarranty ───
@@ -212,7 +209,6 @@ class InventoryMapper {
     accountId: d.accountId,
     lastModified: d.lastModified,
     isDeleted: d.isDeleted,
-    syncVersion: d.syncVersion,
   );
 
   static ItemWarrantiesTableCompanion itemWarrantyToCompanion(ItemWarrantyModel m) => ItemWarrantiesTableCompanion(
@@ -225,7 +221,6 @@ class InventoryMapper {
     accountId: Value(m.accountId),
     lastModified: Value(m.lastModified),
     isDeleted: Value(m.isDeleted),
-    syncVersion: Value(m.syncVersion),
   );
 
   // ─── PriceGroup ───
@@ -235,11 +230,6 @@ class InventoryMapper {
     markupPercentage: d.markupPercentage,
     discountPercentage: d.discountPercentage,
     isDefault: d.isDefault,
-    isActive: d.isActive,
-    accountId: d.accountId,
-    lastModified: d.lastModified,
-    isDeleted: d.isDeleted,
-    syncVersion: d.syncVersion,
   );
 
   static PriceGroupsTableCompanion priceGroupToCompanion(PriceGroupModel m) => PriceGroupsTableCompanion(
@@ -248,43 +238,54 @@ class InventoryMapper {
     markupPercentage: Value(m.markupPercentage),
     discountPercentage: Value(m.discountPercentage),
     isDefault: Value(m.isDefault),
-    isActive: Value(m.isActive),
-    accountId: Value(m.accountId),
-    lastModified: Value(m.lastModified),
-    isDeleted: Value(m.isDeleted),
-    syncVersion: Value(m.syncVersion),
   );
 
   // ─── Stocktaking ───
-  static StocktakingModel stocktakingFromData(StocktakingTableData d) => StocktakingModel.fromJson({
-    'id': d.id,
-    'reference_number': d.stocktakingNumber,
-    'title': d.title,
-    'created_by': d.createdBy,
-    'branch_id': d.branchId,
-    'account_id': d.accountId,
-    'notes': d.notes,
-    'created_at': d.createdAt.toIso8601String(),
-    'status': 'draft', // Needs update in table if needed
-    'items': [], // Separate load or JSON column? Currently Table shows no items column
-    'last_modified': d.lastModified.toIso8601String(),
-    'is_deleted': d.isDeleted,
-    'sync_version': d.syncVersion,
-  });
+  static StocktakingModel stocktakingFromData(StocktakingTableData d) {
+    final itemsList = (jsonDecode(d.items) as List<dynamic>?)
+            ?.map((e) => StocktakingItemModel.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        [];
+    return StocktakingModel(
+      id: d.id,
+      referenceNumber: d.stocktakingNumber,
+      stocktakingDate: d.createdAt,
+      status: d.status == 'confirmed'
+          ? StocktakingStatus.confirmed
+          : StocktakingStatus.draft,
+      totalDifferenceValue: d.totalDifferenceValue,
+      categoryId: d.categoryId,
+      brandId: d.brandId,
+      items: itemsList,
+      notes: d.notes,
+      createdBy: d.createdBy,
+      branchId: d.branchId,
+      accountId: d.accountId,
+      lastModified: d.lastModified,
+      isDeleted: d.isDeleted,
+    );
+  }
 
-  static StocktakingTableCompanion stocktakingToCompanion(StocktakingModel m) => StocktakingTableCompanion(
-    id: Value(m.id),
-    stocktakingNumber: Value(m.referenceNumber),
-    title: Value(m.title),
-    createdBy: Value(m.createdBy),
-    branchId: Value(m.branchId),
-    accountId: Value(m.accountId),
-    notes: Value(m.notes),
-    createdAt: Value(m.stocktakingDate),
-    lastModified: Value(m.lastModified),
-    isDeleted: Value(m.isDeleted),
-    syncVersion: Value(m.syncVersion),
-  );
+  static StocktakingTableCompanion stocktakingToCompanion(StocktakingModel m) {
+    return StocktakingTableCompanion(
+      id: Value(m.id),
+      stocktakingNumber: Value(m.referenceNumber),
+      title: Value(m.referenceNumber),
+      status: Value(m.status.name),
+      totalDifferenceValue: Value(m.totalDifferenceValue),
+      categoryId: Value(m.categoryId),
+      brandId: Value(m.brandId),
+      items: Value(jsonEncode(m.items.map((i) => i.toJson()).toList())),
+      createdBy: Value(m.createdBy),
+      branchId: Value(m.branchId),
+      accountId: Value(m.accountId),
+      notes: Value(m.notes),
+      createdAt: Value(m.stocktakingDate),
+      lastModified: Value(m.lastModified),
+      isDeleted: Value(m.isDeleted),
+      syncVersion: const Value(1),
+    );
+  }
 
   // ─── StockAdjustment ───
   static StockAdjustmentModel stockAdjustmentFromData(StockAdjustmentsTableData d) => StockAdjustmentModel.fromJson({
@@ -300,7 +301,6 @@ class InventoryMapper {
     'created_at': d.createdAt.toIso8601String(),
     'last_modified': d.lastModified.toIso8601String(),
     'is_deleted': d.isDeleted,
-    'sync_version': d.syncVersion,
   });
 
   static StockAdjustmentsTableCompanion stockAdjustmentToCompanion(StockAdjustmentModel m) {
@@ -323,29 +323,39 @@ class InventoryMapper {
   }
 
   // ─── ItemSwap ───
-  static ItemSwapModel itemSwapFromData(ItemSwapsTableData d) => ItemSwapModel.fromJson({
-    'id': d.id,
-    'swap_number': d.swapNumber,
-    'party_type': d.partyType,
-    'party_id': d.partyId,
-    'party_name': d.partyName,
-    'cash_register_id': d.cashRegisterId,
-    'items': jsonDecode(d.items),
-    'total_incoming_amount': d.totalIncomingAmount,
-    'total_outgoing_amount': d.totalOutgoingAmount,
-    'net_cash_difference': d.netCashDifference,
-    'created_by': d.createdBy,
-    'branch_id': d.branchId,
-    'account_id': d.accountId,
-    'notes': d.notes,
-    'swap_date': d.swapDate.toIso8601String(),
-    'last_modified': d.lastModified.toIso8601String(),
-    'is_deleted': d.isDeleted,
-    'sync_version': d.syncVersion,
-  });
+  static ItemSwapModel itemSwapFromData(ItemSwapsTableData d) {
+    Map<String, dynamic> itemsMap = {};
+    try { itemsMap = jsonDecode(d.items) as Map<String, dynamic>; } catch (_) {}
+    return ItemSwapModel(
+      id: d.id,
+      swapNumber: d.swapNumber,
+      partyType: d.partyType,
+      partyId: d.partyId,
+      partyName: d.partyName,
+      cashRegisterId: d.cashRegisterId,
+      incomingItems: (itemsMap['incoming_items'] as List<dynamic>?)
+          ?.map((e) => SwapItemModel.fromJson(e as Map<String, dynamic>))
+          .toList() ?? [],
+      outgoingItems: (itemsMap['outgoing_items'] as List<dynamic>?)
+          ?.map((e) => SwapItemModel.fromJson(e as Map<String, dynamic>))
+          .toList() ?? [],
+      totalIncomingAmount: d.totalIncomingAmount,
+      totalOutgoingAmount: d.totalOutgoingAmount,
+      netCashDifference: d.netCashDifference,
+      createdBy: d.createdBy,
+      branchId: d.branchId,
+      accountId: d.accountId,
+      notes: d.notes,
+      swapDate: d.swapDate,
+      lastModified: d.lastModified,
+    );
+  }
 
   static ItemSwapsTableCompanion itemSwapToCompanion(ItemSwapModel m) {
-    final json = m.toJson();
+    final itemsMap = {
+      'incoming_items': m.incomingItems.map((i) => i.toJson()).toList(),
+      'outgoing_items': m.outgoingItems.map((i) => i.toJson()).toList(),
+    };
     return ItemSwapsTableCompanion(
       id: Value(m.id),
       swapNumber: Value(m.swapNumber),
@@ -356,47 +366,68 @@ class InventoryMapper {
       totalIncomingAmount: Value(m.totalIncomingAmount),
       totalOutgoingAmount: Value(m.totalOutgoingAmount),
       netCashDifference: Value(m.netCashDifference),
-      items: Value(jsonEncode(json['items'])),
+      items: Value(jsonEncode(itemsMap)),
       createdBy: Value(m.createdBy),
       branchId: Value(m.branchId),
       accountId: Value(m.accountId),
       notes: Value(m.notes),
       swapDate: Value(m.swapDate),
       lastModified: Value(m.lastModified),
-      isDeleted: Value(m.isDeleted),
-      syncVersion: Value(m.syncVersion),
+      isDeleted: const Value(false),
+      syncVersion: const Value(1),
     );
   }
 
   // ─── OpeningStock ───
-  static OpeningStockModel openingStockFromData(OpeningStockTableData d) => OpeningStockModel.fromJson({
-    'id': d.id,
-    'voucher_number': d.voucherNumber,
-    'items': jsonDecode(d.items),
-    'created_by': d.createdBy,
-    'branch_id': d.branchId,
-    'account_id': d.accountId,
-    'notes': d.notes,
-    'created_at': d.createdAt.toIso8601String(),
-    'last_modified': d.lastModified.toIso8601String(),
-    'is_deleted': d.isDeleted,
-    'sync_version': d.syncVersion,
-  });
+  static OpeningStockModel openingStockFromData(OpeningStockTableData d) {
+    final itemsList = (jsonDecode(d.items) as List<dynamic>?) ?? [];
+    if (itemsList.isEmpty) {
+      return OpeningStockModel(
+        id: d.id, medicineId: '', medicineName: '',
+        unit1Quantity: 0, buyPrice: 0, branchId: d.branchId,
+        recordedBy: d.createdBy, recordedAt: d.createdAt,
+        lastModified: d.lastModified,
+      );
+    }
+    final first = itemsList.first as Map<String, dynamic>;
+    return OpeningStockModel(
+      id: d.id,
+      medicineId: first['medicine_id'] as String? ?? '',
+      medicineName: first['medicine_name'] as String? ?? '',
+      unit1Quantity: (first['unit_1_quantity'] as num?)?.toInt() ?? 0,
+      unit2Quantity: (first['unit_2_quantity'] as num?)?.toInt(),
+      unit3Quantity: (first['unit_3_quantity'] as num?)?.toInt(),
+      buyPrice: (first['buy_price'] as num?)?.toDouble() ?? 0,
+      branchId: d.branchId,
+      recordedBy: d.createdBy,
+      recordedAt: d.createdAt,
+      lastModified: d.lastModified,
+    );
+  }
 
   static OpeningStockTableCompanion openingStockToCompanion(OpeningStockModel m) {
-    final json = m.toJson();
+    final itemsArray = [
+      {
+        'medicine_id': m.medicineId,
+        'medicine_name': m.medicineName,
+        'unit_1_quantity': m.unit1Quantity,
+        'unit_2_quantity': m.unit2Quantity,
+        'unit_3_quantity': m.unit3Quantity,
+        'buy_price': m.buyPrice,
+      },
+    ];
     return OpeningStockTableCompanion(
       id: Value(m.id),
-      voucherNumber: Value(m.id), // Placeholder
-      items: Value(jsonEncode(json['items'])),
+      voucherNumber: Value(m.id),
+      items: Value(jsonEncode(itemsArray)),
       createdBy: Value(m.recordedBy),
       branchId: Value(m.branchId),
       accountId: const Value.absent(),
       notes: const Value.absent(),
       createdAt: Value(m.recordedAt),
       lastModified: Value(m.lastModified),
-      isDeleted: Value(m.isDeleted),
-      syncVersion: Value(m.syncVersion),
+      isDeleted: const Value(false),
+      syncVersion: const Value(1),
     );
   }
 
@@ -415,7 +446,6 @@ class InventoryMapper {
     createdAt: d.createdAt,
     lastModified: d.lastModified,
     isDeleted: d.isDeleted,
-    syncVersion: d.syncVersion,
   );
 
   static InventoryTransactionsTableCompanion inventoryTransactionToCompanion(InventoryTransactionModel m) => InventoryTransactionsTableCompanion(
@@ -433,5 +463,93 @@ class InventoryMapper {
     lastModified: Value(m.lastModified),
     isDeleted: Value(m.isDeleted),
     syncVersion: Value(m.syncVersion),
+  );
+
+  // ─── BarcodeSettings ───
+  static BarcodeSettingsModel barcodeSettingsFromData(BarcodeSettingsTableData d) => BarcodeSettingsModel(
+    id: d.id,
+    prefix: d.prefix,
+    labelWidthMm: d.labelWidthMm,
+    labelHeightMm: d.labelHeightMm,
+    copiesPerItem: d.copiesPerItem,
+    showPrice: d.showPrice,
+    showItemName: d.showItemName,
+    showUnitName: d.showUnitName,
+    showPharmacyName: d.showPharmacyName,
+    pharmacyName: d.pharmacyName,
+    showExpiry: d.showExpiry,
+    showBatch: d.showBatch,
+    printLayout: BarcodePrintLayout.values.firstWhere(
+      (l) => l.name == d.printLayout,
+      orElse: () => BarcodePrintLayout.labelPrinter,
+    ),
+    directPrint: d.directPrint,
+    printerName: d.printerName,
+    accountId: d.accountId,
+    lastModified: d.lastModified,
+  );
+
+  static BarcodeSettingsTableCompanion barcodeSettingsToCompanion(BarcodeSettingsModel m) => BarcodeSettingsTableCompanion(
+    id: Value(m.id),
+    prefix: Value(m.prefix),
+    labelWidthMm: Value(m.labelWidthMm),
+    labelHeightMm: Value(m.labelHeightMm),
+    copiesPerItem: Value(m.copiesPerItem),
+    showPrice: Value(m.showPrice),
+    showItemName: Value(m.showItemName),
+    showUnitName: Value(m.showUnitName),
+    showPharmacyName: Value(m.showPharmacyName),
+    pharmacyName: Value(m.pharmacyName),
+    showExpiry: Value(m.showExpiry),
+    showBatch: Value(m.showBatch),
+    printLayout: Value(m.printLayout.name),
+    directPrint: Value(m.directPrint),
+    printerName: Value(m.printerName),
+    accountId: Value(m.accountId),
+    lastModified: Value(m.lastModified),
+    isDeleted: const Value(false),
+    syncVersion: const Value(1),
+  );
+
+  // ─── MedicineBarcode ───
+  static MedicineBarcodeModel medicineBarcodeFromData(MedicineBarcodesTableData d) => MedicineBarcodeModel(
+    id: d.id,
+    medicineId: d.medicineId,
+    barcode: d.barcode,
+    isPrimary: d.isPrimary,
+    description: d.description,
+    createdAt: d.createdAt,
+  );
+
+  static MedicineBarcodesTableCompanion medicineBarcodeToCompanion(MedicineBarcodeModel m) => MedicineBarcodesTableCompanion(
+    id: Value(m.id),
+    medicineId: Value(m.medicineId),
+    barcode: Value(m.barcode),
+    isPrimary: Value(m.isPrimary),
+    description: Value(m.description),
+    createdAt: Value(m.createdAt),
+    lastModified: Value(m.createdAt),
+    isDeleted: const Value(false),
+    syncVersion: const Value(1),
+  );
+
+  // ─── MedicineUnit ───
+  static MedicineUnitModel medicineUnitFromData(MedicineUnitsTableData d) => MedicineUnitModel(
+    id: d.id,
+    name: d.name,
+    buyPrice: d.buyPrice,
+    sellPrice: d.sellPrice,
+    conversionFactor: d.conversionFactor,
+  );
+
+  static MedicineUnitsTableCompanion medicineUnitToCompanion(MedicineUnitModel m) => MedicineUnitsTableCompanion(
+    id: Value(m.id),
+    name: Value(m.name),
+    buyPrice: Value(m.buyPrice),
+    sellPrice: Value(m.sellPrice),
+    conversionFactor: Value(m.conversionFactor),
+    lastModified: Value(DateTime.now()),
+    isDeleted: const Value(false),
+    syncVersion: const Value(1),
   );
 }

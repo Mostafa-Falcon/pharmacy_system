@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'package:drift/drift.dart';
-import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/contacts_dao.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
 import 'package:pharmacy_system/app/core/models/contacts/customer_model.dart';
 import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'package:pharmacy_system/app/modules/archive/services/archive_service.dart';
+import 'package:pharmacy_system/app/core/data/mappers/mappers.dart';
 
 class CustomersRepository {
   ContactsDao get _dao => sl<ContactsDao>();
@@ -24,52 +23,6 @@ class CustomersRepository {
     });
   }
 
-  CustomerModel _toModel(CustomersTableData d) {
-    return CustomerModel(
-      id: d.id,
-      name: d.name,
-      phone: d.phone,
-      secondPhone: d.secondPhone,
-      email: d.email,
-      address: d.address,
-      groupId: d.groupId,
-      groupName: d.groupName,
-      creditLimit: d.creditLimit,
-      debitAmount: d.debitAmount,
-      creditAmount: d.creditAmount,
-      isActive: d.isActive,
-      accountId: d.accountId,
-      notes: d.notes,
-      branchId: d.branchId,
-      syncVersion: d.syncVersion,
-      lastModified: d.lastModified,
-      isDeleted: d.isDeleted,
-    );
-  }
-
-  CustomersTableCompanion _toCompanion(CustomerModel m) {
-    return CustomersTableCompanion(
-      id: Value(m.id),
-      name: Value(m.name),
-      phone: Value(m.phone),
-      secondPhone: Value(m.secondPhone),
-      email: Value(m.email),
-      address: Value(m.address),
-      groupId: Value(m.groupId),
-      groupName: Value(m.groupName),
-      creditLimit: Value(m.creditLimit),
-      debitAmount: Value(m.debitAmount),
-      creditAmount: Value(m.creditAmount),
-      isActive: Value(m.isActive),
-      accountId: Value(m.accountId),
-      notes: Value(m.notes),
-      branchId: Value(m.branchId),
-      syncVersion: Value(m.syncVersion),
-      lastModified: Value(m.lastModified),
-      isDeleted: Value(m.isDeleted),
-    );
-  }
-
   List<CustomerModel> getCachedCustomers({bool activeOnly = false}) {
     var data = _cached();
     if (activeOnly) {
@@ -85,7 +38,7 @@ class CustomersRepository {
     bool includeDeleted = false,
   }) async {
     var items = await _dao.searchCustomers(searchQuery ?? '');
-    var data = items.map(_toModel).toList();
+    var data = items.map(ContactsMapper.customerFromData).toList();
     _updateCache(data);
 
     if (activeOnly) {
@@ -109,7 +62,7 @@ class CustomersRepository {
 
   Future<CustomerModel?> getByIdAsync(String id) async {
     final data = await _dao.getCustomerById(id);
-    return data != null ? _toModel(data) : null;
+    return data != null ? ContactsMapper.customerFromData(data) : null;
   }
 
   CustomerModel? getById(String id) {
@@ -121,7 +74,7 @@ class CustomersRepository {
   }
 
   Future<void> create(CustomerModel customer) async {
-    await _dao.upsertCustomer(_toCompanion(customer));
+    await _dao.upsertCustomer(ContactsMapper.customerToCompanion(customer));
     SyncService.notifyTableUpdated('customers', customer.branchId ?? '');
     unawaited(
       SyncService.queueOperation(
@@ -134,7 +87,7 @@ class CustomersRepository {
   }
 
   Future<void> update(CustomerModel customer) async {
-    await _dao.upsertCustomer(_toCompanion(customer));
+    await _dao.upsertCustomer(ContactsMapper.customerToCompanion(customer));
     SyncService.notifyTableUpdated('customers', customer.branchId ?? '');
     unawaited(
       SyncService.queueOperation(

@@ -25,6 +25,23 @@ class ReturnItemModel {
     this.costPrice = 0.0,
   });
 
+  ReturnItemModel copyWith({
+    String? medicineId,
+    String? medicineName,
+    int? quantity,
+    double? unitPrice,
+    double? totalPrice,
+    double? costPrice,
+  }) =>
+      ReturnItemModel(
+        medicineId: medicineId ?? this.medicineId,
+        medicineName: medicineName ?? this.medicineName,
+        quantity: quantity ?? this.quantity,
+        unitPrice: unitPrice ?? this.unitPrice,
+        totalPrice: totalPrice ?? this.totalPrice,
+        costPrice: costPrice ?? this.costPrice,
+      );
+
   Map<String, dynamic> toJson() => {
     'medicine_id': medicineId,
     'medicine_name': medicineName,
@@ -81,6 +98,43 @@ class ReturnModel implements SyncableEntity {
     DateTime? lastModified,
     this.isDeleted = false,
   }) : lastModified = lastModified ?? DateTime.now();
+
+  ReturnModel copyWith({
+    String? id,
+    String? branchId,
+    bool clearSaleId = false,
+    String? saleId,
+    bool clearPurchaseId = false,
+    String? purchaseId,
+    List<ReturnItemModel>? items,
+    double? totalAmount,
+    ReturnReason? reason,
+    bool clearNotes = false,
+    String? notes,
+    String? createdBy,
+    String? accountId,
+    DateTime? createdAt,
+    int? syncVersion,
+    DateTime? lastModified,
+    bool? isDeleted,
+  }) =>
+      ReturnModel(
+        id: id ?? this.id,
+        branchId: branchId ?? this.branchId,
+        saleId: clearSaleId ? null : (saleId ?? this.saleId),
+        purchaseId:
+            clearPurchaseId ? null : (purchaseId ?? this.purchaseId),
+        items: items ?? this.items,
+        totalAmount: totalAmount ?? this.totalAmount,
+        reason: reason ?? this.reason,
+        notes: clearNotes ? null : (notes ?? this.notes),
+        createdBy: createdBy ?? this.createdBy,
+        accountId: accountId ?? this.accountId,
+        createdAt: createdAt ?? this.createdAt,
+        syncVersion: syncVersion ?? this.syncVersion,
+        lastModified: lastModified ?? this.lastModified,
+        isDeleted: isDeleted ?? this.isDeleted,
+      );
 
   Map<String, dynamic> toJson() => {
     'id': id,

@@ -42,7 +42,7 @@ class AuthDeviceLock {
   /// يظبط قفل السيرفر في الخلفية (بدون انتظار) — يستخدم في init() عشان
   /// نتأكد إن اليوزر اللي رجع من الـ fallback بيملك القفل فعلاً.
   static Future<void> ensureServerSessionLock(String userId, String deviceId) async {
-    acquireServerSessionLock(userId, deviceId); // fire and forget
+    unawaited(acquireServerSessionLock(userId, deviceId)); // fire and forget
   }
 
   /// يفك القفل على السيرفر. لو السيرفر مش متاح بنعمل queue للعملية.
@@ -68,7 +68,7 @@ class AuthDeviceLock {
           'id': userId,
           'active_device_id': null,
         },
-        branchId: AuthService.currentBranchId ?? '',
+        branchId: AuthService.currentBranchId,
       );
     } catch (e) {
       safeDebugPrint('AuthService: release lock queue failed: $e');
@@ -97,8 +97,13 @@ class AuthDeviceLock {
       final systemDao = sl<SystemDao>();
       final existing = await systemDao.getUserById(userId);
       if (existing != null) {
-        final updated = AuthService._userFromTable(existing).copyWith(activeDeviceId: null);
-        await systemDao.upsertUser(AuthService._userToCompanion(updated));
+        final updated = SystemMapper.userFromData(existing).copyWith(activeDeviceId: null);
+        await systemDao.upsertUser(SystemMapper.userToCompanion(updated));
+        
+        // تحديث الحالة الحالية في الخدمة
+        if (AuthService._currentUser?.id == userId) {
+          AuthService._currentUser = updated;
+        }
       }
       return {'success': true, 'message': AuthStrings.remoteLogoutSuccess};
     } catch (e) {

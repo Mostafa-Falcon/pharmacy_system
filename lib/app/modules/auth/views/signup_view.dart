@@ -134,31 +134,19 @@ class _SignupViewState extends State<SignupView> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          ReusableText(
+                          ReusableText.h2(
                             'إنشاء حساب جديد',
-                            style: TextStyle(
-                              fontSize: 24.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          SizedBox(height: 8.h),
-                          ReusableText(
+                          SizedBox(height: AppSpacing.xs.h),
+                          ReusableText.caption(
                             'قم بتعبئة البيانات التالية لإنشاء الحساب',
-                            style: TextStyle(
-                              fontSize: 13.sp,
-                              color: scheme.onSurfaceVariant,
-                            ),
                           ),
-                          SizedBox(height: 28.h),
-                          TextFormField(
+                          SizedBox(height: AppSpacing.xl.h),
+                          ReusableInput.text(
                             controller: _nameCtrl,
-                            decoration: InputDecoration(
-                              labelText: 'الاسم الكامل',
-                              prefixIcon: const Icon(Icons.badge_outlined),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                            ),
+                            label: 'الاسم الكامل',
+                            prefixIcon: const Icon(Icons.badge_outlined),
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
                                 return 'يرجى إدخال الاسم بالكامل';
@@ -166,17 +154,11 @@ class _SignupViewState extends State<SignupView> {
                               return null;
                             },
                           ),
-                          SizedBox(height: 16.h),
-                          TextFormField(
+                          SizedBox(height: AppSpacing.md.h),
+                          ReusableInput.email(
                             controller: _emailCtrl,
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: InputDecoration(
-                              labelText: 'البريد الإلكتروني',
-                              prefixIcon: const Icon(Icons.email_outlined),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                            ),
+                            label: 'البريد الإلكتروني',
+                            prefixIcon: const Icon(Icons.email_outlined),
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
                                 return 'يرجى إدخال البريد الإلكتروني';
@@ -188,27 +170,11 @@ class _SignupViewState extends State<SignupView> {
                               return null;
                             },
                           ),
-                          SizedBox(height: 16.h),
-                          TextFormField(
+                          SizedBox(height: AppSpacing.md.h),
+                          ReusableInput.password(
                             controller: _passwordCtrl,
-                            obscureText: _obscurePassword,
-                            decoration: InputDecoration(
-                              labelText: 'كلمة المرور',
-                              prefixIcon: const Icon(Icons.lock_outline_rounded),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscurePassword
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                ),
-                                onPressed: () => setState(
-                                  () => _obscurePassword = !_obscurePassword,
-                                ),
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                            ),
+                            label: 'كلمة المرور',
+                            prefixIcon: const Icon(Icons.lock_outline_rounded),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'يرجى إدخال كلمة المرور';
@@ -219,26 +185,21 @@ class _SignupViewState extends State<SignupView> {
                               return null;
                             },
                           ),
-                          SizedBox(height: 16.h),
-                          TextFormField(
+                          SizedBox(height: AppSpacing.md.h),
+                          ReusableInput.password(
                             controller: _confirmPasswordCtrl,
-                            obscureText: _obscurePassword,
-                            decoration: InputDecoration(
-                              labelText: 'تأكيد كلمة المرور',
-                              prefixIcon: const Icon(Icons.lock_clock_outlined),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                            ),
+                            label: 'تأكيد كلمة المرور',
+                            prefixIcon: const Icon(Icons.lock_clock_outlined),
+                            textInputAction: TextInputAction.done,
+                            onFieldSubmitted: (_) => _onSignup(),
                             validator: (value) {
                               if (value != _passwordCtrl.text) {
                                 return 'كلمات المرور غير متطابقة';
                               }
                               return null;
                             },
-                            onFieldSubmitted: (_) => _onSignup(),
                           ),
-                          SizedBox(height: 24.h),
+                          SizedBox(height: AppSpacing.xl.h),
                           BlocBuilder<AuthBloc, AuthState>(
                             builder: (context, state) {
                               return ReusableButton(
@@ -248,26 +209,19 @@ class _SignupViewState extends State<SignupView> {
                               );
                             },
                           ),
-                          SizedBox(height: 16.h),
+                          SizedBox(height: AppSpacing.lg.h),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
+                              ReusableText.caption(
                                 AuthStrings.alreadyHaveAccount,
-                                style: TextStyle(
-                                  fontSize: 13.sp,
-                                  color: scheme.onSurfaceVariant,
-                                ),
                               ),
                               TextButton(
                                 onPressed: () => context.go(Routes.LOGIN),
-                                child: Text(
+                                child: ReusableText.caption(
                                   AuthStrings.loginNow,
-                                  style: TextStyle(
-                                    fontSize: 13.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: scheme.primary,
-                                  ),
+                                  fontWeight: FontWeight.bold,
+                                  color: scheme.primary,
                                 ),
                               ),
                             ],

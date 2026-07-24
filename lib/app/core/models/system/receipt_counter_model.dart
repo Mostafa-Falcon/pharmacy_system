@@ -19,6 +19,27 @@ class ReceiptCounterModel {
     this.isDeleted = false,
   }) : lastModified = lastModified ?? DateTime.now();
 
+  ReceiptCounterModel copyWith({
+    String? id,
+    String? counterType,
+    int? lastNumber,
+    String? prefix,
+    String? branchId,
+    DateTime? lastModified,
+    int? syncVersion,
+    bool? isDeleted,
+  }) =>
+      ReceiptCounterModel(
+        id: id ?? this.id,
+        counterType: counterType ?? this.counterType,
+        lastNumber: lastNumber ?? this.lastNumber,
+        prefix: prefix ?? this.prefix,
+        branchId: branchId ?? this.branchId,
+        lastModified: lastModified ?? this.lastModified,
+        syncVersion: syncVersion ?? this.syncVersion,
+        isDeleted: isDeleted ?? this.isDeleted,
+      );
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'counter_type': counterType,

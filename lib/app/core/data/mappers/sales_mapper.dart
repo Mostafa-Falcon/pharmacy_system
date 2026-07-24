@@ -8,6 +8,7 @@ import 'package:pharmacy_system/app/core/models/sales/shipping_order_model.dart'
 import 'package:pharmacy_system/app/core/models/sales/quotation_model.dart';
 import 'package:pharmacy_system/app/core/models/sales/promotion_model.dart';
 import 'package:pharmacy_system/app/core/models/sales/suspended_sale_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/return_model.dart';
 
 import '../database/database.dart';
 
@@ -143,6 +144,8 @@ class SalesMapper {
       accountId: Value(m.accountId),
       createdAt: Value(m.createdAt),
       lastModified: Value(m.lastModified),
+      isDeleted: const Value(false),
+      syncVersion: const Value(1),
     );
   }
 
@@ -247,47 +250,59 @@ class SalesMapper {
   );
 
   // ─── Quotation ───
-  static QuotationModel quotationFromData(QuotationsTableData d) => QuotationModel.fromJson({
-    'id': d.id,
-    'quotation_number': d.quotationNumber,
-    'customer_id': d.customerId,
-    'customer_name': d.customerName,
-    'customer_phone': d.customerPhone,
-    'items': jsonDecode(d.items),
-    'total_amount': d.finalAmount,
-    'paid_amount': d.paidAmount,
-    'remaining_amount': d.remainingAmount,
-    'payment_method': d.paymentMethod,
-    'payment_status': d.paymentStatus,
-    'shipping_status': d.shippingStatus,
-    'total_quantity': d.totalQuantity,
-    'created_by': d.createdBy,
-    'branch_id': d.branchId,
-    'account_id': d.accountId,
-    'notes': d.notes,
-    'created_at': d.createdAt.toIso8601String(),
-    'last_modified': d.lastModified.toIso8601String(),
-    'is_deleted': d.isDeleted,
-    'sync_version': d.syncVersion,
-  });
+  static QuotationModel quotationFromData(QuotationsTableData d) {
+    final itemsList = (jsonDecode(d.items) as List<dynamic>?)
+            ?.map((e) => QuotationItemModel.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        [];
+    return QuotationModel(
+      id: d.id,
+      quotationNumber: d.quotationNumber,
+      customerId: d.customerId,
+      customerName: d.customerName,
+      customerPhone: d.customerPhone,
+      items: itemsList,
+      totalAmount: d.finalAmount,
+      paidAmount: d.paidAmount,
+      remainingAmount: d.remainingAmount,
+      paymentMethod: d.paymentMethod,
+      paymentStatus: QuotationPaymentStatus.values.firstWhere(
+        (e) => e.name == d.paymentStatus,
+        orElse: () => QuotationPaymentStatus.unpaid,
+      ),
+      shippingStatus: QuotationShippingStatus.values.firstWhere(
+        (e) => e.name == d.shippingStatus,
+        orElse: () => QuotationShippingStatus.pending,
+      ),
+      totalQuantity: d.totalQuantity,
+      createdBy: d.createdBy,
+      branchId: d.branchId,
+      accountId: d.accountId,
+      notes: d.notes,
+      createdAt: d.createdAt,
+      lastModified: d.lastModified,
+      isDeleted: d.isDeleted,
+      syncVersion: d.syncVersion,
+    );
+  }
 
   static QuotationsTableCompanion quotationToCompanion(QuotationModel m) {
-    final json = m.toJson();
     return QuotationsTableCompanion(
       id: Value(m.id),
       quotationNumber: Value(m.quotationNumber),
       customerId: Value(m.customerId),
       customerName: Value(m.customerName),
       customerPhone: Value(m.customerPhone),
-      items: Value(jsonEncode(json['items'])),
-      totalAmount: const Value.absent(), // Mismatch with table? Let's check table
+      items: Value(jsonEncode(m.items.map((i) => i.toJson()).toList())),
+      subtotalAmount: const Value.absent(),
+      discountAmount: const Value.absent(),
+      finalAmount: Value(m.totalAmount),
       paidAmount: Value(m.paidAmount),
       remainingAmount: Value(m.remainingAmount),
       paymentMethod: Value(m.paymentMethod),
       paymentStatus: Value(m.paymentStatus.name),
       shippingStatus: Value(m.shippingStatus.name),
       totalQuantity: Value(m.totalQuantity),
-      finalAmount: Value(m.totalAmount),
       createdBy: Value(m.createdBy),
       branchId: Value(m.branchId),
       accountId: Value(m.accountId),
@@ -373,4 +388,42 @@ class SalesMapper {
     isDeleted: Value(m.isDeleted),
     syncVersion: Value(m.syncVersion),
   );
+
+  // ─── Return ───
+  static ReturnModel returnFromData(ReturnsTableData d) => ReturnModel.fromJson({
+    'id': d.id,
+    'branch_id': d.branchId,
+    'sale_id': d.saleId,
+    'purchase_id': d.purchaseId,
+    'items': jsonDecode(d.items),
+    'total_amount': d.totalAmount,
+    'reason': d.reason,
+    'notes': d.notes,
+    'created_by': d.createdBy,
+    'account_id': d.accountId,
+    'created_at': d.createdAt.toIso8601String(),
+    'sync_version': d.syncVersion,
+    'last_modified': d.lastModified.toIso8601String(),
+    'is_deleted': d.isDeleted,
+  });
+
+  static ReturnsTableCompanion returnToCompanion(ReturnModel m) {
+    final json = m.toJson();
+    return ReturnsTableCompanion(
+      id: Value(m.id),
+      branchId: Value(m.branchId),
+      saleId: Value(m.saleId),
+      purchaseId: Value(m.purchaseId),
+      items: Value(jsonEncode(json['items'])),
+      totalAmount: Value(m.totalAmount),
+      reason: Value(m.reason.name),
+      notes: Value(m.notes),
+      createdBy: Value(m.createdBy),
+      accountId: Value(m.accountId),
+      createdAt: Value(m.createdAt),
+      syncVersion: Value(m.syncVersion),
+      lastModified: Value(m.lastModified),
+      isDeleted: Value(m.isDeleted),
+    );
+  }
 }

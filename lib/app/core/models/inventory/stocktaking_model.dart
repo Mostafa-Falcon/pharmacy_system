@@ -61,6 +61,45 @@ class StocktakingItemModel {
     this.notes,
   });
 
+  StocktakingItemModel copyWith({
+    String? id,
+    String? medicineId,
+    String? medicineName,
+    bool clearSku = false,
+    String? sku,
+    String? bookQuantityText,
+    bool clearExpiryDate = false,
+    DateTime? expiryDate,
+    int? actualUnit1Qty,
+    bool clearActualUnit2Qty = false,
+    int? actualUnit2Qty,
+    bool clearActualUnit3Qty = false,
+    int? actualUnit3Qty,
+    double? unitCost,
+    int? differenceQuantity,
+    double? differenceValue,
+    bool clearNotes = false,
+    String? notes,
+  }) =>
+      StocktakingItemModel(
+        id: id ?? this.id,
+        medicineId: medicineId ?? this.medicineId,
+        medicineName: medicineName ?? this.medicineName,
+        sku: clearSku ? null : (sku ?? this.sku),
+        bookQuantityText: bookQuantityText ?? this.bookQuantityText,
+        expiryDate:
+            clearExpiryDate ? null : (expiryDate ?? this.expiryDate),
+        actualUnit1Qty: actualUnit1Qty ?? this.actualUnit1Qty,
+        actualUnit2Qty:
+            clearActualUnit2Qty ? null : (actualUnit2Qty ?? this.actualUnit2Qty),
+        actualUnit3Qty:
+            clearActualUnit3Qty ? null : (actualUnit3Qty ?? this.actualUnit3Qty),
+        unitCost: unitCost ?? this.unitCost,
+        differenceQuantity: differenceQuantity ?? this.differenceQuantity,
+        differenceValue: differenceValue ?? this.differenceValue,
+        notes: clearNotes ? null : (notes ?? this.notes),
+      );
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'medicine_id': medicineId,
@@ -155,6 +194,44 @@ class StocktakingModel {
     this.isDeleted = false,
   })  : stocktakingDate = stocktakingDate ?? DateTime.now(),
         lastModified = lastModified ?? DateTime.now();
+
+  StocktakingModel copyWith({
+    String? id,
+    String? referenceNumber,
+    DateTime? stocktakingDate,
+    StocktakingStatus? status,
+    double? totalDifferenceValue,
+    bool clearCategoryId = false,
+    String? categoryId,
+    bool clearBrandId = false,
+    String? brandId,
+    List<StocktakingItemModel>? items,
+    bool clearNotes = false,
+    String? notes,
+    String? createdBy,
+    String? branchId,
+    String? accountId,
+    DateTime? lastModified,
+    bool? isDeleted,
+  }) =>
+      StocktakingModel(
+        id: id ?? this.id,
+        referenceNumber: referenceNumber ?? this.referenceNumber,
+        stocktakingDate: stocktakingDate ?? this.stocktakingDate,
+        status: status ?? this.status,
+        totalDifferenceValue:
+            totalDifferenceValue ?? this.totalDifferenceValue,
+        categoryId:
+            clearCategoryId ? null : (categoryId ?? this.categoryId),
+        brandId: clearBrandId ? null : (brandId ?? this.brandId),
+        items: items ?? this.items,
+        notes: clearNotes ? null : (notes ?? this.notes),
+        createdBy: createdBy ?? this.createdBy,
+        branchId: branchId ?? this.branchId,
+        accountId: accountId ?? this.accountId,
+        lastModified: lastModified ?? this.lastModified,
+        isDeleted: isDeleted ?? this.isDeleted,
+      );
 
   Map<String, dynamic> toJson() => {
     'id': id,

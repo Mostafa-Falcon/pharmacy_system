@@ -77,6 +77,46 @@ class BarcodeSettingsModel {
     DateTime? lastModified,
   }) : lastModified = lastModified ?? DateTime.now();
 
+  BarcodeSettingsModel copyWith({
+    String? id,
+    String? prefix,
+    double? labelWidthMm,
+    double? labelHeightMm,
+    int? copiesPerItem,
+    bool? showPrice,
+    bool? showItemName,
+    bool? showUnitName,
+    bool? showPharmacyName,
+    String? pharmacyName,
+    bool? showExpiry,
+    bool? showBatch,
+    BarcodePrintLayout? printLayout,
+    bool? directPrint,
+    String? printerName,
+    bool clearAccountId = false,
+    String? accountId,
+    DateTime? lastModified,
+  }) =>
+      BarcodeSettingsModel(
+        id: id ?? this.id,
+        prefix: prefix ?? this.prefix,
+        labelWidthMm: labelWidthMm ?? this.labelWidthMm,
+        labelHeightMm: labelHeightMm ?? this.labelHeightMm,
+        copiesPerItem: copiesPerItem ?? this.copiesPerItem,
+        showPrice: showPrice ?? this.showPrice,
+        showItemName: showItemName ?? this.showItemName,
+        showUnitName: showUnitName ?? this.showUnitName,
+        showPharmacyName: showPharmacyName ?? this.showPharmacyName,
+        pharmacyName: pharmacyName ?? this.pharmacyName,
+        showExpiry: showExpiry ?? this.showExpiry,
+        showBatch: showBatch ?? this.showBatch,
+        printLayout: printLayout ?? this.printLayout,
+        directPrint: directPrint ?? this.directPrint,
+        printerName: printerName ?? this.printerName,
+        accountId: clearAccountId ? null : (accountId ?? this.accountId),
+        lastModified: lastModified ?? this.lastModified,
+      );
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'prefix': prefix,

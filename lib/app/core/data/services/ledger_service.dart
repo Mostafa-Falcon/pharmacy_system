@@ -1,35 +1,15 @@
 import 'dart:async';
-
-import 'package:drift/drift.dart';
-import 'package:uuid/uuid.dart';
-
 import 'package:pharmacy_system/app/core/injection.dart';
-import 'package:pharmacy_system/app/shared/ui_core.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/contacts_dao.dart';
-import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/sync/sync_service.dart';
+import 'package:pharmacy_system/app/core/data/mappers/mappers.dart';
 import 'package:pharmacy_system/app/core/models/contacts/contact_ledger_model.dart';
 
 class LedgerService {
   static final ContactsDao _contactsDao = sl<ContactsDao>();
 
   static Future<void> insertEntry(ContactLedgerModel entry) async {
-    await _contactsDao.insertLedgerEntry(ContactLedgersTableCompanion(
-      id: Value(entry.id),
-      contactId: Value(entry.contactId),
-      entryDate: Value(entry.transactionDate),
-      referenceNumber: Value(entry.referenceNumber),
-      entryType: Value(entry.transactionType.name),
-      debit: Value(entry.debitAmount),
-      credit: Value(entry.creditAmount),
-      balanceAfter: Value(entry.runningBalance),
-      description: Value(entry.description),
-      branchId: Value(entry.branchId),
-      accountId: Value(entry.accountId),
-      syncVersion: Value(entry.syncVersion),
-      lastModified: Value(entry.lastModified),
-      isDeleted: Value(entry.isDeleted),
-    ));
+    await _contactsDao.insertLedgerEntry(ContactsMapper.contactLedgerToCompanion(entry));
 
     await SyncService.queueOperation(
       type: SyncOperationType.create,
@@ -42,25 +22,7 @@ class LedgerService {
 
   static Future<List<ContactLedgerModel>> getEntriesForContact(String contactId) async {
     final rows = await _contactsDao.getLedgerByContact(contactId);
-    return rows.map((r) => ContactLedgerModel(
-      id: r.id,
-      contactId: r.contactId,
-      transactionDate: r.entryDate,
-      referenceNumber: r.referenceNumber,
-      transactionType: LedgerTransactionType.values.firstWhere(
-        (e) => e.name == r.entryType,
-        orElse: () => LedgerTransactionType.adjustment,
-      ),
-      debitAmount: r.debit,
-      creditAmount: r.credit,
-      runningBalance: r.balanceAfter,
-      description: r.description,
-      branchId: r.branchId,
-      accountId: r.accountId,
-      syncVersion: r.syncVersion,
-      lastModified: r.lastModified,
-      isDeleted: r.isDeleted,
-    )).toList();
+    return rows.map(ContactsMapper.contactLedgerFromData).toList();
   }
 
   static Future<double> getContactBalance(String contactId, String branchId) async {

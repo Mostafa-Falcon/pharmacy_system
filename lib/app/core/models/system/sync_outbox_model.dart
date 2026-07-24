@@ -23,6 +23,34 @@ class SyncOutboxModel {
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
+  SyncOutboxModel copyWith({
+    String? id,
+    String? operationType,
+    String? targetTable,
+    String? payloadJson,
+    int? retryCount,
+    String? status,
+    bool clearErrorMessage = false,
+    String? errorMessage,
+    String? branchId,
+    bool clearAccountId = false,
+    String? accountId,
+    DateTime? createdAt,
+  }) =>
+      SyncOutboxModel(
+        id: id ?? this.id,
+        operationType: operationType ?? this.operationType,
+        targetTable: targetTable ?? this.targetTable,
+        payloadJson: payloadJson ?? this.payloadJson,
+        retryCount: retryCount ?? this.retryCount,
+        status: status ?? this.status,
+        errorMessage:
+            clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
+        branchId: branchId ?? this.branchId,
+        accountId: clearAccountId ? null : (accountId ?? this.accountId),
+        createdAt: createdAt ?? this.createdAt,
+      );
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'operation_type': operationType,
