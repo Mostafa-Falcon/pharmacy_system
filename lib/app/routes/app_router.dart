@@ -11,10 +11,9 @@ import '../core/data/services/auth/auth_service.dart';
 import 'app_routes.dart';
 import 'route_access_policy.dart';
 import 'sub_routes/auth_routes.dart';
+import 'sub_routes/home_routes.dart';
 
-final List<RouteBase> _routes = [
-  ...authRoutes,
-];
+final List<RouteBase> _routes = [...authRoutes, ...homeRoutes];
 
 class AppRouter {
   AppRouter._();
@@ -76,7 +75,6 @@ class AppRouter {
 
     return null;
   }
-
 }
 
 class _RouteObserver extends NavigatorObserver {
@@ -122,5 +120,3 @@ class _GoRouterRefreshStream extends ChangeNotifier {
     super.dispose();
   }
 }
-
-

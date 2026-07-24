@@ -56,7 +56,8 @@ abstract class Routes {
   static const BRANDS = '/admin/inventory/brands';
   static const PRICE_GROUPS = '/admin/inventory/price-groups';
   static const VARIANTS = '/admin/inventory/variants';
-  static const INVENTORY_BULK_PRICE_UPDATE = '/admin/inventory/bulk-price-update';
+  static const INVENTORY_BULK_PRICE_UPDATE =
+      '/admin/inventory/bulk-price-update';
   static const INVENTORY_PROMOTIONS = '/admin/inventory/promotions';
 
   // ─── Purchases ───
@@ -232,6 +233,7 @@ abstract class Routes {
     'inventory_promotions': '/admin/inventory/promotions',
     'inventory_stocktaking': '/admin/inventory/stocktaking',
     'stocktaking': '/admin/inventory/stocktaking',
+    'accounting_expenses': '/admin/accounting/expenses',
     'void_operations': '/admin/void-operations',
   };
 
@@ -246,8 +248,7 @@ abstract class Routes {
     }
     return null;
   }
+
   static String? routeForDestination(String destination) =>
       destinationToRoute[destination];
 }
-
-
