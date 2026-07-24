@@ -1,0 +1,5 @@
+- [ ] حذف الملفات المكررة (`shared_module_layout.dart`, `shared_form_layout.dart`)
+- [ ] إعادة تنظيم المجلدات (`shareds` -> `layouts`, `reusables` -> `components`)
+- [ ] تحديث ملفات الفهرس (`index.dart`) والـ `barrel files`
+- [ ] تحديث مسارات الاستيراد (`imports`) في كامل المشروع
+- [ ] التحقق من صحة الكود (`flutter analyze`)
