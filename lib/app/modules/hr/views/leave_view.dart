@@ -60,7 +60,7 @@ class LeaveView extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (context) => ReusableDialog(
+      builder: (context) => AppDialog(
         title: '??? ????? ?????',
         headerIcon: const Icon(Icons.event_rounded),
         children: [
@@ -97,21 +97,21 @@ class LeaveView extends StatelessWidget {
             },
           ),
           SizedBox(height: AppSpacing.sm.h),
-          ReusableInput(
+          AppInput(
             label: '????? ???????',
             hint: 'YYYY-MM-DD',
             controller: startDateCtrl,
             prefixIcon: const Icon(Icons.calendar_today_rounded, size: 18),
           ),
           SizedBox(height: AppSpacing.sm.h),
-          ReusableInput(
+          AppInput(
             label: '????? ???????',
             hint: 'YYYY-MM-DD',
             controller: endDateCtrl,
             prefixIcon: const Icon(Icons.calendar_today_rounded, size: 18),
           ),
           SizedBox(height: AppSpacing.sm.h),
-          ReusableInput(
+          AppInput(
             label: '?????',
             hint: '??? ???????...',
             controller: reasonCtrl,
@@ -171,7 +171,7 @@ class _LeaveBalanceCardState extends State<_LeaveBalanceCard> {
   Widget build(BuildContext context) {
     if (widget.employees.isEmpty) {
       return const AppCard(
-        child: ReusableText('?? ???? ?????? ?????? ???? ????? ???????? ??????.'),
+        child: AppText('?? ???? ?????? ?????? ???? ????? ???????? ??????.'),
       );
     }
     final balance = _balance;
@@ -233,11 +233,11 @@ class _BalanceRow extends StatelessWidget {
             decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
           SizedBox(width: 10.w),
-          ReusableText(label, style: AppTextStyles.body(context).copyWith(color: AppColors.textPrimaryOf(context))),
+          AppText(label, style: AppTextStyles.body(context).copyWith(color: AppColors.textPrimaryOf(context))),
           const Spacer(),
-          ReusableText('$remaining', style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: color)),
+          AppText('$remaining', style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: color)),
           SizedBox(width: 6.w),
-          ReusableText('/ $total ???', style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context))),
+          AppText('/ $total ???', style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context))),
         ],
       ),
     );
@@ -269,7 +269,7 @@ class _PendingLeavesCard extends StatelessWidget {
           if (pending.isEmpty)
             Padding(
               padding: EdgeInsets.symmetric(vertical: AppSpacing.md.h),
-              child: const ReusableText('?? ???? ????? ????? ????? ??????.',
+              child: const AppText('?? ???? ????? ????? ????? ??????.',
                   style: TextStyle(color: Colors.grey)),
             )
           else
@@ -296,11 +296,11 @@ class _LeaveRequestTile extends StatelessWidget {
     return ListTile(
       dense: true,
       contentPadding: EdgeInsets.zero,
-      title: ReusableText(
+      title: AppText(
         '${leave.employeeName} - ${_leaveTypeText(leave.leaveType)}',
         style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold),
       ),
-      subtitle: ReusableText(
+      subtitle: AppText(
         '?? ${leave.startDate} ??? ${leave.endDate} (${leave.duration} ???)',
         style: TextStyle(
             fontSize: 11.5.sp,
@@ -319,12 +319,12 @@ class _LeaveRequestTile extends StatelessWidget {
             icon: Icon(Icons.cancel_rounded,
                 color: AppColors.error, size: 22.sp),
             onPressed: () {
-              ReusableDialog.show(
+              AppDialog.show(
                 context,
                 title: '??? ???????',
                 headerIcon: Icon(Icons.cancel_rounded, color: AppColors.error),
                 children: [
-                  ReusableText('?? ??? ????? ?? ????? ?? ??? ??? ??????? ?????? "${leave.employeeName}"?'),
+                  AppText('?? ??? ????? ?? ????? ?? ??? ??? ??????? ?????? "${leave.employeeName}"?'),
                   SizedBox(height: 24.h),
                   DialogActions(
                     confirmText: '??? ?????',
@@ -369,7 +369,7 @@ class _LeaveHistoryCard extends StatelessWidget {
           if (records.isEmpty)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 20),
-              child: Center(child: ReusableText('?? ???? ????? ?????? ?????.', style: TextStyle(color: Colors.grey))),
+              child: Center(child: AppText('?? ???? ????? ?????? ?????.', style: TextStyle(color: Colors.grey))),
             )
           else
             ListView.separated(
@@ -392,11 +392,11 @@ class _LeaveHistoryCard extends StatelessWidget {
                     backgroundColor: statusColor.withValues(alpha: 0.1),
                     child: Icon(Icons.event_note_rounded, size: 14.sp, color: statusColor),
                   ),
-                  title: ReusableText(
+                  title: AppText(
                     '${leave.employeeName} - ${_leaveTypeText(leave.leaveType)}',
                     style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600),
                   ),
-                  subtitle: ReusableText(
+                  subtitle: AppText(
                     '${leave.startDate} ? ${leave.endDate}',
                     style: TextStyle(
                         fontSize: 11.sp,

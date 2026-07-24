@@ -92,7 +92,7 @@ class ReusableBottomSheet extends StatelessWidget {
                 if (headerIcon != null) SizedBox(width: 12.w),
                 if (title != null)
                   Expanded(
-                    child: ReusableText(
+                    child: AppText(
                       title!,
                       style: AppTextStyles.title(context).copyWith(color: AppColors.textPrimaryOf(context)),
                     ),

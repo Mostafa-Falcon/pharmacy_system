@@ -7,6 +7,8 @@ import 'package:pharmacy_system/app/core/bloc/import_data_state.dart';
 import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 
+import '../../../core/data/services/sound_service.dart';
+
 class ImportDataView extends StatelessWidget {
   final ImportEntityType entityType;
   final String title;
@@ -132,7 +134,7 @@ class ImportDataView extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: AppSpacing.lg.h),
-                            ReusableText(
+                            AppText(
                               isImporting
                                   ? InventoryStrings.importButtonLoading
                                   : title,
@@ -141,7 +143,7 @@ class ImportDataView extends StatelessWidget {
                               ).copyWith(fontWeight: FontWeight.bold),
                             ),
                             SizedBox(height: AppSpacing.xs.h),
-                            ReusableText(
+                            AppText(
                               isImporting && stepLabel.isNotEmpty
                                   ? stepLabel
                                   : description,
@@ -179,7 +181,7 @@ class ImportDataView extends StatelessWidget {
                                     ),
                                     SizedBox(width: 12.w),
                                     Expanded(
-                                      child: ReusableText(
+                                      child: AppText(
                                         state.fileName!,
                                         style: TextStyle(
                                           fontSize: 14.sp,
@@ -198,7 +200,7 @@ class ImportDataView extends StatelessWidget {
                                 padding: EdgeInsets.only(
                                   bottom: AppSpacing.lg.h,
                                 ),
-                                child: EmptyState(
+                                child: AppStateView.empty(
                                   icon: Icons.table_chart_outlined,
                                   title: InventoryStrings.importMedicinesNoFile,
                                 ),
@@ -210,7 +212,7 @@ class ImportDataView extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  ReusableText(
+                                  AppText(
                                     '${InventoryStrings.importProgress}${(state.progress.clamp(0.0, 1.0) * 100).toInt()}%',
                                     style: AppTextStyles.body(context).copyWith(
                                       fontWeight: FontWeight.bold,
@@ -289,7 +291,7 @@ class ImportDataView extends StatelessWidget {
                             SizedBox(height: AppSpacing.xxl.h),
 
                             if (isImporting)
-                              ReusableButton(
+                              AppButton(
                                 text: InventoryStrings.importButtonLoading,
                                 type: ButtonType.primary,
                                 isLoading: true,
@@ -342,7 +344,7 @@ class ImportDataView extends StatelessWidget {
                                           ),
                                           SizedBox(width: 12.w),
                                           Expanded(
-                                            child: ReusableText(
+                                            child: AppText(
                                               state.resultMessage!,
                                               style: AppTextStyles.body(context)
                                                   .copyWith(
@@ -353,7 +355,7 @@ class ImportDataView extends StatelessWidget {
                                         ],
                                       ),
                                     ),
-                                  ReusableButton(
+                                  AppButton(
                                     text: InventoryStrings.importNewImport,
                                     type: ButtonType.primary,
                                     prefixIcon: Icons.file_upload_rounded,
@@ -365,7 +367,7 @@ class ImportDataView extends StatelessWidget {
                                 ],
                               )
                             else
-                              ReusableButton(
+                              AppButton(
                                 text: InventoryStrings.importButton,
                                 type: ButtonType.primary,
                                 prefixIcon: Icons.file_upload_rounded,
@@ -458,7 +460,7 @@ class _FormatGuide extends StatelessWidget {
                 size: AppIconSize.md.value,
               ),
               SizedBox(width: 8.w),
-              ReusableText(
+              AppText(
                 'تلميح: التنسيق المتوقع لملف الإكسيل',
                 style: AppTextStyles.body(
                   context,
@@ -467,7 +469,7 @@ class _FormatGuide extends StatelessWidget {
             ],
           ),
           SizedBox(height: AppSpacing.sm.h),
-          ReusableText(
+          AppText(
             'تأكد من وجود هذه الكلمات في صف العناوين (الهيدر) بملفك:',
             style: AppTextStyles.caption(
               context,
@@ -492,7 +494,7 @@ class _FormatGuide extends StatelessWidget {
                         : Colors.grey.shade300,
                   ),
                 ),
-                child: ReusableText(
+                child: AppText(
                   col,
                   style: TextStyle(
                     fontSize: 11.sp,
@@ -550,7 +552,7 @@ class _StepRow extends StatelessWidget {
         ),
         SizedBox(width: 10.w),
         Expanded(
-          child: ReusableText(
+          child: AppText(
             label,
             style: AppTextStyles.body(context).copyWith(
               fontWeight: isActive || isDone
@@ -658,14 +660,14 @@ class _StatItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ReusableText(
+        AppText(
           value,
           style: AppTextStyles.title(
             context,
           ).copyWith(fontWeight: FontWeight.bold, color: color),
         ),
         SizedBox(height: 2.h),
-        ReusableText(
+        AppText(
           label,
           style: AppTextStyles.caption(context).copyWith(color: Colors.grey),
         ),

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -50,9 +50,9 @@ class _QuotesBody extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    ReusableText(state.error ?? SalesStrings.errorLoadingQuotes),
+                    AppText(state.error ?? SalesStrings.errorLoadingQuotes),
                     SizedBox(height: 16.h),
-                    ReusableButton(
+                    AppButton(
                       text: GeneralStrings.refresh,
                       onPressed: () => context.read<QuotesBloc>().add(const LoadQuotes()),
                     ),
@@ -76,7 +76,7 @@ class _QuotesBody extends StatelessWidget {
   Widget _buildHeader(BuildContext context) {
     return Row(
       children: [
-        ReusableButton(
+        AppButton(
           text: SalesStrings.createQuoteAction,
           prefixIcon: Icons.add_rounded,
           onPressed: () => _showCreateQuoteDialog(context),
@@ -88,7 +88,7 @@ class _QuotesBody extends StatelessWidget {
 
   Widget _buildList(BuildContext context, QuotesState state) {
     if (state.quotes.isEmpty) {
-      return const EmptyState(
+      return const AppStateView.empty(
         icon: Icons.sell_outlined,
         title: SalesStrings.noPriceQuotes,
       );

@@ -17,13 +17,13 @@ class AccountsView extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final columns = [
-      ReusableTableColumn<JournalEntryModel>(
+      AppTableColumn<JournalEntryModel>(
         id: 'num',
         title: '#',
         width: 80.w,
         textBuilder: (j) => '#${j.entryNumber}',
       ),
-      ReusableTableColumn<JournalEntryModel>(
+      AppTableColumn<JournalEntryModel>(
         id: 'desc',
         title: 'البيان والنوع',
         flex: 2,
@@ -34,14 +34,14 @@ class AccountsView extends StatelessWidget {
           iconColor: scheme.primary,
         ),
       ),
-      ReusableTableColumn<JournalEntryModel>(
+      AppTableColumn<JournalEntryModel>(
         id: 'amount',
         title: 'القيمة',
         width: 120.w,
         isNumeric: true,
         cellBuilder: (j) => TableMoneyCell(amount: j.totalDebit, currency: GeneralStrings.currency, isHighlight: true),
       ),
-      ReusableTableColumn<JournalEntryModel>(
+      AppTableColumn<JournalEntryModel>(
         id: 'date',
         title: 'التاريخ',
         width: 140.w,
@@ -55,10 +55,10 @@ class AccountsView extends StatelessWidget {
           return const LoadingIndicator();
         }
         if (state.status == AccountingStatus.error) {
-          return ReusableStateView(
+          return AppStateView(
             message: state.errorMessage ?? 'حدث خطأ أثناء تحميل البيانات المالية',
             icon: Icons.error_outline_rounded,
-            action: ReusableButton(
+            action: AppButton(
               text: 'إعادة المحاولة',
               onPressed: () => context.read<AccountingBloc>().add(const LoadAccounting()),
             ),
@@ -109,14 +109,14 @@ class AccountsView extends StatelessWidget {
             SizedBox(height: AppSpacing.sm.h),
             Expanded(
               child: state.journals.isEmpty
-                  ? const EmptyState(
+                  ? const AppStateView.empty(
                       icon: Icons.receipt_long_rounded,
                       title: 'لا توجد قيود يومية',
                       subtitle: 'سوف تظهر القيود الآلية واليدوية هنا بمجرد بدء المعاملات المالية.',
                     )
                   : Padding(
                       padding: EdgeInsets.symmetric(horizontal: AppSpacing.md.w),
-                      child: ReusableTable<JournalEntryModel>(
+                      child: AppTable<JournalEntryModel>(
                         columns: columns,
                         items: state.journals,
                         itemLabel: 'قيد يومية',

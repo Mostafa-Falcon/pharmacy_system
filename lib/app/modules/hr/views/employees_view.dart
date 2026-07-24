@@ -26,7 +26,7 @@ class EmployeesView extends StatelessWidget {
         if (state.employees.isEmpty) {
           return Scaffold(
             backgroundColor: Colors.transparent,
-            body: const EmptyState(
+            body: const AppStateView.empty(
               icon: Icons.people_outline_rounded,
               title: '?? ???? ??????',
               subtitle: '?? ??? ????? ?? ?????? ??? ?? ??? ?????',
@@ -40,7 +40,7 @@ class EmployeesView extends StatelessWidget {
         }
 
         final columns = [
-          ReusableTableColumn<EmployeeModel>(
+          AppTableColumn<EmployeeModel>(
             id: 'name',
             title: '?????? ????????',
             flex: 2,
@@ -52,20 +52,20 @@ class EmployeesView extends StatelessWidget {
               iconColor: scheme.primary,
             ),
           ),
-          ReusableTableColumn<EmployeeModel>(
+          AppTableColumn<EmployeeModel>(
             id: 'dept',
             title: '?????',
             width: 150.w,
             textBuilder: (e) => e.departmentName.isNotEmpty ? e.departmentName : '???',
           ),
-          ReusableTableColumn<EmployeeModel>(
+          AppTableColumn<EmployeeModel>(
             id: 'salary',
             title: '??????',
             width: 130.w,
             isNumeric: true,
             cellBuilder: (e) => TableMoneyCell(amount: e.salary, currency: GeneralStrings.currency, isHighlight: true),
           ),
-          ReusableTableColumn<EmployeeModel>(
+          AppTableColumn<EmployeeModel>(
             id: 'status',
             title: '??????',
             width: 110.w,
@@ -74,7 +74,7 @@ class EmployeesView extends StatelessWidget {
                return StatusBadge(label: text, color: color, icon: icon);
             },
           ),
-          ReusableTableColumn<EmployeeModel>(
+          AppTableColumn<EmployeeModel>(
             id: 'phone',
             title: '??? ??????',
             width: 140.w,
@@ -86,7 +86,7 @@ class EmployeesView extends StatelessWidget {
           backgroundColor: Colors.transparent,
           body: Padding(
             padding: EdgeInsets.all(AppSpacing.md.w),
-            child: ReusableTable<EmployeeModel>(
+            child: AppTable<EmployeeModel>(
               columns: columns,
               items: state.employees,
               itemLabel: '????',
@@ -103,8 +103,8 @@ class EmployeesView extends StatelessWidget {
                   }
                 },
                 menuItems: [
-                  const PopupMenuItem(value: 'edit', child: ReusableText('????? ????????')),
-                  PopupMenuItem(value: 'delete', child: ReusableText('??? ?????', color: AppColors.error)),
+                  const PopupMenuItem(value: 'edit', child: AppText('????? ????????')),
+                  PopupMenuItem(value: 'delete', child: AppText('??? ?????', color: AppColors.error)),
                 ],
               ),
             ),
@@ -151,31 +151,31 @@ class EmployeesView extends StatelessWidget {
       builder:
           (context) => StatefulBuilder(
             builder:
-                (context, setState) => ReusableDialog(
+                (context, setState) => AppDialog(
                   title: '????? ???? ????',
                   headerIcon: const Icon(Icons.person_add_rounded),
                   children: [
-                    ReusableInput(
+                    AppInput(
                       label: '??? ?????? *',
                       hint: '????? ??????',
                       controller: nameCtrl,
                       textDirection: TextDirection.rtl,
                     ),
                     SizedBox(height: AppSpacing.sm.h),
-                    ReusableInput(
+                    AppInput(
                       label: '??? ??????',
                       hint: '??? ??????',
                       controller: phoneCtrl,
                       keyboardType: TextInputType.phone,
                     ),
                     SizedBox(height: AppSpacing.sm.h),
-                    ReusableInput.email(
+                    AppInput.email(
                       label: '?????? ??????????',
                       hint: 'example@domain.com',
                       controller: emailCtrl,
                     ),
                     SizedBox(height: AppSpacing.sm.h),
-                    ReusableInput(
+                    AppInput(
                       label: '?????? ???????',
                       hint: '???: ?????? ?????',
                       controller: jobTitleCtrl,
@@ -201,7 +201,7 @@ class EmployeesView extends StatelessWidget {
                         },
                       ),
                     SizedBox(height: AppSpacing.sm.h),
-                    ReusableInput(
+                    AppInput(
                       label: '?????? ??????? (?.?)',
                       hint: '0.00',
                       controller: salaryCtrl,
@@ -210,7 +210,7 @@ class EmployeesView extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: AppSpacing.sm.h),
-                    ReusableInput(
+                    AppInput(
                       label: '???????',
                       hint: '??????? ??????',
                       controller: notesCtrl,
@@ -262,31 +262,31 @@ class EmployeesView extends StatelessWidget {
       builder:
           (context) => StatefulBuilder(
             builder:
-                (context, setState) => ReusableDialog(
+                (context, setState) => AppDialog(
                   title: '????? ?????? ??????',
                   headerIcon: const Icon(Icons.edit_rounded),
                   children: [
-                    ReusableInput(
+                    AppInput(
                       label: '?????',
                       controller: nameCtrl,
                       textDirection: TextDirection.rtl,
                     ),
                     SizedBox(height: AppSpacing.sm.h),
-                    ReusableInput(
+                    AppInput(
                       label: '??? ??????',
                       controller: phoneCtrl,
                       keyboardType: TextInputType.phone,
                     ),
                     SizedBox(height: AppSpacing.sm.h),
-                    ReusableInput.email(label: '?????? ??????????', controller: emailCtrl),
+                    AppInput.email(label: '?????? ??????????', controller: emailCtrl),
                     SizedBox(height: AppSpacing.sm.h),
-                    ReusableInput(
+                    AppInput(
                       label: '?????? ???????',
                       controller: jobTitleCtrl,
                       textDirection: TextDirection.rtl,
                     ),
                     SizedBox(height: AppSpacing.sm.h),
-                    ReusableInput(
+                    AppInput(
                       label: '?????? ???????',
                       controller: salaryCtrl,
                       keyboardType: const TextInputType.numberWithOptions(

@@ -178,15 +178,15 @@ class Tag extends StatelessWidget {
 }
 
 /// بادج للتوافق التام يعتمد على [AppBadge].
-class ReusableBadge extends StatelessWidget {
-  const ReusableBadge.tone({
+class AppBadge extends StatelessWidget {
+  const AppBadge.tone({
     super.key,
     required this.label,
     required this.tone,
     this.fontSize,
   }) : color = null;
 
-  const ReusableBadge.color({
+  const AppBadge.color({
     super.key,
     required this.label,
     required this.color,

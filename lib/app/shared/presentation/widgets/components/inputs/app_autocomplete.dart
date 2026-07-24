@@ -147,7 +147,7 @@ class _AppAutocompleteState<T> extends State<AppAutocomplete<T>> {
                         Padding(
                           padding: EdgeInsets.all(16.w),
                           child: const Center(
-                            child: ReusableText(GeneralStrings.searchNoResults),
+                            child: AppText(GeneralStrings.searchNoResults),
                           ),
                         ))
                   : ListView.separated(
@@ -258,7 +258,7 @@ class _AppAutocompleteState<T> extends State<AppAutocomplete<T>> {
       link: _layerLink,
       child: Focus(
         onKeyEvent: _onKeyEvent,
-        child: ReusableInput(
+        child: AppInput(
           controller: _controller,
           focusNode: _focusNode,
           label: widget.label,

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -39,7 +39,7 @@ class ProfitReportView extends StatelessWidget {
                   }
                   final report = state.bundle;
                   if (report == null) {
-                    return const EmptyState(
+                    return const AppStateView.empty(
                       title: GeneralStrings.noData,
                       icon: Icons.bar_chart_outlined,
                     );
@@ -72,10 +72,10 @@ class ProfitReportView extends StatelessWidget {
             children: [
               Icon(Icons.date_range_rounded, size: AppIconSize.md.value, color: AppColors.textSecondaryOf(context)),
               SizedBox(width: 8.w),
-              ReusableText(ReportsStrings.periodPrefix.replaceFirst('%s', state.periodLabel),
+              AppText(ReportsStrings.periodPrefix.replaceFirst('%s', state.periodLabel),
                   style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.w600, color: AppColors.textSecondaryOf(context))),
               const Spacer(),
-              ReusableButton(
+              AppButton(
                 text: ReportsStrings.reportsCustomRange,
                 prefixIcon: Icons.calendar_month_outlined,
                 type: ButtonType.text,
@@ -205,7 +205,7 @@ class ProfitReportView extends StatelessWidget {
 
   Widget _buildJournalIntegrity(
       BuildContext context, ProfitReportBundle report) {
-    return SectionCard(
+    return AppCard.section(
       padding: EdgeInsets.all(AppSpacing.lg.w),
       dividers: false,
       children: [
@@ -221,7 +221,7 @@ class ProfitReportView extends StatelessWidget {
                   size: 18.sp, color: AppColors.info),
             ),
             SizedBox(width: 10.w),
-            ReusableText(ReportsStrings.reportsJournalIntegrity,
+            AppText(ReportsStrings.reportsJournalIntegrity,
                 style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.w700, color: AppColors.textPrimaryOf(context))),
           ],
         ),
@@ -242,7 +242,7 @@ class ProfitReportView extends StatelessWidget {
             ),
             SizedBox(width: 8.w),
             Expanded(
-              child: ReusableText(
+              child: AppText(
                 report.isBalanced
                     ? ReportsStrings.journalBalancedMsg
                     : ReportsStrings.journalUnbalancedMsg,
@@ -261,9 +261,9 @@ class ProfitReportView extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          ReusableText(label,
+          AppText(label,
               style: AppTextStyles.body(context).copyWith(color: AppColors.textSecondaryOf(context))),
-          ReusableText(_formatMoney(value),
+          AppText(_formatMoney(value),
               style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.w700, color: AppColors.textPrimaryOf(context))),
         ],
       ),
@@ -277,15 +277,15 @@ class ProfitReportView extends StatelessWidget {
         children: [
           Icon(Icons.error_outline_rounded, size: AppIconSize.xxl.value, color: AppColors.error),
           SizedBox(height: AppSpacing.md.h),
-          ReusableText(ReportsStrings.reportLoadError,
+          AppText(ReportsStrings.reportLoadError,
               style: AppTextStyles.title(context).copyWith(fontWeight: FontWeight.w600, color: AppColors.textPrimaryOf(context))),
           SizedBox(height: AppSpacing.sm.h),
-          ReusableText(error,
+          AppText(error,
               style: AppTextStyles.caption(context).copyWith(color: AppColors.textSecondaryOf(context)),
               maxLines: 3,
               overflow: TextOverflow.ellipsis),
           SizedBox(height: AppSpacing.lg.h),
-          ReusableButton(
+          AppButton(
             text: ReportsStrings.retryButton,
             prefixIcon: Icons.refresh_rounded,
             type: ButtonType.primary,

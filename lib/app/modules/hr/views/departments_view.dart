@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../bloc/hr_bloc.dart';
@@ -22,7 +22,7 @@ class DepartmentsView extends StatelessWidget {
         return Scaffold(
           backgroundColor: AppColors.backgroundOf(context),
           body: state.departments.isEmpty
-              ? EmptyState(
+              ? AppStateView.empty(
                   icon: Icons.business_rounded,
                   title: 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¥Ø¯Ø§Ø±Ø§Øª',
                   subtitle: 'Ù„Ù… ÙŠØªÙ… Ø¥Ø¶Ø§ÙØ© Ø£ÙŠ Ø¥Ø¯Ø§Ø±Ø§Øª Ø¨Ø¹Ø¯',
@@ -67,7 +67,7 @@ class DepartmentsView extends StatelessWidget {
       builder:
           (context) => StatefulBuilder(
             builder:
-                (context, setState) => ReusableDialog(
+                (context, setState) => AppDialog(
                   title: 'Ø¥Ø¶Ø§ÙØ© Ø¥Ø¯Ø§Ø±Ø© Ø¬Ø¯ÙŠØ¯Ø©',
                   headerIcon: Icon(
                     Icons.add_business_rounded,
@@ -75,13 +75,13 @@ class DepartmentsView extends StatelessWidget {
                     size: 20.sp,
                   ),
                   children: [
-                    ReusableInput.text(
+                    AppInput.text(
                       label: 'Ø§Ø³Ù… Ø§Ù„Ø¥Ø¯Ø§Ø±Ø©',
                       hint: 'Ù…Ø«Ø§Ù„: Ø§Ù„Ù…Ø¨ÙŠØ¹Ø§Øª',
                       controller: nameCtrl,
                     ),
                     SizedBox(height: AppSpacing.md.h),
-                    ReusableInput.text(
+                    AppInput.text(
                       label: 'Ø§Ù„ÙˆØµÙ',
                       hint: 'ÙˆØµÙ Ù…Ø®ØªØµØ±',
                       controller: descCtrl,
@@ -147,7 +147,7 @@ class _DepartmentCard extends StatelessWidget {
             EdgeInsets.symmetric(horizontal: AppSpacing.md.w, vertical: 4.h),
         leading: CircleAvatar(
           backgroundColor: AppColors.infoSoftOf(context),
-          child: ReusableText(
+          child: AppText(
             department.name.isNotEmpty ? department.name[0] : '?',
             style: TextStyle(
               color: AppColors.info,
@@ -156,7 +156,7 @@ class _DepartmentCard extends StatelessWidget {
             ),
           ),
         ),
-        title: ReusableText(
+        title: AppText(
           department.name,
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -168,7 +168,7 @@ class _DepartmentCard extends StatelessWidget {
           children: [
             if (department.managerName != null &&
                 department.managerName!.isNotEmpty)
-              ReusableText(
+              AppText(
                 'Ù…Ø¯ÙŠØ±: ${department.managerName}',
                 style: TextStyle(
                   fontSize: 12.sp,
@@ -177,7 +177,7 @@ class _DepartmentCard extends StatelessWidget {
               ),
             if (department.description != null &&
                 department.description!.isNotEmpty)
-              ReusableText(
+              AppText(
                 department.description!,
                 style: TextStyle(
                   fontSize: 12.sp,
@@ -195,7 +195,7 @@ class _DepartmentCard extends StatelessWidget {
                 color: AppColors.primarySoftOf(context),
                 borderRadius: BorderRadius.circular(AppRadius.pill.r),
               ),
-              child: ReusableText(
+              child: AppText(
                 '${department.employeeCount} Ù…ÙˆØ¸Ù',
                 style: TextStyle(
                   fontSize: 11.sp,
@@ -249,7 +249,7 @@ class _DepartmentCard extends StatelessWidget {
     showDialog(
       context: context,
       builder:
-          (context) => ReusableDialog(
+          (context) => AppDialog(
             title: 'ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ø¥Ø¯Ø§Ø±Ø©',
             headerIcon: Icon(
               Icons.edit_rounded,
@@ -257,9 +257,9 @@ class _DepartmentCard extends StatelessWidget {
               size: 20.sp,
             ),
             children: [
-              ReusableInput.text(label: 'Ø§Ù„Ø§Ø³Ù…', controller: nameCtrl),
+              AppInput.text(label: 'Ø§Ù„Ø§Ø³Ù…', controller: nameCtrl),
               SizedBox(height: AppSpacing.md.h),
-              ReusableInput.text(label: 'Ø§Ù„ÙˆØµÙ', controller: descCtrl),
+              AppInput.text(label: 'Ø§Ù„ÙˆØµÙ', controller: descCtrl),
               SizedBox(height: AppSpacing.lg.h),
               DialogActions(
                 confirmText: 'Ø­ÙØ¸',

@@ -8,7 +8,7 @@ import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 class AppTableToolbar<T> extends StatelessWidget {
   final String searchQuery;
   final ValueChanged<String>? onSearchChanged;
-  final List<ReusableTableColumn<T>> allColumns;
+  final List<AppTableColumn<T>> allColumns;
   final Set<String> visibleColumnIds;
   final ValueChanged<String>? onToggleColumnVisibility;
   final VoidCallback? onResetColumnsVisibility;

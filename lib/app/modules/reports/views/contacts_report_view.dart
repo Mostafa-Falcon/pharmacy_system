@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
@@ -144,7 +144,7 @@ class _ContactsReportViewState extends State<ContactsReportView> {
           }).toList(),
         ),
         const Spacer(),
-        ReusableButton(
+        AppButton(
           text: GeneralStrings.refresh,
           prefixIcon: Icons.refresh_rounded,
           onPressed: _load,
@@ -158,7 +158,7 @@ class _ContactsReportViewState extends State<ContactsReportView> {
     if (_isLoading) return const LoadingIndicator();
     final rows = _filteredRows;
     if (rows.isEmpty) {
-      return const EmptyState(
+      return const AppStateView.empty(
         icon: Icons.assessment_outlined,
         title: GeneralStrings.noData,
       );

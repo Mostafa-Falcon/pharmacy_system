@@ -55,7 +55,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ReusableInput.email(
+              AppInput.email(
                 controller: _emailCtrl,
                 label: AuthStrings.emailLabel,
                 hint: AuthStrings.emailHint,
@@ -66,7 +66,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               SizedBox(height: AppSpacing.xl.h),
               BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {
-                  return ReusableButton(
+                  return AppButton(
                     text: AuthStrings.resetPasswordButton,
                     isLoading: state.status == AuthStatus.loading,
                     onPressed: _onSubmit,

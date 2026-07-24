@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
-class ReusableTableFooter extends StatelessWidget {
+class AppTableFooter extends StatelessWidget {
   final int totalItems;
   final int currentPage;
   final int totalPages;

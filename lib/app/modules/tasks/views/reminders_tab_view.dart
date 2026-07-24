@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -34,13 +34,13 @@ class RemindersTabView extends StatelessWidget {
   Widget _buildToolbar(BuildContext context) {
     return Row(
       children: [
-        ReusableButton(
+        AppButton(
           text: 'إضافة تذكير',
           prefixIcon: Icons.add,
           onPressed: () => _showReminderDialog(context),
         ),
         const Spacer(),
-        ReusableButton(
+        AppButton(
           text: 'تحديث',
           prefixIcon: Icons.refresh,
           type: ButtonType.tonal,
@@ -153,12 +153,12 @@ class RemindersTabView extends StatelessWidget {
           ],
         ),
         actions: [
-          ReusableButton(
+          AppButton(
             text: GeneralStrings.cancel,
             type: ButtonType.text,
             onPressed: () => Navigator.of(context).pop(),
           ),
-          ReusableButton(
+          AppButton(
             text: TasksStrings.remindersAddButton,
             onPressed: () {
               if (titleCtrl.text.trim().isEmpty) return;

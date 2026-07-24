@@ -1,5 +1,14 @@
-- [x] حذف الملفات المكررة (`shared_module_layout.dart`, `shared_form_layout.dart`)
-- [x] إعادة تنظيم المجلدات (`shareds` -> `layouts`, `reusables` -> `components`)
-- [x] تحديث ملفات الفهرس (`index.dart`) والـ `barrel files`
-- [x] تحديث مسارات الاستيراد (`imports`) في كامل المشروع
+- [ ] توحيد التسميات (Rename Reusable* to App*)
+    - [ ] `ReusableButton` -> `AppButton`
+    - [ ] `ReusableInput` -> `AppInput`
+    - [ ] `ReusableText` -> `AppText`
+    - [ ] `ReusableDialog` -> `AppDialog`
+    - [ ] `ReusableTable` -> `AppTable`
+    - [ ] `ReusableProgressOverlay` -> `AppProgressOverlay`
+- [ ] استخراج المكونات الفرعية من `StandardModuleLayout`
+    - [ ] إنشاء `AppPageHeader`
+    - [ ] إنشاء `AppFilterBar`
+- [ ] إعادة تنظيم مجلد `layouts` (core/templates)
+- [ ] تحديث مراجع `AppStateView` وإزالة Wrappers القديمة
+- [ ] نقل `CorrectionChainWidget` ودمج الثيمات
 - [ ] التحقق من صحة الكود (`flutter analyze`)

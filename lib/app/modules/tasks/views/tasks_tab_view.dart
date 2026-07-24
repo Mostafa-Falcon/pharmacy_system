@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -60,7 +60,7 @@ class TasksTabView extends StatelessWidget {
     final bloc = context.read<TasksBloc>();
     return Row(
       children: [
-        ReusableButton(
+        AppButton(
           text: '????? ???? ?????',
           prefixIcon: Icons.add_task_rounded,
           onPressed: () => _showTaskDialog(context),
@@ -109,7 +109,7 @@ class TasksTabView extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        ReusableButton(
+        AppButton(
           text: '????? ???????',
           prefixIcon: Icons.refresh_rounded,
           type: ButtonType.outlined,
@@ -125,7 +125,7 @@ class TasksTabView extends StatelessWidget {
         if (state.isLoading) return const Center(child: LoadingIndicator());
         final list = state.tasks;
         if (list.isEmpty) {
-          return const EmptyState(icon: Icons.task_outlined, title: '?? ???? ???? ?????? ??????? ??????');
+          return const AppStateView.empty(icon: Icons.task_outlined, title: '?? ???? ???? ?????? ??????? ??????');
         }
         return ListView.separated(
           itemCount: list.length,
@@ -148,9 +148,9 @@ class TasksTabView extends StatelessWidget {
       title: '????? ???? ??? ?????',
       headerIcon: const Icon(Icons.add_task_rounded),
       children: [
-        ReusableInput(controller: titleCtrl, label: '????? ?????? *', hint: '???? ???? ??? ????...', autofocus: true),
+        AppInput(controller: titleCtrl, label: '????? ?????? *', hint: '???? ???? ??? ????...', autofocus: true),
         SizedBox(height: 12.h),
-        ReusableInput(controller: descCtrl, label: '?????? ?????? (???????)', hint: '???? ????? ?????? ??????...', maxLines: 3),
+        AppInput(controller: descCtrl, label: '?????? ?????? (???????)', hint: '???? ????? ?????? ??????...', maxLines: 3),
         SizedBox(height: 12.h),
         ReusableDropdown<String>(
           labelText: '???? ??????? (????????)',
@@ -228,10 +228,10 @@ class _TaskCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ReusableText(task.title, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
+                    AppText(task.title, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
                     if (task.description?.isNotEmpty == true) ...[
                       SizedBox(height: 4.h),
-                      ReusableText(task.description!, style: TextStyle(fontSize: 11.sp, color: scheme.onSurfaceVariant), maxLines: 1, overflow: TextOverflow.ellipsis),
+                      AppText(task.description!, style: TextStyle(fontSize: 11.sp, color: scheme.onSurfaceVariant), maxLines: 1, overflow: TextOverflow.ellipsis),
                     ],
                     SizedBox(height: 8.h),
                     Row(
@@ -243,7 +243,7 @@ class _TaskCard extends StatelessWidget {
                           SizedBox(width: 12.w),
                           Icon(Icons.calendar_today_rounded, size: 12.sp, color: isOverdue ? AppColors.error : scheme.onSurfaceVariant),
                           SizedBox(width: 4.w),
-                          ReusableText(DateFormat('yyyy/MM/dd').format(task.dueDate!), style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold, color: isOverdue ? AppColors.error : scheme.onSurfaceVariant)),
+                          AppText(DateFormat('yyyy/MM/dd').format(task.dueDate!), style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold, color: isOverdue ? AppColors.error : scheme.onSurfaceVariant)),
                         ],
                       ],
                     ),

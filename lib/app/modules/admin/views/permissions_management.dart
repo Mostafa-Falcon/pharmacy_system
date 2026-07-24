@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -6,8 +6,8 @@ import '../../../core/injection.dart';
 import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import 'package:pharmacy_system/app/core/models/auth/user_model.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/permission_service.dart';
-import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
-import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/shared/constants/ui/app_sizes.dart';
 import '../bloc/employees_bloc.dart';
 
 class PermissionsManagementView extends StatelessWidget {
@@ -63,7 +63,7 @@ class _PermissionsManagementBody extends StatelessWidget {
           Icon(Icons.badge_rounded,
               color: Theme.of(context).colorScheme.primary, size: 20.sp),
           SizedBox(width: AppSpacing.sm),
-          ReusableText(
+          AppText(
             '???? ???? ????????:',
             style: TextStyle(
                 fontSize: 14.sp,
@@ -107,7 +107,7 @@ class _PermissionsManagementBody extends StatelessWidget {
                 size: 60.sp,
                 color: AppColors.textMutedOf(context).withValues(alpha: 0.4)),
             SizedBox(height: AppSpacing.sm),
-            ReusableText(
+            AppText(
               '????? ?????? ???? ????? ???? ?????? ????????',
               style: TextStyle(
                   fontSize: 15.sp,
@@ -132,7 +132,7 @@ class _PermissionsManagementBody extends StatelessWidget {
               children: [
                 Icon(Icons.shield_rounded, color: scheme.primary, size: 20.sp),
                 SizedBox(width: AppSpacing.xs),
-                ReusableText(
+                AppText(
                   '???? ???????: ${selected.name}',
                   style: TextStyle(
                       fontSize: 16.sp,
@@ -178,7 +178,7 @@ class _PermissionsManagementBody extends StatelessWidget {
                     }
                     bloc.add(LoadEmployeePermissions(selected.id));
                   },
-                  title: ReusableText(
+                  title: AppText(
                     _getPermissionLabel(perm),
                     style: TextStyle(
                       fontSize: 12.sp,
@@ -204,7 +204,7 @@ class _PermissionsManagementBody extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ReusableButton(
+        AppButton(
           text: '????? ????',
           prefixIcon: Icons.done_all_rounded,
           type: ButtonType.text,
@@ -216,7 +216,7 @@ class _PermissionsManagementBody extends StatelessWidget {
           },
         ),
         SizedBox(width: AppSpacing.xs.w),
-        ReusableButton(
+        AppButton(
           text: '??? ????',
           prefixIcon: Icons.block_rounded,
           type: ButtonType.text,

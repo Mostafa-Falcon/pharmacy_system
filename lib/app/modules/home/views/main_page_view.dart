@@ -356,7 +356,7 @@ class _QuickSectionsGrid extends StatelessWidget {
               ),
               SizedBox(width: 8.w),
               Expanded(
-                child: ReusableText(
+                child: AppText(
                   title,
                   style: TextStyle(
                     fontSize: 13.sp,
@@ -519,7 +519,7 @@ class _HomeActionCardState extends State<_HomeActionCard> {
                     ),
                   ),
                   SizedBox(height: 6.h),
-                  ReusableText(
+                  AppText(
                     widget.item.label,
                     style: TextStyle(
                       fontSize: hasSubtitle ? 13.sp : 12.sp,
@@ -532,7 +532,7 @@ class _HomeActionCardState extends State<_HomeActionCard> {
                   ),
                   if (hasSubtitle) ...[
                     SizedBox(height: 3.h),
-                    ReusableText(
+                    AppText(
                       widget.item.subtitle!,
                       style: TextStyle(
                         fontSize: 10.sp,
@@ -620,7 +620,7 @@ class _HomeWelcomeBanner extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ReusableText(
+                AppText(
                   'مرحباً بك، $userName 👋',
                   style: TextStyle(
                     fontSize: 18.sp,
@@ -629,7 +629,7 @@ class _HomeWelcomeBanner extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 4.h),
-                ReusableText(
+                AppText(
                   'فرع: $branchName',
                   style: TextStyle(
                     fontSize: 12.sp,

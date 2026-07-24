@@ -68,7 +68,7 @@ class _TodaySummaryCard extends StatelessWidget {
               color: AppColors.primary,
             ),
             SizedBox(height: AppSpacing.sm.h),
-            ReusableText(
+            AppText(
               'حضور اليوم',
               style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
             ),
@@ -116,7 +116,7 @@ class _StatItem extends StatelessWidget {
       children: [
         Icon(icon, size: 20.sp, color: AppColors.primary),
         SizedBox(height: 4.h),
-        ReusableText(
+        AppText(
           value,
           style: TextStyle(
             fontSize: 18.sp,
@@ -124,7 +124,7 @@ class _StatItem extends StatelessWidget {
             color: AppColors.textPrimaryOf(context),
           ),
         ),
-        ReusableText(
+        AppText(
           label,
           style: TextStyle(
             fontSize: 11.sp,
@@ -153,7 +153,7 @@ class _ClockInOutCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ReusableButton(
+                AppButton(
                   text: hasClockedIn ? 'تسجيل انصراف' : 'تسجيل حضور',
                   type: hasClockedIn ? ButtonType.outlined : ButtonType.primary,
                   onPressed: () async {
@@ -193,7 +193,7 @@ class _AttendanceHistoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final columns = [
-      ReusableTableColumn<AttendanceModel>(
+      AppTableColumn<AttendanceModel>(
         id: 'emp',
         title: 'الموظف',
         flex: 2,
@@ -204,14 +204,14 @@ class _AttendanceHistoryCard extends StatelessWidget {
           iconColor: _statusColor(context, a.status),
         ),
       ),
-      ReusableTableColumn<AttendanceModel>(
+      AppTableColumn<AttendanceModel>(
         id: 'in',
         title: 'حضور',
         width: 100.w,
         textBuilder: (a) =>
             a.clockIn.length > 11 ? a.clockIn.substring(11, 16) : '--',
       ),
-      ReusableTableColumn<AttendanceModel>(
+      AppTableColumn<AttendanceModel>(
         id: 'out',
         title: 'انصراف',
         width: 100.w,
@@ -219,13 +219,13 @@ class _AttendanceHistoryCard extends StatelessWidget {
             ? a.clockOut!.substring(11, 16)
             : '--',
       ),
-      ReusableTableColumn<AttendanceModel>(
+      AppTableColumn<AttendanceModel>(
         id: 'hours',
         title: 'ساعات',
         width: 90.w,
         textBuilder: (a) => '${a.workedHours} س',
       ),
-      ReusableTableColumn<AttendanceModel>(
+      AppTableColumn<AttendanceModel>(
         id: 'status',
         title: 'الحالة',
         width: 110.w,
@@ -245,7 +245,7 @@ class _AttendanceHistoryCard extends StatelessWidget {
           SizedBox(height: AppSpacing.sm.h),
           SizedBox(
             height: 400.h,
-            child: ReusableTable<AttendanceModel>(
+            child: AppTable<AttendanceModel>(
               columns: columns,
               items: records,
               itemLabel: 'سجل حضور',

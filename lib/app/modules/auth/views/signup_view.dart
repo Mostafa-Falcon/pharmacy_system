@@ -79,7 +79,7 @@ class _SignupViewState extends State<SignupView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ReusableInput.text(
+              AppInput.text(
                 controller: _nameCtrl,
                 label: AuthStrings.fullNameLabel,
                 hint: AuthStrings.nameHint,
@@ -87,7 +87,7 @@ class _SignupViewState extends State<SignupView> {
                 validator: AppValidators.validateFullName,
               ),
               SizedBox(height: AppSpacing.md.h),
-              ReusableInput.email(
+              AppInput.email(
                 controller: _emailCtrl,
                 label: AuthStrings.emailLabel,
                 hint: AuthStrings.emailHint,
@@ -95,14 +95,14 @@ class _SignupViewState extends State<SignupView> {
                 validator: AppValidators.validateEmail,
               ),
               SizedBox(height: AppSpacing.md.h),
-              ReusableInput.password(
+              AppInput.password(
                 controller: _passwordCtrl,
                 label: AuthStrings.passwordLabel,
                 prefixIcon: const Icon(Icons.lock_outline_rounded),
                 validator: AppValidators.validatePassword,
               ),
               SizedBox(height: AppSpacing.md.h),
-              ReusableInput.password(
+              AppInput.password(
                 controller: _confirmPasswordCtrl,
                 label: AuthStrings.confirmPasswordLabel,
                 prefixIcon: const Icon(Icons.lock_clock_outlined),
@@ -113,7 +113,7 @@ class _SignupViewState extends State<SignupView> {
               SizedBox(height: AppSpacing.xl.h),
               BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {
-                  return ReusableButton(
+                  return AppButton(
                     text: AuthStrings.signupButton,
                     isLoading: state.status == AuthStatus.loading,
                     onPressed: _onSignup,
@@ -124,12 +124,12 @@ class _SignupViewState extends State<SignupView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ReusableText.caption(
+                  AppText.caption(
                     AuthStrings.alreadyHaveAccount,
                   ),
                   TextButton(
                     onPressed: () => context.go(Routes.LOGIN),
-                    child: ReusableText.caption(
+                    child: AppText.caption(
                       AuthStrings.loginNow,
                       fontWeight: FontWeight.bold,
                       color: scheme.primary,

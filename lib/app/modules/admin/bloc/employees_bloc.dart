@@ -1,14 +1,14 @@
 import 'package:drift/drift.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pharmacy_system/app/core/data/database/daos/users_dao.dart';
+import 'package:pharmacy_system/app/core/data/database/daos/system_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import '../../../core/injection.dart';
 import 'package:pharmacy_system/app/core/models/auth/user_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/permission_service.dart';
-import '../../../core/utils/app_utils.dart';
+import 'package:pharmacy_system/app/shared/ui_core.dart';
 import '../../admin/services/access_control_service.dart';
 
 part 'employees_event.dart';
@@ -16,7 +16,7 @@ part 'employees_state.dart';
 
 class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
   final AccessControlService _access = AccessControlService.to;
-  final UsersDao _dao = sl<UsersDao>();
+  final SystemDao _dao = sl<SystemDao>();
 
   EmployeesBloc() : super(const EmployeesState()) {
     on<LoadEmployees>(_onLoadEmployees);
@@ -30,7 +30,7 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
   Future<void> _onLoadEmployees(LoadEmployees event, Emitter<EmployeesState> emit) async {
     emit(state.copyWith(status: EmployeesStatus.loading));
     try {
-      final users = await _dao.getAll();
+      final users = await _dao.getAllUsers();
       final employees = users
           .where((u) => u.role == 'employee' && !u.isDeleted)
           .map(_toUserModel)
@@ -63,7 +63,7 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
       } else {
         emit(state.copyWith(
           status: EmployeesStatus.error,
-          error: result['message'] as String? ?? 'ÙØ´Ù„ Ø¥Ø¶Ø§ÙØ© Ø§Ù„Ù…ÙˆØ¸Ù',
+          error: result['message'] as String? ?? 'Failed to add employee',
         ));
       }
     } catch (e) {
@@ -76,14 +76,13 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
 
   Future<void> _onUpdateEmployee(UpdateEmployee event, Emitter<EmployeesState> emit) async {
     _access.require('users.write');
-    final user = await _dao.getById(event.id);
+    final user = await _dao.getUserById(event.id);
     if (user == null) return;
 
-    await _dao.upsert(UsersTableCompanion(
+    await _dao.upsertUser(UsersTableCompanion(
       id: Value(event.id),
       name: Value(event.name ?? user.name),
       email: Value(event.email ?? user.email),
-      passwordHash: Value(user.passwordHash),
       role: Value(user.role),
       assignedBranchId: Value(user.assignedBranchId),
       isActive: Value(user.isActive),
@@ -110,20 +109,19 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
         branchId: user.assignedBranchId ?? '',
       );
     } catch (e, st) {
-      safeDebugPrint('EmployeesBloc: ÙØ´Ù„ Ù…Ø²Ø§Ù…Ù†Ø© ØªØ­Ø¯ÙŠØ« Ø§Ù„Ù…ÙˆØ¸Ù ${user.id}: $e\n$st');
+      safeDebugPrint('EmployeesBloc: sync update error ${user.id}: $e\n$st');
     }
   }
 
   Future<void> _onDeleteEmployee(DeleteEmployee event, Emitter<EmployeesState> emit) async {
     _access.require('users.write');
-    final user = await _dao.getById(event.id);
+    final user = await _dao.getUserById(event.id);
     if (user == null) return;
 
-    await _dao.upsert(UsersTableCompanion(
+    await _dao.upsertUser(UsersTableCompanion(
       id: Value(event.id),
       name: Value(user.name),
       email: Value(user.email),
-      passwordHash: Value(user.passwordHash),
       role: Value(user.role),
       assignedBranchId: Value(user.assignedBranchId),
       isActive: const Value(false),
@@ -150,19 +148,19 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
         branchId: user.assignedBranchId ?? '',
       );
     } catch (e, st) {
-      safeDebugPrint('EmployeesBloc: ÙØ´Ù„ Ù…Ø²Ø§Ù…Ù†Ø© Ø­Ø°Ù Ø§Ù„Ù…ÙˆØ¸Ù ${user.id}: $e\n$st');
+      safeDebugPrint('EmployeesBloc: sync delete error ${user.id}: $e\n$st');
     }
   }
 
   void _onSelectEmployee(SelectEmployee event, Emitter<EmployeesState> emit) async {
-    final user = await _dao.getById(event.id);
+    final user = await _dao.getUserById(event.id);
     emit(state.copyWith(
       selectedEmployee: user != null ? _toUserModel(user) : null,
     ));
   }
 
-  void _onLoadEmployeePermissions(LoadEmployeePermissions event, Emitter<EmployeesState> emit) {
-    final permissions = PermissionService.getPermissionsForUser(event.userId);
+  Future<void> _onLoadEmployeePermissions(LoadEmployeePermissions event, Emitter<EmployeesState> emit) async {
+    final permissions = await PermissionService.getPermissionsForUser(event.userId);
     emit(state.copyWith(selectedEmployeePermissions: permissions));
   }
 
@@ -170,7 +168,7 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
     id: d.id,
     name: d.name,
     email: d.email,
-    passwordHash: d.passwordHash,
+    passwordHash: '',
     role: d.role == 'owner' ? UserRole.owner : UserRole.employee,
     assignedBranchId: d.assignedBranchId,
     isActive: d.isActive,
@@ -182,8 +180,3 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
     activeDeviceId: d.activeDeviceId,
   );
 }
-
-
-
-
-

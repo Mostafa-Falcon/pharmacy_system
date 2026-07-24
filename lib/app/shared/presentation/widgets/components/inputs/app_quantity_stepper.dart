@@ -40,7 +40,7 @@ class QuantityStepper extends StatelessWidget {
           Container(
             constraints: BoxConstraints(minWidth: 36.w),
             alignment: Alignment.center,
-            child: ReusableText(
+            child: AppText(
               '$value',
               style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.w800, color: scheme.primary),
             ),

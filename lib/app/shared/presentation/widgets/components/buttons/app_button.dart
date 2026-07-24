@@ -7,7 +7,7 @@ enum ButtonType { primary, outlined, text, tonal, error, success }
 
 enum ButtonSize { small, medium, large }
 
-class ReusableButton extends StatelessWidget {
+class AppButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
   final ButtonType type;
@@ -20,7 +20,7 @@ class ReusableButton extends StatelessWidget {
   final double? height;
   final Color? color;
 
-  const ReusableButton({
+  const AppButton({
     super.key,
     required this.text,
     this.onPressed,
@@ -276,8 +276,8 @@ class _ButtonScaleWrapperState extends State<_ButtonScaleWrapper> {
 }
 
 /// زرار الإضافة السريعة ذو المظهر الأنيق والتحجيم المربع المتناسق بالملي
-class ReusableAddButton extends StatelessWidget {
-  const ReusableAddButton({super.key, required this.onPressed, this.tooltip});
+class AppAddButton extends StatelessWidget {
+  const AppAddButton({super.key, required this.onPressed, this.tooltip});
 
   final VoidCallback onPressed;
   final String? tooltip;

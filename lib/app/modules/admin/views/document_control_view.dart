@@ -1,4 +1,4 @@
-// views/document_control_view.dart
+﻿// views/document_control_view.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
@@ -47,9 +47,9 @@ class DocumentControlView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ReusableText(AdminStrings.docControlHeader, style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
+              AppText(AdminStrings.docControlHeader, style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
               SizedBox(height: 4.h),
-              ReusableText(AdminStrings.docControlHeaderSubtitle, style: TextStyle(fontSize: 12.sp, color: scheme.onSurfaceVariant)),
+              AppText(AdminStrings.docControlHeaderSubtitle, style: TextStyle(fontSize: 12.sp, color: scheme.onSurfaceVariant)),
             ],
           ),
         ),
@@ -68,7 +68,7 @@ class DocumentControlView extends StatelessWidget {
         final corrections = snapshot.data ?? [];
 
         if (corrections.isEmpty) {
-          return EmptyState(
+          return AppStateView.empty(
             icon: Icons.assignment_outlined,
             title: AdminStrings.docControlEmpty,
           );
@@ -87,16 +87,16 @@ class DocumentControlView extends StatelessWidget {
                   backgroundColor: _getActionColor(correction.action).withValues(alpha: 0.15),
                   child: Icon(_getActionIcon(correction.action), color: _getActionColor(correction.action), size: 18.sp),
                 ),
-                title: ReusableText(
+                title: AppText(
                   _getActionLabel(correction.action),
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13.sp),
                 ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ReusableText('${correction.referenceType.name} | ${correction.details ?? ''}', style: TextStyle(fontSize: 11.sp, color: scheme.onSurfaceVariant)),
+                    AppText('${correction.referenceType.name} | ${correction.details ?? ''}', style: TextStyle(fontSize: 11.sp, color: scheme.onSurfaceVariant)),
                     SizedBox(height: 2.h),
-                    ReusableText('${correction.timestamp.day}/${correction.timestamp.month}/${correction.timestamp.year} - الموظف: ${correction.userDisplayName}', style: TextStyle(fontSize: 10.sp, color: scheme.onSurfaceVariant.withValues(alpha: 0.7))),
+                    AppText('${correction.timestamp.day}/${correction.timestamp.month}/${correction.timestamp.year} - الموظف: ${correction.userDisplayName}', style: TextStyle(fontSize: 10.sp, color: scheme.onSurfaceVariant.withValues(alpha: 0.7))),
                   ],
                 ),
                 trailing: Icon(Icons.chevron_left_rounded, color: scheme.onSurfaceVariant.withValues(alpha: 0.5), size: 20.sp),

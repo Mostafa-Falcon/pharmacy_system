@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -263,7 +263,7 @@ class _DesktopLayoutState extends State<DesktopLayout> {
               children: [
                 Icon(Icons.person_pin_rounded, color: isDark ? scheme.primary : Colors.white70, size: 16.sp),
                 SizedBox(width: 8.w),
-                ReusableText(
+                AppText(
                   bloc.userName,
                   style: TextStyle(color: isDark ? scheme.onSurface : Colors.white, fontSize: 12.sp, fontWeight: FontWeight.bold),
                 ),
@@ -295,7 +295,7 @@ class _DesktopLayoutState extends State<DesktopLayout> {
           children: [
             Icon(icon, size: 14.sp, color: color ?? baseColor.withValues(alpha: 0.7)),
             SizedBox(width: 6.w),
-            ReusableText(
+            AppText(
               text,
               style: TextStyle(color: color ?? baseColor, fontSize: 11.sp, fontWeight: FontWeight.w600),
             ),
@@ -314,22 +314,22 @@ class _DesktopLayoutState extends State<DesktopLayout> {
 
     showDialog(
       context: context,
-      builder: (ctx) => ReusableDialog(
+      builder: (ctx) => AppDialog(
         title: SalesStrings.closeShiftTitle,
         children: [
-          ReusableText('${HomeStrings.sidebarCashierShifts} #${shift.shiftNumber}', style: const TextStyle(fontWeight: FontWeight.bold)),
+          AppText('${HomeStrings.sidebarCashierShifts} #${shift.shiftNumber}', style: const TextStyle(fontWeight: FontWeight.bold)),
           SizedBox(height: AppSpacing.sm),
           TotalsRow(label: SalesStrings.cashSalesLabel, value: FormatUtils.currency(cashSales)),
           Divider(height: AppSpacing.md),
           TotalsRow(label: SalesStrings.expectedCashLabel, value: FormatUtils.currency(expectedCash), color: AppColors.primary, bold: true),
           SizedBox(height: AppSpacing.md),
-          ReusableInput(
+          AppInput(
             controller: cashController,
             label: SalesStrings.actualCashLabel,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
           ),
           SizedBox(height: AppSpacing.sm),
-          ReusableInput(
+          AppInput(
             controller: notesController,
             label: SalesStrings.optionalNotesLabel,
             maxLines: 2,
@@ -425,7 +425,7 @@ class _DesktopLayoutState extends State<DesktopLayout> {
             children: [
               Icon(Icons.account_balance_wallet_rounded, size: 12.sp, color: AppColors.error),
               SizedBox(width: 4.w),
-              ReusableText(
+              AppText(
                 SalesStrings.balanceFormat.replaceFirst('%s', FormatUtils.currency(state.customerBalance)),
                 style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold, color: AppColors.error),
               ),

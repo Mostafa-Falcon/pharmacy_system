@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:pharmacy_system/app/shared/ui_core.dart';
-import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
 
@@ -128,7 +127,7 @@ class _MedicineSearchFieldState extends State<MedicineSearchField> {
                     ? Padding(
                         padding: EdgeInsets.all(16.w),
                         child: const Center(
-                          child: ReusableText(GeneralStrings.searchNoResults),
+                          child: AppText(GeneralStrings.searchNoResults),
                         ),
                       )
                     : ListView.separated(
@@ -181,7 +180,7 @@ class _MedicineSearchFieldState extends State<MedicineSearchField> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ReusableText(
+                  AppText(
                     medicine.name,
                     style: AppTextStyles.body(context).copyWith(
                       fontWeight: isSelected
@@ -190,7 +189,7 @@ class _MedicineSearchFieldState extends State<MedicineSearchField> {
                       color: isSelected ? scheme.primary : null,
                     ),
                   ),
-                  ReusableText(
+                  AppText(
                     WidgetStrings.medicineSearchStock
                         .replaceFirst(
                           '%s',
@@ -209,7 +208,7 @@ class _MedicineSearchFieldState extends State<MedicineSearchField> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                ReusableText(
+                AppText(
                   FormatUtils.currency(medicine.sellPrice),
                   style: AppTextStyles.body(context).copyWith(
                     fontWeight: FontWeight.w900,
@@ -217,7 +216,7 @@ class _MedicineSearchFieldState extends State<MedicineSearchField> {
                   ),
                 ),
                 if (medicine.buyPrice > 0)
-                  ReusableText(
+                  AppText(
                     WidgetStrings.medicineSearchBuyPrice.replaceFirst(
                       '%s',
                       FormatUtils.currency(medicine.buyPrice),
@@ -347,7 +346,7 @@ class _MedicineSearchFieldState extends State<MedicineSearchField> {
       link: _layerLink,
       child: Focus(
         onKeyEvent: (node, event) => _onKeyEvent(node, event),
-        child: ReusableInput(
+        child: AppInput(
           controller: _controller,
           focusNode: _focusNode,
           label: widget.label,

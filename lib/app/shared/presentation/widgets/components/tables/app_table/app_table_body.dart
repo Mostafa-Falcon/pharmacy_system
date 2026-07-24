@@ -5,9 +5,9 @@ import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
 /// مكون جسم الجدول التفاعلي عالي الأداء والافتراضية الفائقة (Virtualized High-Performance Body).
 /// يقوم بإنشاء الصفوف الظاهرة للعين فقط بدون تخصيص ذاكرة إضافية أو حدوث Lag في الشاشة.
-class ReusableTableBody<T> extends StatelessWidget {
+class AppTableBody<T> extends StatelessWidget {
   final List<T> items;
-  final List<ReusableTableColumn<T>> columns;
+  final List<AppTableColumn<T>> columns;
   final bool showCheckbox;
   final Set<String> selectedIds;
   final ValueChanged<String>? onSelectRow;

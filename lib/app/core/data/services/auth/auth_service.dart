@@ -1,18 +1,17 @@
+import 'dart:async';
 import 'dart:convert';
-
 import 'package:crypto/crypto.dart';
 import 'package:drift/drift.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:gotrue/gotrue.dart' show OtpType;
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase_pkg;
 import 'package:uuid/uuid.dart';
 
+import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/database/drift_init.dart';
-import 'package:pharmacy_system/app/core/data/database/tables/system_tables.dart';
 import 'package:pharmacy_system/app/core/models/auth/branch_model.dart';
 import 'package:pharmacy_system/app/core/models/auth/permission_model.dart';
 import 'package:pharmacy_system/app/core/models/auth/user_model.dart';
-import 'package:pharmacy_system/app/shared/constants/strings/auth_strings.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 
 class AuthService {
@@ -44,14 +43,20 @@ class AuthService {
           await _loadBranch(branchId);
         }
         _permissions = (data['permissions'] as List<dynamic>?)
-                ?.map((e) =>
-                    PermissionModel.fromJson(e as Map<String, dynamic>))
+                ?.map(
+                  (e) => PermissionModel.fromJson(e as Map<String, dynamic>),
+                )
                 .toList() ??
             [];
       }
     } catch (e, s) {
       safeDebugPrint('AuthService.init restore failed: $e\n$s');
     }
+  }
+
+  static DateTime _parseCreatedAt(String? value) {
+    if (value == null || value.isEmpty) return DateTime.now();
+    return DateTime.tryParse(value) ?? DateTime.now();
   }
 
   static Future<Map<String, dynamic>> login({
@@ -77,13 +82,12 @@ class AuthService {
         role: meta['role'] == 'owner' ? UserRole.owner : UserRole.employee,
         assignedBranchId: meta['assigned_branch_id'] as String?,
         accountId: meta['account_id'] as String?,
-        createdAt: supabaseUser.createdAt,
+        createdAt: _parseCreatedAt(supabaseUser.createdAt),
         lastLogin: DateTime.now(),
       );
       await _saveSession(user, _permissions);
       _currentUser = user;
-      await _initDefaultBranch(user);
-
+      await _initDefaultBranch();
       return {'success': true, 'user': user};
     } on supabase_pkg.AuthException catch (e) {
       final msg = e.message.toLowerCase();
@@ -105,13 +109,21 @@ class AuthService {
     required String email,
     required String password,
     required UserRole role,
+    String? assignedBranchId,
   }) async {
     try {
       final supabase = supabase_pkg.Supabase.instance.client;
+      final metadata = <String, dynamic>{
+        'name': name,
+        'role': role.name,
+      };
+      if (assignedBranchId != null) {
+        metadata['assigned_branch_id'] = assignedBranchId;
+      }
       final response = await supabase.auth.signUp(
         email: email,
         password: password,
-        data: {'name': name, 'role': role.name},
+        data: metadata,
       );
       final supabaseUser = response.user;
       final emailConfirmationRequired =
@@ -119,7 +131,8 @@ class AuthService {
               response.session == null;
 
       if (response.session == null && supabaseUser == null) {
-        return _offlineRegister(name, email, password, role);
+        return _offlineRegister(name, email, password, role,
+            assignedBranchId: assignedBranchId);
       }
 
       if (emailConfirmationRequired) {
@@ -130,7 +143,8 @@ class AuthService {
             email: email,
             passwordHash: '',
             role: role,
-            createdAt: supabaseUser.createdAt,
+            assignedBranchId: assignedBranchId,
+            createdAt: _parseCreatedAt(supabaseUser.createdAt),
           );
           await _saveLocalUser(user, password);
         }
@@ -143,12 +157,14 @@ class AuthService {
         email: email,
         passwordHash: '',
         role: role,
-        createdAt: supabaseUser.createdAt,
+        assignedBranchId: assignedBranchId,
+        createdAt: _parseCreatedAt(supabaseUser.createdAt),
       );
       await _saveSession(user, []);
       _currentUser = user;
-      await _initDefaultBranch(user);
-
+      if (role == UserRole.owner) {
+        await _createMainBranch();
+      }
       return {'success': true, 'user': user};
     } on supabase_pkg.AuthException catch (e) {
       final msg = e.message.toLowerCase();
@@ -158,7 +174,8 @@ class AuthService {
       return {'success': false, 'message': e.message};
     } catch (e, s) {
       safeDebugPrint('AuthService.register error: $e\n$s');
-      return _offlineRegister(name, email, password, role);
+      return _offlineRegister(name, email, password, role,
+          assignedBranchId: assignedBranchId);
     }
   }
 
@@ -175,9 +192,8 @@ class AuthService {
 
   static bool hasPermission(String permissionKey) {
     if (_currentUser?.isOwner == true) return true;
-    final permission = _permissions.where(
-      (p) => p.permissionKey == permissionKey && !p.isDeleted,
-    );
+    final permission =
+        _permissions.where((p) => p.permissionKey == permissionKey && !p.isDeleted);
     if (permission.isEmpty) return false;
     return permission.any((p) => p.isAllowed);
   }
@@ -196,7 +212,7 @@ class AuthService {
   static Future<Map<String, dynamic>> resendConfirmation(String email) async {
     try {
       await supabase_pkg.Supabase.instance.client.auth.resend(
-        type: supabase_pkg.ResendType.signup,
+        type: OtpType.signup,
         email: email,
       );
       return {'success': true, 'message': AuthStrings.emailConfirmationResendSent};
@@ -220,7 +236,6 @@ class AuthService {
   static Future<void> _saveLocalUser(UserModel user, String password) async {
     try {
       final db = appDatabase;
-      final hash = sha256.convert(utf8.encode(password)).toString();
       await db.systemDao.upsertUser(UsersTableCompanion(
         id: Value(user.id),
         name: Value(user.name),
@@ -240,28 +255,12 @@ class AuthService {
     }
   }
 
-  static Future<void> _initDefaultBranch(UserModel user) async {
+  static Future<void> _initDefaultBranch() async {
     try {
       final db = appDatabase;
       final branches = await db.systemDao.getAllBranches();
       if (branches.isEmpty) {
-        final branch = BranchModel(
-          id: 'branch_main',
-          name: 'الفرع الرئيسي',
-          isMainBranch: true,
-          createdAt: DateTime.now(),
-        );
-        await db.systemDao.upsertBranch(BranchesTableCompanion(
-          id: Value(branch.id),
-          name: Value(branch.name),
-          isMainBranch: Value(branch.isMainBranch),
-          createdAt: Value(branch.createdAt),
-          lastModified: Value(branch.lastModified),
-          isDeleted: Value(branch.isDeleted),
-          syncVersion: Value(branch.syncVersion),
-        ));
-        _currentBranch = branch;
-        await _storage.write(key: _branchKey, value: branch.id);
+        await _createMainBranch();
       } else {
         final savedId = await _storage.read(key: _branchKey);
         final target = savedId != null
@@ -312,48 +311,47 @@ class AuthService {
     }
   }
 
-  static Map<String, dynamic> _offlineLogin(String email, String password) {
+  static Future<Map<String, dynamic>> _offlineLogin(
+    String email,
+    String password,
+  ) async {
     try {
-      final hash = sha256.convert(utf8.encode(password)).toString();
       final db = appDatabase;
-      final users = db.systemDao.getAllUsers();
-      return users.then((list) {
-        final match = list.where((u) => u.email == email).firstOrNull;
-        if (match == null) {
-          return {'success': false, 'message': AuthStrings.loginInvalidCredentials};
-        }
-        final user = UserModel(
-          id: match.id,
-          name: match.name,
-          email: match.email,
-          passwordHash: '',
-          role: match.role == 'owner' ? UserRole.owner : UserRole.employee,
-          assignedBranchId: match.assignedBranchId,
-          accountId: match.accountId,
-          createdAt: match.createdAt,
-          lastLogin: match.lastLogin,
-          syncVersion: match.syncVersion,
-          lastModified: match.lastModified,
-          isDeleted: match.isDeleted,
-        );
-        _currentUser = user;
-        _saveSession(user, []);
-        _initDefaultBranch(user);
-        return {'success': true, 'user': user};
-      }).catchError((e) {
-        return {'success': false, 'message': AuthStrings.serverUnavailable};
-      });
+      final list = await db.systemDao.getAllUsers();
+      final match = list.where((u) => u.email == email).firstOrNull;
+      if (match == null) {
+        return {'success': false, 'message': AuthStrings.loginInvalidCredentials};
+      }
+      final user = UserModel(
+        id: match.id,
+        name: match.name,
+        email: match.email,
+        passwordHash: '',
+        role: match.role == 'owner' ? UserRole.owner : UserRole.employee,
+        assignedBranchId: match.assignedBranchId,
+        accountId: match.accountId,
+        createdAt: match.createdAt,
+        lastLogin: match.lastLogin,
+        syncVersion: match.syncVersion,
+        lastModified: match.lastModified,
+        isDeleted: match.isDeleted,
+      );
+      _currentUser = user;
+      await _saveSession(user, []);
+      await _initDefaultBranch();
+      return {'success': true, 'user': user};
     } catch (e) {
       return {'success': false, 'message': AuthStrings.serverUnavailable};
     }
   }
 
-  static Map<String, dynamic> _offlineRegister(
+  static Future<Map<String, dynamic>> _offlineRegister(
     String name,
     String email,
     String password,
-    UserRole role,
-  ) {
+    UserRole role, {
+    String? assignedBranchId,
+  }) async {
     try {
       final hash = sha256.convert(utf8.encode(password)).toString();
       final user = UserModel(
@@ -362,12 +360,15 @@ class AuthService {
         email: email,
         passwordHash: hash,
         role: role,
+        assignedBranchId: assignedBranchId,
         createdAt: DateTime.now(),
       );
-      _saveLocalUser(user, password);
+      await _saveLocalUser(user, password);
       _currentUser = user;
-      _saveSession(user, []);
-      _initDefaultBranch(user);
+      await _saveSession(user, []);
+      if (role == UserRole.owner) {
+        await _createMainBranch();
+      }
       return {
         'success': true,
         'user': user,
@@ -377,6 +378,31 @@ class AuthService {
     } catch (e, s) {
       safeDebugPrint('AuthService._offlineRegister error: $e\n$s');
       return {'success': false, 'message': AuthStrings.errorRegister};
+    }
+  }
+
+  static Future<void> _createMainBranch() async {
+    final branch = BranchModel(
+      id: 'branch_main',
+      name: 'الفرع الرئيسي',
+      isMainBranch: true,
+      createdAt: DateTime.now(),
+    );
+    try {
+      final db = appDatabase;
+      await db.systemDao.upsertBranch(BranchesTableCompanion(
+        id: Value(branch.id),
+        name: Value(branch.name),
+        isMainBranch: Value(branch.isMainBranch),
+        createdAt: Value(branch.createdAt),
+        lastModified: Value(branch.lastModified),
+        isDeleted: Value(branch.isDeleted),
+        syncVersion: Value(branch.syncVersion),
+      ));
+      _currentBranch = branch;
+      await _storage.write(key: _branchKey, value: branch.id);
+    } catch (e, s) {
+      safeDebugPrint('AuthService._createMainBranch error: $e\n$s');
     }
   }
 }

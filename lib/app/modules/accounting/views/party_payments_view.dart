@@ -1,4 +1,4 @@
-// views/party_payments_view.dart
+﻿// views/party_payments_view.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -91,7 +91,7 @@ class PartyPaymentsView extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
-        builder: (context, setState) => ReusableDialog(
+        builder: (context, setState) => AppDialog(
           title: 'Ø¥Ù†Ø´Ø§Ø¡ Ø¥ÙŠØµØ§Ù„ Ù…Ø§Ù„ÙŠ Ø¬Ø¯ÙŠØ¯',
           headerIcon: Icon(
             Icons.payment_rounded,
@@ -99,7 +99,7 @@ class PartyPaymentsView extends StatelessWidget {
             size: 20.sp,
           ),
           children: [
-            ReusableDropdown<PartyPaymentKind>(
+            AppDropdown<PartyPaymentKind>(
               labelText: 'Ù†ÙˆØ¹ Ø§Ù„Ø³Ù†Ø¯ Ø§Ù„Ù…Ø§Ù„ÙŠ',
               hintText: 'Ø§Ø®ØªØ± Ù†ÙˆØ¹ Ø§Ù„Ø³Ù†Ø¯',
               items: kinds,
@@ -131,7 +131,7 @@ class PartyPaymentsView extends StatelessWidget {
                     (p is SupplierModel && p.id == selectedPartyId),
               );
 
-              return ReusableDropdown<dynamic>(
+              return AppDropdown<dynamic>(
                 labelText: isCustomer ? 'Ø§Ù„Ø¹Ù…ÙŠÙ„ Ø§Ù„Ù…Ø³ØªÙ‡Ø¯Ù' : 'Ø§Ù„Ù…ÙˆØ±Ø¯ Ø§Ù„Ù…Ø³ØªÙ‡Ø¯Ù',
                 hintText: 'Ø§Ø®ØªØ± Ø§Ù„Ø­Ø³Ø§Ø¨ Ø§Ù„Ø¬Ø§Ø±ÙŠ',
                 items: items,
@@ -158,14 +158,14 @@ class PartyPaymentsView extends StatelessWidget {
               );
             }(),
             SizedBox(height: AppSpacing.md.h),
-            ReusableInput(
+            AppInput(
               label: 'Ø§Ù„Ù…Ø¨Ù„Øº Ø§Ù„Ù…Ø³ØªØ­Ù‚ (Ø¬.Ù…)',
               hint: '0.00',
               controller: amountCtrl,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
             ),
             SizedBox(height: AppSpacing.md.h),
-            ReusableDropdown<String>(
+            AppDropdown<String>(
               labelText: 'Ù‚Ù†Ø§Ø© Ø§Ù„Ø¥ÙŠØ¯Ø§Ø¹ / Ø§Ù„ØµØ±Ù',
               hintText: 'Ø§Ø®ØªØ± Ø·Ø±ÙŠÙ‚Ø© Ø§Ù„ØªØ³ÙˆÙŠØ©',
               items: const ['cash', 'card', 'bank_transfer', 'mobile_wallet'],
@@ -237,7 +237,7 @@ class _PaymentList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (payments.isEmpty) {
-      return EmptyState(
+      return AppStateView.empty(
         icon: Icons.receipt_long_rounded,
         title: 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¥ÙŠØµØ§Ù„Ø§Øª Ø£Ùˆ Ø³Ù†Ø¯Ø§Øª Ù…Ø³Ø¬Ù„Ø©',
         subtitle: 'Ù„Ù… ÙŠØªÙ… Ø¥Ù†Ø´Ø§Ø¡ Ø£ÙŠ Ø³Ù†Ø¯Ø§Øª Ù…Ø§Ù„ÙŠØ© Ù‡Ù†Ø§ Ø¨Ø¹Ø¯',

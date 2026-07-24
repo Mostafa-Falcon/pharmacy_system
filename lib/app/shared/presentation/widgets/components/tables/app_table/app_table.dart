@@ -5,8 +5,8 @@ import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
 /// جدول البيانات الذكي التفاعلي عالي الأداء والجماليات [ReusableTable].
 /// مصمم هندسياً للتعامل مع البيانات الضخمة بدون أي لغبطة أو تهنيج (Zero Lag).
-class ReusableTable<T> extends StatefulWidget {
-  final List<ReusableTableColumn<T>> columns;
+class AppTable<T> extends StatefulWidget {
+  final List<AppTableColumn<T>> columns;
   final List<T> items;
 
   // ─── السورت والفرز ───
@@ -53,7 +53,7 @@ class ReusableTable<T> extends StatefulWidget {
   final Widget Function(
     BuildContext context,
     T item,
-    ReusableTableColumn<T> column,
+    AppTableColumn<T> column,
   )? cellOverrideBuilder;
 
   // ─── التقسيم والفوتر ───
@@ -79,7 +79,7 @@ class ReusableTable<T> extends StatefulWidget {
   final int shimmerRows;
   final Widget? emptyState;
 
-  const ReusableTable({
+  const AppTable({
     super.key,
     required this.columns,
     required this.items,
@@ -138,10 +138,10 @@ class ReusableTable<T> extends StatefulWidget {
   });
 
   @override
-  State<ReusableTable<T>> createState() => _ReusableTableState<T>();
+  State<AppTable<T>> createState() => _AppTableState<T>();
 }
 
-class _ReusableTableState<T> extends State<ReusableTable<T>> {
+class _AppTableState<T> extends State<AppTable<T>> {
   final ScrollController _horizontalController = ScrollController();
   final ScrollController _verticalController = ScrollController();
 
@@ -302,7 +302,7 @@ class _ReusableTableState<T> extends State<ReusableTable<T>> {
                             // Sticky Table Header
                             Stack(
                               children: [
-                                ReusableTableHeader<T>(
+                                AppTableHeader<T>(
                                   columns: updatedColumns,
                                   sortColumnId: widget.sortColumnId,
                                   isSortAscending: widget.isSortAscending,
@@ -329,7 +329,7 @@ class _ReusableTableState<T> extends State<ReusableTable<T>> {
 
                             // Virtualized Lazy Table Body
                             Expanded(
-                              child: ReusableTableBody<T>(
+                              child: AppTableBody<T>(
                                 items: displayedItems,
                                 columns: updatedColumns,
                                 showCheckbox: widget.showCheckbox,
@@ -396,7 +396,7 @@ class _ReusableTableState<T> extends State<ReusableTable<T>> {
                       size: AppIconSize.md.value,
                     ),
                     SizedBox(width: 10.w),
-                    ReusableText(
+                    AppText(
                       WidgetStrings.paginationSelectedFormat
                           .replaceFirst('%s', '${widget.selectedIds.length}')
                           .replaceFirst('%s', widget.itemLabel ?? ''),
@@ -426,7 +426,7 @@ class _ReusableTableState<T> extends State<ReusableTable<T>> {
 
             // Footer / Pagination Controls
             if (widget.showPagination)
-              ReusableTableFooter(
+              AppTableFooter(
                 totalItems: widget.totalItems > 0 ? widget.totalItems : displayedItems.length,
                 currentPage: widget.currentPage,
                 totalPages: widget.totalPages,

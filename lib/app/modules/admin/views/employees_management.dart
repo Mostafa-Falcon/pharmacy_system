@@ -1,4 +1,4 @@
-import 'package:drift/drift.dart' hide Column;
+﻿import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,7 +36,7 @@ class EmployeesManagementView extends StatelessWidget {
           title: AdminStrings.empManagement,
           subtitle: AdminStrings.empManagementSubtitle,
           actions: [
-            ReusableButton(
+            AppButton(
               text: AdminStrings.empAdd,
               prefixIcon: Icons.person_add_alt_1_rounded,
               type: ButtonType.primary,
@@ -58,7 +58,7 @@ class EmployeesManagementView extends StatelessWidget {
 
   Widget _buildEmployeesList(BuildContext context, EmployeesState state) {
     if (state.employees.isEmpty) {
-      return const EmptyState(
+      return const AppStateView.empty(
         icon: Icons.people_outline_rounded,
         title: AdminStrings.empNoAccounts,
         subtitle: AdminStrings.empAddStartHint,
@@ -100,23 +100,23 @@ class EmployeesManagementView extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
-        builder: (context, setDialogState) => ReusableDialog(
+        builder: (context, setDialogState) => AppDialog(
           title: AdminStrings.empAddDialog,
           headerIcon: Icon(Icons.person_add_rounded, color: scheme.primary),
           children: [
-            ReusableInput(
+            AppInput(
               controller: nameController,
               label: AdminStrings.empFullName,
               prefixIcon: const Icon(Icons.person_outline_rounded),
             ),
             SizedBox(height: AppSpacing.md.h),
-            ReusableInput.email(
+            AppInput.email(
               controller: emailController,
               label: AdminStrings.empEmailLabel,
               prefixIcon: const Icon(Icons.email_outlined),
             ),
             SizedBox(height: AppSpacing.md.h),
-            ReusableInput.password(
+            AppInput.password(
               controller: passwordController,
               label: AdminStrings.empDefaultPassword,
               prefixIcon: const Icon(Icons.lock_outline_rounded),
@@ -216,17 +216,17 @@ class EmployeesManagementView extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
-        builder: (context, setDialogState) => ReusableDialog(
+        builder: (context, setDialogState) => AppDialog(
           title: AdminStrings.empEdit,
           headerIcon: Icon(Icons.edit_note_rounded, color: scheme.primary),
           children: [
-            ReusableInput(
+            AppInput(
               controller: nameController,
               label: AdminStrings.empEditName,
               prefixIcon: const Icon(Icons.person_outline_rounded),
             ),
             SizedBox(height: AppSpacing.md.h),
-            ReusableInput.email(
+            AppInput.email(
               controller: emailController,
               label: AdminStrings.empEditEmail,
               prefixIcon: const Icon(Icons.email_outlined),
@@ -383,7 +383,7 @@ class _EmployeeCard extends StatelessWidget {
               boxShadow: [BoxShadow(color: scheme.primary.withValues(alpha: 0.12), blurRadius: 6, offset: const Offset(0, 3))],
             ),
             child: Center(
-              child: ReusableText(employee.name.isNotEmpty ? employee.name[0].toUpperCase() : '?',
+              child: AppText(employee.name.isNotEmpty ? employee.name[0].toUpperCase() : '?',
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
             ),
           ),
@@ -392,9 +392,9 @@ class _EmployeeCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ReusableText(employee.name, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold, color: AppColors.textPrimaryOf(context))),
+                AppText(employee.name, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold, color: AppColors.textPrimaryOf(context))),
                 SizedBox(height: 2.h),
-                ReusableText(employee.email, style: TextStyle(fontSize: 12.sp, color: AppColors.textSecondaryOf(context))),
+                AppText(employee.email, style: TextStyle(fontSize: 12.sp, color: AppColors.textSecondaryOf(context))),
                 SizedBox(height: 6.h),
                 Row(
                   children: [

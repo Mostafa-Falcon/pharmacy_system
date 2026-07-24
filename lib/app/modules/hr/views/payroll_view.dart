@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../bloc/hr_bloc.dart';
@@ -50,18 +50,18 @@ class PayrollView extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (context) => ReusableDialog(
+      builder: (context) => AppDialog(
         title: 'Ø¥Ù†Ø´Ø§Ø¡ ÙƒØ´Ù Ø±Ø§ØªØ¨ Ø¬Ø¯ÙŠØ¯',
         headerIcon: const Icon(Icons.add_chart_rounded),
         children: [
-          ReusableInput(
+          AppInput(
             label: 'Ø§Ù„Ø´Ù‡Ø± (Ø±Ù‚Ù…)',
             hint: 'Ù…Ø«Ø§Ù„: 1-12',
             controller: monthCtrl,
             keyboardType: TextInputType.number,
           ),
           SizedBox(height: AppSpacing.md.h),
-          ReusableInput(
+          AppInput(
             label: 'Ø§Ù„Ø³Ù†Ø©',
             hint: 'Ù…Ø«Ø§Ù„: 2026',
             controller: yearCtrl,
@@ -104,13 +104,13 @@ class _PayrollSummaryCard extends StatelessWidget {
             child: Icon(Icons.payments_rounded, size: 28.sp, color: scheme.primary),
           ),
           SizedBox(height: AppSpacing.sm.h),
-          const ReusableText(
+          const AppText(
             'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ù…Ø®ØµØµØ§Øª Ø§Ù„Ø±ÙˆØ§ØªØ¨ Ù„Ù„Ø´Ù‡Ø± Ø§Ù„Ø­Ø§Ù„ÙŠ',
-            variant: ReusableTextVariant.caption,
+            variant: AppTextVariant.caption,
             textAlign: TextAlign.center,
           ),
           SizedBox(height: AppSpacing.xs.h),
-          ReusableText(
+          AppText(
             '${totalSalaries.toStringAsFixed(0)} Ø¬.Ù…',
             style: TextStyle(
               fontSize: 26.sp,
@@ -166,7 +166,7 @@ class _PayrollListCard extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(vertical: 24.h),
               child: const Center(
-                child: ReusableText(
+                child: AppText(
                   'Ù„Ø§ ØªÙˆØ¬Ø¯ ÙƒØ´ÙˆÙ Ø±ÙˆØ§ØªØ¨ Ù…Ø³Ø¬Ù„Ø© Ø­ØªÙ‰ Ø§Ù„Ø¢Ù†.',
                   style: TextStyle(color: Colors.grey),
                 ),
@@ -197,11 +197,11 @@ class _PayrollListCard extends StatelessWidget {
 
                 return ListTile(
                   contentPadding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 4.w),
-                  title: ReusableText(
+                  title: AppText(
                     'ÙƒØ´Ù Ø´Ù‡Ø± ${p.month} - Ù„Ø³Ù†Ø© ${p.year}',
                     style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold),
                   ),
-                  subtitle: ReusableText(
+                  subtitle: AppText(
                     'Ø¹Ø¯Ø¯ Ø§Ù„Ù…ÙˆØ¸ÙÙŠÙ†: ${p.employeeCount} | Ø§Ù„ØµØ§ÙÙŠ: ${p.netTotal.toStringAsFixed(0)} Ø¬.Ù…',
                     style: TextStyle(fontSize: 11.sp, color: AppColors.textSecondaryOf(context)),
                   ),
@@ -259,14 +259,14 @@ class _PayrollListCard extends StatelessWidget {
     final lines = PayrollService.getLines(payrollId);
     final scheme = Theme.of(context).colorScheme;
 
-    ReusableDialog.show(
+    AppDialog.show(
       context,
       title: 'ØªÙØ§ØµÙŠÙ„ ÙƒØ´Ù Ø§Ù„Ø±ÙˆØ§ØªØ¨',
       headerIcon: const Icon(Icons.info_outline_rounded),
       maxWidth: 600,
       children: [
         if (lines.isEmpty)
-          const ReusableStateView.empty(message: 'Ù„Ø§ ØªÙˆØ¬Ø¯ ØªÙØ§ØµÙŠÙ„ Ù…ØªØ§Ø­Ø© Ù„Ù‡Ø°Ø§ Ø§Ù„ÙƒØ´Ù.', compact: true)
+          const AppStateView.empty(message: 'Ù„Ø§ ØªÙˆØ¬Ø¯ ØªÙØ§ØµÙŠÙ„ Ù…ØªØ§Ø­Ø© Ù„Ù‡Ø°Ø§ Ø§Ù„ÙƒØ´Ù.', compact: true)
         else
           SizedBox(
             height: 400.h,
@@ -277,12 +277,12 @@ class _PayrollListCard extends StatelessWidget {
                 final line = lines[i];
                 return ListTile(
                   contentPadding: EdgeInsets.symmetric(horizontal: 4.w),
-                  title: ReusableText(line.employeeName, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: ReusableText(
+                  title: AppText(line.employeeName, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: AppText(
                     'Ø§Ù„Ø£Ø³Ø§Ø³ÙŠ: ${line.baseSalary.toStringAsFixed(0)} | Ø®ØµÙˆÙ…Ø§Øª: ${line.deductions.toStringAsFixed(0)} | Ø­ÙˆØ§ÙØ²: ${line.bonuses.toStringAsFixed(0)}',
                     style: TextStyle(fontSize: 10.5.sp, color: AppColors.textSecondaryOf(context)),
                   ),
-                  trailing: ReusableText(
+                  trailing: AppText(
                     '${line.netSalary.toStringAsFixed(0)} Ø¬.Ù…',
                     style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: scheme.primary),
                   ),

@@ -7,7 +7,7 @@ final sl = GetIt.instance;
 
 void registerCoreServiceDependencies() {
   sl.allowReassignment = true;
-  _reg<LookupService>(() => LookupService());
+  _reg<LookupService>(() => LookupService.instance);
 
   // Register SyncEngine singleton
   if (!sl.isRegistered<SyncEngine>()) {

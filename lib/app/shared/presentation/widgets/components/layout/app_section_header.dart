@@ -58,7 +58,7 @@ class SectionHeader extends StatelessWidget {
           SizedBox(width: 8.w),
 
           // النص الموحد الفخم بخط القاهرة الجريء
-          ReusableText(
+          AppText(
             title,
             style: AppTextStyles.body(context).copyWith(
               fontWeight: FontWeight.bold,

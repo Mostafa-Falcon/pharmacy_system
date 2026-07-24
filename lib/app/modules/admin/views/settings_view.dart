@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
@@ -98,7 +98,7 @@ class _TabSelector extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.all(AppSpacing.xs.w),
-              child: ReusableInput(
+              child: AppInput(
                 hint: AdminStrings.adminSearchSettings,
                 prefixIcon: const Icon(Icons.search_rounded, size: 20),
                 onChanged: (value) => bloc.add(SetSearchQuery(value)),
@@ -141,7 +141,7 @@ class _TabSelector extends StatelessWidget {
                                   ),
                                   SizedBox(width: 12.w),
                                   Expanded(
-                                    child: ReusableText(
+                                    child: AppText(
                                       tab.label,
                                       style: TextStyle(
                                         fontSize: 13.sp,

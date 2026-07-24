@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -72,7 +72,7 @@ class _CashierShiftViewState extends State<CashierShiftView> {
                       child: const LoadingIndicator(),
                     )
                   else if (shifts.isEmpty)
-                    _buildEmptyState(context)
+                    _buildAppStateView.empty(context)
                   else
                     _buildShiftList(context, shifts),
                 ],
@@ -107,12 +107,12 @@ class _CashierShiftViewState extends State<CashierShiftView> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ReusableText(SalesStrings.cashierShiftsTitle, style: AppTextStyles.title(context)),
-              ReusableText(SalesStrings.cashierShiftsSubtitle, style: AppTextStyles.caption(context)),
+              AppText(SalesStrings.cashierShiftsTitle, style: AppTextStyles.title(context)),
+              AppText(SalesStrings.cashierShiftsSubtitle, style: AppTextStyles.caption(context)),
             ],
           ),
           const Spacer(),
-          ReusableButton(
+          AppButton(
             text: SalesStrings.startNewSession,
             prefixIcon: Icons.add_rounded,
             onPressed: () => context.push(Routes.SALES_OPEN_SHIFT),
@@ -161,12 +161,12 @@ class _CashierShiftViewState extends State<CashierShiftView> {
     );
   }
 
-  Widget _buildEmptyState(BuildContext context) {
-    return EmptyState(
+  Widget _buildAppStateView.empty(BuildContext context) {
+    return AppStateView.empty(
       icon: Icons.history_toggle_off_rounded,
       title: SalesStrings.noShiftsYet,
       subtitle: SalesStrings.noShiftsMessage,
-      action: ReusableButton(
+      action: AppButton(
         text: SalesStrings.startFirstShift,
         onPressed: () => context.push(Routes.SALES_OPEN_SHIFT),
       ),
@@ -197,8 +197,8 @@ class _MetricCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ReusableText(title, style: AppTextStyles.caption(context)),
-                ReusableText(value, style: AppTextStyles.bodyBold(context)),
+                AppText(title, style: AppTextStyles.caption(context)),
+                AppText(value, style: AppTextStyles.bodyBold(context)),
               ],
             ),
           ),
@@ -238,7 +238,7 @@ class _ShiftCard extends StatelessWidget {
                 children: [
                   Icon(isOpen ? Icons.play_arrow_rounded : Icons.lock_clock_rounded, size: AppIconSize.sm.value.sp, color: isOpen ? AppColors.success : scheme.onSurfaceVariant),
                   SizedBox(width: 4.w),
-                  ReusableText('${SalesStrings.shiftLabel} #${shift.shiftNumber}', style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold, color: isOpen ? AppColors.success : null)),
+                  AppText('${SalesStrings.shiftLabel} #${shift.shiftNumber}', style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold, color: isOpen ? AppColors.success : null)),
                 ],
               ),
             ),
@@ -246,7 +246,7 @@ class _ShiftCard extends StatelessWidget {
               children: [
                 Icon(Icons.access_time_rounded, size: AppIconSize.sm.value.sp, color: Colors.grey),
                 SizedBox(width: 6.w),
-                ReusableText('${SalesStrings.openedAtLabel} ${FormatUtils.dateTime(shift.openedAt)}', style: AppTextStyles.caption(context)),
+                AppText('${SalesStrings.openedAtLabel} ${FormatUtils.dateTime(shift.openedAt)}', style: AppTextStyles.caption(context)),
               ],
             ),
             trailing: FutureBuilder<Map<String, dynamic>>(
@@ -286,8 +286,8 @@ class _MiniChip extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ReusableText(label, style: AppTextStyles.caption(context).copyWith(fontSize: 9.sp, color: color, fontWeight: FontWeight.bold)),
-          ReusableText(value, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold, color: color)),
+          AppText(label, style: AppTextStyles.caption(context).copyWith(fontSize: 9.sp, color: color, fontWeight: FontWeight.bold)),
+          AppText(value, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold, color: color)),
         ],
       ),
     );
@@ -305,7 +305,7 @@ class _ExpandedShiftDetails extends StatelessWidget {
       builder: (context, snapshot) {
         if (!snapshot.hasData) return const Padding(padding: EdgeInsets.all(20), child: LoadingIndicator());
         final transactions = snapshot.data!;
-        if (transactions.isEmpty) return Padding(padding: const EdgeInsets.all(20), child: ReusableText(GeneralStrings.noData));
+        if (transactions.isEmpty) return Padding(padding: const EdgeInsets.all(20), child: AppText(GeneralStrings.noData));
 
         return Container(
           padding: EdgeInsets.all(16.w),
@@ -314,9 +314,9 @@ class _ExpandedShiftDetails extends StatelessWidget {
             children: [
               ...transactions.map((t) => ListTile(
                 dense: true,
-                title: ReusableText('#${t.id.substring(0, 8).toUpperCase()}', style: AppTextStyles.bodyBold(context)),
-                subtitle: ReusableText(FormatUtils.dateTime(t.createdAt), style: AppTextStyles.caption(context)),
-                trailing: ReusableText(FormatUtils.currency(t is SaleInvoiceModel ? t.finalAmount : t.totalAmount), style: AppTextStyles.bodyBold(context).copyWith(color: t is SaleInvoiceModel ? AppColors.success : AppColors.error)),
+                title: AppText('#${t.id.substring(0, 8).toUpperCase()}', style: AppTextStyles.bodyBold(context)),
+                subtitle: AppText(FormatUtils.dateTime(t.createdAt), style: AppTextStyles.caption(context)),
+                trailing: AppText(FormatUtils.currency(t is SaleInvoiceModel ? t.finalAmount : t.totalAmount), style: AppTextStyles.bodyBold(context).copyWith(color: t is SaleInvoiceModel ? AppColors.success : AppColors.error)),
               )),
             ],
           ),

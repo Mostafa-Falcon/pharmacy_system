@@ -35,13 +35,13 @@ class FilterDropdown<T> extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ReusableText(
+          AppText(
             label,
             style: AppTextStyles.caption(context)
                 .copyWith(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 6.h),
-          ReusableDropdown<T>(
+          AppDropdown<T>(
             hintText: label,
             items: items,
             itemAsString: itemAsString,

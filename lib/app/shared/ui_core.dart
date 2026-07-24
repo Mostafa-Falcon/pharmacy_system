@@ -8,7 +8,6 @@ library;
 export 'package:pharmacy_system/app/shared/constants/ui/app_colors.dart';
 export 'package:pharmacy_system/app/shared/constants/ui/app_sizes.dart';
 export 'package:pharmacy_system/app/shared/constants/ui/app_assets.dart';
-export 'package:pharmacy_system/app/shared/constants/ui/app_images.dart';
 
 // 2. System Strings & Logic Constants
 export 'package:pharmacy_system/app/shared/constants/strings/app_strings.dart';
@@ -19,9 +18,7 @@ export 'package:pharmacy_system/app/shared/extensions/context_ext.dart';
 export 'package:pharmacy_system/app/shared/extensions/string_ext.dart';
 
 // 4. UI Helpers & Utilities
-export 'package:pharmacy_system/app/shared/helpers/app_utils.dart';
 export 'package:pharmacy_system/app/shared/helpers/format_utils.dart';
-export 'package:pharmacy_system/app/shared/helpers/money_helper.dart';
 export 'package:pharmacy_system/app/shared/helpers/search_normalizer.dart';
 export 'package:pharmacy_system/app/shared/helpers/validators.dart';
 

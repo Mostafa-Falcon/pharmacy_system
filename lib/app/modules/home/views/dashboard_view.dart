@@ -101,14 +101,14 @@ class DashboardView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ReusableText(
+                AppText(
                   'لوحة التحليلات والمراقبة الرئيسية',
                   style: AppTextStyles.title(
                     context,
                   ).copyWith(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 4.h),
-                ReusableText(
+                AppText(
                   'نظرة شاملة ومباشرة على أداء المبيعات، الصافي، الديون، وحركة المخزون.',
                   style: AppTextStyles.caption(
                     context,
@@ -358,14 +358,14 @@ class _MonitoringStatCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ReusableText(
+                AppText(
                   title,
                   style: AppTextStyles.caption(
                     context,
                   ).copyWith(color: scheme.onSurfaceVariant, fontSize: 11.sp),
                 ),
                 SizedBox(height: 2.h),
-                ReusableText(
+                AppText(
                   value,
                   style: AppTextStyles.bodyBold(
                     context,
@@ -419,7 +419,7 @@ class _MonitoringTableCard extends StatelessWidget {
             children: [
               Icon(icon, color: iconColor, size: 20.sp),
               SizedBox(width: 8.w),
-              ReusableText(title, style: AppTextStyles.bodyBold(context)),
+              AppText(title, style: AppTextStyles.bodyBold(context)),
             ],
           ),
           SizedBox(height: 12.h),
@@ -427,7 +427,7 @@ class _MonitoringTableCard extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(vertical: 24.h),
               child: Center(
-                child: ReusableText(
+                child: AppText(
                   'لا توجد ديون مسجلة',
                   style: AppTextStyles.caption(context),
                 ),
@@ -443,8 +443,8 @@ class _MonitoringTableCard extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ReusableText(name, style: AppTextStyles.body(context)),
-                      ReusableText(
+                      AppText(name, style: AppTextStyles.body(context)),
+                      AppText(
                         debt,
                         style: AppTextStyles.bodyBold(
                           context,
@@ -492,7 +492,7 @@ class _MonitoringChartCard extends StatelessWidget {
             children: [
               Icon(icon, color: lineColor, size: 20.sp),
               SizedBox(width: 8.w),
-              ReusableText(title, style: AppTextStyles.bodyBold(context)),
+              AppText(title, style: AppTextStyles.bodyBold(context)),
             ],
           ),
           SizedBox(height: 24.h),
@@ -508,7 +508,7 @@ class _MonitoringChartCard extends StatelessWidget {
               children: [
                 Icon(Icons.show_chart_rounded, color: lineColor, size: 32.sp),
                 SizedBox(width: 8.w),
-                ReusableText(
+                AppText(
                   'مؤشر الحركة والتحليلات سليم 100%',
                   style: AppTextStyles.caption(
                     context,

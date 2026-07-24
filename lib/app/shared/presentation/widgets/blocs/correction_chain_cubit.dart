@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:pharmacy_system/app/core/data/services/accounting/correction_service.dart';
 import 'package:pharmacy_system/app/core/models/base/correction_model.dart';
 
 // States

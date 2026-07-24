@@ -81,7 +81,7 @@ class AppStateView extends StatelessWidget {
             children: [
               const CircularProgressIndicator.adaptive(),
               SizedBox(height: 16.h),
-              ReusableText(
+              AppText(
                 title,
                 style: AppTextStyles.caption(context).copyWith(
                   color: AppColors.textSecondaryOf(context),
@@ -133,7 +133,7 @@ class AppStateView extends StatelessWidget {
               ),
               SizedBox(height: compact ? 12.h : 20.h),
 
-              ReusableText(
+              AppText(
                 title,
                 textAlign: TextAlign.center,
                 style: AppTextStyles.body(context).copyWith(
@@ -144,7 +144,7 @@ class AppStateView extends StatelessWidget {
 
               if (subtitle != null && subtitle!.trim().isNotEmpty) ...[
                 SizedBox(height: compact ? 6.h : 8.h),
-                ReusableText(
+                AppText(
                   subtitle!,
                   textAlign: TextAlign.center,
                   style: AppTextStyles.body(context).copyWith(
@@ -162,81 +162,6 @@ class AppStateView extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-// ── Legacy Compatibility Wrappers ──
-
-/// [ReusableStateView] يعتمد هندسياً على [AppStateView].
-class ReusableStateView extends StatelessWidget {
-  final String? title;
-  final String message;
-  final IconData? icon;
-  final Widget? action;
-  final bool compact;
-
-  const ReusableStateView({
-    super.key,
-    required this.message,
-    this.icon,
-    this.title,
-    this.action,
-    this.compact = false,
-  });
-
-  const ReusableStateView.empty({
-    super.key,
-    required this.message,
-    this.title,
-    this.icon = Icons.inbox_outlined,
-    this.action,
-    this.compact = false,
-  });
-
-  const ReusableStateView.permissionDenied({
-    super.key,
-    required this.message,
-    this.title,
-    this.icon = Icons.lock_outline_rounded,
-    this.action,
-    this.compact = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AppStateView(
-      title: title ?? message,
-      subtitle: title != null ? message : null,
-      icon: icon ?? Icons.info_outline_rounded,
-      action: action,
-      compact: compact,
-    );
-  }
-}
-
-/// [EmptyState] يعتمد هندسياً على [AppStateView.empty].
-class EmptyState extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String? subtitle;
-  final Widget? action;
-
-  const EmptyState({
-    super.key,
-    required this.icon,
-    required this.title,
-    this.subtitle,
-    this.action,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AppStateView.empty(
-      title: title,
-      subtitle: subtitle,
-      icon: icon,
-      action: action,
     );
   }
 }

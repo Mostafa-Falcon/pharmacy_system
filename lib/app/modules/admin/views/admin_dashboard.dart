@@ -44,7 +44,7 @@ class _AdminDashboardBody extends StatelessWidget {
             title: AdminStrings.branchesManagementTitle,
             subtitle: AdminStrings.branchesManagementSubtitle,
             actions: [
-              ReusableButton(
+              AppButton(
                 text: AdminStrings.addBranchAction,
                 prefixIcon: Icons.add_rounded,
                 type: ButtonType.primary,
@@ -62,12 +62,12 @@ class _AdminDashboardBody extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
 
     if (state.error != null && state.branches.isEmpty) {
-      return Center(child: ReusableText(state.error!));
+      return Center(child: AppText(state.error!));
     }
 
     final branches = state.branches;
     if (branches.isEmpty) {
-      return const EmptyState(
+      return const AppStateView.empty(
         icon: Icons.storefront_rounded,
         title: AdminStrings.noBranchesFound,
       );
@@ -90,7 +90,7 @@ class _AdminDashboardBody extends StatelessWidget {
               child:
                   Icon(Icons.store_rounded, color: scheme.primary, size: 20.sp),
             ),
-            title: ReusableText(
+            title: AppText(
               branch.name,
               style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -105,7 +105,7 @@ class _AdminDashboardBody extends StatelessWidget {
                       size: 13.sp, color: AppColors.textMutedOf(context)),
                   SizedBox(width: 4.w),
                   Expanded(
-                    child: ReusableText(
+                    child: AppText(
                       branch.address ?? AdminStrings.noAddressDefined,
                       style: TextStyle(
                           fontSize: 12.5.sp,
@@ -149,23 +149,23 @@ class _AdminDashboardBody extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (context) => ReusableDialog(
+      builder: (context) => AppDialog(
         title: AdminStrings.addBranchDialogTitle,
         headerIcon: Icon(Icons.add_business_rounded, color: scheme.primary),
         children: [
-          ReusableInput(
+          AppInput(
             controller: nameController,
             label: AdminStrings.branchFullNameLabel,
             hint: AdminStrings.branchNameExampleHint,
           ),
           SizedBox(height: AppSpacing.md.h),
-          ReusableInput(
+          AppInput(
             controller: addressController,
             label: AdminStrings.branchDetailedAddressLabel,
             hint: AdminStrings.branchAddressExampleHint,
           ),
           SizedBox(height: AppSpacing.md.h),
-          ReusableInput(
+          AppInput(
             controller: phoneController,
             label: AdminStrings.branchPhoneLabel,
             hint: AdminStrings.branchPhoneExampleHint,
@@ -208,18 +208,18 @@ class _AdminDashboardBody extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (context) => ReusableDialog(
+      builder: (context) => AppDialog(
         title: AdminStrings.editBranchDialogTitle,
         headerIcon: Icon(Icons.edit_road_rounded, color: scheme.primary),
         children: [
-          ReusableInput(controller: nameController, label: AdminStrings.branchFullNameLabel),
+          AppInput(controller: nameController, label: AdminStrings.branchFullNameLabel),
           SizedBox(height: AppSpacing.md.h),
-          ReusableInput(
+          AppInput(
             controller: addressController,
             label: AdminStrings.branchDetailedAddressLabel,
           ),
           SizedBox(height: AppSpacing.md.h),
-          ReusableInput(
+          AppInput(
             controller: phoneController,
             label: AdminStrings.branchPhoneLabel,
             keyboardType: TextInputType.phone,

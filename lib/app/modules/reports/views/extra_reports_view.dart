@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -59,13 +59,13 @@ class ExtraReportsView extends StatelessWidget {
               Icon(Icons.date_range_rounded, size: AppIconSize.md.value, color: AppColors.textSecondaryOf(context)),
               SizedBox(width: 8.w),
               Expanded(
-                child: ReusableText(ReportsStrings.dateRangePrefix.replaceFirst('%s', state.dateLabel),
+                child: AppText(ReportsStrings.dateRangePrefix.replaceFirst('%s', state.dateLabel),
                     style: AppTextStyles.body(context).copyWith(
                       fontWeight: FontWeight.w600,
                       color: AppColors.textSecondaryOf(context),
                     )),
               ),
-              ReusableButton(
+              AppButton(
                 text: ReportsStrings.reportsCustomRange,
                 prefixIcon: Icons.calendar_month_outlined,
                 type: ButtonType.text,
@@ -89,7 +89,7 @@ class ExtraReportsView extends StatelessWidget {
             ),
           ),
           SizedBox(height: AppSpacing.sm.h),
-          ReusableText(
+          AppText(
             state.typeSubtitle,
             style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context)),
           ),
@@ -162,7 +162,7 @@ class ExtraReportsView extends StatelessWidget {
   Widget _buildPopularItemsSection(BuildContext context, ExtraReportsState state) {
     final rows = state.popularItemRows;
     if (rows.isEmpty) {
-      return const EmptyState(
+      return const AppStateView.empty(
         title: ReportsStrings.noSalesTitle,
         subtitle: ReportsStrings.noSalesSubtitle,
         icon: Icons.star_outline_rounded,
@@ -235,18 +235,18 @@ class ExtraReportsView extends StatelessWidget {
           headingRowColor: WidgetStateProperty.all(AppColors.primarySoftOf(context)),
           columnSpacing: 20.w,
           columns: [
-            DataColumn(label: ReusableText(ReportsStrings.itemHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
-            DataColumn(label: ReusableText(ReportsStrings.salesHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
-            DataColumn(label: ReusableText(ReportsStrings.totalSalesAmountLabel, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
-            DataColumn(label: ReusableText(ReportsStrings.avgPriceHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
-            DataColumn(label: ReusableText(ReportsStrings.invoicesCountHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
+            DataColumn(label: AppText(ReportsStrings.itemHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
+            DataColumn(label: AppText(ReportsStrings.salesHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
+            DataColumn(label: AppText(ReportsStrings.totalSalesAmountLabel, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
+            DataColumn(label: AppText(ReportsStrings.avgPriceHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
+            DataColumn(label: AppText(ReportsStrings.invoicesCountHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
           ],
           rows: rows.map((r) => DataRow(cells: [
-            DataCell(ReusableText(r.item, style: AppTextStyles.caption(context))),
-            DataCell(ReusableText(r.soldQuantity.toString(), style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
-            DataCell(ReusableText('${r.salesTotal.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.success))),
-            DataCell(ReusableText('${r.avgPrice.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context))),
-            DataCell(ReusableText(r.invoices.toString(), style: AppTextStyles.caption(context))),
+            DataCell(AppText(r.item, style: AppTextStyles.caption(context))),
+            DataCell(AppText(r.soldQuantity.toString(), style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
+            DataCell(AppText('${r.salesTotal.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.success))),
+            DataCell(AppText('${r.avgPrice.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context))),
+            DataCell(AppText(r.invoices.toString(), style: AppTextStyles.caption(context))),
           ])).toList(),
         ),
       ),
@@ -269,9 +269,9 @@ class ExtraReportsView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ReusableText(r.item, style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.w700)),
+                  AppText(r.item, style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.w700)),
                   SizedBox(height: 4.h),
-                  ReusableText(ReportsStrings.unitAndInvoiceFormat.replaceFirst('%s', r.soldQuantity.toString()).replaceFirst('%s', r.invoices.toString()),
+                  AppText(ReportsStrings.unitAndInvoiceFormat.replaceFirst('%s', r.soldQuantity.toString()).replaceFirst('%s', r.invoices.toString()),
                       style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context))),
                 ],
               ),
@@ -279,9 +279,9 @@ class ExtraReportsView extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                ReusableText('${r.salesTotal.toStringAsFixed(2)} ${GeneralStrings.currency}',
+                AppText('${r.salesTotal.toStringAsFixed(2)} ${GeneralStrings.currency}',
                     style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.w700, color: AppColors.success)),
-                ReusableText('@ ${r.avgPrice.toStringAsFixed(2)}',
+                AppText('@ ${r.avgPrice.toStringAsFixed(2)}',
                     style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context))),
               ],
             ),
@@ -301,14 +301,14 @@ class ExtraReportsView extends StatelessWidget {
           builder: (context) {
             final rows = state.movementRows;
             if (state.selectedMedicineId == null) {
-              return const EmptyState(
+              return const AppStateView.empty(
                 title: ReportsStrings.selectItemTitle,
                 subtitle: ReportsStrings.selectItemHint,
                 icon: Icons.search_rounded,
               );
             }
             if (rows.isEmpty) {
-              return const EmptyState(
+              return const AppStateView.empty(
                 title: ReportsStrings.noMovementsTitle,
                 subtitle: ReportsStrings.noMovementsSubtitle,
                 icon: Icons.motion_photos_off_rounded,
@@ -337,7 +337,7 @@ class ExtraReportsView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ReusableText(ReportsStrings.selectItemTitle,
+          AppText(ReportsStrings.selectItemTitle,
               style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.w600, color: AppColors.textSecondaryOf(context))),
           SizedBox(height: AppSpacing.sm.h),
           SizedBox(
@@ -429,22 +429,22 @@ class ExtraReportsView extends StatelessWidget {
           headingRowColor: WidgetStateProperty.all(AppColors.primarySoftOf(context)),
           columnSpacing: 16.w,
           columns: [
-            DataColumn(label: ReusableText(ReportsStrings.taxColumnDate, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
-            DataColumn(label: ReusableText(ReportsStrings.taxColumnType, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
-            DataColumn(label: ReusableText(ReportsStrings.taxColumnRef, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
-            DataColumn(label: ReusableText(ReportsStrings.taxColumnParty, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
-            DataColumn(label: ReusableText(SalesStrings.cartQuantity, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
-            DataColumn(label: ReusableText(ReportsStrings.unitPriceHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
-            DataColumn(label: ReusableText(SalesStrings.cartTotal, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
+            DataColumn(label: AppText(ReportsStrings.taxColumnDate, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
+            DataColumn(label: AppText(ReportsStrings.taxColumnType, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
+            DataColumn(label: AppText(ReportsStrings.taxColumnRef, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
+            DataColumn(label: AppText(ReportsStrings.taxColumnParty, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
+            DataColumn(label: AppText(SalesStrings.cartQuantity, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
+            DataColumn(label: AppText(ReportsStrings.unitPriceHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
+            DataColumn(label: AppText(SalesStrings.cartTotal, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
           ],
           rows: rows.map((r) => DataRow(cells: [
-            DataCell(ReusableText(r.date, style: AppTextStyles.caption(context))),
+            DataCell(AppText(r.date, style: AppTextStyles.caption(context))),
             DataCell(_movementTypeBadge(context, r.type)),
-            DataCell(ReusableText(r.reference, style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context)))),
-            DataCell(ReusableText(r.party, style: AppTextStyles.caption(context))),
-            DataCell(ReusableText(r.quantity.toString(), style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
-            DataCell(ReusableText(r.unitPrice.toStringAsFixed(2), style: AppTextStyles.caption(context))),
-            DataCell(ReusableText(r.total.toStringAsFixed(2), style: AppTextStyles.caption(context).copyWith(color: AppColors.warning))),
+            DataCell(AppText(r.reference, style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context)))),
+            DataCell(AppText(r.party, style: AppTextStyles.caption(context))),
+            DataCell(AppText(r.quantity.toString(), style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
+            DataCell(AppText(r.unitPrice.toStringAsFixed(2), style: AppTextStyles.caption(context))),
+            DataCell(AppText(r.total.toStringAsFixed(2), style: AppTextStyles.caption(context).copyWith(color: AppColors.warning))),
           ])).toList(),
         ),
       ),
@@ -468,22 +468,22 @@ class ExtraReportsView extends StatelessWidget {
               children: [
                 _movementTypeBadge(context, r.type),
                 const Spacer(),
-                 ReusableText(r.date, style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context))),
+                 AppText(r.date, style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context))),
               ],
             ),
             SizedBox(height: 6.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ReusableText(r.party, style: AppTextStyles.caption(context).copyWith(color: AppColors.textSecondaryOf(context))),
-                ReusableText('${r.quantity} × ${r.unitPrice.toStringAsFixed(2)}',
+                AppText(r.party, style: AppTextStyles.caption(context).copyWith(color: AppColors.textSecondaryOf(context))),
+                AppText('${r.quantity} × ${r.unitPrice.toStringAsFixed(2)}',
                     style: AppTextStyles.caption(context).copyWith(color: AppColors.textSecondaryOf(context))),
               ],
             ),
             SizedBox(height: 4.h),
             Align(
               alignment: AlignmentDirectional.centerEnd,
-              child: ReusableText('${r.total.toStringAsFixed(2)} ${GeneralStrings.currency}',
+              child: AppText('${r.total.toStringAsFixed(2)} ${GeneralStrings.currency}',
                   style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.w700, color: AppColors.warning)),
             ),
           ],
@@ -530,7 +530,7 @@ class ExtraReportsView extends StatelessWidget {
   Widget _buildCustomerGroupsSection(BuildContext context, ExtraReportsState state) {
     final rows = state.customerGroupRows;
     if (rows.isEmpty) {
-      return const EmptyState(
+      return const AppStateView.empty(
         title: ReportsStrings.noRepsTitle,
         subtitle: ReportsStrings.noCustomersSubtitle,
         icon: Icons.people_outline_rounded,
@@ -596,22 +596,22 @@ class ExtraReportsView extends StatelessWidget {
           headingRowColor: WidgetStateProperty.all(AppColors.primarySoftOf(context)),
           columnSpacing: 16.w,
           columns: [
-            DataColumn(label: ReusableText(ReportsStrings.groupHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
-            DataColumn(label: ReusableText(ReportsStrings.customerHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
-            DataColumn(label: ReusableText(ReportsStrings.phoneHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
-            DataColumn(label: ReusableText(ReportsStrings.visitsHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
-            DataColumn(label: ReusableText(ReportsStrings.purchasesHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
-            DataColumn(label: ReusableText(ReportsStrings.returnsHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
-            DataColumn(label: ReusableText(ReportsStrings.netHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
+            DataColumn(label: AppText(ReportsStrings.groupHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
+            DataColumn(label: AppText(ReportsStrings.customerHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
+            DataColumn(label: AppText(ReportsStrings.phoneHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
+            DataColumn(label: AppText(ReportsStrings.visitsHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
+            DataColumn(label: AppText(ReportsStrings.purchasesHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
+            DataColumn(label: AppText(ReportsStrings.returnsHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
+            DataColumn(label: AppText(ReportsStrings.netHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
           ],
           rows: rows.map((r) => DataRow(cells: [
-            DataCell(ReusableText(r.groupName, style: AppTextStyles.caption(context))),
-            DataCell(ReusableText(r.customerName, style: AppTextStyles.caption(context))),
-            DataCell(ReusableText(r.phone, style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context)))),
-            DataCell(ReusableText(r.visits.toString(), style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
-            DataCell(ReusableText('${r.totalPurchases.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.success))),
-            DataCell(ReusableText('${r.totalReturns.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.error))),
-            DataCell(ReusableText('${r.netPurchases.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.warning))),
+            DataCell(AppText(r.groupName, style: AppTextStyles.caption(context))),
+            DataCell(AppText(r.customerName, style: AppTextStyles.caption(context))),
+            DataCell(AppText(r.phone, style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context)))),
+            DataCell(AppText(r.visits.toString(), style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
+            DataCell(AppText('${r.totalPurchases.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.success))),
+            DataCell(AppText('${r.totalReturns.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.error))),
+            DataCell(AppText('${r.netPurchases.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.warning))),
           ])).toList(),
         ),
       ),
@@ -621,7 +621,7 @@ class ExtraReportsView extends StatelessWidget {
   Widget _buildReceiptsSection(BuildContext context, ExtraReportsState state) {
     final rows = state.receiptRows;
     if (rows.isEmpty) {
-      return const EmptyState(
+      return const AppStateView.empty(
         title: ReportsStrings.noReceiptsTitle,
         subtitle: ReportsStrings.noReceiptsSubtitle,
         icon: Icons.receipt_long_outlined,
@@ -686,22 +686,22 @@ class ExtraReportsView extends StatelessWidget {
           headingRowColor: WidgetStateProperty.all(AppColors.primarySoftOf(context)),
           columnSpacing: 16.w,
           columns: [
-            DataColumn(label: ReusableText(ReportsStrings.taxColumnDate, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
-            DataColumn(label: ReusableText(ReportsStrings.taxColumnType, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
-            DataColumn(label: ReusableText(ReportsStrings.taxColumnRef, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
-            DataColumn(label: ReusableText(ReportsStrings.taxColumnParty, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
-            DataColumn(label: ReusableText(ReportsStrings.amountHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
-            DataColumn(label: ReusableText(ReportsStrings.taxColumnMethod, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
-            DataColumn(label: ReusableText(ReportsStrings.notesHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
+            DataColumn(label: AppText(ReportsStrings.taxColumnDate, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
+            DataColumn(label: AppText(ReportsStrings.taxColumnType, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
+            DataColumn(label: AppText(ReportsStrings.taxColumnRef, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
+            DataColumn(label: AppText(ReportsStrings.taxColumnParty, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
+            DataColumn(label: AppText(ReportsStrings.amountHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
+            DataColumn(label: AppText(ReportsStrings.taxColumnMethod, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
+            DataColumn(label: AppText(ReportsStrings.notesHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
           ],
           rows: rows.map((r) => DataRow(cells: [
-            DataCell(ReusableText(r.date, style: AppTextStyles.caption(context))),
+            DataCell(AppText(r.date, style: AppTextStyles.caption(context))),
             DataCell(_receiptTypeBadge(context, r.type)),
-            DataCell(ReusableText(r.reference.substring(0, 8).toUpperCase(), style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context)))),
-            DataCell(ReusableText(r.contact, style: AppTextStyles.caption(context))),
-            DataCell(ReusableText('${r.amount.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700, color: AppColors.success))),
-            DataCell(ReusableText(r.paymentMethod, style: AppTextStyles.caption(context))),
-            DataCell(ReusableText(r.notes, style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context)))),
+            DataCell(AppText(r.reference.substring(0, 8).toUpperCase(), style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context)))),
+            DataCell(AppText(r.contact, style: AppTextStyles.caption(context))),
+            DataCell(AppText('${r.amount.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700, color: AppColors.success))),
+            DataCell(AppText(r.paymentMethod, style: AppTextStyles.caption(context))),
+            DataCell(AppText(r.notes, style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context)))),
           ])).toList(),
         ),
       ),
@@ -732,7 +732,7 @@ class ExtraReportsView extends StatelessWidget {
   Widget _buildSalesRepPerformanceSection(BuildContext context, ExtraReportsState state) {
     final rows = state.salesRepPerformanceRows;
     if (rows.isEmpty) {
-      return const EmptyState(
+      return const AppStateView.empty(
         title: ReportsStrings.noRepsTitle,
         subtitle: ReportsStrings.noRepsSubtitle,
         icon: Icons.business_center_outlined,
@@ -805,20 +805,20 @@ class ExtraReportsView extends StatelessWidget {
           headingRowColor: WidgetStateProperty.all(AppColors.primarySoftOf(context)),
           columnSpacing: 16.w,
           columns: [
-            DataColumn(label: ReusableText(ReportsStrings.repHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
-            DataColumn(label: ReusableText(ReportsStrings.contactFilterCustomers, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
-            DataColumn(label: ReusableText(ReportsStrings.visitsHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
-            DataColumn(label: ReusableText(ReportsStrings.salesHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
-            DataColumn(label: ReusableText(ReportsStrings.returnsHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
-            DataColumn(label: ReusableText(ReportsStrings.netHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
+            DataColumn(label: AppText(ReportsStrings.repHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
+            DataColumn(label: AppText(ReportsStrings.contactFilterCustomers, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
+            DataColumn(label: AppText(ReportsStrings.visitsHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
+            DataColumn(label: AppText(ReportsStrings.salesHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
+            DataColumn(label: AppText(ReportsStrings.returnsHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
+            DataColumn(label: AppText(ReportsStrings.netHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
           ],
           rows: rows.map((r) => DataRow(cells: [
-            DataCell(ReusableText(r.repName, style: AppTextStyles.caption(context))),
-            DataCell(ReusableText(r.customers.toString(), style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
-            DataCell(ReusableText(r.visits.toString(), style: AppTextStyles.caption(context))),
-            DataCell(ReusableText('${r.totalSales.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.success))),
-            DataCell(ReusableText('${r.totalReturns.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.error))),
-            DataCell(ReusableText('${r.netSales.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.warning))),
+            DataCell(AppText(r.repName, style: AppTextStyles.caption(context))),
+            DataCell(AppText(r.customers.toString(), style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
+            DataCell(AppText(r.visits.toString(), style: AppTextStyles.caption(context))),
+            DataCell(AppText('${r.totalSales.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.success))),
+            DataCell(AppText('${r.totalReturns.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.error))),
+            DataCell(AppText('${r.netSales.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.warning))),
           ])).toList(),
         ),
       ),

@@ -5,7 +5,7 @@ import 'package:pharmacy_system/app/shared/ui_core.dart';
 
 import '../display/app_text.dart';
 
-class ReusableProgressBar extends StatelessWidget {
+class AppProgressBar extends StatelessWidget {
   final double progress;
   final String title;
   final String? subtitle;
@@ -13,7 +13,7 @@ class ReusableProgressBar extends StatelessWidget {
   final double height;
   final Color? color;
 
-  const ReusableProgressBar({
+  const AppProgressBar({
     super.key,
     required this.progress,
     required this.title,
@@ -37,13 +37,13 @@ class ReusableProgressBar extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: ReusableText(
+              child: AppText(
                 title,
                 style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.w600, color: AppColors.textPrimaryOf(context)),
               ),
             ),
             if (showPercentage)
-              ReusableText(
+              AppText(
                 '%$percentage',
                 style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.w900, color: barColor),
               ),
@@ -51,7 +51,7 @@ class ReusableProgressBar extends StatelessWidget {
         ),
         if (subtitle != null) ...[
           SizedBox(height: 2.h),
-          ReusableText(
+          AppText(
             subtitle!,
             style: AppTextStyles.caption(context).copyWith(color: AppColors.textSecondaryOf(context)),
           ),

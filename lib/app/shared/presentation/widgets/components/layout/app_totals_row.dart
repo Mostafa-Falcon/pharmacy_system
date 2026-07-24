@@ -33,7 +33,7 @@ class TotalsRow extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Flexible(
-            child: ReusableText(
+            child: AppText(
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -44,7 +44,7 @@ class TotalsRow extends StatelessWidget {
             ),
           ),
           SizedBox(width: 8.w),
-          ReusableText(
+          AppText(
             value,
             style: AppTextStyles.caption(context).copyWith(
               fontWeight: bold ? FontWeight.w900 : FontWeight.w700,

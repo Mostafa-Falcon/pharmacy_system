@@ -36,7 +36,7 @@ class DateRangePicker extends StatelessWidget {
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 8.w),
-          child: ReusableText(
+          child: AppText(
             '←',
             style: AppTextStyles.body(context),
           ),
@@ -77,7 +77,7 @@ class _DateBox extends StatelessWidget {
             Icon(Icons.calendar_month_rounded,
                 size: AppIconSize.md.value, color: Colors.grey),
             SizedBox(width: 8.w),
-            ReusableText(
+            AppText(
               label,
               style: AppTextStyles.body(context)
                   .copyWith(color: Colors.grey),

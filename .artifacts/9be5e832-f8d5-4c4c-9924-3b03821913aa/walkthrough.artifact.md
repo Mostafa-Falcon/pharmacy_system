@@ -1,26 +1,30 @@
-# جولة في تنظيم موديول Shared وإزالة التكرارات
+# جولة في تنظيف وتبسيط موديول Shared
 
-تم بنجاح تنظيف المجلد وتنظيمه ليكون أكثر احترافية وسهولة في الصيانة.
+تم بنجاح إزالة كافة الملفات الزائدة والمكررة، ودمج الوظائف الصغيرة لتحسين هيكلية الكود.
 
-## التغييرات الرئيسية
+## التغييرات المنفذة
 
-### 1. حذف الملفات المكررة
-تم حذف الملفات التي كانت مجرد نسخ من ملفات أخرى بأسماء مختلفة:
-- حذف `shared_module_layout.dart` والاعتماد على [standard_module_layout.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/shared/presentation/widgets/layouts/standard_module_layout.dart).
-- حذف `shared_form_layout.dart` والاعتماد على [standard_form_layout.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/shared/presentation/widgets/layouts/standard_form_layout.dart).
+### 1. دمج الأدوات المساعدة (Helpers Consolidation)
+تم دمج الملفات الصغيرة والمشتتة في ملف [format_utils.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/shared/helpers/format_utils.dart) ليكون الملف الموحد للأدوات:
+- دمج منطق `MoneyHelper` (تنسيق وتحويل المبالغ).
+- دمج دالة `safeDebugPrint` من `AppUtils`.
+- **النتيجة:** تقليل عدد الملفات في مجلد `helpers` وزيادة سرعة البحث عن الدوال.
 
-### 2. إعادة هيكلة المجلدات
-تم تغيير أسماء المجلدات لتكون معبرة عن محتواها البرمجي:
-- تحويل `shareds` إلى `layouts` (يحتوي على Scaffold, Sidebar, Shells).
-- تحويل `reusables` إلى `components` (يحتوي على Buttons, Inputs, Cards).
+### 2. إزالة التكرارات (Eliminating Redundancy)
+- حذف ملف `app_images.dart` والاعتماد بالكامل على [app_assets.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/shared/constants/ui/app_assets.dart).
+- حذف النسخة المكررة من `medicine_search_field.dart` والاعتماد على النسخة المحدثة في مجلد `inputs`.
+- تحديث كافة المراجع المتأثرة لضمان استمرارية العمل.
 
-### 3. تحديث المراجع (Imports)
-- تم تحديث أكثر من 50 ملفاً في المشروع لتشير إلى المسارات الجديدة.
-- تم تحديث الـ Barrel files (index.dart) لضمان عمل الاستيرادات المجمعة بشكل سليم.
+### 3. تنظيف الكود المهجور (Dead Code Removal)
+- حذف مجلد `fullscreen/` لعدم استخدامه في أي مكان بالمشروع.
+- حذف مجموعة من الـ Layouts القديمة التي كانت تبدأ بـ `Shared*` والاعتماد الكلي على الـ `Standard*` layouts الموحدة.
 
-## التحقق من الصحة
-- تم تشغيل `flutter analyze` والتأكد من عدم وجود أخطاء متعلقة بالمسارات الجديدة.
-- تم فحص ملف [ui_core.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/shared/ui_core.dart) لضمان استمراره كنقطة وصول مركزية لكل الـ UI Tokens والقطع المشتركة.
+### 4. تحديث نقطة الوصول المركزية
+- تم تحديث [ui_core.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/shared/ui_core.dart) ليعكس الهيكلية الجديدة بعد الحذف، مما يضمن أن الاستيرادات المجمعة لا تزال تعمل بكفاءة.
 
+## ملاحظات هندسية
 > [!TIP]
-> يُنصح دائماً باستخدام `ui_core.dart` في الاستيرادات لتقليل عدد أسطر الـ `imports` وضمان استخدام النسخ الموحدة من الثوابت.
+> المشروع الآن أصبح أكثر خفة ووضوحاً. يُفضل دائماً الحفاظ على هذا المستوى من التنظيم وتجنب إنشاء ملفات جديدة لوظائف بسيطة يمكن دمجها في الأدوات الحالية.
+
+> [!CAUTION]
+> تم ملاحظة وجود بعض الأخطاء في موديولات أخرى (خارج shared) تتعلق بملفات مفقودة؛ يُنصح بمراجعتها بشكل منفصل لضمان استقرار النظام بالكامل.

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -39,7 +39,7 @@ class _BranchesManagementBody extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ReusableText(
+                AppText(
                   AdminStrings.activeBranchesListLabel,
                   style: TextStyle(
                     fontSize: 16.sp,
@@ -47,7 +47,7 @@ class _BranchesManagementBody extends StatelessWidget {
                     color: AppColors.textPrimaryOf(context),
                   ),
                 ),
-                ReusableButton(
+                AppButton(
                   text: AdminStrings.addBranchAction,
                   prefixIcon: Icons.add_rounded,
                   type: ButtonType.primary,
@@ -73,7 +73,7 @@ class _BranchesManagementBody extends StatelessWidget {
 
         final branches = state.branches;
         if (branches.isEmpty) {
-          return const EmptyState(
+          return const AppStateView.empty(
             icon: Icons.storefront_rounded,
             title: AdminStrings.noBranchesFound,
           );
@@ -94,7 +94,7 @@ class _BranchesManagementBody extends StatelessWidget {
                   backgroundColor: AppColors.primarySoftOf(context),
                   child: Icon(Icons.store_rounded, color: scheme.primary, size: 22.sp),
                 ),
-                title: ReusableText(
+                title: AppText(
                   branch.name,
                   style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15.sp, color: AppColors.textPrimaryOf(context)),
                 ),
@@ -105,7 +105,7 @@ class _BranchesManagementBody extends StatelessWidget {
                       Icon(Icons.location_on_rounded, size: 13.sp, color: AppColors.textMutedOf(context)),
                       SizedBox(width: 4.w),
                       Expanded(
-                        child: ReusableText(
+                        child: AppText(
                           branch.address ?? AdminStrings.noAddressDefined,
                           style: TextStyle(fontSize: 12.5.sp, color: AppColors.textSecondaryOf(context)),
                           maxLines: 1,
@@ -147,23 +147,23 @@ class _BranchesManagementBody extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (context) => ReusableDialog(
+      builder: (context) => AppDialog(
         title: AdminStrings.addBranchDialogTitle,
         headerIcon: Icon(Icons.add_business_rounded, color: scheme.primary),
         children: [
-          ReusableInput(
+          AppInput(
             controller: nameController,
             label: AdminStrings.branchFullNameLabel,
             hint: AdminStrings.branchNameExampleHint,
           ),
           SizedBox(height: AppSpacing.md.h),
-          ReusableInput(
+          AppInput(
             controller: addressController,
             label: AdminStrings.branchDetailedAddressLabel,
             hint: AdminStrings.branchAddressExampleHint,
           ),
           SizedBox(height: AppSpacing.md.h),
-          ReusableInput(
+          AppInput(
             controller: phoneController,
             label: AdminStrings.branchPhoneLabel,
             hint: AdminStrings.branchPhoneExampleHint,
@@ -206,18 +206,18 @@ class _BranchesManagementBody extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (context) => ReusableDialog(
+      builder: (context) => AppDialog(
         title: AdminStrings.editBranchDialogTitle,
         headerIcon: Icon(Icons.edit_road_rounded, color: scheme.primary),
         children: [
-          ReusableInput(controller: nameController, label: AdminStrings.branchFullNameLabel),
+          AppInput(controller: nameController, label: AdminStrings.branchFullNameLabel),
           SizedBox(height: AppSpacing.md.h),
-          ReusableInput(
+          AppInput(
             controller: addressController,
             label: AdminStrings.branchDetailedAddressLabel,
           ),
           SizedBox(height: AppSpacing.md.h),
-          ReusableInput(
+          AppInput(
             controller: phoneController,
             label: AdminStrings.branchPhoneLabel,
             keyboardType: TextInputType.phone,

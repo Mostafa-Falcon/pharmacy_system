@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:pharmacy_system/app/core/constants/strings/sync_strings.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
-import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
-import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/modules/sync/models/sync_table_meta.dart';
 import 'package:pharmacy_system/app/modules/sync/bloc/sync_status_bloc.dart';
+
+import '../../../shared/ui_core.dart';
 
 
 /// شاشة حالة المزامنة والربط السحابي — لوحة تحكم قيادية عالمية (World-Class Executive Sync Dashboard)
@@ -126,7 +124,7 @@ class SyncStatusView extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        ReusableText(
+                        AppText(
                           SyncStrings.connectionStatusLabel,
                           style: AppTextStyles.caption(context).copyWith(
                             color: AppColors.textSecondaryOf(context),
@@ -147,7 +145,7 @@ class SyncStatusView extends StatelessWidget {
                     SizedBox(height: 4.h),
                     AnimatedSwitcher(
                       duration: const Duration(milliseconds: 300),
-                      child: ReusableText(
+                      child: AppText(
                         isSyncing
                             ? (activeName.isNotEmpty
                                 ? '${SyncStrings.syncInProgressMsg} ($activeName)'
@@ -190,7 +188,7 @@ class SyncStatusView extends StatelessWidget {
                     ),
                   ],
                   SizedBox(width: 8.w),
-                  ReusableButton(
+                  AppButton(
                     text: SyncStrings.fullSyncBtn,
                     prefixIcon: Icons.sync_rounded,
                     onPressed: isSyncing ? null : () => context.read<SyncStatusBloc>().add(const SyncStatusTriggerSync()),
@@ -373,12 +371,12 @@ class SyncStatusView extends StatelessWidget {
           children: [
             Icon(Icons.table_rows_rounded, size: 18.sp, color: AppColors.primary),
             SizedBox(width: 8.w),
-            ReusableText(
+            AppText(
               SyncStrings.tablesStatus,
               style: AppTextStyles.bodyBold(context),
             ),
             const Spacer(),
-            ReusableText(
+            AppText(
               '${syncTables.length} جداول مدمجة',
               style: AppTextStyles.caption(context).copyWith(
                 color: AppColors.textSecondaryOf(context),
@@ -593,7 +591,7 @@ class _SyncTableTileState extends State<_SyncTableTile>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ReusableText(
+                  AppText(
                     widget.meta.label,
                     style: AppTextStyles.caption(context).copyWith(
                       fontWeight: FontWeight.bold,
@@ -602,7 +600,7 @@ class _SyncTableTileState extends State<_SyncTableTile>
                     ),
                   ),
                   SizedBox(height: 2.h),
-                  ReusableText(
+                  AppText(
                     '${widget.localCount} سجل محلي',
                     style: AppTextStyles.caption(context).copyWith(
                       fontSize: 10.sp,
@@ -680,7 +678,7 @@ class _SyncPendingList extends StatelessWidget {
           children: [
             Icon(Icons.history_rounded, size: 18.sp, color: AppColors.primary),
             SizedBox(width: 8.w),
-            ReusableText(
+            AppText(
               'طابور العمليات المعلقة',
               style: AppTextStyles.bodyBold(context),
             ),
@@ -701,7 +699,7 @@ class _SyncPendingList extends StatelessWidget {
           child: AppCard(
             padding: EdgeInsets.zero,
             child: items.isEmpty
-                ? _buildEmptyState(context)
+                ? _buildAppStateView.empty(context)
                 : ListView.separated(
                     padding: EdgeInsets.symmetric(vertical: AppSpacing.xs),
                     itemCount: items.length,
@@ -724,7 +722,7 @@ class _SyncPendingList extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState(BuildContext context) {
+  Widget _buildAppStateView (BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -742,14 +740,14 @@ class _SyncPendingList extends StatelessWidget {
             ),
           ),
           SizedBox(height: 16.h),
-          ReusableText(
+          AppText(
             'لا توجد عمليات معلقة',
             style: AppTextStyles.bodyBold(context).copyWith(
               color: AppColors.textSecondaryOf(context),
             ),
           ),
           SizedBox(height: 4.h),
-          ReusableText(
+          AppText(
             'جميع بياناتك متزامنة مع السحابة بسلام',
             style: AppTextStyles.caption(context),
           ),

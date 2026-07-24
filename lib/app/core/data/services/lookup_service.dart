@@ -1,4 +1,5 @@
-import 'package:pharmacy_system/app/core/data/database/tables/system_tables.dart';
+import 'package:drift/drift.dart';
+import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/database/drift_init.dart';
 import 'package:pharmacy_system/app/core/models/base/lookup_model.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';

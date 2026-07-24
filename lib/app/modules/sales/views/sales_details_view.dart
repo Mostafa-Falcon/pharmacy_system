@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -96,7 +96,7 @@ class _Header extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ReusableText(
+                AppText(
                   '${SalesStrings.invoiceLabelSales} #${sale.id.substring(0, 8)}',
                   style: TextStyle(
                     fontSize: 15.sp,
@@ -105,7 +105,7 @@ class _Header extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 2.h),
-                ReusableText(
+                AppText(
                   '${sale.createdAt.day}/${sale.createdAt.month}/${sale.createdAt.year}  •  '
                   '${sale.customerName?.isEmpty ?? true ? SalesStrings.cashCustomer : sale.customerName}',
                   style: TextStyle(
@@ -154,7 +154,7 @@ class _ItemsTable extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ReusableText(
+                        AppText(
                           item.medicineName,
                           style: TextStyle(
                             fontSize: 13.sp,
@@ -163,7 +163,7 @@ class _ItemsTable extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 2.h),
-                        ReusableText(
+                        AppText(
                           '${item.unitPrice.toStringAsFixed(2)} × ${item.quantity}',
                           style: TextStyle(
                             fontSize: 11.sp,
@@ -173,7 +173,7 @@ class _ItemsTable extends StatelessWidget {
                       ],
                     ),
                   ),
-                  ReusableText(
+                  AppText(
                     item.totalPrice.toStringAsFixed(2),
                     style: TextStyle(
                       fontSize: 13.sp,
@@ -222,8 +222,8 @@ class _Totals extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ReusableButton(text: GeneralStrings.back, onPressed: () => context.pop(), type: ButtonType.outlined),
-              ReusableButton(
+              AppButton(text: GeneralStrings.back, onPressed: () => context.pop(), type: ButtonType.outlined),
+              AppButton(
                 text: GeneralStrings.print,
                 prefixIcon: Icons.print_rounded,
                 onPressed: () => PrintService.printSalesInvoice(sale),
@@ -255,7 +255,7 @@ class _Row extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          ReusableText(
+          AppText(
             label,
             style: TextStyle(
               fontSize: bold ? 15.sp : 13.sp,
@@ -263,7 +263,7 @@ class _Row extends StatelessWidget {
               color: color ?? scheme.onSurfaceVariant,
             ),
           ),
-          ReusableText(
+          AppText(
             value,
             style: TextStyle(
               fontSize: bold ? 16.sp : 13.sp,

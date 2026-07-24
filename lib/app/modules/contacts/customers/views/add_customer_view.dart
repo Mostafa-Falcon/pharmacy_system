@@ -101,7 +101,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
               children: [
                 Expanded(
                   flex: 2,
-                  child: ReusableInput(
+                  child: AppInput(
                     label: CustomersStrings.fullNameRequired,
                     hint: CustomersStrings.customerNameExampleHint,
                     controller: nameCtrl,
@@ -110,7 +110,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
                 ),
                 SizedBox(width: AppSpacing.md.w),
                 Expanded(
-                  child: ReusableDropdown<CustomerKind>(
+                  child: AppDropdown<CustomerKind>(
                     labelText: CustomersStrings.interactionType,
                     hintText: CustomersStrings.selectInteractionType,
                     items: const [CustomerKind.regular, CustomerKind.cash],
@@ -131,7 +131,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
             Row(
               children: [
                 Expanded(
-                  child: ReusableInput(
+                  child: AppInput(
                     label: GeneralStrings.phone,
                     controller: phoneCtrl,
                     keyboardType: TextInputType.phone,
@@ -140,7 +140,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
                 ),
                 SizedBox(width: AppSpacing.md.w),
                 Expanded(
-                  child: ReusableInput(
+                  child: AppInput(
                     label: CustomersStrings.companyOrInstitution,
                     controller: companyCtrl,
                     prefixIcon: const Icon(Icons.business_rounded),
@@ -160,7 +160,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
                 ),
                 SizedBox(width: AppSpacing.md.w),
                 Expanded(
-                  child: ReusableInput(
+                  child: AppInput(
                     label: CustomersStrings.taxIdLabel,
                     controller: taxCtrl,
                     prefixIcon: const Icon(Icons.assignment_ind_outlined),
@@ -169,7 +169,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
               ],
             ),
             SizedBox(height: AppSpacing.md.h),
-            ReusableInput(
+            AppInput(
               label: CustomersStrings.detailedAddress,
               controller: addressCtrl,
               prefixIcon: const Icon(Icons.location_on_outlined),
@@ -182,7 +182,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
             Row(
               children: [
                 Expanded(
-                  child: ReusableInput(
+                  child: AppInput(
                     label: CustomersStrings.creditLimit,
                     controller: creditLimitCtrl,
                     keyboardType: TextInputType.number,
@@ -192,7 +192,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
                 ),
                 SizedBox(width: AppSpacing.md.w),
                 Expanded(
-                  child: ReusableInput(
+                  child: AppInput(
                     label: CustomersStrings.discountPercentLabel,
                     controller: discountCtrl,
                     keyboardType: TextInputType.number,
@@ -202,7 +202,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
                 ),
                 SizedBox(width: AppSpacing.md.w),
                 Expanded(
-                  child: ReusableInput(
+                  child: AppInput(
                     label: CustomersStrings.paymentTermDaysLabel,
                     controller: paymentDaysCtrl,
                     keyboardType: TextInputType.number,
@@ -216,7 +216,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
             Row(
               children: [
                 Expanded(
-                  child: ReusableInput(
+                  child: AppInput(
                     label: CustomersStrings.openingBalanceLabel,
                     controller: openingBalanceCtrl,
                     keyboardType: TextInputType.number,
@@ -225,7 +225,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
                 ),
                 SizedBox(width: AppSpacing.md.w),
                 Expanded(
-                  child: ReusableDropdown<bool>(
+                  child: AppDropdown<bool>(
                     labelText: CustomersStrings.balanceStatusLabel,
                     hintText: GeneralStrings.select,
                     items: const [true, false],
@@ -246,7 +246,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
               icon: Icons.notes_rounded,
               title: GeneralStrings.additionalNotesSection,
             ),
-            ReusableInput(
+            AppInput(
               label: GeneralStrings.additionalNotesSection,
               controller: notesCtrl,
               maxLines: 3,

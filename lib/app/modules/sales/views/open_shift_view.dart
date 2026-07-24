@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,13 +46,13 @@ class OpenShiftView extends StatelessWidget {
                 color: AppColors.primary,
               ),
               SizedBox(height: 16.h),
-              ReusableText(
+              AppText(
                 SalesStrings.startNewShift,
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
               ),
               SizedBox(height: 8.h),
-              ReusableText(
+              AppText(
                 SalesStrings.enterInitialCashHint,
                 fontSize: 13,
                 color: Colors.grey,
@@ -79,7 +79,7 @@ class OpenShiftView extends StatelessWidget {
     return Scaffold(
       backgroundColor: bgColor,
       appBar: AppBar(
-        title: ReusableText(SalesStrings.openShiftAction, style: const TextStyle(color: Colors.white)),
+        title: AppText(SalesStrings.openShiftAction, style: const TextStyle(color: Colors.white)),
         backgroundColor: AppColors.surfaceTintDarkAlt,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -169,7 +169,7 @@ class _OpenShiftFormState extends State<_OpenShiftForm> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ReusableInput(
+        AppInput(
           controller: _cashCtrl,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           hint: SalesStrings.enterOpeningBalanceHint,
@@ -179,7 +179,7 @@ class _OpenShiftFormState extends State<_OpenShiftForm> {
         SizedBox(
           width: double.infinity,
           height: 48.h,
-          child: ReusableButton(
+          child: AppButton(
             text: SalesStrings.openShiftAction,
             isLoading: _isLoading,
             onPressed: _isLoading ? null : _openShift,

@@ -308,7 +308,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
             ? 'إضافة نوع صنف جديد'
             : 'إضافة مجموعة جديدة',
         children: [
-          ReusableInput(
+          AppInput(
             controller: nameController,
             label: 'الاسم الجديد',
             autofocus: true,
@@ -345,14 +345,14 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
       builder: (ctx) => ReusableDialog(
         title: 'إضافة مورد جديد معتمد',
         children: [
-          ReusableInput(
+          AppInput(
             controller: nameController,
             label: 'اسم الشركة أو المورد *',
             prefixIcon: const Icon(Icons.business_rounded),
             autofocus: true,
           ),
           SizedBox(height: 16.h),
-          ReusableInput(
+          AppInput(
             controller: phoneController,
             label: 'رقم الهاتف',
             prefixIcon: const Icon(Icons.phone_rounded),
@@ -614,7 +614,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
             children: [
               SizedBox(
                 width: 450.w,
-                child: ReusableInput(
+                child: AppInput(
                   controller: _nameController,
                   label: InventoryStrings.medicineNameAr,
                   prefixIcon: Icon(
@@ -629,7 +629,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
               ),
               SizedBox(
                 width: 450.w,
-                child: ReusableInput(
+                child: AppInput(
                   controller: _nameEnController,
                   label: InventoryStrings.medicineNameEn,
                   prefixIcon: Icon(Icons.font_download_outlined, size: 18.sp),
@@ -648,7 +648,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
               ),
               SizedBox(width: 12.w),
               Expanded(
-                child: ReusableInput(
+                child: AppInput(
                   controller: _imageUrlController,
                   label: InventoryStrings.imageUrlLabel,
                   prefixIcon: Icon(Icons.link_rounded, size: 18.sp),
@@ -680,7 +680,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
             Row(
               children: [
                 Expanded(
-                  child: ReusableInput(
+                  child: AppInput(
                     controller: _strengthController,
                     label: InventoryStrings.strength,
                     prefixIcon: const Icon(Icons.biotech_rounded),
@@ -688,7 +688,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
                 ),
                 SizedBox(width: 16.w),
                 Expanded(
-                  child: ReusableInput(
+                  child: AppInput(
                     controller: _packageSizeController,
                     label: InventoryStrings.packageSize,
                     prefixIcon: const Icon(Icons.inventory_2_outlined),
@@ -700,7 +700,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
             Row(
               children: [
                 Expanded(
-                  child: ReusableDropdown<String>(
+                  child: AppDropdown<String>(
                     hintText: InventoryStrings.dosageFormHint,
                     labelText: InventoryStrings.dosageFormLabel,
                     items: _dosageForms,
@@ -711,7 +711,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
                 ),
                 SizedBox(width: 16.w),
                 Expanded(
-                  child: ReusableDropdown<String>(
+                  child: AppDropdown<String>(
                     hintText: InventoryStrings.containerShapeHint,
                     labelText: InventoryStrings.containerShapeLabel,
                     items: _containerShapes,
@@ -724,7 +724,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
               ],
             ),
             SizedBox(height: 16.h),
-            ReusableInput(
+            AppInput(
               controller: _locationController,
               label: InventoryStrings.storageLocation,
               prefixIcon: Icon(
@@ -764,7 +764,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Expanded(
-                      child: ReusableDropdown<LookupModel>(
+                      child: AppDropdown<LookupModel>(
                         labelText: InventoryStrings.itemTypeLabel,
                         hintText: GeneralStrings.searchHint,
                         items: itemTypes,
@@ -799,7 +799,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Expanded(
-                      child: ReusableDropdown<LookupModel>(
+                      child: AppDropdown<LookupModel>(
                         labelText: InventoryStrings.groupLabel,
                         hintText: GeneralStrings.searchHint,
                         items: groups,
@@ -833,7 +833,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
           SizedBox(height: 16.h),
           buildSupplierDropdownSection(),
           SizedBox(height: 16.h),
-          ReusableInput(
+          AppInput(
             controller: _barcodeController,
             label: InventoryStrings.barcodeMainLabel,
             prefixIcon: Icon(
@@ -863,7 +863,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
           for (var i = 0; i < _additionalBarcodeControllers.length; i++)
             Padding(
               padding: EdgeInsets.only(top: 8.h),
-              child: ReusableInput(
+              child: AppInput(
                 controller: _additionalBarcodeControllers[i],
                 label: '${InventoryStrings.extraBarcodePrefix}${i + 2}',
                 prefixIcon: Icon(
@@ -902,7 +902,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Expanded(
-          child: ReusableDropdown<SupplierModel>(
+          child: AppDropdown<SupplierModel>(
             labelText: InventoryStrings.supplierLabel,
             hintText: InventoryStrings.supplierHint,
             items: suppliers,
@@ -1029,7 +1029,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
             Row(
               children: [
                 Expanded(
-                  child: ReusableDropdown<String>(
+                  child: AppDropdown<String>(
                     hintText: InventoryStrings.taxType,
                     labelText: InventoryStrings.taxType,
                     items: const ['percentage', 'fixed'],
@@ -1045,7 +1045,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
                 ),
                 SizedBox(width: 16.w),
                 Expanded(
-                  child: ReusableInput(
+                  child: AppInput(
                     controller: _taxValueController,
                     label: _selectedTaxType == 'percentage'
                         ? InventoryStrings.taxPercentage
@@ -1125,7 +1125,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
                     ),
                     if (_alertEnabled) ...[
                       SizedBox(height: 16.h),
-                      ReusableInput(
+                      AppInput(
                         controller: _units.first.minStockController,
                         label: InventoryStrings.minStockLimitSimple,
                         prefixIcon:
@@ -1178,7 +1178,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
             ],
           ),
           SizedBox(height: 16.h),
-          ReusableInput(
+          AppInput(
             controller: _descriptionController,
             label: InventoryStrings.notesAndFormulasAdd,
             prefixIcon: const Icon(Icons.edit_note_rounded),
@@ -1339,7 +1339,7 @@ class _ExpiryDateRow extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: ReusableInput(
+                  child: AppInput(
                     controller: slot.dayCtrl,
                     label: 'يوم',
                     hint: 'DD',
@@ -1349,7 +1349,7 @@ class _ExpiryDateRow extends StatelessWidget {
                 ),
                 SizedBox(width: 6.w),
                 Expanded(
-                  child: ReusableInput(
+                  child: AppInput(
                     controller: slot.monthCtrl,
                     label: 'شهر',
                     hint: 'MM',
@@ -1359,7 +1359,7 @@ class _ExpiryDateRow extends StatelessWidget {
                 ),
                 SizedBox(width: 6.w),
                 Expanded(
-                  child: ReusableInput(
+                  child: AppInput(
                     controller: slot.yearCtrl,
                     label: 'سنة',
                     hint: 'YYYY',

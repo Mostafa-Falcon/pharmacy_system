@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-enum ReusableTextVariant { h1, h2, h3, subtitle, body, caption }
+enum AppTextVariant { h1, h2, h3, subtitle, body, caption }
 
-class ReusableText extends StatelessWidget {
+class AppText extends StatelessWidget {
   final String? text;
   final TextStyle? style;
   final Color? color;
@@ -19,7 +19,7 @@ class ReusableText extends StatelessWidget {
   final double? fontSizeOverride;
   final TextSpan? textSpan;
 
-  const ReusableText(
+  const AppText(
     this.text, {
     super.key,
     this.style,
@@ -47,7 +47,7 @@ class ReusableText extends StatelessWidget {
     TextOverflow? overflow,
     double? height,
   }) =>
-      ReusableText(
+      AppText(
         text,
         key: key,
         variant: ReusableTextVariant.h1,
@@ -69,7 +69,7 @@ class ReusableText extends StatelessWidget {
     TextOverflow? overflow,
     double? height,
   }) =>
-      ReusableText(
+      AppText(
         text,
         key: key,
         variant: ReusableTextVariant.h2,
@@ -91,7 +91,7 @@ class ReusableText extends StatelessWidget {
     TextOverflow? overflow,
     double? height,
   }) =>
-      ReusableText(
+      AppText(
         text,
         key: key,
         variant: ReusableTextVariant.h3,
@@ -113,7 +113,7 @@ class ReusableText extends StatelessWidget {
     TextOverflow? overflow,
     double? height,
   }) =>
-      ReusableText(
+      AppText(
         text,
         key: key,
         variant: ReusableTextVariant.subtitle,
@@ -135,7 +135,7 @@ class ReusableText extends StatelessWidget {
     TextOverflow? overflow,
     double? height,
   }) =>
-      ReusableText(
+      AppText(
         text,
         key: key,
         variant: ReusableTextVariant.body,
@@ -157,7 +157,7 @@ class ReusableText extends StatelessWidget {
     TextOverflow? overflow,
     double? height,
   }) =>
-      ReusableText(
+      AppText(
         text,
         key: key,
         variant: ReusableTextVariant.caption,

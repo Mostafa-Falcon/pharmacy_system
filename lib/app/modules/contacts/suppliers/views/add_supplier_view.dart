@@ -74,7 +74,7 @@ class _AddSupplierViewState extends State<AddSupplierView> {
             children: [
               Expanded(
                 flex: 2,
-                child: ReusableInput(
+                child: AppInput(
                   label: SuppliersStrings.nameLabelRequired,
                   hint: SuppliersStrings.supplierNameHint,
                   controller: nameCtrl,
@@ -85,7 +85,7 @@ class _AddSupplierViewState extends State<AddSupplierView> {
               ),
               SizedBox(width: AppSpacing.md.w),
               Expanded(
-                child: ReusableDropdown<SupplierPartyType>(
+                child: AppDropdown<SupplierPartyType>(
                   labelText: SuppliersStrings.partyTypeLabel,
                   hintText: SuppliersStrings.selectPartyTypeHint,
                   items: const [
@@ -107,7 +107,7 @@ class _AddSupplierViewState extends State<AddSupplierView> {
           Row(
             children: [
               Expanded(
-                child: ReusableInput(
+                child: AppInput(
                   label: SuppliersStrings.phoneLabelInput,
                   controller: phoneCtrl,
                   keyboardType: TextInputType.phone,
@@ -116,7 +116,7 @@ class _AddSupplierViewState extends State<AddSupplierView> {
               ),
               SizedBox(width: AppSpacing.md.w),
               Expanded(
-                child: ReusableInput(
+                child: AppInput(
                   label: SuppliersStrings.companyLabelInput,
                   controller: companyCtrl,
                   prefixIcon: const Icon(Icons.business_rounded),
@@ -136,7 +136,7 @@ class _AddSupplierViewState extends State<AddSupplierView> {
               ),
               SizedBox(width: AppSpacing.md.w),
               Expanded(
-                child: ReusableInput(
+                child: AppInput(
                   label: SuppliersStrings.taxIdLabelInput,
                   controller: taxCtrl,
                   prefixIcon: const Icon(Icons.assignment_ind_outlined),
@@ -145,7 +145,7 @@ class _AddSupplierViewState extends State<AddSupplierView> {
             ],
           ),
           SizedBox(height: AppSpacing.md.h),
-          ReusableInput(
+          AppInput(
             label: SuppliersStrings.addressLabelInput,
             controller: addressCtrl,
             prefixIcon: const Icon(Icons.location_on_outlined),
@@ -158,7 +158,7 @@ class _AddSupplierViewState extends State<AddSupplierView> {
           Row(
             children: [
               Expanded(
-                child: ReusableInput(
+                child: AppInput(
                   label: SuppliersStrings.creditLimitLabelInput,
                   controller: creditLimitCtrl,
                   keyboardType: TextInputType.number,
@@ -168,7 +168,7 @@ class _AddSupplierViewState extends State<AddSupplierView> {
               ),
               SizedBox(width: AppSpacing.md.w),
               Expanded(
-                child: ReusableInput(
+                child: AppInput(
                   label: SuppliersStrings.discountPercentLabelInput,
                   controller: discountCtrl,
                   keyboardType: TextInputType.number,
@@ -178,7 +178,7 @@ class _AddSupplierViewState extends State<AddSupplierView> {
               ),
               SizedBox(width: AppSpacing.md.w),
               Expanded(
-                child: ReusableInput(
+                child: AppInput(
                   label: SuppliersStrings.paymentTermDaysLabelInput,
                   controller: paymentDaysCtrl,
                   keyboardType: TextInputType.number,
@@ -192,7 +192,7 @@ class _AddSupplierViewState extends State<AddSupplierView> {
           Row(
             children: [
               Expanded(
-                child: ReusableInput(
+                child: AppInput(
                   label: SuppliersStrings.openingBalanceLabelInput,
                   controller: openingBalanceCtrl,
                   keyboardType: TextInputType.number,
@@ -201,7 +201,7 @@ class _AddSupplierViewState extends State<AddSupplierView> {
               ),
               SizedBox(width: AppSpacing.md.w),
               Expanded(
-                child: ReusableDropdown<bool>(
+                child: AppDropdown<bool>(
                   labelText: SuppliersStrings.balanceDirectionLabel,
                   hintText: GeneralStrings.select,
                   items: const [true, false],
@@ -221,7 +221,7 @@ class _AddSupplierViewState extends State<AddSupplierView> {
             icon: Icons.notes_rounded,
             title: CrmStrings.crmAdditionalNotes,
           ),
-          ReusableInput(
+          AppInput(
             label: SuppliersStrings.notesLabelInput,
             controller: notesCtrl,
             maxLines: 3,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// كلاس تعريف العمود في الجدول التفاعلي الذكي [ReusableTable].
-class ReusableTableColumn<T> {
+class AppTableColumn<T> {
   final String id;
   final String title;
   final Widget Function(T item)? cellBuilder;
@@ -22,7 +22,7 @@ class ReusableTableColumn<T> {
   final EdgeInsetsGeometry? cellPadding;
   final Widget? emptyCellWidget;
 
-  const ReusableTableColumn({
+  const AppTableColumn({
     required this.id,
     required this.title,
     this.cellBuilder,
@@ -44,7 +44,7 @@ class ReusableTableColumn<T> {
     this.emptyCellWidget,
   });
 
-  ReusableTableColumn<T> copyWith({
+  AppTableColumn<T> copyWith({
     String? id,
     String? title,
     Widget Function(T item)? cellBuilder,
@@ -65,7 +65,7 @@ class ReusableTableColumn<T> {
     EdgeInsetsGeometry? cellPadding,
     Widget? emptyCellWidget,
   }) {
-    return ReusableTableColumn<T>(
+    return AppTableColumn<T>(
       id: id ?? this.id,
       title: title ?? this.title,
       cellBuilder: cellBuilder ?? this.cellBuilder,

@@ -6,8 +6,8 @@ import 'package:pharmacy_system/app/shared/ui_core.dart';
 import '../display/app_text.dart';
 
 /// المكون الموحد لإظهار الـ Snackbar ضمن مكتبة المكونات المشتركة (Reusables).
-class ReusableSnackbar {
-  ReusableSnackbar._();
+class AppSnackbar {
+  AppSnackbar._();
 
   static void show(
     String title,
@@ -21,12 +21,12 @@ class ReusableSnackbar {
       type: type,
       style: ToastificationStyle.minimal,
       primaryColor: primaryColor,
-      title: ReusableText(
+      title: AppText(
         title,
         fontSizeOverride: 13,
         fontWeight: FontWeight.w700,
       ),
-      description: ReusableText(
+      description: AppText(
         message,
         fontSizeOverride: 11,
         fontWeight: FontWeight.w500,
@@ -52,7 +52,7 @@ class AppSnackbar {
 
   static void success(String message, {String title = GeneralStrings.done}) {
     _clear();
-    ReusableSnackbar.show(
+    AppSnackbar.show(
       title,
       message,
       primaryColor: AppColors.success,
@@ -62,7 +62,7 @@ class AppSnackbar {
 
   static void error(String message, {String title = GeneralStrings.error}) {
     _clear();
-    ReusableSnackbar.show(
+    AppSnackbar.show(
       title,
       message,
       primaryColor: AppColors.error,
@@ -72,7 +72,7 @@ class AppSnackbar {
 
   static void warning(String message, {String title = GeneralStrings.warning}) {
     _clear();
-    ReusableSnackbar.show(
+    AppSnackbar.show(
       title,
       message,
       primaryColor: AppColors.warning,
@@ -82,7 +82,7 @@ class AppSnackbar {
 
   static void info(String message, {String title = GeneralStrings.information}) {
     _clear();
-    ReusableSnackbar.show(
+    AppSnackbar.show(
       title,
       message,
       primaryColor: AppColors.info,

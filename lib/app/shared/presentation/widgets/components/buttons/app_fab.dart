@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 
 /// زر عائم موحّد (FloatingActionButton) بستايل التطبيق.
-class ReusableFab extends StatelessWidget {
+class AppFab extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onPressed;
   final Color? backgroundColor;
   final String? tooltip;
   final String? label;
 
-  const ReusableFab({
+  const AppFab({
     super.key,
     required this.icon,
     this.onPressed,

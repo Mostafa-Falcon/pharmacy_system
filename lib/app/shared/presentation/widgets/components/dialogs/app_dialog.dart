@@ -6,7 +6,7 @@ import 'package:pharmacy_system/app/shared/ui_core.dart';
 /// Shell موحد لأي حوار (Dialog) في التطبيق.
 /// بيلفّ الـ [Dialog] بالكارت المظبوط (حواف ناعمة + ظل + بوردر ديناميكي حسب الثيم)
 /// ويوفّر هيدر اختياري (أيقونة دائرية + عنوان) عشان نلغي أي تكرار في كل الحوارات.
-class ReusableDialog extends StatelessWidget {
+class AppDialog extends StatelessWidget {
   final Widget? headerIcon;
   final Color? headerIconColor;
   final Color? headerIconBackgroundColor;
@@ -17,7 +17,7 @@ class ReusableDialog extends StatelessWidget {
   final EdgeInsets? insetPadding;
   final EdgeInsetsGeometry? contentPadding;
 
-  const ReusableDialog({
+  const AppDialog({
     super.key,
     this.headerIcon,
     this.headerIconColor,
@@ -99,7 +99,7 @@ class ReusableDialog extends StatelessWidget {
                         if (headerIcon != null) SizedBox(width: 12.w),
                         if (title != null)
                           Expanded(
-                            child: ReusableText(
+                            child: AppText(
                               title!,
                               style: AppTextStyles.title(context).copyWith(
                                 color: AppColors.textPrimaryOf(context),
@@ -142,7 +142,7 @@ class ReusableDialog extends StatelessWidget {
     return showDialog<T>(
       context: context,
       barrierColor: Colors.black54,
-      builder: (context) => ReusableDialog(
+      builder: (context) => AppDialog(
         headerIcon: headerIcon,
         headerIconColor: headerIconColor,
         title: title,
@@ -155,7 +155,7 @@ class ReusableDialog extends StatelessWidget {
 }
 
 /// صف الأزرار القياسي أسفل أي حوار: (إلغاء - تأكيد).
-/// بيرجّع [Widget] جاهز يُحط جوه الـ [ReusableDialog].
+/// بيرجّع [Widget] جاهز يُحط جوه الـ [AppDialog].
 class DialogActions extends StatelessWidget {
   final String cancelText;
   final String confirmText;
@@ -179,7 +179,7 @@ class DialogActions extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: ReusableButton(
+          child: AppButton(
             text: cancelText,
             type: ButtonType.text,
             onPressed: onCancel ?? () => Navigator.of(context).pop(),
@@ -187,7 +187,7 @@ class DialogActions extends StatelessWidget {
         ),
         SizedBox(width: spacing?.w ?? 12.w), // تأمين الـ spacing بالـ .w
         Expanded(
-          child: ReusableButton(
+          child: AppButton(
             text: confirmText,
             type: confirmType,
             onPressed: onConfirm,

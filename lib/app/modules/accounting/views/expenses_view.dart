@@ -52,7 +52,7 @@ class _ExpensesViewState extends State<ExpensesView> {
 
   List<Widget> _buildHeaderActions(BuildContext context) {
     return [
-      ReusableButton(
+      AppButton(
         text: AccountingStrings.expenseImportExcel,
         prefixIcon: Icons.file_upload_rounded,
         type: ButtonType.outlined,
@@ -66,7 +66,7 @@ class _ExpensesViewState extends State<ExpensesView> {
       padding: EdgeInsets.all(AppSpacing.md),
       child: Column(
         children: [
-          ReusableInput(
+          AppInput(
             label: AccountingStrings.expenseSearchHint,
             hint: AccountingStrings.expenseSearchHelper,
             controller: _searchCtrl,
@@ -142,7 +142,7 @@ class _ExpensesViewState extends State<ExpensesView> {
         : state.expenses;
 
     if (displayExpenses.isEmpty) {
-      return const EmptyState(
+      return const AppStateView.empty(
         icon: Icons.receipt_long_rounded,
         title: AccountingStrings.accountingNoExpenses,
         subtitle: AccountingStrings.accountingNoExpensesSubtitle,
@@ -150,14 +150,14 @@ class _ExpensesViewState extends State<ExpensesView> {
     }
 
     final columns = [
-      ReusableTableColumn<ExpenseModel>(
+      AppTableColumn<ExpenseModel>(
         id: 'expenseNumber',
         title: '#',
         width: 80.w,
         isSortable: true,
         textBuilder: (e) => '#${e.expenseNumber}',
       ),
-      ReusableTableColumn<ExpenseModel>(
+      AppTableColumn<ExpenseModel>(
         id: 'category',
         title: 'التصنيف والبيان',
         flex: 2,
@@ -169,7 +169,7 @@ class _ExpensesViewState extends State<ExpensesView> {
           iconColor: AppColors.error,
         ),
       ),
-      ReusableTableColumn<ExpenseModel>(
+      AppTableColumn<ExpenseModel>(
         id: 'amount',
         title: 'القيمة',
         width: 130.w,
@@ -181,13 +181,13 @@ class _ExpensesViewState extends State<ExpensesView> {
           isNegative: true,
         ),
       ),
-      ReusableTableColumn<ExpenseModel>(
+      AppTableColumn<ExpenseModel>(
         id: 'method',
         title: 'طريقة الدفع',
         width: 150.w,
         textBuilder: (e) => _formatPaymentMethod(e.paymentMethod),
       ),
-      ReusableTableColumn<ExpenseModel>(
+      AppTableColumn<ExpenseModel>(
         id: 'date',
         title: 'التاريخ',
         width: 140.w,
@@ -198,7 +198,7 @@ class _ExpensesViewState extends State<ExpensesView> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: ReusableTable<ExpenseModel>(
+      body: AppTable<ExpenseModel>(
         columns: columns,
         items: displayExpenses,
         itemLabel: 'مصروف',
@@ -211,8 +211,8 @@ class _ExpensesViewState extends State<ExpensesView> {
             }
           },
           menuItems: [
-            const PopupMenuItem(value: 'edit', child: ReusableText('تعديل المصروف')),
-            const PopupMenuItem(value: 'delete', child: ReusableText('حذف المصروف', color: AppColors.error)),
+            const PopupMenuItem(value: 'edit', child: AppText('تعديل المصروف')),
+            const PopupMenuItem(value: 'delete', child: AppText('حذف المصروف', color: AppColors.error)),
           ],
         ),
       ),
@@ -252,11 +252,11 @@ class _ExpensesViewState extends State<ExpensesView> {
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
-        builder: (context, setState) => ReusableDialog(
+        builder: (context, setState) => AppDialog(
           title: 'تسجيل مصروفات جديد',
           headerIcon: const Icon(Icons.add_card_rounded),
           children: [
-            ReusableDropdown<String>(
+            AppDropdown<String>(
               labelText: 'تصنيف المصروف',
               hintText: 'اختر التصنيف الرئيسي',
               items: categories,
@@ -267,7 +267,7 @@ class _ExpensesViewState extends State<ExpensesView> {
               },
             ),
             SizedBox(height: AppSpacing.sm.h),
-            ReusableInput(
+            AppInput(
               label: 'البيان والتفاصيل',
               hint: 'اكتب تفاصيل المصروف هنا...',
               controller: descCtrl,
@@ -275,7 +275,7 @@ class _ExpensesViewState extends State<ExpensesView> {
               textDirection: TextDirection.rtl,
             ),
             SizedBox(height: AppSpacing.sm.h),
-            ReusableInput(
+            AppInput(
               label: 'ملاحظات',
               hint: 'ملاحظات إضافية...',
               controller: notesCtrl,
@@ -283,7 +283,7 @@ class _ExpensesViewState extends State<ExpensesView> {
               textDirection: TextDirection.rtl,
             ),
             SizedBox(height: AppSpacing.sm.h),
-            ReusableInput(
+            AppInput(
               label: 'القيمة المالية (${GeneralStrings.currency})',
               hint: '0.00',
               controller: amountCtrl,
@@ -291,7 +291,7 @@ class _ExpensesViewState extends State<ExpensesView> {
               prefixIcon: const Icon(Icons.payments_rounded, size: 18),
             ),
             SizedBox(height: AppSpacing.sm.h),
-            ReusableDropdown<String>(
+            AppDropdown<String>(
               labelText: 'طريقة الدفع',
               hintText: 'اختر حساب الدفع',
               items: const ['cash', 'card', 'bank_transfer', 'mobile_wallet'],
@@ -379,11 +379,11 @@ class _ExpensesViewState extends State<ExpensesView> {
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
-        builder: (context, setState) => ReusableDialog(
+        builder: (context, setState) => AppDialog(
           title: 'تعديل المصروف #${expense.expenseNumber}',
           headerIcon: const Icon(Icons.edit_rounded),
           children: [
-            ReusableDropdown<String>(
+            AppDropdown<String>(
               labelText: 'تصنيف المصروف',
               hintText: 'اختر التصنيف الرئيسي',
               items: categories,
@@ -394,7 +394,7 @@ class _ExpensesViewState extends State<ExpensesView> {
               },
             ),
             SizedBox(height: AppSpacing.sm.h),
-            ReusableInput(
+            AppInput(
               label: 'البيان والتفاصيل',
               hint: 'اكتب تفاصيل المصروف هنا...',
               controller: descCtrl,
@@ -402,7 +402,7 @@ class _ExpensesViewState extends State<ExpensesView> {
               textDirection: TextDirection.rtl,
             ),
             SizedBox(height: AppSpacing.sm.h),
-            ReusableInput(
+            AppInput(
               label: 'ملاحظات',
               hint: 'ملاحظات إضافية...',
               controller: notesCtrl,
@@ -410,7 +410,7 @@ class _ExpensesViewState extends State<ExpensesView> {
               textDirection: TextDirection.rtl,
             ),
             SizedBox(height: AppSpacing.sm.h),
-            ReusableInput(
+            AppInput(
               label: 'القيمة المالية (${GeneralStrings.currency})',
               hint: '0.00',
               controller: amountCtrl,
@@ -418,7 +418,7 @@ class _ExpensesViewState extends State<ExpensesView> {
               prefixIcon: const Icon(Icons.payments_rounded, size: 18),
             ),
             SizedBox(height: AppSpacing.sm.h),
-            ReusableDropdown<String>(
+            AppDropdown<String>(
               labelText: 'طريقة الدفع',
               hintText: 'اختر حساب الدفع',
               items: const ['cash', 'card', 'bank_transfer', 'mobile_wallet'],
@@ -497,7 +497,7 @@ class _ExpensesViewState extends State<ExpensesView> {
   void _confirmDeleteExpense(BuildContext context, ExpenseModel expense) {
     showDialog(
       context: context,
-      builder: (ctx) => ReusableDialog(
+      builder: (ctx) => AppDialog(
         title: 'حذف المصروف',
         headerIcon: const Icon(Icons.warning_rounded, color: Colors.red),
         children: [

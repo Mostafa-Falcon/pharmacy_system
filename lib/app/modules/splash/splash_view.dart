@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pharmacy_system/app/shared/constants/strings/app_strings.dart';
 
-import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import 'package:pharmacy_system/app/routes/app_routes.dart';
 import '../auth/bloc/auth_bloc.dart';
@@ -65,28 +65,46 @@ class _SplashViewState extends State<SplashView> {
                     color: scheme.primary.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(Icons.local_pharmacy_rounded, size: 72.sp, color: scheme.primary),
+                  child: Icon(
+                    Icons.local_pharmacy_rounded,
+                    size: 72.sp,
+                    color: scheme.primary,
+                  ),
                 ),
                 SizedBox(height: 24.h),
-                ReusableText(
+                AppText(
                   AuthStrings.appNameSplash,
-                  style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.w800, color: scheme.onSurface),
+                  style: TextStyle(
+                    fontSize: 28.sp,
+                    fontWeight: FontWeight.w800,
+                    color: scheme.onSurface,
+                  ),
                 ),
                 SizedBox(height: 8.h),
-                ReusableText(
+                AppText(
                   AuthStrings.appDescSplash,
-                  style: TextStyle(fontSize: 14.sp, color: scheme.onSurfaceVariant),
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: scheme.onSurfaceVariant,
+                  ),
                 ),
                 SizedBox(height: 48.h),
                 BlocBuilder<AuthBloc, AuthState>(
                   builder: (context, state) {
-                    if (state.status == AuthStatus.error && state.error != null) {
+                    if (state.status == AuthStatus.error &&
+                        state.error != null) {
                       return Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          ReusableText(state.error!, style: TextStyle(color: scheme.error, fontSize: 13.sp)),
+                          AppText(
+                            state.error!,
+                            style: TextStyle(
+                              color: scheme.error,
+                              fontSize: 13.sp,
+                            ),
+                          ),
                           SizedBox(height: 12.h),
-                          ReusableButton(
+                          AppButton(
                             text: 'إعادة المحاولة',
                             prefixIcon: Icons.refresh_rounded,
                             onPressed: _triggerAuthCheck,
@@ -100,7 +118,13 @@ class _SplashViewState extends State<SplashView> {
                       children: [
                         const LoadingIndicator(),
                         SizedBox(height: 16.h),
-                        ReusableText('جاري التحقق من التراخيص وتجهيز البيانات...', style: TextStyle(fontSize: 12.sp, color: scheme.onSurfaceVariant)),
+                        AppText(
+                          'جاري التحقق من التراخيص وتجهيز البيانات...',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: scheme.onSurfaceVariant,
+                          ),
+                        ),
                       ],
                     );
                   },
@@ -113,7 +137,3 @@ class _SplashViewState extends State<SplashView> {
     );
   }
 }
-
-
-
-

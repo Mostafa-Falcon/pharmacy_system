@@ -35,9 +35,9 @@ class _CustomersBody extends StatelessWidget {
         if (state.errorMessage != null) {
           return HomeShell(
             title: CustomersStrings.customersTitle,
-            child: ReusableStateView(
+            child: AppStateView(
               message: state.errorMessage ?? CustomersStrings.errorLoadingCustomers,
-              action: ReusableButton(
+              action: AppButton(
                 text: GeneralStrings.refresh,
                 onPressed: () => context.read<CustomersBloc>().add(const LoadCustomers()),
               ),
@@ -59,18 +59,18 @@ class _CustomersBody extends StatelessWidget {
   List<Widget> _buildActions(BuildContext context) {
     final bloc = context.read<CustomersBloc>();
     return [
-      ReusableButton(
+      AppButton(
         text: CustomersStrings.addCustomer,
         prefixIcon: Icons.add_rounded,
         onPressed: () => context.push(Routes.CUSTOMER_ADD),
       ),
-      ReusableButton(
+      AppButton(
         text: GeneralStrings.export,
         prefixIcon: Icons.download_rounded,
         type: ButtonType.outlined,
         onPressed: () => bloc.add(const ExportCustomers()),
       ),
-      ReusableButton(
+      AppButton(
         text: 'استيراد من Excel',
         prefixIcon: Icons.file_upload_rounded,
         type: ButtonType.outlined,
@@ -104,7 +104,7 @@ class _CustomersBody extends StatelessWidget {
   Widget _buildFilters(BuildContext context) {
     return AppCard(
       padding: EdgeInsets.all(AppSpacing.md.w),
-      child: ReusableInput(
+      child: AppInput(
         hint: CustomersStrings.searchCustomerHintInput,
         prefixIcon: const Icon(Icons.search_rounded, size: 20),
         showClearButton: true,
@@ -118,7 +118,7 @@ class _CustomersBody extends StatelessWidget {
     final bloc = context.read<CustomersBloc>();
 
     final columns = [
-      ReusableTableColumn<CustomerModel>(
+      AppTableColumn<CustomerModel>(
         id: 'name',
         title: CustomersStrings.customerTitle,
         flex: 1,
@@ -130,19 +130,19 @@ class _CustomersBody extends StatelessWidget {
           iconColor: c.isActive ? AppColors.success : AppColors.error,
         ),
       ),
-      ReusableTableColumn<CustomerModel>(
+      AppTableColumn<CustomerModel>(
         id: 'phone',
         title: GeneralStrings.phone,
         width: 130.w,
         textBuilder: (c) => c.phone ?? '-',
       ),
-      ReusableTableColumn<CustomerModel>(
+      AppTableColumn<CustomerModel>(
         id: 'company',
         title: GeneralStrings.company,
         width: 150.w,
         textBuilder: (c) => c.companyName ?? '-',
       ),
-      ReusableTableColumn<CustomerModel>(
+      AppTableColumn<CustomerModel>(
         id: 'balance',
         title: GeneralStrings.balance,
         width: 120.w,
@@ -157,7 +157,7 @@ class _CustomersBody extends StatelessWidget {
           );
         },
       ),
-      ReusableTableColumn<CustomerModel>(
+      AppTableColumn<CustomerModel>(
         id: 'creditLimit',
         title: CustomersStrings.creditLimit,
         width: 120.w,
@@ -165,7 +165,7 @@ class _CustomersBody extends StatelessWidget {
         isNumeric: true,
         textBuilder: (c) => c.creditLimit > 0 ? '${c.creditLimit.toStringAsFixed(0)} ${GeneralStrings.currency}' : '-',
       ),
-      ReusableTableColumn<CustomerModel>(
+      AppTableColumn<CustomerModel>(
         id: 'discount',
         title: GeneralStrings.discount,
         width: 80.w,
@@ -173,7 +173,7 @@ class _CustomersBody extends StatelessWidget {
         isNumeric: true,
         textBuilder: (c) => '${c.discountPercent.toStringAsFixed(1)}%',
       ),
-      ReusableTableColumn<CustomerModel>(
+      AppTableColumn<CustomerModel>(
         id: 'status',
         title: GeneralStrings.status,
         width: 90.w,
@@ -185,7 +185,7 @@ class _CustomersBody extends StatelessWidget {
       ),
     ];
 
-    return ReusableTable<CustomerModel>(
+    return AppTable<CustomerModel>(
       columns: columns,
       items: state.pagedCustomers,
       sortColumnId: state.sortColumnId,
@@ -219,7 +219,7 @@ class _CustomersBody extends StatelessWidget {
 
   List<Widget> _buildBulkActions(BuildContext context, CustomersBloc bloc, CustomersState state) {
     return [
-      ReusableButton(
+      AppButton(
         text: GeneralStrings.delete,
         type: ButtonType.outlined,
         color: AppColors.error,
@@ -231,14 +231,14 @@ class _CustomersBody extends StatelessWidget {
           onConfirm: () => bloc.add(const BulkDeleteCustomers()),
         ),
       ),
-      ReusableButton(
+      AppButton(
         text: CustomersStrings.deactivate,
         type: ButtonType.outlined,
         color: AppColors.warning,
         prefixIcon: Icons.block_flipped,
         onPressed: () => bloc.add(const BulkToggleCustomersActive(false)),
       ),
-      ReusableButton(
+      AppButton(
         text: CustomersStrings.activate,
         type: ButtonType.outlined,
         color: AppColors.success,
@@ -266,10 +266,10 @@ class _CustomersBody extends StatelessWidget {
         }
       },
       menuItems: [
-        const PopupMenuItem(value: 'ledger', child: ReusableText(CustomersStrings.ledgerTitle)),
-        const PopupMenuItem(value: 'edit', child: ReusableText(GeneralStrings.edit)),
-        PopupMenuItem(value: 'toggle', child: ReusableText(c.isActive ? CustomersStrings.deactivate : CustomersStrings.activate)),
-        PopupMenuItem(value: 'delete', child: ReusableText(GeneralStrings.delete, color: AppColors.error)),
+        const PopupMenuItem(value: 'ledger', child: AppText(CustomersStrings.ledgerTitle)),
+        const PopupMenuItem(value: 'edit', child: AppText(GeneralStrings.edit)),
+        PopupMenuItem(value: 'toggle', child: AppText(c.isActive ? CustomersStrings.deactivate : CustomersStrings.activate)),
+        PopupMenuItem(value: 'delete', child: AppText(GeneralStrings.delete, color: AppColors.error)),
       ],
     );
   }
@@ -315,7 +315,7 @@ class _CustomersBody extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
-        builder: (context, setState) => ReusableDialog(
+        builder: (context, setState) => AppDialog(
           maxWidth: 450,
           title: CustomersStrings.editCustomer,
           headerIcon: const Icon(Icons.edit_rounded),
@@ -351,13 +351,13 @@ class _CustomersBody extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ReusableInput(
+                  AppInput(
                     label: '${GeneralStrings.name} *',
                     hint: CustomersStrings.customerNameHint,
                     controller: nameCtrl,
                   ),
                   SizedBox(height: AppSpacing.sm.h),
-                  ReusableDropdown<CustomerKind>(
+                  AppDropdown<CustomerKind>(
                     labelText: GeneralStrings.type,
                     hintText: CustomersStrings.selectType,
                     items: const [CustomerKind.regular, CustomerKind.cash],
@@ -368,13 +368,13 @@ class _CustomersBody extends StatelessWidget {
                     },
                   ),
                   SizedBox(height: AppSpacing.sm.h),
-                  ReusableInput(
+                  AppInput(
                     label: GeneralStrings.phone,
                     controller: phoneCtrl,
                     keyboardType: TextInputType.phone,
                   ),
                   SizedBox(height: AppSpacing.sm.h),
-                  ReusableInput(
+                  AppInput(
                     label: GeneralStrings.company,
                     controller: companyCtrl,
                   ),
@@ -384,17 +384,17 @@ class _CustomersBody extends StatelessWidget {
                     controller: emailCtrl,
                   ),
                   SizedBox(height: AppSpacing.sm.h),
-                  ReusableInput(
+                  AppInput(
                     label: CustomersStrings.taxIdLabel,
                     controller: taxCtrl,
                   ),
                   SizedBox(height: AppSpacing.sm.h),
-                  ReusableInput(
+                  AppInput(
                     label: CustomersStrings.address,
                     controller: addressCtrl,
                   ),
                   SizedBox(height: AppSpacing.sm.h),
-                  ReusableInput(
+                  AppInput(
                     label: CustomersStrings.creditLimit,
                     controller: creditLimitCtrl,
                     keyboardType: TextInputType.number,
@@ -403,7 +403,7 @@ class _CustomersBody extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: ReusableInput(
+                        child: AppInput(
                           label: '${GeneralStrings.discount} %',
                           controller: discountCtrl,
                           keyboardType: TextInputType.number,
@@ -411,7 +411,7 @@ class _CustomersBody extends StatelessWidget {
                       ),
                       SizedBox(width: AppSpacing.sm.w),
                       Expanded(
-                        child: ReusableInput(
+                        child: AppInput(
                           label: '${CustomersStrings.paymentTerm} (${CustomersStrings.daySuffix})',
                           controller: paymentDaysCtrl,
                           keyboardType: TextInputType.number,
@@ -420,7 +420,7 @@ class _CustomersBody extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: AppSpacing.sm.h),
-                  ReusableInput(
+                  AppInput(
                     label: SuppliersStrings.notesLabel,
                     controller: notesCtrl,
                     maxLines: 2,
@@ -494,8 +494,8 @@ class _LedgerDialogContent extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            ReusableText(customer.displayName, style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)),
-                            ReusableText(
+                            AppText(customer.displayName, style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)),
+                            AppText(
                               [customer.identityPhone, customer.identityEmail, customer.identityAddress]
                                 .where((s) => s.isNotEmpty).join(' • '),
                               style: AppTextStyles.caption(context).copyWith(color: scheme.onSurfaceVariant),
@@ -522,7 +522,7 @@ class _LedgerDialogContent extends StatelessWidget {
                     spacing: AppSpacing.sm.w,
                     runSpacing: AppSpacing.sm.h,
                     children: [
-                  ReusableButton(
+                  AppButton(
                     text: CustomersStrings.cashReceipt,
                     prefixIcon: Icons.payments_rounded,
                     onPressed: () {
@@ -535,28 +535,28 @@ class _LedgerDialogContent extends StatelessWidget {
                       );
                     },
                   ),
-                  ReusableButton(
+                  AppButton(
                     text: SuppliersStrings.additionNotice,
                     prefixIcon: Icons.add_circle_rounded,
                     onPressed: () {
                       _showAdjustmentDialog(context, bloc, customer, isAddition: true);
                     },
                   ),
-                  ReusableButton(
+                  AppButton(
                     text: SuppliersStrings.discountNotice,
                     prefixIcon: Icons.remove_circle_rounded,
                     onPressed: () {
                       _showAdjustmentDialog(context, bloc, customer, isAddition: false);
                     },
                   ),
-                  ReusableButton(
+                  AppButton(
                     text: SuppliersStrings.checkReceipt,
                     prefixIcon: Icons.account_balance_rounded,
                     onPressed: () {
                       _showCheckDialog(context, bloc, customer, isReceipt: true);
                     },
                   ),
-                  ReusableButton(
+                  AppButton(
                     text: GeneralStrings.update,
                     prefixIcon: Icons.refresh_rounded,
                     type: ButtonType.outlined,
@@ -580,8 +580,8 @@ class _LedgerDialogContent extends StatelessWidget {
                           }
                         },
                           itemBuilder: (_) => [
-                            const PopupMenuItem(value: 'xlsx', child: ReusableText('${GeneralStrings.export} Excel')),
-                            const PopupMenuItem(value: 'html', child: ReusableText('${GeneralStrings.export} HTML')),
+                            const PopupMenuItem(value: 'xlsx', child: AppText('${GeneralStrings.export} Excel')),
+                            const PopupMenuItem(value: 'html', child: AppText('${GeneralStrings.export} HTML')),
                           ],
 
                       ),
@@ -590,7 +590,7 @@ class _LedgerDialogContent extends StatelessWidget {
                 ),
                 Expanded(
                   child: state.ledgerEntries.isEmpty
-                          ? const EmptyState(
+                          ? const AppStateView.empty(
                               icon: Icons.account_balance_wallet_outlined,
                               title: CustomersStrings.noFinancialMovements,
                             )
@@ -664,7 +664,7 @@ class _LedgerDialogContent extends StatelessWidget {
   Widget _cell(String text, BuildContext context, {int flex = 1, TextAlign align = TextAlign.start, Color? color}) {
     return Expanded(
       flex: flex,
-      child: ReusableText(
+      child: AppText(
         text,
         style: AppTextStyles.caption(context).copyWith(color: color),
         textAlign: align,
@@ -686,7 +686,7 @@ void _showAdjustmentDialog(
 
   showDialog(
     context: context,
-    builder: (context) => ReusableDialog(
+    builder: (context) => AppDialog(
       title: '${isAddition ? SuppliersStrings.additionNotice : SuppliersStrings.discountNotice} - ${customer.name}',
       headerIcon: Icon(
         isAddition ? Icons.add_circle_rounded : Icons.remove_circle_rounded,
@@ -724,14 +724,14 @@ void _showAdjustmentDialog(
         ),
       ],
       children: [
-        ReusableInput(
+        AppInput(
           label: '${GeneralStrings.amount} *',
           hint: '0.00',
           controller: amountCtrl,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
         ),
         SizedBox(height: AppSpacing.md.h),
-        ReusableInput(
+        AppInput(
           label: SuppliersStrings.notesLabel,
           controller: notesCtrl,
           maxLines: 2,
@@ -761,7 +761,7 @@ void _showCheckDialog(
 
   showDialog(
     context: context,
-    builder: (context) => ReusableDialog(
+    builder: (context) => AppDialog(
       title: '${isReceipt ? SuppliersStrings.checkReceipt : SuppliersStrings.checkPayment} - ${customer.name}',
       headerIcon: const Icon(
         Icons.account_balance_rounded,
@@ -805,30 +805,30 @@ void _showCheckDialog(
         ),
       ],
       children: [
-        ReusableInput(
+        AppInput(
           label: '${GeneralStrings.amount} *',
           hint: '0.00',
           controller: amountCtrl,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
         ),
         SizedBox(height: AppSpacing.sm.h),
-        ReusableInput(
+        AppInput(
           label: CustomersStrings.checkNumber,
           controller: checkNumberCtrl,
         ),
         SizedBox(height: AppSpacing.sm.h),
-        ReusableInput(
+        AppInput(
           label: CustomersStrings.bankName,
           controller: bankNameCtrl,
         ),
         SizedBox(height: AppSpacing.sm.h),
-        ReusableInput(
+        AppInput(
           label: CustomersStrings.dueDate,
           controller: dueDateCtrl,
           hint: 'YYYY-MM-DD',
         ),
         SizedBox(height: AppSpacing.sm.h),
-        ReusableInput(
+        AppInput(
           label: SuppliersStrings.notesLabel,
           controller: notesCtrl,
           maxLines: 2,

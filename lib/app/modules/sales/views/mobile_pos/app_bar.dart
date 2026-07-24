@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
@@ -117,7 +117,7 @@ class MobileAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     showDialog(
       context: context,
-      builder: (context) => ReusableDialog(
+      builder: (context) => AppDialog(
         headerIcon: const Icon(
           Icons.notifications_active_rounded,
           color: Colors.white,
@@ -127,7 +127,7 @@ class MobileAppBar extends StatelessWidget implements PreferredSizeWidget {
         maxWidth: 500,
         children: [
           if (nearExpiry.isEmpty && lowStock.isEmpty)
-            const EmptyState(
+            const AppStateView.empty(
               icon: Icons.check_circle_outline_rounded,
               title: NotificationsStrings.noNotificationsCurrent,
             )
@@ -218,10 +218,10 @@ class MobileAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     showDialog(
       context: context,
-      builder: (ctx) => ReusableDialog(
+      builder: (ctx) => AppDialog(
         title: SalesStrings.closeShiftTitle,
         children: [
-          ReusableText('${SalesStrings.shiftLabel} #${shift.shiftNumber}', style: const TextStyle(fontWeight: FontWeight.bold)),
+          AppText('${SalesStrings.shiftLabel} #${shift.shiftNumber}', style: const TextStyle(fontWeight: FontWeight.bold)),
           SizedBox(height: AppSpacing.sm),
           TotalsRow(label: SalesStrings.cashSalesLabel, value: FormatUtils.currency(cashSales)),
           Divider(height: AppSpacing.md),

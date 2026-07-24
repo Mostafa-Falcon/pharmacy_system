@@ -8,6 +8,8 @@ import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/modules/archive/services/archive_service.dart';
 
+import '../mappers/contacts_mapper.dart';
+
 class SuppliersRepository {
   ContactsDao get _dao => sl<ContactsDao>();
   SuppliersRepository();

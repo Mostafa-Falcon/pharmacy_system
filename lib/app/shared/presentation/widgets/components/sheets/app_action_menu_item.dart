@@ -10,8 +10,8 @@ import '../display/app_text.dart';
 ///
 /// الهدف: إنهاء التكرار (كان متوزع في +55 مكان) وتوحيد الأيقونة + اللون
 /// + النص داخل [ReusableText] عشان نستفيد من الـ theme والـ i18n.
-class ReusableActionMenuItem extends PopupMenuItem<String> {
-  ReusableActionMenuItem({
+class AppActionMenuItem extends PopupMenuItem<String> {
+  AppActionMenuItem({
     super.key,
     required super.value,
     required IconData icon,
@@ -20,7 +20,7 @@ class ReusableActionMenuItem extends PopupMenuItem<String> {
     super.enabled,
     super.height,
   }) : super(
-          child: _ReusableActionMenuItemChild(
+          child: _AppActionMenuItemChild(
             icon: icon,
             label: label,
             color: color,
@@ -46,7 +46,7 @@ class _ReusableActionMenuItemChild extends StatelessWidget {
       children: [
         Icon(icon, size: AppIconSize.md.value, color: effectiveColor),
         SizedBox(width: 8.w),
-        ReusableText(
+        AppText(
           label,
           style: AppTextStyles.body(context).copyWith(color: color),
         ),

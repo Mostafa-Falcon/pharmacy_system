@@ -69,7 +69,7 @@ class _LoginViewState extends State<LoginView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ReusableInput.email(
+              AppInput.email(
                 controller: _emailCtrl,
                 label: AuthStrings.emailLabel,
                 hint: AuthStrings.emailHint,
@@ -77,7 +77,7 @@ class _LoginViewState extends State<LoginView> {
                 validator: AppValidators.validateEmail,
               ),
               SizedBox(height: AppSpacing.md.h),
-              ReusableInput.password(
+              AppInput.password(
                 controller: _passwordCtrl,
                 label: AuthStrings.passwordLabel,
                 prefixIcon: const Icon(Icons.lock_outline_rounded),
@@ -93,7 +93,7 @@ class _LoginViewState extends State<LoginView> {
                     padding: EdgeInsets.zero,
                     visualDensity: VisualDensity.compact,
                   ),
-                  child: ReusableText.caption(
+                  child: AppText.caption(
                     AuthStrings.forgotPassword,
                     color: scheme.primary,
                     fontWeight: FontWeight.bold,
@@ -103,7 +103,7 @@ class _LoginViewState extends State<LoginView> {
               SizedBox(height: AppSpacing.lg.h),
               BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {
-                  return ReusableButton(
+                  return AppButton(
                     text: AuthStrings.loginButton,
                     isLoading: state.status == AuthStatus.loading,
                     onPressed: _onLogin,
@@ -114,12 +114,12 @@ class _LoginViewState extends State<LoginView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ReusableText.caption(
+                  AppText.caption(
                     AuthStrings.noAccount,
                   ),
                   TextButton(
                     onPressed: () => context.go(Routes.SIGNUP),
-                    child: ReusableText.caption(
+                    child: AppText.caption(
                       AuthStrings.signupLink,
                       fontWeight: FontWeight.bold,
                       color: scheme.primary,

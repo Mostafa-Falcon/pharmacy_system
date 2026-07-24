@@ -81,7 +81,7 @@ class AppChip extends StatelessWidget {
           SizedBox(width: 5.w),
         ],
 
-        ReusableText(
+        AppText(
           label,
           style: AppTextStyles.caption(context).copyWith(
             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
@@ -93,7 +93,7 @@ class AppChip extends StatelessWidget {
 
         if (value != null) ...[
           SizedBox(width: 5.w),
-          ReusableText(
+          AppText(
             value!,
             style: AppTextStyles.body(
               context,

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -35,7 +35,7 @@ class MessagesTabView extends StatelessWidget {
   Widget _buildToolbar(BuildContext context) {
     return Row(
       children: [
-        ReusableButton(
+        AppButton(
           text: 'إرسال رسالة',
           prefixIcon: Icons.send,
           onPressed: () => _showMessageDialog(context),
@@ -46,11 +46,11 @@ class MessagesTabView extends StatelessWidget {
               previous.messages != current.messages,
           builder: (context, state) {
             final unread = state.messages.where((m) => m.readAt == null).length;
-            return ReusableText('رسائل غير مقروءة: $unread', fontSize: 14.sp);
+            return AppText('رسائل غير مقروءة: $unread', fontSize: 14.sp);
           },
         ),
         SizedBox(width: AppSpacing.md.w),
-        ReusableButton(
+        AppButton(
           text: 'تحديث',
           prefixIcon: Icons.refresh,
           type: ButtonType.tonal,
@@ -125,12 +125,12 @@ class MessagesTabView extends StatelessWidget {
           ],
         ),
         actions: [
-          ReusableButton(
+          AppButton(
             text: GeneralStrings.cancel,
             type: ButtonType.text,
             onPressed: () => Navigator.of(context).pop(),
           ),
-          ReusableButton(
+          AppButton(
             text: TasksStrings.messagesSendButton,
             onPressed: () {
               if (subjectCtrl.text.trim().isEmpty ||

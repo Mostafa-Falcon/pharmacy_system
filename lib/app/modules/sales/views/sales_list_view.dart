@@ -66,26 +66,26 @@ class _SalesListViewState extends State<SalesListView> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ReusableText(
+            AppText(
               SalesStrings.allSales,
               style: AppTextStyles.title(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.textPrimaryOf(context)),
             ),
             SizedBox(height: 2.h),
-            ReusableText(
+            AppText(
               SalesStrings.salesSubtitle,
               style: AppTextStyles.caption(context).copyWith(color: AppColors.textSecondaryOf(context)),
             ),
           ],
         ),
         const Spacer(),
-        ReusableButton(
+        AppButton(
           text: SalesStrings.newSale,
           prefixIcon: Icons.add_shopping_cart_rounded,
           color: AppColors.homeSales,
           onPressed: () => context.go(Routes.SALES_POS),
         ),
         SizedBox(width: 8.w),
-        ReusableButton(
+        AppButton(
           text: GeneralStrings.back,
           type: ButtonType.outlined,
           prefixIcon: Icons.arrow_back_rounded,
@@ -217,7 +217,7 @@ class _SalesListViewState extends State<SalesListView> {
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.only(top: 18.h),
-                  child: ReusableButton(
+                  child: AppButton(
                     text: SalesStrings.resetFilters,
                     prefixIcon: Icons.restart_alt_rounded,
                     type: ButtonType.text,
@@ -297,14 +297,14 @@ class _SalesListViewState extends State<SalesListView> {
     final totalDue = items.fold(0.0, (sum, s) => sum + s.dueAmount);
 
     final columns = [
-      ReusableTableColumn<SaleInvoiceModel>(
+      AppTableColumn<SaleInvoiceModel>(
         id: 'id',
         title: SalesStrings.invoiceNumberLabel,
         width: 110.w,
         isSortable: true,
         textBuilder: (s) => '#${s.id.substring(0, 6).toUpperCase()}',
       ),
-      ReusableTableColumn<SaleInvoiceModel>(
+      AppTableColumn<SaleInvoiceModel>(
         id: 'customer',
         title: SalesStrings.customerNameLabel,
         flex: 2,
@@ -316,7 +316,7 @@ class _SalesListViewState extends State<SalesListView> {
           iconColor: s.paymentMethod == 'cash' ? AppColors.success : (s.paymentMethod == 'card' ? AppColors.info : AppColors.warning),
         ),
       ),
-      ReusableTableColumn<SaleInvoiceModel>(
+      AppTableColumn<SaleInvoiceModel>(
         id: 'method',
         title: SalesStrings.paymentMethodLabel,
         width: 110.w,
@@ -333,7 +333,7 @@ class _SalesListViewState extends State<SalesListView> {
           );
         },
       ),
-      ReusableTableColumn<SaleInvoiceModel>(
+      AppTableColumn<SaleInvoiceModel>(
         id: 'payment_status',
         title: SalesStrings.paymentStatus,
         width: 110.w,
@@ -345,21 +345,21 @@ class _SalesListViewState extends State<SalesListView> {
           );
         },
       ),
-      ReusableTableColumn<SaleInvoiceModel>(
+      AppTableColumn<SaleInvoiceModel>(
         id: 'amount',
         title: SalesStrings.totalValue,
         width: 120.w,
         isNumeric: true,
         cellBuilder: (s) => TableMoneyCell(amount: s.finalAmount, currency: GeneralStrings.currency, isHighlight: true),
       ),
-      ReusableTableColumn<SaleInvoiceModel>(
+      AppTableColumn<SaleInvoiceModel>(
         id: 'due',
         title: SalesStrings.dueAmount,
         width: 120.w,
         isNumeric: true,
         cellBuilder: (s) => TableMoneyCell(amount: s.dueAmount, currency: GeneralStrings.currency, isNegative: s.dueAmount > 0),
       ),
-      ReusableTableColumn<SaleInvoiceModel>(
+      AppTableColumn<SaleInvoiceModel>(
         id: 'date',
         title: GeneralStrings.date,
         width: 150.w,
@@ -372,7 +372,7 @@ class _SalesListViewState extends State<SalesListView> {
       children: [
         _buildTableToolbar(context, state),
         Expanded(
-          child: ReusableTable<SaleInvoiceModel>(
+          child: AppTable<SaleInvoiceModel>(
             columns: columns,
             items: items,
             itemLabel: SalesStrings.invoiceLabelSales,
@@ -398,12 +398,12 @@ class _SalesListViewState extends State<SalesListView> {
                 SizedBox(width: 110.w), // id
                 Expanded(flex: 2, child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                  child: ReusableText('المجموع:', style: AppTextStyles.bodyBold(context)),
+                  child: AppText('المجموع:', style: AppTextStyles.bodyBold(context)),
                 )), // customer
                 SizedBox(width: 110.w), // method
                 SizedBox(width: 110.w), // payment_status
-                SizedBox(width: 120.w, child: _cellPadding(ReusableText(formatMoney(totalAmount), style: AppTextStyles.bodyBold(context)), true)),
-                SizedBox(width: 120.w, child: _cellPadding(ReusableText(formatMoney(totalDue), style: AppTextStyles.bodyBold(context)), true)),
+                SizedBox(width: 120.w, child: _cellPadding(AppText(formatMoney(totalAmount), style: AppTextStyles.bodyBold(context)), true)),
+                SizedBox(width: 120.w, child: _cellPadding(AppText(formatMoney(totalDue), style: AppTextStyles.bodyBold(context)), true)),
                 SizedBox(width: 150.w), // date
               ],
             ),
@@ -433,18 +433,18 @@ class _SalesListViewState extends State<SalesListView> {
               ),
             ),
             SizedBox(height: 16.h),
-            ReusableText(
+            AppText(
               SalesStrings.noSalesInvoices,
               style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.textPrimaryOf(context)),
             ),
             SizedBox(height: 6.h),
-            ReusableText(
+            AppText(
               SalesStrings.emptySalesSubtitle,
               textAlign: TextAlign.center,
               style: AppTextStyles.caption(context).copyWith(color: AppColors.textSecondaryOf(context)),
             ),
             SizedBox(height: 20.h),
-            ReusableButton(
+            AppButton(
               text: SalesStrings.posTitle,
               prefixIcon: Icons.add_shopping_cart_rounded,
               onPressed: () => context.go(Routes.SALES_POS),
@@ -472,7 +472,7 @@ class _SalesListViewState extends State<SalesListView> {
       padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 4.w),
       child: Row(
         children: [
-          ReusableText(SalesStrings.showEntries, style: AppTextStyles.caption(context).copyWith(color: AppColors.textSecondaryOf(context))),
+          AppText(SalesStrings.showEntries, style: AppTextStyles.caption(context).copyWith(color: AppColors.textSecondaryOf(context))),
           SizedBox(width: 8.w),
           _rowsPerPageDropdown(),
           const Spacer(),
@@ -483,7 +483,7 @@ class _SalesListViewState extends State<SalesListView> {
           SizedBox(width: 14.w),
           SizedBox(
             width: 240.w,
-            child: ReusableInput(
+            child: AppInput(
               hint: SalesStrings.searchSalesInvoicesHint,
               prefixIcon: const Icon(Icons.search_rounded),
               onChanged: (query) => bloc.add(FilterSalesQuery(query)),
@@ -503,7 +503,7 @@ class _SalesListViewState extends State<SalesListView> {
       ),
       child: DropdownButton<int>(
         value: 25,
-        items: [25, 50, 100].map((e) => DropdownMenuItem(value: e, child: ReusableText('$e'))).toList(),
+        items: [25, 50, 100].map((e) => DropdownMenuItem(value: e, child: AppText('$e'))).toList(),
         onChanged: (v) {},
         underline: const SizedBox(),
         isDense: true,
@@ -514,7 +514,7 @@ class _SalesListViewState extends State<SalesListView> {
   Widget _toolbarButton(IconData icon, String label) {
     return Padding(
       padding: EdgeInsetsDirectional.only(start: 6.w),
-      child: ReusableButton(
+      child: AppButton(
         text: label,
         prefixIcon: icon,
         type: ButtonType.outlined,
@@ -531,7 +531,7 @@ class _SalesListViewState extends State<SalesListView> {
         children: [
           Icon(icon, size: AppIconSize.md.value, color: color ?? Colors.grey.shade700),
           SizedBox(width: 10.w),
-          ReusableText(
+          AppText(
             label, 
             style: AppTextStyles.caption(context).copyWith(
               color: color ?? Colors.black87,
@@ -546,17 +546,17 @@ class _SalesListViewState extends State<SalesListView> {
   void _confirmVoidSale(BuildContext context, SaleInvoiceModel sale) {
     showDialog(
       context: context,
-      builder: (ctx) => ReusableDialog(
+      builder: (ctx) => AppDialog(
         title: SalesStrings.voidInvoice,
         headerIcon: const Icon(Icons.warning_amber_rounded, color: Colors.white),
         headerIconColor: AppColors.error,
         children: [
-          ReusableText(
+          AppText(
             '${SalesStrings.voidInvoiceConfirmPrefix}${sale.id.substring(0, 6).toUpperCase()}؟',
             style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 8.h),
-          ReusableText(
+          AppText(
             SalesStrings.voidInvoiceWarning,
             style: AppTextStyles.caption(context).copyWith(color: AppColors.textSecondaryOf(context)),
           ),
@@ -564,13 +564,13 @@ class _SalesListViewState extends State<SalesListView> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              ReusableButton(
+              AppButton(
                 text: SalesStrings.back,
                 type: ButtonType.outlined,
                 onPressed: () => Navigator.pop(ctx),
               ),
               SizedBox(width: 10.w),
-              ReusableButton(
+              AppButton(
                 text: SalesStrings.voidInvoice,
                 color: AppColors.error,
                 onPressed: () {
@@ -622,7 +622,7 @@ class _MetricCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ReusableText(
+                  AppText(
                     title,
                     style: AppTextStyles.caption(context).copyWith(
                       color: AppColors.textSecondaryOf(context),
@@ -631,7 +631,7 @@ class _MetricCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(height: 2.h),
-                  ReusableText(
+                  AppText(
                     value,
                     style: AppTextStyles.body(context).copyWith(
                       fontWeight: FontWeight.bold,

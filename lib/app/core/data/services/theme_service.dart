@@ -45,7 +45,7 @@ class ThemeService extends ChangeNotifier {
       ).platform == TargetPlatform.windows ||
           Theme.of(
             WidgetsBinding.instance.rootElement!,
-          ).platform == TargetPlatform.macos ||
+          ).platform == TargetPlatform.macOS ||
           Theme.of(
             WidgetsBinding.instance.rootElement!,
           ).platform == TargetPlatform.linux;

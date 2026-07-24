@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
-class ReusableTableHeader<T> extends StatelessWidget {
-  final List<ReusableTableColumn<T>> columns;
+class AppTableHeader<T> extends StatelessWidget {
+  final List<AppTableColumn<T>> columns;
   final String? sortColumnId;
   final bool isSortAscending;
   final ValueChanged<String>? onSort;

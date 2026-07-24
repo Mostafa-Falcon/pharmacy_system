@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../bloc/pos_bloc.dart';
@@ -24,7 +24,7 @@ class PosCartPanel extends StatelessWidget {
                 children: [
                   Icon(Icons.shopping_cart_outlined, size: 48.sp, color: scheme.onSurfaceVariant),
                   SizedBox(height: 12.h),
-                  ReusableText(SalesStrings.posCartEmpty, style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 14.sp)),
+                  AppText(SalesStrings.posCartEmpty, style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 14.sp)),
                 ],
               ),
             ),

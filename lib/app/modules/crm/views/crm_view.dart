@@ -41,9 +41,9 @@ class _CrmBody extends StatelessWidget {
               return const LoadingIndicator();
             }
             if (state.status == CrmStatus.error) {
-              return ReusableStateView(
+              return AppStateView(
                 message: state.error ?? CrmStrings.crmError,
-                action: ReusableButton(
+                action: AppButton(
                   text: GeneralStrings.refresh,
                   onPressed: () => context.read<CrmBloc>().add(const LoadCrmLeads()),
                 ),
@@ -86,14 +86,14 @@ class _CrmBody extends StatelessWidget {
   Widget _buildToolbar(BuildContext context, CrmState state) {
     return Row(
       children: [
-        ReusableButton(
+        AppButton(
           text: CrmStrings.crmAddLead,
           prefixIcon: Icons.person_add_rounded,
           onPressed: () => _showLeadDialog(context),
         ),
         SizedBox(width: AppSpacing.md.w),
         Expanded(
-          child: ReusableInput(
+          child: AppInput(
             hint: CrmStrings.crmSearchHint,
             prefixIcon: const Icon(Icons.search_rounded, size: 20),
             showClearButton: true,
@@ -110,7 +110,7 @@ class _CrmBody extends StatelessWidget {
     final bloc = context.read<CrmBloc>();
     final items = state.filteredLeads;
     if (items.isEmpty) {
-      return const EmptyState(
+      return const AppStateView.empty(
         icon: Icons.people_outline_rounded,
         title: CrmStrings.crmEmpty,
         subtitle: CrmStrings.crmEmptySubtitle,
@@ -118,7 +118,7 @@ class _CrmBody extends StatelessWidget {
     }
 
     final columns = [
-      ReusableTableColumn<CrmLeadModel>(
+      AppTableColumn<CrmLeadModel>(
         id: 'name',
         title: 'العميل المتوقع',
         flex: 2,
@@ -130,19 +130,19 @@ class _CrmBody extends StatelessWidget {
           iconColor: _statusColor(l.status),
         ),
       ),
-      ReusableTableColumn<CrmLeadModel>(
+      AppTableColumn<CrmLeadModel>(
         id: 'contact',
         title: 'الاتصال',
         width: 180.w,
         textBuilder: (l) => l.phone ?? l.email ?? '—',
       ),
-      ReusableTableColumn<CrmLeadModel>(
+      AppTableColumn<CrmLeadModel>(
         id: 'status',
         title: 'الحالة',
         width: 130.w,
         cellBuilder: (l) => StatusBadge(label: _statusLabel(l.status), color: _statusColor(l.status)),
       ),
-      ReusableTableColumn<CrmLeadModel>(
+      AppTableColumn<CrmLeadModel>(
         id: 'date',
         title: 'تاريخ الإضافة',
         width: 140.w,
@@ -150,7 +150,7 @@ class _CrmBody extends StatelessWidget {
       ),
     ];
 
-    return ReusableTable<CrmLeadModel>(
+    return AppTable<CrmLeadModel>(
       columns: columns,
       items: items,
       itemLabel: 'عميل محتمل',
@@ -168,9 +168,9 @@ class _CrmBody extends StatelessWidget {
         },
         menuItems: [
           for (final s in CrmLeadStatus.values.where((s) => s != l.status))
-            PopupMenuItem<String>(value: 'status:${s.name}', child: ReusableText('نقل إلى: ${_statusLabel(s)}')),
-          const PopupMenuItem(value: 'edit', child: ReusableText(AdminStrings.editData)),
-          PopupMenuItem(value: 'followup', child: ReusableText(CrmStrings.crmAddFollowUp)),
+            PopupMenuItem<String>(value: 'status:${s.name}', child: AppText('نقل إلى: ${_statusLabel(s)}')),
+          const PopupMenuItem(value: 'edit', child: AppText(AdminStrings.editData)),
+          PopupMenuItem(value: 'followup', child: AppText(CrmStrings.crmAddFollowUp)),
         ],
       ),
     );
@@ -203,18 +203,18 @@ class _CrmBody extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (context) => ReusableDialog(
+      builder: (context) => AppDialog(
         title: isEditing ? CrmStrings.crmEditDialog : CrmStrings.crmAddDialog,
         headerIcon: Icon(isEditing ? Icons.edit_rounded : Icons.person_add_rounded),
         children: [
-          ReusableInput(
+          AppInput(
             controller: nameCtrl,
             label: CrmStrings.crmNameLabel,
             hint: CrmStrings.crmNameHint,
             textDirection: TextDirection.rtl,
           ),
           SizedBox(height: AppSpacing.sm.h),
-          ReusableInput(
+          AppInput(
             controller: phoneCtrl,
             label: CrmStrings.crmPhone,
             hint: CrmStrings.crmPhoneHint,
@@ -222,16 +222,16 @@ class _CrmBody extends StatelessWidget {
             textDirection: TextDirection.rtl,
           ),
           SizedBox(height: AppSpacing.sm.h),
-          ReusableInput.email(controller: emailCtrl, label: AuthStrings.emailLabel),
+          AppInput.email(controller: emailCtrl, label: AuthStrings.emailLabel),
           SizedBox(height: AppSpacing.sm.h),
-          ReusableInput(
+          AppInput(
             controller: sourceCtrl,
             label: CrmStrings.crmSource,
             hint: CrmStrings.crmSourceHint,
             textDirection: TextDirection.rtl,
           ),
           SizedBox(height: AppSpacing.sm.h),
-          ReusableInput(
+          AppInput(
             controller: notesCtrl,
             label: CrmStrings.crmAdditionalNotes,
             maxLines: 3,
@@ -284,18 +284,18 @@ class _CrmBody extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (context) => ReusableDialog(
+      builder: (context) => AppDialog(
         title: CrmStrings.crmFollowUpTitleFormat.replaceAll('%s', lead.name),
         headerIcon: const Icon(Icons.follow_the_signs_rounded),
         children: [
-          ReusableInput(
+          AppInput(
             controller: dateCtrl,
             label: CrmStrings.crmFollowUpDate,
             hint: CrmStrings.dueDateHint,
             prefixIcon: const Icon(Icons.calendar_today_rounded, size: 18),
           ),
           SizedBox(height: AppSpacing.sm.h),
-          ReusableInput(
+          AppInput(
             controller: notesCtrl,
             label: CrmStrings.crmFollowUpNotes,
             hint: CrmStrings.crmFollowUpHint,

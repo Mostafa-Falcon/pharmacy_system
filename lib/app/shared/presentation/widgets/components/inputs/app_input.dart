@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 
-class ReusableInput extends StatefulWidget {
+class AppInput extends StatefulWidget {
   final String? label;
   final String? hint;
   final String? error;
@@ -36,7 +36,7 @@ class ReusableInput extends StatefulWidget {
   final TextAlign textAlign;
   final bool alignLabelWithHint;
 
-  const ReusableInput({
+  const AppInput({
     super.key,
     this.label,
     this.hint,
@@ -70,7 +70,7 @@ class ReusableInput extends StatefulWidget {
     this.alignLabelWithHint = false,
   });
 
-  const ReusableInput.text({
+  const AppInput.text({
     super.key,
     this.label,
     this.hint,
@@ -104,7 +104,7 @@ class ReusableInput extends StatefulWidget {
         obscureText = false,
         textInputAction = textInputAction ?? TextInputAction.next;
 
-  const ReusableInput.email({
+  const AppInput.email({
     super.key,
     this.label,
     this.hint,
@@ -138,7 +138,7 @@ class ReusableInput extends StatefulWidget {
         obscureText = false,
         textInputAction = textInputAction ?? TextInputAction.next;
 
-  const ReusableInput.password({
+  const AppInput.password({
     super.key,
     this.label,
     this.hint,
@@ -173,10 +173,10 @@ class ReusableInput extends StatefulWidget {
         textInputAction = textInputAction ?? TextInputAction.next;
 
   @override
-  State<ReusableInput> createState() => _ReusableInputState();
+  State<AppInput> createState() => _AppInputState();
 }
 
-class _ReusableInputState extends State<ReusableInput> {
+class _AppInputState extends State<AppInput> {
   late bool _obscure;
   TextEditingController? _internalController;
   late FocusNode _effectiveFocusNode;

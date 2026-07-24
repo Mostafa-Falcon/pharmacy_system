@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -37,9 +37,9 @@ class _CustomerGroupsBody extends StatelessWidget {
         if (state.isFailure) {
           return HomeShell(
             title: 'مجموعات العملاء',
-            child: ReusableStateView(
+            child: AppStateView(
               message: state.error ?? 'خطأ في تحميل المجموعات',
-              action: ReusableButton(
+              action: AppButton(
                 text: 'إعادة المحاولة',
                 onPressed: () => context
                     .read<CustomerGroupsBloc>()
@@ -54,7 +54,7 @@ class _CustomerGroupsBody extends StatelessWidget {
         return StandardModuleLayout(
           title: 'مجموعات العملاء',
           actions: [
-            ReusableButton(
+            AppButton(
               text: 'إضافة مجموعة',
               prefixIcon: Icons.add_rounded,
               onPressed: () => _showGroupDialog(context),
@@ -93,7 +93,7 @@ class _CustomerGroupsBody extends StatelessWidget {
 
   Widget _buildContent(BuildContext context, List<CustomerGroupModel> items) {
     if (items.isEmpty) {
-      return EmptyState(
+      return AppStateView.empty(
         icon: Icons.group_work_outlined,
         title: 'لا يوجد مجموعات عملاء',
         subtitle: 'ابدأ بإضافة أول مجموعة لتنظيم عملائك وتطبيق خصومات تلقائية.',
@@ -173,7 +173,7 @@ class _CustomerGroupsBody extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (context) => ReusableDialog(
+      builder: (context) => AppDialog(
         title: isEditing ? 'تعديل مجموعة' : 'إضافة مجموعة جديدة',
         children: [
           ReusableInput.text(
@@ -182,7 +182,7 @@ class _CustomerGroupsBody extends StatelessWidget {
             textDirection: TextDirection.rtl,
           ),
           SizedBox(height: AppSpacing.sm.h),
-          ReusableInput(
+          AppInput(
             controller: discountCtrl,
             label: 'نسبة الخصم %',
             keyboardType: TextInputType.number,

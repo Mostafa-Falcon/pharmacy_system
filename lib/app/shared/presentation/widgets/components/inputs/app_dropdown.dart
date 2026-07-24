@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 
-class ReusableDropdown<T> extends StatefulWidget {
+class AppDropdown<T> extends StatefulWidget {
   final String? labelText;
   final String hintText;
   final List<T> items;
@@ -15,7 +15,7 @@ class ReusableDropdown<T> extends StatefulWidget {
   final IconData? prefixIcon;
   final bool isCompact;
 
-  const ReusableDropdown({
+  const AppDropdown({
     super.key,
     this.labelText,
     required this.hintText,
@@ -30,17 +30,17 @@ class ReusableDropdown<T> extends StatefulWidget {
   });
 
   @override
-  State<ReusableDropdown<T>> createState() => _ReusableDropdownState<T>();
+  State<AppDropdown<T>> createState() => _AppDropdownState<T>();
 }
 
-class _ReusableDropdownState<T> extends State<ReusableDropdown<T>> {
+class _AppDropdownState<T> extends State<AppDropdown<T>> {
   final MenuController _menuController = MenuController();
   final GlobalKey<FormFieldState<T>> _fieldKey = GlobalKey<FormFieldState<T>>();
   bool _isMenuOpen = false;
   bool _isHovered = false;
 
   @override
-  void didUpdateWidget(covariant ReusableDropdown<T> oldWidget) {
+  void didUpdateWidget(covariant AppDropdown<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.value != widget.value &&
         _fieldKey.currentState?.value != widget.value) {

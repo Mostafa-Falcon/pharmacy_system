@@ -89,27 +89,27 @@ class _MedicinesListViewState extends State<MedicinesListView> {
 
   List<Widget> _buildHeaderActions(BuildContext context, MedicinesState state) {
     return [
-      ReusableButton(
+      AppButton(
         text: InventoryStrings.addMedicine,
         prefixIcon: Icons.add_rounded,
         onPressed: () => context.push(Routes.INVENTORY_ADD),
       ),
       SizedBox(width: 8.w),
-      ReusableButton(
+      AppButton(
         text: InventoryStrings.importExcel,
         type: ButtonType.tonal,
         prefixIcon: Icons.file_upload_rounded,
         onPressed: () => context.push(Routes.INVENTORY_IMPORT),
       ),
       SizedBox(width: 8.w),
-      ReusableButton(
+      AppButton(
         text: InventoryStrings.importExcelProducts,
         type: ButtonType.tonal,
         prefixIcon: Icons.inventory_2_rounded,
         onPressed: () => context.push(Routes.INVENTORY_IMPORT_PRODUCTS),
       ),
       SizedBox(width: 8.w),
-      ReusableButton(
+      AppButton(
         text: InventoryStrings.deleteAllMedicines,
         type: ButtonType.outlined,
         color: AppColors.error,
@@ -128,18 +128,18 @@ class _MedicinesListViewState extends State<MedicinesListView> {
           color: Theme.of(context).colorScheme.error,
           size: AppIconSize.xl.value,
         ),
-        title: ReusableText(
+        title: AppText(
           InventoryStrings.confirmDeleteAllTitle,
           style: AppTextStyles.title(context),
         ),
-        content: ReusableText(
+        content: AppText(
           InventoryStrings.confirmDeleteAllMessage.replaceAll('%s', '${state.totalCount}'),
           style: AppTextStyles.body(context),
         ),
         actions: [
           TextButton(
             onPressed: () => ctx.pop(),
-            child: ReusableText(GeneralStrings.cancel),
+            child: AppText(GeneralStrings.cancel),
           ),
           FilledButton(
             onPressed: () {
@@ -149,7 +149,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: ReusableText(
+            child: AppText(
               InventoryStrings.deleteAllMedicines,
               style: AppTextStyles.body(context).copyWith(
                 color: Theme.of(context).colorScheme.onError,
@@ -265,7 +265,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
     final f = NumberFormat('#,##0.##');
 
     final columns = [
-      ReusableTableColumn<MedicineModel>(
+      AppTableColumn<MedicineModel>(
         id: 'name',
         title: GeneralStrings.name,
         flex: 4,
@@ -290,7 +290,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ReusableText(
+                  AppText(
                     m.name,
                     style: AppTextStyles.bodyBold(context).copyWith(fontSize: 13.sp),
                     maxLines: 1,
@@ -310,7 +310,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
           ],
         ),
       ),
-      ReusableTableColumn<MedicineModel>(
+      AppTableColumn<MedicineModel>(
         id: 'barcode',
         title: InventoryStrings.barcodeLabel,
         flex: 2,
@@ -326,7 +326,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
             barcode = unitWithBarcode?.barcode;
           }
 
-          return ReusableText(
+          return AppText(
             barcode ?? '—',
             style: AppTextStyles.caption(context).copyWith(
               fontWeight: FontWeight.w600,
@@ -335,24 +335,24 @@ class _MedicinesListViewState extends State<MedicinesListView> {
           );
         },
       ),
-      ReusableTableColumn<MedicineModel>(
+      AppTableColumn<MedicineModel>(
         id: 'category',
         title: InventoryStrings.displayCategory,
         flex: 2,
         isSortable: true,
         textBuilder: (m) => m.category ?? '—',
       ),
-      ReusableTableColumn<MedicineModel>(
+      AppTableColumn<MedicineModel>(
         id: 'location',
         title: InventoryStrings.storageLocation,
         flex: 2,
         isSortable: true,
-        cellBuilder: (m) => ReusableText(
+        cellBuilder: (m) => AppText(
           m.location ?? '—',
           style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w500),
         ),
       ),
-      ReusableTableColumn<MedicineModel>(
+      AppTableColumn<MedicineModel>(
         id: 'quantity',
         title: SalesStrings.quantityLabel,
         flex: 3,
@@ -369,7 +369,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
               color: color.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(6.r),
             ),
-            child: ReusableText(
+            child: AppText(
               m.formattedQuantity,
               style: AppTextStyles.bodyBold(context).copyWith(
                 color: color,
@@ -379,7 +379,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
           );
         },
       ),
-      ReusableTableColumn<MedicineModel>(
+      AppTableColumn<MedicineModel>(
         id: 'sellPrice',
         title: InventoryStrings.sellPriceLabel,
         flex: 2,
@@ -387,13 +387,13 @@ class _MedicinesListViewState extends State<MedicinesListView> {
         isNumeric: true,
         textBuilder: (m) => '${f.format(m.sellPrice)} ${GeneralStrings.currency}',
       ),
-      ReusableTableColumn<MedicineModel>(
+      AppTableColumn<MedicineModel>(
         id: 'expiry',
         title: InventoryStrings.currentExpiryDate,
         flex: 2,
         isSortable: true,
         cellBuilder: (m) {
-          if (m.expiryDate == null) return const ReusableText('—');
+          if (m.expiryDate == null) return const AppText('—');
           final now = DateTime.now();
           final isExpired = m.expiryDate!.isBefore(now);
           final isExpiring = m.expiryDate!.isBefore(
@@ -407,7 +407,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
               color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(4.r),
             ),
-            child: ReusableText(
+            child: AppText(
               DateFormat('yyyy/MM').format(m.expiryDate!),
               style: AppTextStyles.caption(context).copyWith(
                 color: color,
@@ -421,7 +421,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
     ];
 
     if (state.allMedicines.isEmpty && !state.dataState.isLoading) {
-      return const EmptyState(
+      return const AppStateView.empty(
         icon: Icons.medication_liquid_rounded,
         title: InventoryStrings.emptyInventoryTitle,
         subtitle: InventoryStrings.emptyInventorySubtitle,
@@ -430,7 +430,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
 
     final scheme = Theme.of(context).colorScheme;
 
-    return ReusableTable<MedicineModel>(
+    return AppTable<MedicineModel>(
       columns: columns,
       items: state.pagedMedicines,
       isLoading: state.dataState.isLoading,
@@ -455,7 +455,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
       onSelectRow: (id) => bloc.add(ToggleSelectRow(id)),
       onToggleAll: (selectAll) => bloc.add(ToggleSelectAll(selectAll)),
       bulkActions: [
-        ReusableButton(
+        AppButton(
           text: GeneralStrings.delete,
           type: ButtonType.outlined,
           color: AppColors.error,
@@ -469,18 +469,18 @@ class _MedicinesListViewState extends State<MedicinesListView> {
                   color: Theme.of(context).colorScheme.error,
                   size: AppIconSize.xl.value,
                 ),
-                title: ReusableText(
+                title: AppText(
                   InventoryStrings.confirmDeleteSelectedTitle,
                   style: AppTextStyles.title(context),
                 ),
-                content: ReusableText(
+                content: AppText(
                   InventoryStrings.confirmDeleteSelectedMessage.replaceAll('%s', '${state.selectedIds.length}'),
                   style: AppTextStyles.body(context),
                 ),
                 actions: [
                   TextButton(
                     onPressed: () => ctx.pop(),
-                    child: ReusableText(GeneralStrings.cancel),
+                    child: AppText(GeneralStrings.cancel),
                   ),
                   FilledButton(
                     onPressed: () {
@@ -490,7 +490,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
                     style: FilledButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.error,
                     ),
-                    child: ReusableText(
+                    child: AppText(
                       GeneralStrings.delete,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onError,
@@ -502,7 +502,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
             );
           },
         ),
-        ReusableButton(
+        AppButton(
           text: InventoryStrings.editPrice,
           type: ButtonType.outlined,
           prefixIcon: Icons.price_change_rounded,
@@ -527,8 +527,8 @@ class _MedicinesListViewState extends State<MedicinesListView> {
           }
         },
         itemBuilder: (_) => [
-          const PopupMenuItem(value: 'edit', child: ReusableText(GeneralStrings.edit)),
-          const PopupMenuItem(value: 'delete', child: ReusableText(GeneralStrings.delete, color: AppColors.error)),
+          const PopupMenuItem(value: 'edit', child: AppText(GeneralStrings.edit)),
+          const PopupMenuItem(value: 'delete', child: AppText(GeneralStrings.delete, color: AppColors.error)),
         ],
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
@@ -540,7 +540,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ReusableText(
+              AppText(
                 SalesStrings.options,
                 style: AppTextStyles.caption(context).copyWith(
                   fontWeight: FontWeight.bold,

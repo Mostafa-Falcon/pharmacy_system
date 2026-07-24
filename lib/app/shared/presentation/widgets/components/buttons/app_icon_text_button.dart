@@ -8,7 +8,7 @@ import 'package:pharmacy_system/app/shared/ui_core.dart';
 ///
 /// الكلاس استُخرج من [_mobileBtn] في [MobileCartTab] لتوحيد الشكل والـ
 /// disabled-state والـ semantic color عبر المنظومة.
-class ReusableIconTextButton extends StatelessWidget {
+class AppIconTextButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color color;
@@ -18,7 +18,7 @@ class ReusableIconTextButton extends StatelessWidget {
   final double iconSize;
   final double fontSize;
 
-  const ReusableIconTextButton({
+  const AppIconTextButton({
     super.key,
     required this.icon,
     required this.label,
@@ -70,14 +70,14 @@ class ReusableIconTextButton extends StatelessWidget {
 
 /// تبويب تنقّل سفلي (BottomNavigationBar item) بأيقونة ونص — مستخرج من
 /// [_navTab] في [MobileLayout] لتوحيد حالة التحديد (selected) عبر الشاشات.
-class ReusableNavTab extends StatelessWidget {
+class AppNavTab extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool isSelected;
   final VoidCallback? onTap;
   final Color? selectedColor;
 
-  const ReusableNavTab({
+  const AppNavTab({
     super.key,
     required this.icon,
     required this.label,

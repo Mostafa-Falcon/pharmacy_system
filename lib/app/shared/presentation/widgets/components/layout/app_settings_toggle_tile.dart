@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 
-import '../display/app_text.dart';
 
 /// صف إعداد موحّد بمفتاح تبديل (Switch) + أيقونة + عنوان + وصف.
 /// يدعم التنسيق الشفاف العادي (للأجهزة والقوائم المتتالية) والتنسيق المعلب Boxed (كبطاقة منفصلة).
@@ -60,7 +59,7 @@ class SettingsToggleTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                ReusableText(
+                AppText(
                   title,
                   style: AppTextStyles.body(context).copyWith(
                     fontWeight: FontWeight.bold,
@@ -71,7 +70,7 @@ class SettingsToggleTile extends StatelessWidget {
                 ),
                 if (subtitle != null && subtitle!.trim().isNotEmpty) ...[
                   SizedBox(height: 2.h),
-                  ReusableText(
+                  AppText(
                     subtitle!,
                     style: AppTextStyles.caption(context).copyWith(
                       color: enabled

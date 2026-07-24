@@ -1,4 +1,4 @@
-// views/user_profile_view.dart
+ï»¿// views/user_profile_view.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
@@ -71,7 +71,7 @@ class UserProfileView extends StatelessWidget {
             child: Icon(Icons.person_rounded, size: AppIconSize.xxl.value, color: Colors.white),
           ),
           SizedBox(height: AppSpacing.md.h),
-          ReusableText(
+          AppText(
             user?.name ?? HomeStrings.mainPageActiveUser,
             style: AppTextStyles.title(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.textPrimaryOf(context)),
             maxLines: 1,
@@ -84,7 +84,7 @@ class UserProfileView extends StatelessWidget {
               color: scheme.primary.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(AppRadius.pill.r),
             ),
-            child: ReusableText(
+            child: AppText(
               user?.role == UserRole.owner ? AdminStrings.roleSupervisor : AdminStrings.roleShiftPharmacist,
               style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold, color: scheme.primary),
             ),
@@ -136,9 +136,9 @@ class UserProfileView extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsetsDirectional.only(start: 6.w, bottom: 8.h),
-          child: ReusableText(title, style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.textSecondaryOf(context))),
+          child: AppText(title, style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.textSecondaryOf(context))),
         ),
-        SectionCard(padding: EdgeInsets.zero, children: children),
+        AppCard.section(padding: EdgeInsets.zero, children: children),
       ],
     );
   }
@@ -150,13 +150,13 @@ class UserProfileView extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (context) => ReusableDialog(
+      builder: (context) => AppDialog(
         title: AdminStrings.profileEditDialog,
         headerIcon: Icon(Icons.edit_rounded, color: scheme.primary),
         children: [
           ConstrainedBox(
             constraints: BoxConstraints(maxWidth: 340.w),
-            child: ReusableInput(
+            child: AppInput(
               label: AdminStrings.profileEditName,
               controller: nameController,
               prefixIcon: const Icon(Icons.person_outline_rounded),
@@ -192,7 +192,7 @@ class UserProfileView extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (context) => ReusableDialog(
+      builder: (context) => AppDialog(
         title: AdminStrings.profileChangePasswordDialog,
         headerIcon: Icon(Icons.security_rounded, color: scheme.primary),
         children: [
@@ -201,19 +201,19 @@ class UserProfileView extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                ReusableInput.password(
+                AppInput.password(
                   label: AdminStrings.profileCurrentPassword,
                   controller: currentPasswordController,
                   prefixIcon: const Icon(Icons.lock_outline_rounded),
                 ),
                 SizedBox(height: AppSpacing.md.h),
-                ReusableInput.password(
+                AppInput.password(
                   label: AdminStrings.profileNewPassword,
                   controller: newPasswordController,
                   prefixIcon: const Icon(Icons.add_moderator_rounded),
                 ),
                 SizedBox(height: AppSpacing.md.h),
-                ReusableInput.password(
+                AppInput.password(
                   label: AdminStrings.profileConfirmPassword,
                   controller: confirmPasswordController,
                   prefixIcon: const Icon(Icons.gpp_good_outlined),
@@ -263,9 +263,9 @@ class _ProfileField extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ReusableText(label, style: AppTextStyles.caption(context).copyWith(color: AppColors.textSecondaryOf(context))),
+                AppText(label, style: AppTextStyles.caption(context).copyWith(color: AppColors.textSecondaryOf(context))),
                 SizedBox(height: 2.h),
-                ReusableText(value, style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.textPrimaryOf(context))),
+                AppText(value, style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.textPrimaryOf(context))),
               ],
             ),
           ),
@@ -303,13 +303,13 @@ class _DeviceStatusTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ReusableText(
+                AppText(
                   AdminStrings.deviceAccountOpen,
                   style: AppTextStyles.caption(context).copyWith(color: AppColors.textSecondaryOf(context)),
                 ),
                 SizedBox(height: 2.h),
-                ReusableText(
-                  '?????? ??????: ${currentDeviceId != null ? currentDeviceId!.substring(0, 8) : '??? ?????'}…',
+                AppText(
+                  '?????? ??????: ${currentDeviceId != null ? currentDeviceId!.substring(0, 8) : '??? ?????'}ï¿½',
                   style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.textPrimaryOf(context)),
                 ),
               ],
@@ -341,7 +341,7 @@ class _MultiDeviceInfoTile extends StatelessWidget {
           ),
           SizedBox(width: AppSpacing.md.w),
           Expanded(
-            child: ReusableText(
+            child: AppText(
               AdminStrings.multiDeviceInfo,
               style: AppTextStyles.body(context).copyWith(color: AppColors.textSecondaryOf(context)),
             ),
@@ -375,7 +375,7 @@ class _ActionTile extends StatelessWidget {
               ),
               SizedBox(width: AppSpacing.md.w),
                 Expanded(
-                  child: ReusableText(title, style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.textPrimaryOf(context))),
+                  child: AppText(title, style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.textPrimaryOf(context))),
                 ),
                 Icon(Icons.chevron_left_rounded, size: AppIconSize.md.value, color: AppColors.textSecondaryOf(context).withValues(alpha: 0.6)),
             ],

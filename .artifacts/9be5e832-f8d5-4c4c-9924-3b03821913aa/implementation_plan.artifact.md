@@ -1,46 +1,55 @@
-# تنظيم موديول Shared وإزالة التكرارات
+# تنظيم موديول Shared لزيادة القابلية للاستخدام (Reusability) والاتساق
 
-الهدف هو تنظيف مجلد `lib/app/shared` من الملفات المكررة وتوحيد الهيكلية لضمان سهولة الوصول والصيانة، مع الالتزام بمعايير "الصقر".
+الهدف هو توحيد التسميات، تقليل الاعتماد على الـ Wrappers القديمة، وتحويل الـ Layouts الضخمة إلى مكونات أصغر قابلة للتركيب (Composable Components).
 
 ## User Review Required
 
 > [!IMPORTANT]
-> سيتم إعادة تسمية مجلد `shareds` إلى `layouts` ليكون الاسم معبراً عن محتواه (AppScaffold, Sidebar, ModuleLayouts).
+> سيتم تغيير أسماء الكلاسات من `Reusable*` إلى `App*` (مثل `ReusableButton` -> `AppButton`) لتوحيد الهوية البرمجية للمشروع. هذا التغيير سيؤثر على أغلب ملفات المشروع.
 
-> [!WARNING]
-> سيتم حذف الملفات التالية لأنها نسخ مكررة تماماً من ملفات أخرى:
-> - `shared_module_layout.dart` (مكرر لـ `standard_module_layout.dart`)
-> - `shared_form_layout.dart` (مكرر لـ `standard_form_layout.dart`)
+> [!NOTE]
+> سيتم تحويل `StandardModuleLayout` ليعتمد على مكونات فرعية مثل `AppPageHeader` و `AppFilterBar` لسهولة استخدامها بشكل منفصل.
 
 ## Proposed Changes
 
-### [Presentation Layer] `lib/app/shared/presentation/widgets`
+### [Naming & Consistency] توحيد التسميات والقطع
 
-سيتم إعادة تنظيم المجلد ليكون أكثر منطقية:
-1. **layouts**: للهياكل الكبيرة (Scaffold, Sidebar, Module Layouts).
-2. **components**: (بدلاً من reusables) للقطع الصغيرة (Buttons, Inputs, Cards).
-3. **blocs**: للـ Blocs المشتركة (كما هي).
+سيتم تحديث كافة المكونات في مجلد `components` لتتبع نمط تسمية واحد:
+- `ReusableButton` -> `AppButton`
+- `ReusableInput` -> `AppInput`
+- `ReusableText` -> `AppText`
+- `ReusableDialog` -> `AppDialog`
+- `ReusableTable` -> `AppTable`
+- `ReusableProgressOverlay` -> `AppProgressOverlay`
 
-#### [DELETE] [shared_module_layout.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/shared/presentation/widgets/shareds/shared_module_layout.dart)
-#### [DELETE] [shared_form_layout.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/shared/presentation/widgets/shareds/shared_form_layout.dart)
+سيتم إزالة الـ Wrappers القديمة واستبدال استخداماتها:
+- `EmptyState` / `ReusableStateView` -> `AppStateView`
+- `FormCard` / `SectionCard` -> `AppCard.form` / `AppCard.section`
 
-#### [MODIFY] [shareds -> layouts](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/shared/presentation/widgets/shareds)
-- نقل كل محتويات `shareds` إلى `layouts`.
-- تحديث الـ `index.dart` والـ `barrel files`.
+### [Decomposition] تفكيك الـ Layouts الضخمة
 
-#### [MODIFY] [reusables -> components](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/shared/presentation/widgets/reusables)
-- إعادة تسمية المجلد ليكون أكثر دقة برمجياً.
+#### [NEW] [app_page_header.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/shared/presentation/widgets/components/layout/app_page_header.dart)
+استخراج منطق الهيدر (العنوان + الأزرار + الإحصائيات) في مكون منفصل تماماً لاستخدامه في الصفحات التي لا تحتاج للـ `StandardModuleLayout` بالكامل.
 
-### [Constants] `lib/app/shared/constants`
+#### [MODIFY] [standard_module_layout.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/shared/presentation/widgets/layouts/standard_module_layout.dart)
+تحديث التخطيط ليعتمد على `AppPageHeader` و `AppProgressOverlay`.
 
-#### [MODIFY] [app_strings.dart](file:///D:/projects/work/project-pharmacy/pharmacy_system/lib/app/shared/constants/strings/app_strings.dart)
-- التأكد من أن كل نصوص النظام تمر من خلاله (barrel file).
+### [Organization] تنظيم مجلد Layouts
+
+سيتم تقسيم المجلد داخلياً:
+- `layouts/core/`: للقطع الأساسية (Scaffold, Sidebar, Navbar).
+- `layouts/templates/`: للقوالب الجاهزة (Module, Form, Auth).
+
+### [Refactoring] نقل المكونات المتفرقة
+
+- نقل `CorrectionChainWidget` إلى `components/tools/`.
+- دمج `sidebar_theme.dart` داخل `app_theme.dart` لتقليل تشتت إعدادات الثيم.
 
 ## Verification Plan
 
 ### Automated Tests
-- تشغيل `flutter analyze` للتأكد من عدم كسر أي مراجع (Imports) بعد النقل والحذف.
+- تشغيل `flutter analyze` بعد كل مرحلة تغيير (الأسماء أولاً، ثم الهيكلة).
 
 ### Manual Verification
-- فتح شاشات موديول `contacts` (مثل الموردين) لأنها تستخدم `StandardModuleLayout` للتأكد من أنها تعمل بشكل صحيح.
-- التأكد من أن الـ `Barrel files` (index.dart) تعمل بشكل سليم.
+- التحقق من عمل شاشة المبيعات (Sales List) والمخازن (Inventory List) لأنهم الأكثر استخداماً للـ Layouts المعدلة.
+- التأكد من أن الـ `AppStateView` يظهر بشكل صحيح في حالة عدم وجود بيانات.

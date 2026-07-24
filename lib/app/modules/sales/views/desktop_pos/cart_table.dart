@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -101,7 +101,7 @@ class _DesktopCartTableState extends State<DesktopCartTable> {
       builder: (context, state) {
         final items = state.cart;
         if (items.isEmpty) {
-          return const EmptyState(
+          return const AppStateView.empty(
             icon: Icons.shopping_cart_outlined,
             title: SalesStrings.cartEmptyTitle,
           );
@@ -120,12 +120,12 @@ class _DesktopCartTableState extends State<DesktopCartTable> {
                 padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 8.w),
                 child: Row(
                   children: [
-                    Expanded(flex: 3, child: ReusableText(SalesStrings.cartTableProduct, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.right)),
-                    Expanded(flex: 2, child: ReusableText(InventoryStrings.barcodeLabel, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
-                    Expanded(flex: 2, child: ReusableText(SalesStrings.cartTableUnit, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
-                    Expanded(flex: 2, child: ReusableText(SalesStrings.cartPrice, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
-                    Expanded(flex: 2, child: ReusableText(SalesStrings.cartQuantity, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
-                    Expanded(flex: 2, child: ReusableText(SalesStrings.cartTotal, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
+                    Expanded(flex: 3, child: AppText(SalesStrings.cartTableProduct, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.right)),
+                    Expanded(flex: 2, child: AppText(InventoryStrings.barcodeLabel, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
+                    Expanded(flex: 2, child: AppText(SalesStrings.cartTableUnit, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
+                    Expanded(flex: 2, child: AppText(SalesStrings.cartPrice, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
+                    Expanded(flex: 2, child: AppText(SalesStrings.cartQuantity, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
+                    Expanded(flex: 2, child: AppText(SalesStrings.cartTotal, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
                     SizedBox(width: 40.w),
                   ],
                 ),
@@ -179,7 +179,7 @@ class _DesktopCartTableState extends State<DesktopCartTable> {
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            ReusableText(
+                                            AppText(
                                               line.medicine.name,
                                               style: AppTextStyles.caption(context).copyWith(
                                                 fontWeight: FontWeight.bold,
@@ -191,7 +191,7 @@ class _DesktopCartTableState extends State<DesktopCartTable> {
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                             if (expiryWarning.isNotEmpty)
-                                              ReusableText(
+                                              AppText(
                                                 expiryWarning,
                                                 style: AppTextStyles.caption(context).copyWith(color: AppColors.warning, fontWeight: FontWeight.w600),
                                               ),
@@ -206,7 +206,7 @@ class _DesktopCartTableState extends State<DesktopCartTable> {
                           ),
                           Expanded(
                             flex: 2,
-                              child: ReusableText(
+                              child: AppText(
                                 line.medicine.barcodes.isNotEmpty ? line.medicine.barcodes.first : '-',
                                 textAlign: TextAlign.center,
                                 style: AppTextStyles.caption(context).copyWith(color: scheme.onSurfaceVariant),
@@ -253,7 +253,7 @@ class _DesktopCartTableState extends State<DesktopCartTable> {
                           ),
                           Expanded(
                             flex: 2,
-                              child: ReusableText(
+                              child: AppText(
                                 line.unitPrice.toStringAsFixed(2),
                                 textAlign: TextAlign.center,
                                 style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w600, color: scheme.onSurface),
@@ -367,7 +367,7 @@ class _DesktopCartTableState extends State<DesktopCartTable> {
                           ),
                           Expanded(
                             flex: 2,
-                            child: ReusableText(
+                            child: AppText(
                               line.lineTotal.toStringAsFixed(2),
                               textAlign: TextAlign.center,
                               style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold, color: scheme.primary),

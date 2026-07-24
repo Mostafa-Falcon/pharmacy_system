@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_system/app/shared/ui_core.dart';
 
-class ReusableItemImage extends StatelessWidget {
+class AppItemImage extends StatelessWidget {
   final String? imageUrl;
   final double size;
   final double? borderRadius;
   final BoxFit fit;
 
-  const ReusableItemImage({
+  const AppItemImage({
     super.key,
     this.imageUrl,
     this.size = 48.0,
@@ -98,7 +98,7 @@ class ReusableItemImage extends StatelessWidget {
         ),
       ),
       child: Image.asset(
-        AppImages.itemPlaceholder,
+        AppAssets.itemPlaceholder,
         width: size.w,
         height: size.w,
         fit: BoxFit.cover,

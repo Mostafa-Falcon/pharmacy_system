@@ -108,7 +108,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
           child: Form(
             key: _formKey,
             child: Center(
-              child: FormCard(
+              child: AppCard.form(
                 maxWidth: 800,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,7 +129,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
                     SizedBox(height: AppSpacing.md.h),
                     _buildOpeningBalanceSection(),
                     SizedBox(height: AppSpacing.lg.h),
-                    ReusableInput(
+                    AppInput(
                       label: CustomersStrings.additionalNotes,
                       controller: notesCtrl,
                       maxLines: 3,
@@ -151,7 +151,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
   Widget _buildPersonalSection() {
     return Column(
       children: [
-        ReusableInput(
+        AppInput(
           label: CrmStrings.partyFullNameLabel,
           controller: nameCtrl,
           textDirection: TextDirection.rtl,
@@ -162,7 +162,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
         Row(
           children: [
             Expanded(
-              child: ReusableInput(
+              child: AppInput(
                 label: GeneralStrings.phone,
                 controller: phoneCtrl,
                 keyboardType: TextInputType.phone,
@@ -172,7 +172,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
             ),
             SizedBox(width: AppSpacing.md.w),
             Expanded(
-              child: ReusableInput(
+              child: AppInput(
                 label: AuthStrings.emailLabel,
                 controller: emailCtrl,
                 keyboardType: TextInputType.emailAddress,
@@ -182,7 +182,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
           ],
         ),
         SizedBox(height: AppSpacing.md.h),
-        ReusableInput(
+        AppInput(
           label: CrmStrings.detailedAddressLabel,
           controller: addressCtrl,
           textDirection: TextDirection.rtl,
@@ -198,7 +198,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
         Row(
           children: [
             Expanded(
-              child: ReusableInput(
+              child: AppInput(
                 label: CrmStrings.companyNameOptional,
                 controller: companyNameCtrl,
                 textDirection: TextDirection.rtl,
@@ -207,7 +207,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
             ),
             SizedBox(width: AppSpacing.md.w),
             Expanded(
-              child: ReusableInput(
+              child: AppInput(
                 label: CustomersStrings.taxIdLabel,
                 controller: taxIdCtrl,
                 textDirection: TextDirection.rtl,
@@ -217,7 +217,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
           ],
         ),
         SizedBox(height: AppSpacing.md.h),
-        ReusableDropdown<int>(
+        AppDropdown<int>(
           labelText: CrmStrings.legalEntityType,
           hintText: CrmStrings.selectEntityTypeHint,
           items: const [0, 1],
@@ -235,7 +235,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
         Row(
           children: [
             Expanded(
-              child: ReusableDropdown<int>(
+              child: AppDropdown<int>(
                 labelText: CrmStrings.defaultInteractionMethod,
                 hintText: CrmStrings.selectInteractionMethodHint,
                 items: const [0, 1],
@@ -246,7 +246,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
             ),
             SizedBox(width: AppSpacing.md.w),
             Expanded(
-              child: ReusableInput(
+              child: AppInput(
                 label: CrmStrings.agreedDiscountPercent,
                 controller: discountPercentCtrl,
                 keyboardType: TextInputType.number,
@@ -259,7 +259,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
         Row(
           children: [
             Expanded(
-              child: ReusableInput(
+              child: AppInput(
                 label: CrmStrings.maximumCreditLimit,
                 controller: creditLimitCtrl,
                 keyboardType: TextInputType.number,
@@ -268,7 +268,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
             ),
             SizedBox(width: AppSpacing.md.w),
             Expanded(
-              child: ReusableInput(
+              child: AppInput(
                 label: CrmStrings.grantedPaymentTermDays,
                 controller: paymentTermDaysCtrl,
                 keyboardType: TextInputType.number,
@@ -293,7 +293,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
         children: [
           Expanded(
             flex: 2,
-            child: ReusableInput(
+            child: AppInput(
               label: CrmStrings.balanceValue,
               controller: openingBalanceCtrl,
               keyboardType: TextInputType.number,
@@ -304,7 +304,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
           SizedBox(width: AppSpacing.md.w),
           Expanded(
             flex: 1,
-            child: ReusableDropdown<bool>(
+            child: AppDropdown<bool>(
               labelText: CustomersStrings.balanceStatusLabel,
               hintText: CrmStrings.balanceStatusHint,
               items: const [true, false],
@@ -322,7 +322,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
     return BlocBuilder<SupplierCustomersBloc, SupplierCustomersState>(
       builder: (context, state) {
         final isSaving = state.status == SupplierCustomersStatus.loading;
-        return ReusableButton(
+        return AppButton(
           text: CrmStrings.savePartyData,
           prefixIcon: Icons.save_rounded,
           isLoading: isSaving,
