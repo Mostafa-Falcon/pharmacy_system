@@ -1,8 +1,8 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:supabase/supabase.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_engine.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_models.dart';
+import 'package:pharmacy_system/app/core/sync/sync_engine.dart';
+import 'package:pharmacy_system/app/core/sync/sync_models.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/sync_dao.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
@@ -16,7 +16,7 @@ class MockConnectivity extends Mock implements Connectivity {}
 
 void main() {
   const supabaseUrl = 'https://vhsngfalnltxnaiabvaa.supabase.co';
-  // المفتاح اللي أنت بعته (Publishable Key)
+  // Ø§Ù„Ù…ÙØªØ§Ø­ Ø§Ù„Ù„ÙŠ Ø£Ù†Øª Ø¨Ø¹ØªÙ‡ (Publishable Key)
   const anonKey = 'sb_publishable_xwoFSQD1HYMGfq1CerDnJQ_9DwWc83f';
   
   late AppDatabase db;
@@ -25,7 +25,7 @@ void main() {
   late SyncEngine syncEngine;
 
   setUpAll(() async {
-    // استخدام الـ Publishable Key للتأكد من وصول الداتا
+    // Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ù€ Publishable Key Ù„Ù„ØªØ£ÙƒØ¯ Ù…Ù† ÙˆØµÙˆÙ„ Ø§Ù„Ø¯Ø§ØªØ§
     adminClient = SupabaseClient(supabaseUrl, anonKey);
     db = AppDatabase(NativeDatabase.memory());
     syncDao = SyncDao(db);
@@ -60,9 +60,9 @@ void main() {
 
     AuthService.currentBranchId = branchId;
 
-    safeDebugPrint('🚀 Starting Ultimate Sync Test...');
+    safeDebugPrint('ðŸš€ Starting Ultimate Sync Test...');
 
-    // 1. تجهيز الفرع (الأساس)
+    // 1. ØªØ¬Ù‡ÙŠØ² Ø§Ù„ÙØ±Ø¹ (Ø§Ù„Ø£Ø³Ø§Ø³)
     safeDebugPrint('Step 1: Queuing Branch...');
     await syncEngine.queueOperation(
       type: SyncOperationType.create,
@@ -71,7 +71,7 @@ void main() {
       branchId: branchId,
     );
 
-    // 2. إضافة العميل (الحساب)
+    // 2. Ø¥Ø¶Ø§ÙØ© Ø§Ù„Ø¹Ù…ÙŠÙ„ (Ø§Ù„Ø­Ø³Ø§Ø¨)
     safeDebugPrint('Step 2: Queuing Customer (Account)...');
     await syncEngine.queueOperation(
       type: SyncOperationType.create,
@@ -80,7 +80,7 @@ void main() {
       branchId: branchId,
     );
 
-    // 3. إضافة الصنف (الدواء)
+    // 3. Ø¥Ø¶Ø§ÙØ© Ø§Ù„ØµÙ†Ù (Ø§Ù„Ø¯ÙˆØ§Ø¡)
     safeDebugPrint('Step 3: Queuing Medicine...');
     await syncEngine.queueOperation(
       type: SyncOperationType.create,
@@ -98,7 +98,7 @@ void main() {
       branchId: branchId,
     );
 
-    // 4. عملية بيع
+    // 4. Ø¹Ù…Ù„ÙŠØ© Ø¨ÙŠØ¹
     safeDebugPrint('Step 4: Queuing Sale Transaction...');
     await syncEngine.queueOperation(
       type: SyncOperationType.create,
@@ -119,7 +119,7 @@ void main() {
       branchId: branchId,
     );
 
-    // 5. عملية شراء
+    // 5. Ø¹Ù…Ù„ÙŠØ© Ø´Ø±Ø§Ø¡
     safeDebugPrint('Step 5: Queuing Purchase Transaction...');
     await syncEngine.queueOperation(
       type: SyncOperationType.create,
@@ -143,7 +143,7 @@ void main() {
     safeDebugPrint('\n--- RUNNING ENTERPRISE BATCH SYNC ---');
     await syncEngine.syncAll();
     
-    // انتظار بسيط لضمان انتهاء معالجة الـ async batches
+    // Ø§Ù†ØªØ¸Ø§Ø± Ø¨Ø³ÙŠØ· Ù„Ø¶Ù…Ø§Ù† Ø§Ù†ØªÙ‡Ø§Ø¡ Ù…Ø¹Ø§Ù„Ø¬Ø© Ø§Ù„Ù€ async batches
     await Future.delayed(const Duration(seconds: 5));
 
     safeDebugPrint('\n--- VERIFYING CLOUD DATA ---');
@@ -160,7 +160,8 @@ void main() {
     expect(saleRes, isNotNull, reason: 'Sale failed to sync');
     expect(purchRes, isNotNull, reason: 'Purchase failed to sync');
 
-    safeDebugPrint('✅ SUCCESS! Full business cycle synced to cloud perfectly.');
+    safeDebugPrint('âœ… SUCCESS! Full business cycle synced to cloud perfectly.');
     safeDebugPrint('Confirmed records in cloud: 1 Branch, 1 Customer, 1 Medicine, 1 Sale, 1 Purchase.');
   });
 }
+

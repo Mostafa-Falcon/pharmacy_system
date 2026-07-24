@@ -9,7 +9,7 @@ import 'pos_nav_drawer.dart';
 import 'desktop_pos/layout.dart';
 import 'mobile_pos/layout.dart';
 import 'open_shift_view.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
 class PosView extends StatelessWidget {
   const PosView({super.key});
@@ -71,3 +71,6 @@ class PosView extends StatelessWidget {
     );
   }
 }
+
+
+

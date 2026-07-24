@@ -102,7 +102,7 @@ class AuthSession {
     if (AuthService._isLoginThrottled()) {
       return {
         'success': false,
-        'message': AppStrings.tooManyAttempts,
+        'message': AuthStrings.tooManyAttempts,
       };
     }
 
@@ -110,7 +110,7 @@ class AuthSession {
       AuthService._startLoginThrottle();
       return {
         'success': false,
-        'message': AppStrings.loginRequiresInternet,
+        'message': AuthStrings.loginRequiresInternet,
       };
     }
 
@@ -125,7 +125,7 @@ class AuthSession {
         AuthService._startLoginThrottle();
         return {
           'success': false,
-          'message': AppStrings.loginInvalidCredentials,
+          'message': AuthStrings.loginInvalidCredentials,
         };
       }
 
@@ -177,19 +177,19 @@ class AuthSession {
       if (_isEmailNotConfirmed(e)) {
         return {
           'success': false,
-          'message': AppStrings.emailNotConfirmed,
+          'message': AuthStrings.emailNotConfirmed,
         };
       }
       return {
         'success': false,
-        'message': AppStrings.loginInvalidCredentials,
+        'message': AuthStrings.loginInvalidCredentials,
       };
     } on FormatException catch (e) {
       AuthService._startLoginThrottle();
       safeDebugPrint('AuthService.login: format error — $e');
       return {
         'success': false,
-        'message': AppStrings.serverUnavailable,
+        'message': AuthStrings.serverUnavailable,
       };
     } catch (e) {
       AuthService._startLoginThrottle();
@@ -204,12 +204,12 @@ class AuthSession {
           msg.contains('503')) {
         return {
           'success': false,
-          'message': AppStrings.serverNotAvailable,
+          'message': AuthStrings.serverNotAvailable,
         };
       }
       return {
         'success': false,
-        'message': AppStrings.loginFailed,
+        'message': AuthStrings.loginFailed,
       };
     }
   }
@@ -226,7 +226,7 @@ class AuthSession {
     if (AuthService._isRegisterThrottled()) {
       return {
         'success': false,
-        'message': AppStrings.tooManyAttempts,
+        'message': AuthStrings.tooManyAttempts,
       };
     }
 
@@ -234,7 +234,7 @@ class AuthSession {
       AuthService._startRegisterThrottle();
       return {
         'success': false,
-        'message': AppStrings.registerRequiresInternet,
+        'message': AuthStrings.registerRequiresInternet,
       };
     }
 
@@ -259,14 +259,14 @@ class AuthSession {
         return {
           'success': true,
           'emailConfirmationRequired': true,
-          'message': AppStrings.emailConfirmationSent,
+          'message': AuthStrings.emailConfirmationSent,
         };
       }
 
       final user = response.user;
       if (user == null) {
         AuthService._startRegisterThrottle();
-        return {'success': false, 'message': AppStrings.errorRegister};
+        return {'success': false, 'message': AuthStrings.errorRegister};
       }
 
       // ننشئ المستخدم محلياً (مؤقتاً من غير فرع) عشان نكمل التدفق.
@@ -329,7 +329,7 @@ class AuthSession {
       if (_isAlreadyRegistered(e)) {
         return {
           'success': false,
-          'message': AppStrings.emailAlreadyRegistered,
+          'message': AuthStrings.emailAlreadyRegistered,
         };
       }
       return {'success': false, 'message': e.message};
@@ -337,7 +337,7 @@ class AuthSession {
       AuthService._startRegisterThrottle();
       return {
         'success': false,
-        'message': AppStrings.serverUnavailable,
+        'message': AuthStrings.serverUnavailable,
       };
     } catch (e) {
       AuthService._startRegisterThrottle();
@@ -358,14 +358,14 @@ class AuthSession {
         if (cached != null) return cached;
         return {
           'success': false,
-          'message': AppStrings.registerDisabled,
+          'message': AuthStrings.registerDisabled,
         };
       }
       if (msg.contains('weak password') ||
           (msg.contains('password') && msg.contains('characters'))) {
         return {
           'success': false,
-          'message': AppStrings.weakPassword,
+          'message': AuthStrings.weakPassword,
         };
       }
       if (_isNetworkError(msg)) {
@@ -380,7 +380,7 @@ class AuthSession {
       }
       return {
         'success': false,
-        'message': '${AppStrings.errorServer}${e.runtimeType}',
+        'message': '${AuthStrings.errorServer}${e.runtimeType}',
       };
     }
   }
@@ -430,8 +430,8 @@ class AuthSession {
         'user': user,
         'isLocalOnly': true,
         'message': providerDisabled
-            ? AppStrings.registerLocalProviderDisabled
-            : AppStrings.registerLocalSuccess,
+            ? AuthStrings.registerLocalProviderDisabled
+            : AuthStrings.registerLocalSuccess,
       };
     } catch (e) {
       safeDebugPrint('AuthService._registerLocal: $e');
@@ -506,29 +506,29 @@ class AuthSession {
     if (!await AuthService._isOnline()) {
       return {
         'success': false,
-        'message': AppStrings.changePasswordRequiresInternet,
+        'message': AuthStrings.changePasswordRequiresInternet,
       };
     }
 
     if (AuthService._currentUser == null) {
-      return {'success': false, 'message': AppStrings.mustLoginFirst};
+      return {'success': false, 'message': AuthStrings.mustLoginFirst};
     }
 
     try {
       final email = AuthService._currentUser!.email;
       if (email.isEmpty) {
-        return {'success': false, 'message': AppStrings.emailNotAvailable};
+        return {'success': false, 'message': AuthStrings.emailNotAvailable};
       }
 
       final savedCredentials = await SecureStorageHelper.loadCredentials();
       if (savedCredentials == null) {
-        return {'success': false, 'message': AppStrings.noDataSaved};
+        return {'success': false, 'message': AuthStrings.noDataSaved};
       }
 
       final savedPasswordHash = savedCredentials['password_hash']!;
       final isCorrect = await PasswordHasher.verify(currentPassword, savedPasswordHash);
       if (!isCorrect) {
-        return {'success': false, 'message': AppStrings.currentPasswordIncorrect};
+        return {'success': false, 'message': AuthStrings.currentPasswordIncorrect};
       }
 
       final user = Supabase.instance.client.auth.currentUser;
@@ -541,10 +541,10 @@ class AuthSession {
       final newHash = await PasswordHasher.hash(newPassword);
       await _saveCredentials(email: email, passwordHash: newHash);
 
-      return {'success': true, 'message': AppStrings.passwordChangedSuccess};
+      return {'success': true, 'message': AuthStrings.passwordChangedSuccess};
     } catch (e) {
       safeDebugPrint('AuthService.changePassword failed: $e');
-      return {'success': false, 'message': AppStrings.errorGeneral};
+      return {'success': false, 'message': AuthStrings.errorGeneral};
     }
   }
 
@@ -592,7 +592,7 @@ class AuthSession {
     if (!await AuthService._isOnline()) {
       return {
         'success': false,
-        'message': AppStrings.resendConfirmRequiresInternet,
+        'message': AuthStrings.resendConfirmRequiresInternet,
       };
     }
     try {
@@ -602,10 +602,10 @@ class AuthSession {
         email: email.trim(),
         emailRedirectTo: _buildRedirectUrl(),
       );
-      return {'success': true, 'message': AppStrings.emailConfirmationResendSent};
+      return {'success': true, 'message': AuthStrings.emailConfirmationResendSent};
     } catch (e) {
       safeDebugPrint('AuthService.resendConfirmation failed: $e');
-      return {'success': false, 'message': AppStrings.resendConfirmFailed};
+      return {'success': false, 'message': AuthStrings.resendConfirmFailed};
     }
   }
 
@@ -676,3 +676,7 @@ class AuthSession {
         msg.contains('503');
   }
 }
+
+
+
+

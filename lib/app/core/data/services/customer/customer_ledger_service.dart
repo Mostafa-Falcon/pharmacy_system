@@ -1,5 +1,5 @@
-﻿import 'package:pharmacy_system/app/core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/customer_ledger_model.dart';
+import 'package:pharmacy_system/app/core/constants/app_strings.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_ledger_model.dart';
 import 'package:pharmacy_system/app/core/data/services/ledger_service.dart';
 
 class CustomerLedgerService {
@@ -19,7 +19,7 @@ class CustomerLedgerService {
     );
     final newBalance = currentBalance + dueAmount;
 
-    final entry = CustomerLedgerModel(
+    final entry = ContactLedgerModel(
       id: 'ledger_${DateTime.now().millisecondsSinceEpoch}',
       customerId: customerId,
       branchId: branchId,
@@ -29,7 +29,7 @@ class CustomerLedgerService {
       balanceAfter: newBalance,
       referenceId: saleId,
       referenceNumber: invoiceNumber,
-      notes: 'مديونية ناتجة عن فاتورة بيع آجلة / جزئية',
+      notes: '??????? ????? ?? ?????? ??? ???? / ?????',
       createdBy: createdBy,
       entryDate: DateTime.now(),
     );
@@ -45,7 +45,7 @@ class CustomerLedgerService {
     String? notes,
     String? referenceId,
   }) async {
-    if (amount <= 0) throw Exception(AppStrings.errorPaymentMustBePositive);
+    if (amount <= 0) throw Exception(AccountingStrings.errorPaymentMustBePositive);
 
     final currentBalance = await LedgerService.getCustomerBalance(
       customerId,
@@ -53,7 +53,7 @@ class CustomerLedgerService {
     );
     final newBalance = (currentBalance - amount).clamp(0.0, double.infinity);
 
-    final entry = CustomerLedgerModel(
+    final entry = ContactLedgerModel(
       id: 'payment_${DateTime.now().millisecondsSinceEpoch}',
       customerId: customerId,
       branchId: branchId,
@@ -62,7 +62,7 @@ class CustomerLedgerService {
       credit: amount,
       balanceAfter: newBalance,
       referenceId: referenceId,
-      notes: notes ?? 'سداد من العميل',
+      notes: notes ?? '???? ?? ??????',
       createdBy: createdBy,
       entryDate: DateTime.now(),
     );
@@ -86,7 +86,7 @@ class CustomerLedgerService {
     );
     final newBalance = (currentBalance - dueAmount).clamp(0.0, double.infinity);
 
-    final entry = CustomerLedgerModel(
+    final entry = ContactLedgerModel(
       id: 'void_${DateTime.now().millisecondsSinceEpoch}',
       customerId: customerId,
       branchId: branchId,
@@ -96,7 +96,7 @@ class CustomerLedgerService {
       balanceAfter: newBalance,
       referenceId: saleId,
       referenceNumber: invoiceNumber,
-      notes: 'عكس مديونية فاتورة ملغاة',
+      notes: '??? ??????? ?????? ?????',
       createdBy: createdBy,
       entryDate: DateTime.now(),
     );
@@ -104,7 +104,7 @@ class CustomerLedgerService {
     await LedgerService.insertCustomerEntry(entry);
   }
 
-  static Future<List<CustomerLedgerModel>> getCustomerLedger(
+  static Future<List<ContactLedgerModel>> getCustomerLedger(
     String customerId,
     String branchId,
   ) async {
@@ -126,7 +126,7 @@ class CustomerLedgerService {
     String? notes,
     String? referenceId,
   }) async {
-    if (amount <= 0) throw Exception(AppStrings.errorAdditionMustBePositive);
+    if (amount <= 0) throw Exception(AccountingStrings.errorAdditionMustBePositive);
 
     final currentBalance = await LedgerService.getCustomerBalance(
       customerId,
@@ -134,7 +134,7 @@ class CustomerLedgerService {
     );
     final newBalance = currentBalance + amount;
 
-    final entry = CustomerLedgerModel(
+    final entry = ContactLedgerModel(
       id: 'addition_${DateTime.now().millisecondsSinceEpoch}',
       customerId: customerId,
       branchId: branchId,
@@ -143,7 +143,7 @@ class CustomerLedgerService {
       credit: 0,
       balanceAfter: newBalance,
       referenceId: referenceId,
-      notes: notes ?? 'إشعار إضافة لحساب العميل',
+      notes: notes ?? '????? ????? ????? ??????',
       createdBy: createdBy,
       entryDate: DateTime.now(),
     );
@@ -159,7 +159,7 @@ class CustomerLedgerService {
     String? notes,
     String? referenceId,
   }) async {
-    if (amount <= 0) throw Exception(AppStrings.errorDiscountMustBePositive);
+    if (amount <= 0) throw Exception(AccountingStrings.errorDiscountMustBePositive);
 
     final currentBalance = await LedgerService.getCustomerBalance(
       customerId,
@@ -167,7 +167,7 @@ class CustomerLedgerService {
     );
     final newBalance = (currentBalance - amount).clamp(0.0, double.infinity);
 
-    final entry = CustomerLedgerModel(
+    final entry = ContactLedgerModel(
       id: 'discount_${DateTime.now().millisecondsSinceEpoch}',
       customerId: customerId,
       branchId: branchId,
@@ -176,7 +176,7 @@ class CustomerLedgerService {
       credit: amount,
       balanceAfter: newBalance,
       referenceId: referenceId,
-      notes: notes ?? 'إشعار خصم لحساب العميل',
+      notes: notes ?? '????? ??? ????? ??????',
       createdBy: createdBy,
       entryDate: DateTime.now(),
     );
@@ -195,7 +195,7 @@ class CustomerLedgerService {
     String? notes,
     String? referenceId,
   }) async {
-    if (amount <= 0) throw Exception(AppStrings.errorCheckMustBePositive);
+    if (amount <= 0) throw Exception(AccountingStrings.errorCheckMustBePositive);
 
     final currentBalance = await LedgerService.getCustomerBalance(
       customerId,
@@ -204,13 +204,13 @@ class CustomerLedgerService {
     final newBalance = (currentBalance - amount).clamp(0.0, double.infinity);
 
     final checkNotes = [
-      if (checkNumber != null) 'شيك رقم: $checkNumber',
-      if (bankName != null) 'البنك: $bankName',
-      if (dueDate != null) 'تاريخ الاستحقاق: $dueDate',
+      if (checkNumber != null) '??? ???: $checkNumber',
+      if (bankName != null) '?????: $bankName',
+      if (dueDate != null) '????? ?????????: $dueDate',
       notes,
     ].join(' | ');
 
-    final entry = CustomerLedgerModel(
+    final entry = ContactLedgerModel(
       id: 'check_recv_${DateTime.now().millisecondsSinceEpoch}',
       customerId: customerId,
       branchId: branchId,
@@ -219,7 +219,7 @@ class CustomerLedgerService {
       credit: amount,
       balanceAfter: newBalance,
       referenceId: referenceId,
-      notes: checkNotes.isNotEmpty ? checkNotes : 'استلام شيك من العميل',
+      notes: checkNotes.isNotEmpty ? checkNotes : '?????? ??? ?? ??????',
       createdBy: createdBy,
       entryDate: DateTime.now(),
     );
@@ -238,7 +238,7 @@ class CustomerLedgerService {
     String? notes,
     String? referenceId,
   }) async {
-    if (amount <= 0) throw Exception(AppStrings.errorCheckMustBePositive);
+    if (amount <= 0) throw Exception(AccountingStrings.errorCheckMustBePositive);
 
     final currentBalance = await LedgerService.getCustomerBalance(
       customerId,
@@ -247,13 +247,13 @@ class CustomerLedgerService {
     final newBalance = currentBalance + amount;
 
     final checkNotes = [
-      if (checkNumber != null) 'شيك رقم: $checkNumber',
-      if (bankName != null) 'البنك: $bankName',
-      if (dueDate != null) 'تاريخ الاستحقاق: $dueDate',
+      if (checkNumber != null) '??? ???: $checkNumber',
+      if (bankName != null) '?????: $bankName',
+      if (dueDate != null) '????? ?????????: $dueDate',
       notes,
     ].join(' | ');
 
-    final entry = CustomerLedgerModel(
+    final entry = ContactLedgerModel(
       id: 'check_pay_${DateTime.now().millisecondsSinceEpoch}',
       customerId: customerId,
       branchId: branchId,
@@ -262,7 +262,7 @@ class CustomerLedgerService {
       credit: 0,
       balanceAfter: newBalance,
       referenceId: referenceId,
-      notes: checkNotes.isNotEmpty ? checkNotes : 'دفع شيك للعميل',
+      notes: checkNotes.isNotEmpty ? checkNotes : '??? ??? ??????',
       createdBy: createdBy,
       entryDate: DateTime.now(),
     );
@@ -270,7 +270,7 @@ class CustomerLedgerService {
     await LedgerService.insertCustomerEntry(entry);
   }
 
-  /// تسجيل الرصيد الافتتاحي مباشرة - debit يعني مديونية عليه
+  /// ????? ?????? ????????? ?????? - debit ???? ??????? ????
   static Future<void> recordOpeningBalanceDirect({
     required String customerId,
     required String branchId,
@@ -280,7 +280,7 @@ class CustomerLedgerService {
     String? referenceId,
   }) async {
     if (amount <= 0) {
-      throw Exception(AppStrings.errorOpeningMustBePositive);
+      throw Exception(AccountingStrings.errorOpeningMustBePositive);
     }
 
     final currentBalance = await LedgerService.getCustomerBalance(
@@ -289,7 +289,7 @@ class CustomerLedgerService {
     );
     final newBalance = currentBalance + amount;
 
-    final entry = CustomerLedgerModel(
+    final entry = ContactLedgerModel(
       id: 'opening_${DateTime.now().millisecondsSinceEpoch}',
       customerId: customerId,
       branchId: branchId,
@@ -298,7 +298,7 @@ class CustomerLedgerService {
       credit: 0,
       balanceAfter: newBalance,
       referenceId: referenceId,
-      notes: notes ?? 'رصيد افتتاحي',
+      notes: notes ?? '???? ???????',
       createdBy: createdBy,
       entryDate: DateTime.now(),
     );
@@ -306,7 +306,7 @@ class CustomerLedgerService {
     await LedgerService.insertCustomerEntry(entry);
   }
 
-  /// تسجيل الرصيد الافتتاحي كدائن - credit يعني رصيد له
+  /// ????? ?????? ????????? ????? - credit ???? ???? ??
   static Future<void> recordOpeningBalanceAsCredit({
     required String customerId,
     required String branchId,
@@ -316,7 +316,7 @@ class CustomerLedgerService {
     String? referenceId,
   }) async {
     if (amount <= 0) {
-      throw Exception(AppStrings.errorOpeningMustBePositive);
+      throw Exception(AccountingStrings.errorOpeningMustBePositive);
     }
 
     final currentBalance = await LedgerService.getCustomerBalance(
@@ -325,7 +325,7 @@ class CustomerLedgerService {
     );
     final newBalance = (currentBalance - amount).clamp(0.0, double.infinity);
 
-    final entry = CustomerLedgerModel(
+    final entry = ContactLedgerModel(
       id: 'opening_${DateTime.now().millisecondsSinceEpoch}',
       customerId: customerId,
       branchId: branchId,
@@ -334,7 +334,7 @@ class CustomerLedgerService {
       credit: amount,
       balanceAfter: newBalance,
       referenceId: referenceId,
-      notes: notes ?? 'رصيد افتتاحي - رصيد له',
+      notes: notes ?? '???? ??????? - ???? ??',
       createdBy: createdBy,
       entryDate: DateTime.now(),
     );
@@ -342,9 +342,14 @@ class CustomerLedgerService {
     await LedgerService.insertCustomerEntry(entry);
   }
 
-  /// الحصول على كافة أرصدة العملاء لفرع معين بكفاءة عالية
+  /// ?????? ??? ???? ????? ??????? ???? ???? ?????? ?????
   static Future<Map<String, double>> getAllCustomerBalances(String branchId) async {
     return LedgerService.getAllCustomerBalances(branchId);
   }
 }
+
+
+
+
+
 

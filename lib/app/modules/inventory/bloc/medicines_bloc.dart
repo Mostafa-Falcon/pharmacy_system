@@ -1,19 +1,19 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pharmacy_system/app/core/utils/app_utils.dart';
 
 import '../../../core/injection.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
 import 'package:pharmacy_system/app/core/data/repositories/medicines_repository.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
 import 'package:pharmacy_system/app/core/data/services/excel_import_service.dart';
 import 'package:pharmacy_system/app/core/data/services/sound_service.dart';
 import 'package:pharmacy_system/app/core/data/services/inventory/stock_mutation_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/inventory_enums.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/stock_adjustment_model.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/core/models/inventory/inventory_enums.dart';
+import 'package:pharmacy_system/app/core/models/inventory/stock_adjustment_model.dart';
 import '../services/inventory_transaction_service.dart';
 import 'medicines_event.dart';
 import 'medicines_state.dart';
@@ -21,8 +21,8 @@ import 'medicines_state.dart';
 export 'medicines_event.dart';
 export 'medicines_state.dart';
 
-/// Bloc مركزي لإدارة شاشة الأدوية: العرض، الفلترة، الترتيب،
-/// الصفحات، التحديد المتعدد، وكل عمليات CRUD مع كفاءة عالية.
+/// Bloc ????? ?????? ???? ???????: ?????? ???????? ????????
+/// ???????? ??????? ???????? ??? ?????? CRUD ?? ????? ?????.
 class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
   StreamSubscription? _subscription;
 
@@ -47,7 +47,7 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     on<ImportMedicinesFromExcel>(_onImportExcel);
     on<UpdateImportProgress>(_onUpdateImportProgress);
     
-    // اشتراك في التحديثات الحية من المستودع
+    // ?????? ?? ????????? ????? ?? ????????
     _subscription = sl<MedicinesRepository>().watchMedicines(_branchId).listen((data) {
       if (!isClosed) {
         add(const LoadMedicines());
@@ -65,17 +65,17 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
 
   String get _branchId => AuthService.currentBranchId ?? '';
 
-  // ─── ثوابت الفلترة والصلاحية ───
+  // --- ????? ??????? ????????? ---
   static const int _expiringThresholdDays = 90;
-  // ════════════════ Load ════════════════
+  // ---------------- Load ----------------
   Future<void> _onLoad(LoadMedicines event, Emitter<MedicinesState> emit) async {
-    // نرفع حالة التحميل فقط إذا كانت القائمة فارغة لتجنب الوميض (Flicker) عند التحديث التلقائي
+    // ???? ???? ??????? ??? ??? ???? ??????? ????? ????? ?????? (Flicker) ??? ??????? ????????
     if (state.allMedicines.isEmpty) {
       emit(state.copyWith(isLoading: true));
     }
     
     try {
-      // إعطاء فرصة بسيطة للمعالج لضمان استقرار حالة Hive
+      // ????? ???? ????? ??????? ????? ??????? ???? Hive
       await Future.delayed(Duration.zero);
 
       final all = (await BranchDataService.getMedicinesAsync(branchId: _branchId))
@@ -103,14 +103,14 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
       ));
     } catch (e) {
       emit(state.copyWith(
-        errorMessage: 'فشل في تحميل الأدوية: $e',
+        errorMessage: '??? ?? ????? ???????: $e',
         isLoadingAction: false,
         isLoading: false,
       ));
     }
   }
 
-  // ════════════════ Search / Filter / Sort ════════════════
+  // ---------------- Search / Filter / Sort ----------------
   void _onSearch(SearchMedicines event, Emitter<MedicinesState> emit) {
     final filtered = _applyFilterAndSort(state.allMedicines, query: event.query);
     emit(state.copyWith(
@@ -166,7 +166,7 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     ));
   }
 
-  // ════════════════ Pagination ════════════════
+  // ---------------- Pagination ----------------
   void _onChangePageSize(ChangePageSize event, Emitter<MedicinesState> emit) {
     final filtered = state.filteredMedicines;
     final totalPages = _computePages(filtered.length, event.pageSize);
@@ -208,7 +208,7 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     }
   }
 
-  // ════════════════ Selection ════════════════
+  // ---------------- Selection ----------------
   void _onToggleSelectRow(ToggleSelectRow event, Emitter<MedicinesState> emit) {
     final ids = Set<String>.from(state.selectedIds);
     if (ids.contains(event.id)) {
@@ -231,13 +231,13 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     emit(state.copyWith(selectedIds: ids));
   }
 
-  // ════════════════ CRUD ════════════════
+  // ---------------- CRUD ----------------
   Future<void> _onAdd(AddMedicine event, Emitter<MedicinesState> emit) async {
     await _performAction(
       emit,
       action: () => BranchDataService.addMedicine(event.medicine),
-      successMessage: 'تم إضافة الدواء "${event.medicine.name}" بنجاح',
-      errorMessage: 'فشل في إضافة الدواء',
+      successMessage: '?? ????? ?????? "${event.medicine.name}" ?????',
+      errorMessage: '??? ?? ????? ??????',
       soundEffect: SoundEffect.itemAdded,
     );
   }
@@ -246,8 +246,8 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     await _performAction(
       emit,
       action: () => BranchDataService.updateMedicine(event.medicine),
-      successMessage: 'تم تحديث بيانات الدواء "${event.medicine.name}"',
-      errorMessage: 'فشل في تحديث الدواء',
+      successMessage: '?? ????? ?????? ?????? "${event.medicine.name}"',
+      errorMessage: '??? ?? ????? ??????',
     );
   }
 
@@ -255,8 +255,8 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     await _performAction(
       emit,
       action: () => BranchDataService.deleteMedicine(event.medicine),
-      successMessage: 'تم حذف الدواء "${event.medicine.name}" بنجاح',
-      errorMessage: 'فشل في حذف الدواء',
+      successMessage: '?? ??? ?????? "${event.medicine.name}" ?????',
+      errorMessage: '??? ?? ??? ??????',
       soundEffect: SoundEffect.error,
     );
   }
@@ -273,11 +273,11 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     emit(state.copyWith(
       isLoadingAction: true, 
       bulkActionProgress: 0.0,
-      bulkActionTitle: 'جاري حذف الأدوية المحددة...',
+      bulkActionTitle: '???? ??? ??????? ???????...',
     ));
 
     try {
-      // تحسين الأداء: تحويل القائمة لماب للبحث السريع O(1) بدلاً من البحث المتكرر O(N)
+      // ????? ??????: ????? ??????? ???? ????? ?????? O(1) ????? ?? ????? ??????? O(N)
       final medicineMap = {for (var m in state.allMedicines) m.id.toString(): m};
       
       int successCount = 0;
@@ -290,21 +290,21 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
           successCount++;
         }
 
-        // تحديث التقدم بنسبة حقيقية
+        // ????? ?????? ????? ??????
         emit(state.copyWith(bulkActionProgress: (i + 1) / total));
         
-        // إعطاء فرصة للمعالج لتحديث الواجهة ومنع التجمد (Microtask yield)
+        // ????? ???? ??????? ?????? ??????? ???? ?????? (Microtask yield)
         if (i % 5 == 0) await Future.delayed(Duration.zero);
       }
 
       SoundService.instance.play(SoundEffect.error);
-      AppSnackbar.success('تم حذف $successCount دواء بنجاح', title: 'نجح');
+      AppSnackbar.success('?? ??? $successCount ???? ?????', title: '???');
       
       emit(state.copyWith(isLoadingAction: false, bulkActionProgress: 1.0));
       if (!isClosed) add(const LoadMedicines());
     } catch (e) {
       SoundService.instance.play(SoundEffect.error);
-      AppSnackbar.error('فشل في حذف الأدوية المحددة: $e', title: 'خطأ');
+      AppSnackbar.error('??? ?? ??? ??????? ???????: $e', title: '???');
       emit(state.copyWith(isLoadingAction: false, bulkActionProgress: 0));
     }
   }
@@ -319,11 +319,11 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     emit(state.copyWith(
       isLoadingAction: true, 
       bulkActionProgress: 0.0,
-      bulkActionTitle: 'جاري حذف كافة الأدوية بالمخزن...',
+      bulkActionTitle: '???? ??? ???? ??????? ???????...',
     ));
 
     try {
-      // إذا كان عدد الأدوية كبيراً جداً، نقوم بالحذف على دفعات لإظهار التقدم وتجنب التهنيج
+      // ??? ??? ??? ??????? ?????? ????? ???? ?????? ??? ????? ?????? ?????? ????? ???????
       if (total > 50) {
         final allList = state.allMedicines.toList();
         for (int i = 0; i < total; i++) {
@@ -343,11 +343,11 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
 
       emit(state.copyWith(isLoadingAction: false, bulkActionProgress: 1.0, selectedIds: const {}));
       SoundService.instance.play(SoundEffect.error);
-      AppSnackbar.success('تم حذف كل الأدوية بنجاح', title: 'نجح');
+      AppSnackbar.success('?? ??? ?? ??????? ?????', title: '???');
       if (!isClosed) add(const LoadMedicines());
     } catch (e) {
       SoundService.instance.play(SoundEffect.error);
-      AppSnackbar.error('فشل في حذف كل الأدوية: $e', title: 'خطأ');
+      AppSnackbar.error('??? ?? ??? ?? ???????: $e', title: '???');
       emit(state.copyWith(isLoadingAction: false, bulkActionProgress: 0));
     }
   }
@@ -364,13 +364,13 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     await _performAction(
       emit,
       action: () async {
-        // تحريك الكمية عبر StockMutationService (القفل + طابور المزامنة)
+        // ????? ?????? ??? StockMutationService (????? + ????? ????????)
         await StockMutationService.adjustStock(
           medicineId: event.medicine.id,
           delta: diff,
           branchId: event.medicine.branchId,
         );
-        // تسجيل حركة التسوية في سجل الحركات (audit trail)
+        // ????? ???? ??????? ?? ??? ??????? (audit trail)
         final now = DateTime.now();
         await InventoryTransactionService.to.adjustStock(
           adjustment: StockAdjustmentModel(
@@ -400,8 +400,8 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
           actorId: AuthService.currentUser?.id ?? '',
         );
       },
-      successMessage: 'تم تسوية رصيد "${event.medicine.name}" بنجاح',
-      errorMessage: 'فشل في تسوية الرصيد',
+      successMessage: '?? ????? ???? "${event.medicine.name}" ?????',
+      errorMessage: '??? ?? ????? ??????',
     );
   }
 
@@ -412,7 +412,7 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     emit(state.copyWith(
       isLoadingAction: true, 
       bulkActionProgress: 0, 
-      bulkActionTitle: 'جاري استيراد البيانات من Excel...',
+      bulkActionTitle: '???? ??????? ???????? ?? Excel...',
     ));
     try {
       final count = await ExcelImportService.importFromExcel(
@@ -423,12 +423,12 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
         },
       );
       SoundService.instance.play(SoundEffect.itemAdded);
-      AppSnackbar.success('تم استيراد $count صنف بنجاح', title: 'نجح');
+      AppSnackbar.success('?? ??????? $count ??? ?????', title: '???');
       emit(state.copyWith(isLoadingAction: false, bulkActionProgress: 1.0));
       if (!isClosed) add(const LoadMedicines());
     } catch (e) {
       SoundService.instance.play(SoundEffect.error);
-      AppSnackbar.error('فشل الاستيراد: $e', title: 'خطأ');
+      AppSnackbar.error('??? ?????????: $e', title: '???');
       emit(state.copyWith(isLoadingAction: false, bulkActionProgress: 0));
     }
   }
@@ -437,7 +437,7 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     emit(state.copyWith(bulkActionProgress: event.progress));
   }
 
-  // ════════════════ Helpers ════════════════
+  // ---------------- Helpers ----------------
   Future<void> _performAction(
     Emitter<MedicinesState> emit, {
     required Future<void> Function() action,
@@ -449,9 +449,9 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     try {
       await action();
       if (soundEffect != null) SoundService.instance.play(soundEffect);
-      AppSnackbar.success(successMessage, title: 'نجح');
+      AppSnackbar.success(successMessage, title: '???');
       
-      // نتحقق من حالة الـ Bloc قبل إضافة الحدث
+      // ????? ?? ???? ??? Bloc ??? ????? ?????
       if (!isClosed) {
         try {
           add(const LoadMedicines());
@@ -462,7 +462,7 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     } catch (e) {
       if (isClosed) return;
       SoundService.instance.play(SoundEffect.error);
-      AppSnackbar.error('$errorMessage: $e', title: 'خطأ');
+      AppSnackbar.error('$errorMessage: $e', title: '???');
       emit(state.copyWith(isLoadingAction: false));
     }
   }
@@ -488,7 +488,7 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
       result = result.where((m) => _isMatch(m, q)).toList();
     }
 
-    if (cat != null && cat != 'الكل') {
+    if (cat != null && cat != '????') {
       result = result.where((m) => m.category == cat).toList();
     }
 
@@ -512,7 +512,7 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     }
 
     if (col != null) {
-      // تحسين أداء الترتيب: نقوم بالترتيب فقط عند الحاجة
+      // ????? ???? ???????: ???? ???????? ??? ??? ??????
       final sortedList = List<MedicineModel>.from(result);
       sortedList.sort((a, b) => _compareByColumn(col, a, b));
       result = asc ? sortedList : sortedList.reversed.toList();
@@ -522,14 +522,14 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
   }
 
   bool _isMatch(MedicineModel m, String query) {
-    // بحث ذكي وشامل (الاسم، الاسم الأجنبي، الباركود، الفئة، الشركة، المكان)
+    // ??? ??? ????? (?????? ????? ???????? ????????? ?????? ??????? ??????)
     if (m.name.toLowerCase().contains(query)) return true;
     if (m.nameEn?.toLowerCase().contains(query) ?? false) return true;
     
-    // البحث في قائمة الباركودات الرئيسية
+    // ????? ?? ????? ?????????? ????????
     if (m.barcodes.any((b) => b.toLowerCase().contains(query))) return true;
     
-    // البحث في باركودات الوحدات (fallback)
+    // ????? ?? ???????? ??????? (fallback)
     if (m.units.any((u) => u.barcode?.toLowerCase().contains(query) ?? false)) return true;
 
     if (m.category?.toLowerCase().contains(query) ?? false) return true;
@@ -595,4 +595,8 @@ class MedicinesBloc extends Bloc<MedicinesEvent, MedicinesState> {
     return (total / pageSize).ceil().clamp(1, 1000000);
   }
 }
+
+
+
+
 

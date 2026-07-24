@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../utils/app_utils.dart';
+import 'package:pharmacy_system/app/shared/ui_core.dart';
 
 class AppBlocObserver extends BlocObserver {
   @override

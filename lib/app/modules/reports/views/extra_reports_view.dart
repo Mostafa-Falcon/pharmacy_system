@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 import '../bloc/extra_reports_bloc.dart';
 import '../services/extra_reports_service.dart';
@@ -200,7 +200,7 @@ class ExtraReportsView extends StatelessWidget {
                 ),
                 ReportCard(
                   title: ReportsStrings.totalSalesAmountLabel,
-                  value: '${totalSales.toStringAsFixed(2)} ${AppStrings.currency}',
+                  value: '${totalSales.toStringAsFixed(2)} ${GeneralStrings.currency}',
                   color: AppColors.warning,
                   icon: Icons.attach_money_rounded,
                 ),
@@ -244,8 +244,8 @@ class ExtraReportsView extends StatelessWidget {
           rows: rows.map((r) => DataRow(cells: [
             DataCell(ReusableText(r.item, style: AppTextStyles.caption(context))),
             DataCell(ReusableText(r.soldQuantity.toString(), style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
-            DataCell(ReusableText('${r.salesTotal.toStringAsFixed(2)} ${AppStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.success))),
-            DataCell(ReusableText('${r.avgPrice.toStringAsFixed(2)} ${AppStrings.currency}', style: AppTextStyles.caption(context))),
+            DataCell(ReusableText('${r.salesTotal.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.success))),
+            DataCell(ReusableText('${r.avgPrice.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context))),
             DataCell(ReusableText(r.invoices.toString(), style: AppTextStyles.caption(context))),
           ])).toList(),
         ),
@@ -271,7 +271,7 @@ class ExtraReportsView extends StatelessWidget {
                 children: [
                   ReusableText(r.item, style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.w700)),
                   SizedBox(height: 4.h),
-                  ReusableText(AppStrings.unitAndInvoiceFormat.replaceFirst('%s', r.soldQuantity.toString()).replaceFirst('%s', r.invoices.toString()),
+                  ReusableText(ReportsStrings.unitAndInvoiceFormat.replaceFirst('%s', r.soldQuantity.toString()).replaceFirst('%s', r.invoices.toString()),
                       style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context))),
                 ],
               ),
@@ -279,7 +279,7 @@ class ExtraReportsView extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                ReusableText('${r.salesTotal.toStringAsFixed(2)} ${AppStrings.currency}',
+                ReusableText('${r.salesTotal.toStringAsFixed(2)} ${GeneralStrings.currency}',
                     style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.w700, color: AppColors.success)),
                 ReusableText('@ ${r.avgPrice.toStringAsFixed(2)}',
                     style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context))),
@@ -394,7 +394,7 @@ class ExtraReportsView extends StatelessWidget {
                 ),
                 ReportCard(
                   title: ReportsStrings.totalValueLabel,
-                  value: '${totalValue.toStringAsFixed(2)} ${AppStrings.currency}',
+                  value: '${totalValue.toStringAsFixed(2)} ${GeneralStrings.currency}',
                   color: AppColors.warning,
                   icon: Icons.attach_money_rounded,
                 ),
@@ -433,9 +433,9 @@ class ExtraReportsView extends StatelessWidget {
             DataColumn(label: ReusableText(ReportsStrings.taxColumnType, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
             DataColumn(label: ReusableText(ReportsStrings.taxColumnRef, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
             DataColumn(label: ReusableText(ReportsStrings.taxColumnParty, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
-            DataColumn(label: ReusableText(AppStrings.cartQuantity, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
+            DataColumn(label: ReusableText(SalesStrings.cartQuantity, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
             DataColumn(label: ReusableText(ReportsStrings.unitPriceHeader, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
-            DataColumn(label: ReusableText(AppStrings.cartTotal, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
+            DataColumn(label: ReusableText(SalesStrings.cartTotal, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700)), numeric: true),
           ],
           rows: rows.map((r) => DataRow(cells: [
             DataCell(ReusableText(r.date, style: AppTextStyles.caption(context))),
@@ -483,7 +483,7 @@ class ExtraReportsView extends StatelessWidget {
             SizedBox(height: 4.h),
             Align(
               alignment: AlignmentDirectional.centerEnd,
-              child: ReusableText('${r.total.toStringAsFixed(2)} ${AppStrings.currency}',
+              child: ReusableText('${r.total.toStringAsFixed(2)} ${GeneralStrings.currency}',
                   style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.w700, color: AppColors.warning)),
             ),
           ],
@@ -495,16 +495,16 @@ class ExtraReportsView extends StatelessWidget {
   Widget _movementTypeBadge(BuildContext context, String type) {
     Color color;
     switch (type) {
-      case AppStrings.movementTypeSale:
+      case ReportsStrings.movementTypeSale:
         color = AppColors.success;
         break;
-      case AppStrings.movementTypePurchase:
+      case ReportsStrings.movementTypePurchase:
         color = AppColors.info;
         break;
-      case AppStrings.movementTypeSaleReturn:
+      case ReportsStrings.movementTypeSaleReturn:
         color = AppColors.error;
         break;
-      case AppStrings.movementTypePurchaseReturn:
+      case ReportsStrings.movementTypePurchaseReturn:
         color = AppColors.warning;
         break;
       default:
@@ -521,9 +521,9 @@ class ExtraReportsView extends StatelessWidget {
       case ExtraReportType.itemMovement: return ReportsStrings.reportsItemMovement;
       case ExtraReportType.taxSummary: return ReportsStrings.reportsTaxSummary;
       case ExtraReportType.employeeActivity: return ReportsStrings.reportsEmployeeActivity;
-      case ExtraReportType.customerGroups: return AppStrings.typeCustomerGroups;
-      case ExtraReportType.receipts: return AppStrings.typeReceipts;
-      case ExtraReportType.salesRepPerformance: return AppStrings.typeSalesRepPerformance;
+      case ExtraReportType.customerGroups: return ReportsStrings.typeCustomerGroups;
+      case ExtraReportType.receipts: return ReportsStrings.typeReceipts;
+      case ExtraReportType.salesRepPerformance: return ReportsStrings.typeSalesRepPerformance;
     }
   }
 
@@ -562,7 +562,7 @@ class ExtraReportsView extends StatelessWidget {
                 ),
                 ReportCard(
                   title: ReportsStrings.netPurchasesLabel,
-                  value: '${totalPurchases.toStringAsFixed(2)} ${AppStrings.currency}',
+                  value: '${totalPurchases.toStringAsFixed(2)} ${GeneralStrings.currency}',
                   color: AppColors.success,
                   icon: Icons.attach_money_rounded,
                 ),
@@ -609,9 +609,9 @@ class ExtraReportsView extends StatelessWidget {
             DataCell(ReusableText(r.customerName, style: AppTextStyles.caption(context))),
             DataCell(ReusableText(r.phone, style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context)))),
             DataCell(ReusableText(r.visits.toString(), style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
-            DataCell(ReusableText('${r.totalPurchases.toStringAsFixed(2)} ${AppStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.success))),
-            DataCell(ReusableText('${r.totalReturns.toStringAsFixed(2)} ${AppStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.error))),
-            DataCell(ReusableText('${r.netPurchases.toStringAsFixed(2)} ${AppStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.warning))),
+            DataCell(ReusableText('${r.totalPurchases.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.success))),
+            DataCell(ReusableText('${r.totalReturns.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.error))),
+            DataCell(ReusableText('${r.netPurchases.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.warning))),
           ])).toList(),
         ),
       ),
@@ -652,13 +652,13 @@ class ExtraReportsView extends StatelessWidget {
                 ),
                 ReportCard(
                   title: ReportsStrings.totalAmountsLabel,
-                  value: '${totalAmount.toStringAsFixed(2)} ${AppStrings.currency}',
+                  value: '${totalAmount.toStringAsFixed(2)} ${GeneralStrings.currency}',
                   color: AppColors.success,
                   icon: Icons.attach_money_rounded,
                 ),
                 ReportCard(
                   title: ReportsStrings.reportsSales,
-                  value: rows.where((r) => r.type == AppStrings.receiptTypeSaleInvoice).length.toString(),
+                  value: rows.where((r) => r.type == ReportsStrings.receiptTypeSaleInvoice).length.toString(),
                   color: AppColors.primary,
                   icon: Icons.shopping_cart_rounded,
                 ),
@@ -699,7 +699,7 @@ class ExtraReportsView extends StatelessWidget {
             DataCell(_receiptTypeBadge(context, r.type)),
             DataCell(ReusableText(r.reference.substring(0, 8).toUpperCase(), style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context)))),
             DataCell(ReusableText(r.contact, style: AppTextStyles.caption(context))),
-            DataCell(ReusableText('${r.amount.toStringAsFixed(2)} ${AppStrings.currency}', style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700, color: AppColors.success))),
+            DataCell(ReusableText('${r.amount.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700, color: AppColors.success))),
             DataCell(ReusableText(r.paymentMethod, style: AppTextStyles.caption(context))),
             DataCell(ReusableText(r.notes, style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context)))),
           ])).toList(),
@@ -711,16 +711,16 @@ class ExtraReportsView extends StatelessWidget {
   Widget _receiptTypeBadge(BuildContext context, String type) {
     Color color;
     switch (type) {
-      case AppStrings.receiptTypeSaleInvoice:
+      case ReportsStrings.receiptTypeSaleInvoice:
         color = AppColors.success;
         break;
-      case AppStrings.receiptTypePurchaseInvoice:
+      case ReportsStrings.receiptTypePurchaseInvoice:
         color = AppColors.info;
         break;
-      case AppStrings.movementTypeSaleReturn:
+      case ReportsStrings.movementTypeSaleReturn:
         color = AppColors.error;
         break;
-      case AppStrings.movementTypePurchaseReturn:
+      case ReportsStrings.movementTypePurchaseReturn:
         color = AppColors.warning;
         break;
       default:
@@ -770,14 +770,14 @@ class ExtraReportsView extends StatelessWidget {
                   icon: Icons.people_rounded,
                 ),
                 ReportCard(
-                  title: AppStrings.visitsLabel,
+                  title: ReportsStrings.visitsLabel,
                   value: totalVisits.toString(),
                   color: AppColors.warning,
                   icon: Icons.visibility_rounded,
                 ),
                 ReportCard(
                   title: ReportsStrings.reportsSales,
-                  value: '${totalNetSales.toStringAsFixed(2)} ${AppStrings.currency}',
+                  value: '${totalNetSales.toStringAsFixed(2)} ${GeneralStrings.currency}',
                   color: AppColors.primary,
                   icon: Icons.attach_money_rounded,
                 ),
@@ -816,9 +816,9 @@ class ExtraReportsView extends StatelessWidget {
             DataCell(ReusableText(r.repName, style: AppTextStyles.caption(context))),
             DataCell(ReusableText(r.customers.toString(), style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w700))),
             DataCell(ReusableText(r.visits.toString(), style: AppTextStyles.caption(context))),
-            DataCell(ReusableText('${r.totalSales.toStringAsFixed(2)} ${AppStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.success))),
-            DataCell(ReusableText('${r.totalReturns.toStringAsFixed(2)} ${AppStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.error))),
-            DataCell(ReusableText('${r.netSales.toStringAsFixed(2)} ${AppStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.warning))),
+            DataCell(ReusableText('${r.totalSales.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.success))),
+            DataCell(ReusableText('${r.totalReturns.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.error))),
+            DataCell(ReusableText('${r.netSales.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: AppColors.warning))),
           ])).toList(),
         ),
       ),
@@ -837,7 +837,7 @@ class _InventoryReportSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(AppStrings.inventoryMovementReportTitleFormat.replaceFirst('%s', rows.length.toString()), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Text(ReportsStrings.inventoryMovementReportTitleFormat.replaceFirst('%s', rows.length.toString()), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
           const SizedBox(height: 12),
           if (rows.isEmpty)
             const Center(child: Text(ReportsStrings.noInventoryData))
@@ -865,7 +865,7 @@ class _TaxSummarySection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('${AppStrings.reportsTaxSummary} (${rows.length})', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Text('${ReportsStrings.reportsTaxSummary} (${rows.length})', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
           const SizedBox(height: 12),
           if (rows.isEmpty)
             const Center(child: Text(ReportsStrings.noTaxRecords))
@@ -893,7 +893,7 @@ class _EmployeeActivitySection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('${AppStrings.reportsEmployeeActivity} (${rows.length})', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Text('${ReportsStrings.reportsEmployeeActivity} (${rows.length})', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
           const SizedBox(height: 12),
           if (rows.isEmpty)
             const Center(child: Text(ReportsStrings.noEmployeeActivityData))
@@ -909,3 +909,8 @@ class _EmployeeActivitySection extends StatelessWidget {
     );
   }
 }
+
+
+
+
+

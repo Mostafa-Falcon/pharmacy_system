@@ -1,21 +1,20 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../routes/app_routes.dart';
-import '../models/home_quick_action.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
 class MainPageView extends StatelessWidget {
   const MainPageView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return HomeShell(title: AppStrings.mainPageTitle, child: const MainPageContent());
+    return HomeShell(title: HomeStrings.mainPageTitle, child: const MainPageContent());
   }
 }
 
@@ -26,8 +25,8 @@ class MainPageContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = AuthService.currentUser;
     final branch = AuthService.currentBranch;
-    final userName = user?.name ?? AppStrings.mainPageDefaultUser;
-    final branchName = branch?.name ?? AppStrings.mainPageDefaultBranch;
+    final userName = user?.name ?? HomeStrings.mainPageDefaultUser;
+    final branchName = branch?.name ?? HomeStrings.mainPageDefaultBranch;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -137,36 +136,36 @@ class _QuickSectionsGrid extends StatelessWidget {
       _buildSectionColumn(
         context: context,
         width: width,
-        title: AppStrings.sectionSales,
+        title: HomeStrings.sectionSales,
         color: AppColors.homeSales,
         rows: [
           _RowItem.full(
             type: HomeQuickActionType.cashier,
-            label: AppStrings.actionCashier,
-            subtitle: AppStrings.actionCashierSubtitle,
+            label: HomeStrings.actionCashier,
+            subtitle: HomeStrings.actionCashierSubtitle,
             icon: Icons.point_of_sale_rounded,
           ),
           _RowItem.split(
             left: _RowItem(
               type: HomeQuickActionType.salesReport,
-              label: AppStrings.actionSalesReport,
+              label: HomeStrings.actionSalesReport,
               icon: Icons.analytics_outlined,
             ),
             right: _RowItem(
               type: HomeQuickActionType.salesReturn,
-              label: AppStrings.actionSalesReturn,
+              label: HomeStrings.actionSalesReturn,
               icon: Icons.currency_exchange_rounded,
             ),
           ),
           _RowItem.split(
             left: _RowItem(
               type: HomeQuickActionType.priceQuotes,
-              label: AppStrings.actionPriceQuotes,
+              label: HomeStrings.actionPriceQuotes,
               icon: Icons.sell_outlined,
             ),
             right: _RowItem(
               type: HomeQuickActionType.customers,
-              label: AppStrings.actionCustomers,
+              label: HomeStrings.actionCustomers,
               icon: Icons.group_outlined,
             ),
           ),
@@ -175,30 +174,30 @@ class _QuickSectionsGrid extends StatelessWidget {
       _buildSectionColumn(
         context: context,
         width: width,
-        title: AppStrings.sectionPurchases,
+        title: HomeStrings.sectionPurchases,
         color: AppColors.homePurchases,
         rows: [
           _RowItem.full(
             type: HomeQuickActionType.addPurchase,
-            label: AppStrings.actionAddPurchase,
-            subtitle: AppStrings.actionAddPurchaseSubtitle,
+            label: HomeStrings.actionAddPurchase,
+            subtitle: HomeStrings.actionAddPurchaseSubtitle,
             icon: Icons.note_add_outlined,
           ),
           _RowItem.split(
             left: _RowItem(
               type: HomeQuickActionType.purchaseReturn,
-              label: AppStrings.actionPurchaseReturn,
+              label: HomeStrings.actionPurchaseReturn,
               icon: Icons.assignment_turned_in_outlined,
             ),
             right: _RowItem(
               type: HomeQuickActionType.suppliers,
-              label: AppStrings.actionSuppliers,
+              label: HomeStrings.actionSuppliers,
               icon: Icons.person_add_alt_1_outlined,
             ),
           ),
           _RowItem.full(
             type: HomeQuickActionType.expenses,
-            label: AppStrings.actionExpenses,
+            label: HomeStrings.actionExpenses,
             icon: Icons.account_balance_wallet_outlined,
           ),
         ],
@@ -206,36 +205,36 @@ class _QuickSectionsGrid extends StatelessWidget {
       _buildSectionColumn(
         context: context,
         width: width,
-        title: AppStrings.sectionInventory,
+        title: HomeStrings.sectionInventory,
         color: AppColors.homeInventory,
         rows: [
           _RowItem.full(
             type: HomeQuickActionType.items,
-            label: AppStrings.actionItems,
-            subtitle: AppStrings.actionItemsSubtitle,
+            label: HomeStrings.actionItems,
+            subtitle: HomeStrings.actionItemsSubtitle,
             icon: Icons.medication_rounded,
           ),
           _RowItem.split(
             left: _RowItem(
               type: HomeQuickActionType.addItem,
-              label: AppStrings.actionAddItem,
+              label: HomeStrings.actionAddItem,
               icon: Icons.inventory_2_outlined,
             ),
             right: _RowItem(
               type: HomeQuickActionType.inventoryHealth,
-              label: AppStrings.actionInventoryHealth,
+              label: HomeStrings.actionInventoryHealth,
               icon: Icons.health_and_safety_outlined,
             ),
           ),
           _RowItem.split(
             left: _RowItem(
               type: HomeQuickActionType.barcodeLabel,
-              label: AppStrings.actionBarcodeLabel,
+              label: HomeStrings.actionBarcodeLabel,
               icon: Icons.document_scanner_outlined,
             ),
             right: _RowItem(
               type: HomeQuickActionType.stockTransfer,
-              label: AppStrings.actionStockTransfer,
+              label: HomeStrings.actionStockTransfer,
               icon: Icons.local_shipping_outlined,
             ),
           ),
@@ -244,30 +243,30 @@ class _QuickSectionsGrid extends StatelessWidget {
       _buildSectionColumn(
         context: context,
         width: width,
-        title: AppStrings.sectionAdminFinance,
+        title: HomeStrings.sectionAdminFinance,
         color: AppColors.homeAdministration,
         rows: [
           _RowItem.full(
             type: HomeQuickActionType.settings,
-            label: AppStrings.actionSettings,
-            subtitle: AppStrings.actionSettingsSubtitle,
+            label: HomeStrings.actionSettings,
+            subtitle: HomeStrings.actionSettingsSubtitle,
             icon: Icons.settings_rounded,
           ),
           _RowItem.split(
             left: _RowItem(
               type: HomeQuickActionType.users,
-              label: AppStrings.actionUsers,
+              label: HomeStrings.actionUsers,
               icon: Icons.group_outlined,
             ),
             right: _RowItem(
               type: HomeQuickActionType.activityLog,
-              label: AppStrings.actionActivityLog,
+              label: HomeStrings.actionActivityLog,
               icon: Icons.assignment_outlined,
             ),
           ),
           _RowItem.full(
             type: HomeQuickActionType.profitLoss,
-            label: AppStrings.actionProfitLoss,
+            label: HomeStrings.actionProfitLoss,
             icon: Icons.attach_money_rounded,
           ),
         ],
@@ -277,10 +276,10 @@ class _QuickSectionsGrid extends StatelessWidget {
 
   IconData _getSectionIcon(String title) {
     return switch (title) {
-      AppStrings.sectionSales => Icons.trending_up_rounded,
-      AppStrings.sectionPurchases => Icons.shopping_bag_outlined,
-      AppStrings.sectionInventory => Icons.warehouse_rounded,
-      AppStrings.sectionAdminFinance => Icons.admin_panel_settings_rounded,
+      HomeStrings.sectionSales => Icons.trending_up_rounded,
+      HomeStrings.sectionPurchases => Icons.shopping_bag_outlined,
+      HomeStrings.sectionInventory => Icons.warehouse_rounded,
+      HomeStrings.sectionAdminFinance => Icons.admin_panel_settings_rounded,
       _ => Icons.category_rounded,
     };
   }
@@ -614,3 +613,8 @@ class _HomeWelcomeBanner extends StatelessWidget {
     );
   }
 }
+
+
+
+
+

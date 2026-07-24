@@ -1,6 +1,6 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/promotion_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/promotion_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/inventory/promotion_service.dart';
 enum PromotionsStatus { initial, loading, loaded, error }
@@ -100,4 +100,7 @@ class PromotionsBloc extends Bloc<Object, PromotionsState> {
     });
   }
 }
+
+
+
 

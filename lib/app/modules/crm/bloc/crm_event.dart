@@ -1,4 +1,4 @@
-﻿import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
 import 'package:pharmacy_system/app/modules/crm/models/crm_model.dart';
 
 abstract class CrmEvent extends Equatable {
@@ -67,4 +67,6 @@ class SearchCrmLeads extends CrmEvent {
   @override
   List<Object?> get props => [query];
 }
+
+
 

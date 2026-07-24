@@ -39,3 +39,5 @@ class DeleteQuote extends QuotesEvent {
   @override
   List<Object?> get props => [id];
 }
+
+

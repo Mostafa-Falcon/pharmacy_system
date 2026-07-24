@@ -60,3 +60,5 @@ class BulkPriceUpdateState extends Equatable {
     message,
   ];
 }
+
+

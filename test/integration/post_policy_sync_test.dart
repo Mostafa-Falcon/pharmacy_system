@@ -1,7 +1,7 @@
-import 'package:flutter_test/flutter_test.dart';
+﻿import 'package:flutter_test/flutter_test.dart';
 import 'package:supabase/supabase.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_engine.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_models.dart';
+import 'package:pharmacy_system/app/core/sync/sync_engine.dart';
+import 'package:pharmacy_system/app/core/sync/sync_models.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/sync_dao.dart';
 import 'package:pharmacy_system/app/core/utils/app_utils.dart';
@@ -67,16 +67,16 @@ void main() {
     safeDebugPrint('Step 2: Starting SyncEngine.syncAll()...');
     await syncEngine.syncAll();
     
-    // انتظار بسيط لضمان انتهاء الرفع
+    // Ø§Ù†ØªØ¸Ø§Ø± Ø¨Ø³ÙŠØ· Ù„Ø¶Ù…Ø§Ù† Ø§Ù†ØªÙ‡Ø§Ø¡ Ø§Ù„Ø±ÙØ¹
     await Future.delayed(const Duration(seconds: 3));
 
     safeDebugPrint('Step 3: Checking if outbox is cleared...');
     final pending = await syncDao.peekPending(10);
     
     if (pending.isEmpty) {
-      safeDebugPrint('✅ SUCCESS: Item cleared from outbox!');
+      safeDebugPrint('âœ… SUCCESS: Item cleared from outbox!');
     } else {
-      safeDebugPrint('❌ FAILED: Item still in outbox. Error: ${pending.first.lastError}');
+      safeDebugPrint('âŒ FAILED: Item still in outbox. Error: ${pending.first.lastError}');
     }
 
     safeDebugPrint('Step 4: Verifying record exists in Supabase Cloud...');
@@ -85,9 +85,10 @@ void main() {
     expect(cloudRes, isNotNull, reason: 'Record was not found in cloud.');
     expect(cloudRes!['name'], 'Sync Test Branch $timestamp');
     
-    safeDebugPrint('🔥 CELEBRATION: Sync is officially WORKING for branches!');
+    safeDebugPrint('ðŸ”¥ CELEBRATION: Sync is officially WORKING for branches!');
     
     // Cleanup
     await client.from('branches').delete().eq('id', branchId);
   });
 }
+

@@ -1,10 +1,10 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
 import 'package:pharmacy_system/app/core/data/services/inventory/stocktaking_service.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/stocktaking_period_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/stocktaking_period_model.dart';
 
-// ─── Events ───────────────────────────────────────────────────────────────
+// --- Events ---------------------------------------------------------------
 
 sealed class StocktakingEvent extends Equatable {
   const StocktakingEvent();
@@ -86,7 +86,7 @@ class RecordStocktakingCount extends StocktakingEvent {
     required this.itemId,
     required this.itemName,
     this.sku,
-    this.unit = 'وحدة',
+    this.unit = '????',
     required this.systemQuantity,
     required this.actualQuantity,
     this.buyPrice = 0,
@@ -97,7 +97,7 @@ class RecordStocktakingCount extends StocktakingEvent {
   List<Object?> get props => [periodId, itemId, actualQuantity];
 }
 
-// ─── States ───────────────────────────────────────────────────────────────
+// --- States ---------------------------------------------------------------
 
 class StocktakingState extends Equatable {
   final bool isLoading;
@@ -174,7 +174,7 @@ class StocktakingState extends Equatable {
   ];
 }
 
-// ─── BLoC ───────────────────────────────────────────────────────────────
+// --- BLoC ---------------------------------------------------------------
 
 class StocktakingBloc extends Bloc<StocktakingEvent, StocktakingState> {
   StocktakingBloc() : super(const StocktakingState()) {
@@ -347,4 +347,8 @@ class StocktakingBloc extends Bloc<StocktakingEvent, StocktakingState> {
     }
   }
 }
+
+
+
+
 

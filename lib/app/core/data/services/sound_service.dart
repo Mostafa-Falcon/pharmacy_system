@@ -1,8 +1,8 @@
 import 'package:just_audio/just_audio.dart';
-
 import 'package:pharmacy_system/app/core/injection.dart';
 import 'package:pharmacy_system/app/core/utils/app_utils.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/app_settings_dao.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_assets.dart';
 
 enum SoundEffect {
   scanSuccess,
@@ -41,23 +41,22 @@ class SoundService {
   }
 
   static const _soundPaths = {
-    SoundEffect.scanSuccess: 'assets/sounds/scan_success.wav',
-    SoundEffect.cashDrawer: 'assets/sounds/cash_drawer.wav',
-    SoundEffect.error: 'assets/sounds/error.wav',
-    SoundEffect.itemAdded: 'assets/sounds/item_added.wav',
-    SoundEffect.itemRemoved: 'assets/sounds/click.wav',
-    SoundEffect.click: 'assets/sounds/click.wav',
-    SoundEffect.saleComplete: 'assets/sounds/cash_drawer.wav',
-    SoundEffect.saleError: 'assets/sounds/error.wav',
-    SoundEffect.purchaseComplete: 'assets/sounds/item_added.wav',
-    SoundEffect.returnComplete: 'assets/sounds/item_added.wav',
-    SoundEffect.syncComplete: 'assets/sounds/scan_success.wav',
-    SoundEffect.notification: 'assets/sounds/scan_success.wav',
+    SoundEffect.scanSuccess: AppAssets.scanSuccess,
+    SoundEffect.cashDrawer: AppAssets.cashDrawer,
+    SoundEffect.error: AppAssets.error,
+    SoundEffect.itemAdded: AppAssets.itemAdded,
+    SoundEffect.itemRemoved: AppAssets.click,
+    SoundEffect.click: AppAssets.click,
+    SoundEffect.saleComplete: AppAssets.cashDrawer,
+    SoundEffect.saleError: AppAssets.error,
+    SoundEffect.purchaseComplete: AppAssets.itemAdded,
+    SoundEffect.returnComplete: AppAssets.itemAdded,
+    SoundEffect.syncComplete: AppAssets.scanSuccess,
+    SoundEffect.notification: AppAssets.scanSuccess,
   };
 
   Future<void> initialize() async {
     await _loadPrefs();
-    // متحملش الأصوات دلوقتي — هتتحمل أول مرة نستخدمها
   }
 
   Future<void> _loadPlayer(SoundEffect effect) async {
@@ -88,7 +87,7 @@ class SoundService {
       await player.seek(Duration.zero);
       player.play();
     } catch (e, s) {
-      safeDebugPrint('SoundService._load failed: $e\n$s');
+      safeDebugPrint('SoundService.play failed: $e\n$s');
     }
   }
 
@@ -135,3 +134,4 @@ class SoundService {
     _players.clear();
   }
 }
+

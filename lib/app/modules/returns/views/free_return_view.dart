@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/customer_model.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_model.dart';
-import 'package:pharmacy_system/app/modules/sales/models/return_model.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/return_model.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_service.dart';
@@ -460,3 +460,7 @@ class _SegmentButton extends StatelessWidget {
     );
   }
 }
+
+
+
+

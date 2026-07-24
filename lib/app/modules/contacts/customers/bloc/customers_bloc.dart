@@ -1,14 +1,14 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/injection.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/customer_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_model.dart';
 import 'package:pharmacy_system/app/core/data/repositories/customers_repository.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/customer/customer_service.dart';
 import 'package:pharmacy_system/app/core/data/services/customer/customer_ledger_service.dart';
 import 'package:pharmacy_system/app/core/data/services/operations/export_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
 import 'customers_event.dart';
 import 'customers_state.dart';
 
@@ -85,10 +85,10 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
       if (isClosed) return;
       emit(state.copyWith(selectedIds: {}));
       add(const LoadCustomers());
-      AppSnackbar.success('تم حذف العناصر المحددة');
+      AppSnackbar.success('?? ??? ??????? ???????');
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('فشل في الحذف الجماعي: $e');
+      AppSnackbar.error('??? ?? ????? ???????: $e');
     }
   }
 
@@ -104,10 +104,10 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
       if (isClosed) return;
       emit(state.copyWith(selectedIds: {}));
       add(const LoadCustomers());
-      AppSnackbar.success('تم تحديث حالة العناصر المحددة');
+      AppSnackbar.success('?? ????? ???? ??????? ???????');
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('فشل في التحديث الجماعي: $e');
+      AppSnackbar.error('??? ?? ??????? ???????: $e');
     }
   }
 
@@ -118,7 +118,7 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
     try {
       final customers = CustomerService.getAll(activeOnly: false);
       
-      // تحسين الأداء: حساب كافة الأرصدة في عملية واحدة بدلاً من اللوب
+      // ????? ??????: ???? ???? ??????? ?? ????? ????? ????? ?? ?????
       final balances = await CustomerLedgerService.getAllCustomerBalances(_branchId);
       
       final sorted = _sortCustomers(customers, state.sortColumnId, state.isSortAscending);
@@ -189,11 +189,11 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
       }
       if (!isClosed) add(const LoadCustomers());
       emit(state.copyWith(isSuccess: true));
-      AppSnackbar.success('تم إضافة العميل بنجاح');
+      AppSnackbar.success('?? ????? ?????? ?????');
     } catch (e) {
       if (isClosed) return;
       emit(state.copyWith(errorMessage: e.toString()));
-      AppSnackbar.error('فشل في إضافة العميل: $e');
+      AppSnackbar.error('??? ?? ????? ??????: $e');
     }
   }
 
@@ -202,11 +202,11 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
       await CustomerService.update(event.customer);
       if (!isClosed) add(const LoadCustomers());
       emit(state.copyWith(isSuccess: true));
-      AppSnackbar.success('تم تحديث بيانات العميل');
+      AppSnackbar.success('?? ????? ?????? ??????');
     } catch (e) {
       if (isClosed) return;
       emit(state.copyWith(errorMessage: e.toString()));
-      AppSnackbar.error('فشل في تحديث العميل: $e');
+      AppSnackbar.error('??? ?? ????? ??????: $e');
     }
   }
 
@@ -226,10 +226,10 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
     try {
       await CustomerService.hardDelete(event.id);
       if (!isClosed) add(const LoadCustomers());
-      AppSnackbar.success('تم حذف العميل');
+      AppSnackbar.success('?? ??? ??????');
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('فشل في حذف العميل: $e');
+      AppSnackbar.error('??? ?? ??? ??????: $e');
     }
   }
 
@@ -254,7 +254,7 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
     } catch (e) {
       if (isClosed) return;
       emit(state.copyWith(isLoadingLedger: false));
-      AppSnackbar.error('فشل في تحميل كشف الحساب: $e');
+      AppSnackbar.error('??? ?? ????? ??? ??????: $e');
     }
   }
 
@@ -268,10 +268,10 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
         notes: event.notes,
       );
       if (!isClosed) add(LoadLedger(event.customerId));
-      AppSnackbar.success('تم تسجيل سند القبض');
+      AppSnackbar.success('?? ????? ??? ?????');
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('فشل في تسجيل سند القبض: $e');
+      AppSnackbar.error('??? ?? ????? ??? ?????: $e');
     }
   }
 
@@ -285,10 +285,10 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
         notes: event.notes,
       );
       if (!isClosed) add(LoadLedger(event.customerId));
-      AppSnackbar.success('تم تسجيل إشعار الإضافة');
+      AppSnackbar.success('?? ????? ????? ???????');
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('فشل في تسجيل الإضافة: $e');
+      AppSnackbar.error('??? ?? ????? ???????: $e');
     }
   }
 
@@ -302,10 +302,10 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
         notes: event.notes,
       );
       if (!isClosed) add(LoadLedger(event.customerId));
-      AppSnackbar.success('تم تسجيل إشعار الخصم');
+      AppSnackbar.success('?? ????? ????? ?????');
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('فشل في تسجيل الخصم: $e');
+      AppSnackbar.error('??? ?? ????? ?????: $e');
     }
   }
 
@@ -322,10 +322,10 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
         notes: event.notes,
       );
       if (!isClosed) add(LoadLedger(event.customerId));
-      AppSnackbar.success('تم تسجيل استلام الشيك');
+      AppSnackbar.success('?? ????? ?????? ?????');
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('فشل في تسجيل الشيك: $e');
+      AppSnackbar.error('??? ?? ????? ?????: $e');
     }
   }
 
@@ -342,10 +342,10 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
         notes: event.notes,
       );
       if (!isClosed) add(LoadLedger(event.customerId));
-      AppSnackbar.success('تم تسجيل دفع الشيك');
+      AppSnackbar.success('?? ????? ??? ?????');
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('فشل في تسجيل دفع الشيك: $e');
+      AppSnackbar.error('??? ?? ????? ??? ?????: $e');
     }
   }
 
@@ -413,9 +413,9 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
         'isActive': c.isActive,
       }).toList();
       await ExportService.exportCustomersToXlsx(entries: entries);
-      AppSnackbar.success('تم تصدير العملاء بنجاح');
+      AppSnackbar.success('?? ????? ??????? ?????');
     } catch (e) {
-      AppSnackbar.error('فشل في التصدير: $e');
+      AppSnackbar.error('??? ?? ???????: $e');
     }
   }
 
@@ -426,7 +426,7 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
     ));
   }
 
-  // ─── Helpers ───
+  // --- Helpers ---
 
   List<CustomerModel> _filterCustomers(List<CustomerModel> customers, String query) {
     if (query.isEmpty) return customers;
@@ -478,4 +478,8 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
     );
   }
 }
+
+
+
+
 

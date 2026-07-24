@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -7,15 +7,15 @@ import 'package:pharmacy_system/app/modules/contacts/supplier_customers/services
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
 import 'package:pharmacy_system/app/core/data/services/accounting/correction_service.dart';
-import 'package:pharmacy_system/app/core/domain/models/base/correction_model.dart';
+import 'package:pharmacy_system/app/core/models/base/correction_model.dart';
 import 'package:pharmacy_system/app/core/data/services/operations/export_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_ledger_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_service.dart';
 import 'package:pharmacy_system/app/core/data/services/inventory/stock_mutation_service.dart';
 import 'package:pharmacy_system/app/core/data/services/sound_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
 import 'package:pharmacy_system/app/core/data/repositories/purchases_repository.dart';
-import 'package:pharmacy_system/app/modules/sales/models/purchase_model.dart';
+import 'package:pharmacy_system/app/core/models/purchases/purchase_invoice_model.dart';
 import '../../../core/injection.dart';
 import 'purchases_event.dart';
 import 'purchases_state.dart';
@@ -66,12 +66,12 @@ class PurchasesBloc extends Bloc<PurchasesEvent, PurchasesState> {
     on<SetPurchasePaymentTerm>(_onSetPaymentTerm);
     on<LoadReferenceData>(_onLoadReferenceData);
 
-    // اشتراك لحظي في تحديثات المشتريات
+    // ?????? ???? ?? ??????? ?????????
     _subscription = sl<PurchasesRepository>().watchPurchases(_branchId).listen((_) {
       if (!isClosed) add(const LoadPurchases());
     });
 
-    // ذكاء مهندسة: مراقبة حية للموردين لضمان تحديث القائمة فوراً
+    // ???? ??????: ?????? ??? ???????? ????? ????? ??????? ?????
     _vendorsSubscription = SupplierCustomerService.watchAll().listen((_) {
        if (!isClosed) add(const LoadReferenceData());
     });
@@ -90,13 +90,13 @@ class PurchasesBloc extends Bloc<PurchasesEvent, PurchasesState> {
   Future<void> _onLoadReferenceData(LoadReferenceData event, Emitter<PurchasesState> emit) async {
     final list = <Map<String, String>>[];
     
-    // 1. الموردين العاديين
+    // 1. ???????? ????????
     final suppliers = SupplierService.getAll();
     for (final s in suppliers) {
       list.add({'id': s.id, 'name': s.name, 'type': 'supplier'});
     }
     
-    // 2. العملاء/الموردين الموحدين
+    // 2. ???????/???????? ????????
     final contacts = SupplierCustomerService.getAll();
     for (final sc in contacts) {
       list.add({'id': sc.id, 'name': sc.name, 'type': 'contact'});
@@ -303,11 +303,11 @@ class PurchasesBloc extends Bloc<PurchasesEvent, PurchasesState> {
 
   Future<void> _onSubmit(SubmitPurchase event, Emitter<PurchasesState> emit) async {
     if (state.selectedSupplierId == null) {
-      AppSnackbar.warning('الرجاء اختيار المورد');
+      AppSnackbar.warning('?????? ?????? ??????');
       return;
     }
     if (state.receiptLines.isEmpty) {
-      AppSnackbar.warning('الرجاء إضافة أصناف للفاتورة');
+      AppSnackbar.warning('?????? ????? ????? ????????');
       return;
     }
 
@@ -317,10 +317,10 @@ class PurchasesBloc extends Bloc<PurchasesEvent, PurchasesState> {
       String? supplierPhone;
       String? supplierId;
 
-      // ذكاء مهندسة: البحث عن المورد في كل المصادر الممكنة (الموردين أو جهات التعامل الموحدة)
+      // ???? ??????: ????? ?? ?????? ?? ?? ??????? ??????? (???????? ?? ???? ??????? ???????)
       final vendor = state.vendors.firstWhereOrNull((v) => v['id'] == state.selectedSupplierId);
       if (vendor == null) {
-        AppSnackbar.error('المورد غير موجود');
+        AppSnackbar.error('?????? ??? ?????');
         emit(state.copyWith(status: PurchasesStatus.loaded));
         return;
       }
@@ -338,13 +338,13 @@ class PurchasesBloc extends Bloc<PurchasesEvent, PurchasesState> {
       }
 
       if (supplierName == null) {
-        AppSnackbar.error('بيانات المورد غير مكتملة');
+        AppSnackbar.error('?????? ?????? ??? ??????');
         emit(state.copyWith(status: PurchasesStatus.loaded));
         return;
       }
 
       final now = DateTime.now();
-      final purchase = PurchaseModel(
+      final purchase = PurchaseInvoiceModel(
         id: state.editingPurchaseId ?? _uuid.v4(),
         branchId: _branchId,
         supplierName: supplierName,
@@ -398,7 +398,7 @@ class PurchasesBloc extends Bloc<PurchasesEvent, PurchasesState> {
           referenceType: CorrectionReferenceType.purchase,
           referenceId: purchase.id,
           action: CorrectionAction.modified,
-          details: 'تعديل فاتورة مشتريات — $supplierName',
+          details: '????? ?????? ??????? — $supplierName',
         );
       } else {
         await BranchDataService.addPurchase(purchase);
@@ -406,11 +406,11 @@ class PurchasesBloc extends Bloc<PurchasesEvent, PurchasesState> {
           referenceType: CorrectionReferenceType.purchase,
           referenceId: purchase.id,
           action: CorrectionAction.created,
-          details: 'فاتورة مشتريات بقيمة ${purchase.finalAmount.toStringAsFixed(2)} ج.م — $supplierName',
+          details: '?????? ??????? ????? ${purchase.finalAmount.toStringAsFixed(2)} ?.? — $supplierName',
         );
-        // إضافة الكميات المستلمة للمخزون عبر نظام StockMutationService الموحّد
-        // (قفل FIFO + sync queue) — ده بيقفل الدورة: الشراء يرفع المخزون
-        // عشان البيع يقدر يسحب منه من غير ما يفشل بـ Insufficient stock.
+        // ????? ??????? ???????? ??????? ??? ???? StockMutationService ???????
+        // (??? FIFO + sync queue) — ?? ????? ??????: ?????? ???? ???????
+        // ???? ????? ???? ???? ??? ?? ??? ?? ???? ?? Insufficient stock.
         for (final line in purchase.items) {
           await StockMutationService.adjustStock(
             medicineId: line.medicineId,
@@ -433,10 +433,10 @@ class PurchasesBloc extends Bloc<PurchasesEvent, PurchasesState> {
       add(const LoadPurchases());
       emit(state.copyWith(status: PurchasesStatus.loaded, receiptLines: const []));
       SoundService.instance.play(SoundEffect.itemAdded);
-      AppSnackbar.success('تم تسجيل فاتورة المشتريات بنجاح');
+      AppSnackbar.success('?? ????? ?????? ????????? ?????');
     } catch (e) {
       SoundService.instance.play(SoundEffect.error);
-      AppSnackbar.error('فشل في تسجيل الفاتورة: $e');
+      AppSnackbar.error('??? ?? ????? ????????: $e');
       emit(state.copyWith(status: PurchasesStatus.loaded));
     }
   }
@@ -448,12 +448,12 @@ class PurchasesBloc extends Bloc<PurchasesEvent, PurchasesState> {
         referenceType: CorrectionReferenceType.purchase,
         referenceId: event.purchaseId,
         action: CorrectionAction.voided,
-        details: 'تم إلغاء فاتورة المشتريات',
+        details: '?? ????? ?????? ?????????',
       );
       add(const LoadPurchases());
-      AppSnackbar.warning('تم إلغاء الفاتورة');
+      AppSnackbar.warning('?? ????? ????????');
     } catch (e) {
-      AppSnackbar.error('فشل في الإلغاء: $e');
+      AppSnackbar.error('??? ?? ???????: $e');
     }
   }
 
@@ -469,9 +469,9 @@ class PurchasesBloc extends Bloc<PurchasesEvent, PurchasesState> {
         content: csv.toString(),
         fileName: 'purchases_${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.csv',
       );
-      AppSnackbar.success('تم تصدير الفواتير بنجاح');
+      AppSnackbar.success('?? ????? ???????? ?????');
     } catch (e) {
-      AppSnackbar.error('فشل في التصدير: $e');
+      AppSnackbar.error('??? ?? ???????: $e');
     }
   }
 
@@ -494,7 +494,7 @@ class PurchasesBloc extends Bloc<PurchasesEvent, PurchasesState> {
       receiptLines: lines,
       selectedSupplierId: p.supplierId,
       selectedSupplierName: p.supplierName,
-      sourceType: p.sourceType ?? 'مباشرة',
+      sourceType: p.sourceType ?? '??????',
       paymentMethod: p.paymentMethod,
       invoiceDiscountType: p.invoiceDiscountType ?? 'fixed',
       invoiceDiscountValue: p.invoiceDiscountValue ?? 0,
@@ -518,7 +518,7 @@ class PurchasesBloc extends Bloc<PurchasesEvent, PurchasesState> {
     emit(state.copyWith(
       receiptLines: const [],
       selectedSupplierId: null, selectedSupplierName: null, supplierBalance: 0,
-      sourceType: 'مباشرة', paymentMethod: 'cash',
+      sourceType: '??????', paymentMethod: 'cash',
       invoiceDiscountType: 'fixed', invoiceDiscountValue: 0,
       invoiceTaxType: 'fixed', invoiceTaxValue: 0,
       shippingAmount: 0, deliveryAmount: 0, paidAmount: 0,
@@ -529,7 +529,7 @@ class PurchasesBloc extends Bloc<PurchasesEvent, PurchasesState> {
     ));
   }
 
-  List<PurchaseModel> _applyFilters(List<PurchaseModel> list, String query, String filter, DateTime? dateFrom, DateTime? dateTo) {
+  List<PurchaseInvoiceModel> _applyFilters(List<PurchaseInvoiceModel> list, String query, String filter, DateTime? dateFrom, DateTime? dateTo) {
     var result = list.toList();
 
     if (query.isNotEmpty) {
@@ -570,4 +570,9 @@ class PurchasesBloc extends Bloc<PurchasesEvent, PurchasesState> {
     return result;
   }
 }
+
+
+
+
+
 

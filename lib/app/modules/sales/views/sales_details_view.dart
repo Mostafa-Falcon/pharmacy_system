@@ -1,31 +1,31 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:pharmacy_system/app/core/domain/models/base/correction_model.dart';
-import 'package:pharmacy_system/app/modules/sales/models/sale_model.dart';
+import 'package:pharmacy_system/app/core/models/base/correction_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/sale_invoice_model.dart';
 import 'package:pharmacy_system/app/core/data/services/print_service.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/utils/format_utils.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/correction_chain_widget.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/correction_chain_widget.dart';
 import '../bloc/sales_bloc.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
 class SalesDetailsView extends StatelessWidget {
   const SalesDetailsView({super.key});
 
-  SaleModel _getSale(BuildContext context) {
+  SaleInvoiceModel _getSale(BuildContext context) {
     final arg = GoRouterState.of(context).extra;
-    if (arg is SaleModel) return arg;
+    if (arg is SaleInvoiceModel) return arg;
     final id = arg is String ? arg : null;
     if (id != null) {
       final found = context.read<SalesBloc>().state.sales.where((s) => s.id == id).firstOrNull;
       if (found != null) return found;
     }
-    throw Exception(AppStrings.errorInvalidInvoice);
+    throw Exception(SalesStrings.errorInvalidInvoice);
   }
 
   @override
@@ -34,7 +34,7 @@ class SalesDetailsView extends StatelessWidget {
     final sale = _getSale(context);
 
     return HomeShell(
-      title: AppStrings.saleInvoiceDetails,
+      title: SalesStrings.saleInvoiceDetails,
       child: Container(
         color: scheme.surfaceContainerLow.withValues(alpha: 0.3),
         padding: EdgeInsets.all(AppSpacing.xl.w),
@@ -76,7 +76,7 @@ class SalesDetailsView extends StatelessWidget {
 }
 
 class _Header extends StatelessWidget {
-  final SaleModel sale;
+  final SaleInvoiceModel sale;
   const _Header({required this.sale});
 
   @override
@@ -97,7 +97,7 @@ class _Header extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ReusableText(
-                  '${AppStrings.invoiceLabelSales} #${sale.id.substring(0, 8)}',
+                  '${SalesStrings.invoiceLabelSales} #${sale.id.substring(0, 8)}',
                   style: TextStyle(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w800,
@@ -107,7 +107,7 @@ class _Header extends StatelessWidget {
                 SizedBox(height: 2.h),
                 ReusableText(
                   '${sale.createdAt.day}/${sale.createdAt.month}/${sale.createdAt.year}  •  '
-                  '${sale.customerName?.isEmpty ?? true ? AppStrings.cashCustomer : sale.customerName}',
+                  '${sale.customerName?.isEmpty ?? true ? SalesStrings.cashCustomer : sale.customerName}',
                   style: TextStyle(
                     fontSize: 12.sp,
                     color: scheme.onSurfaceVariant,
@@ -126,15 +126,15 @@ class _Header extends StatelessWidget {
   }
 
   String _paymentLabel(String method) => switch (method) {
-    'cash' => AppStrings.cartPaymentCash,
-    'credit' => AppStrings.cartPaymentCredit,
-    'card' => AppStrings.cartPaymentCard,
+    'cash' => SalesStrings.cartPaymentCash,
+    'credit' => SalesStrings.cartPaymentCredit,
+    'card' => SalesStrings.cartPaymentCard,
     _ => method,
   };
 }
 
 class _ItemsTable extends StatelessWidget {
-  final SaleModel sale;
+  final SaleInvoiceModel sale;
   const _ItemsTable({required this.sale});
 
   @override
@@ -192,7 +192,7 @@ class _ItemsTable extends StatelessWidget {
 }
 
 class _Totals extends StatelessWidget {
-  final SaleModel sale;
+  final SaleInvoiceModel sale;
   const _Totals({required this.sale});
 
   @override
@@ -202,18 +202,18 @@ class _Totals extends StatelessWidget {
       child: Column(
         children: [
           _Row(
-            label: AppStrings.subtotal,
+            label: GeneralStrings.subtotal,
             value: formatMoney(sale.totalAmount),
           ),
           if (sale.discount != null && sale.discount! > 0)
             _Row(
-              label: AppStrings.discount,
+              label: GeneralStrings.discount,
               value: '- ${formatMoney(sale.discount!)}',
               color: AppColors.warning,
             ),
           Divider(height: AppSpacing.lg),
           _Row(
-            label: AppStrings.total,
+            label: GeneralStrings.total,
             value: formatMoney(sale.finalAmount),
             bold: true,
             color: AppColors.primary,
@@ -222,9 +222,9 @@ class _Totals extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ReusableButton(text: AppStrings.back, onPressed: () => context.pop(), type: ButtonType.outlined),
+              ReusableButton(text: GeneralStrings.back, onPressed: () => context.pop(), type: ButtonType.outlined),
               ReusableButton(
-                text: AppStrings.print,
+                text: GeneralStrings.print,
                 prefixIcon: Icons.print_rounded,
                 onPressed: () => PrintService.printSalesInvoice(sale),
               ),
@@ -276,4 +276,10 @@ class _Row extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
 

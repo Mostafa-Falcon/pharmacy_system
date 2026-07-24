@@ -1,7 +1,7 @@
-﻿import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
 import 'package:pharmacy_system/app/modules/auth/models/branch_model.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/stock_transfer_model.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/inventory_enums.dart';
+import 'package:pharmacy_system/app/core/models/inventory/stock_transfer_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/inventory_enums.dart';
 
 enum StockTransferStatus { initial, loading, loaded, error }
 
@@ -60,4 +60,7 @@ class StockTransferState extends Equatable {
         error,
       ];
 }
+
+
+
 

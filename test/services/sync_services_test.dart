@@ -1,24 +1,24 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_push_service.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_pull_service.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_dead_letter_service.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_compaction_service.dart';
+import 'package:pharmacy_system/app/core/sync/sync_push_service.dart';
+import 'package:pharmacy_system/app/core/sync/sync_pull_service.dart';
+import 'package:pharmacy_system/app/core/sync/sync_dead_letter_service.dart';
+import 'package:pharmacy_system/app/core/sync/sync_compaction_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_engine.dart';
+import 'package:pharmacy_system/app/core/sync/sync_engine.dart';
 
 void main() {
   group('SyncPushService Tests', () {
     test('SyncPushService class exists and can be instantiated', () {
-      // اختبار أن الفئة موجودة ويمكن إنشاؤها
+      // Ø§Ø®ØªØ¨Ø§Ø± Ø£Ù† Ø§Ù„ÙØ¦Ø© Ù…ÙˆØ¬ÙˆØ¯Ø© ÙˆÙŠÙ…ÙƒÙ† Ø¥Ù†Ø´Ø§Ø¤Ù‡Ø§
       expect(SyncPushService, isNotNull);
     });
 
     test(
       'SyncPushService has correct method signature for processPushQueue',
       () {
-        // اختبار توقيع الدالة
-        // هذا يتحقق من وجود الدالة وتوقيعها
+        // Ø§Ø®ØªØ¨Ø§Ø± ØªÙˆÙ‚ÙŠØ¹ Ø§Ù„Ø¯Ø§Ù„Ø©
+        // Ù‡Ø°Ø§ ÙŠØªØ­Ù‚Ù‚ Ù…Ù† ÙˆØ¬ÙˆØ¯ Ø§Ù„Ø¯Ø§Ù„Ø© ÙˆØªÙˆÙ‚ÙŠØ¹Ù‡Ø§
         expect(SyncPushService, isA<Type>());
       },
     );
@@ -54,9 +54,9 @@ void main() {
     });
 
     test('SyncEngine has isOnline and isSyncing properties', () {
-      // الخاصية isOnline موجودة
+      // Ø§Ù„Ø®Ø§ØµÙŠØ© isOnline Ù…ÙˆØ¬ÙˆØ¯Ø©
       expect(SyncEngine.instance.isOnline, isFalse);
-      // الخاصية isSyncing موجودة
+      // Ø§Ù„Ø®Ø§ØµÙŠØ© isSyncing Ù…ÙˆØ¬ÙˆØ¯Ø©
       expect(SyncEngine.instance.isSyncing, isFalse);
     });
 
@@ -65,3 +65,4 @@ void main() {
     });
   });
 }
+

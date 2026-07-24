@@ -1,10 +1,10 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/bloc/base_paginated_bloc.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_brand_model.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_brand_model.dart';
 import '../services/brand_service.dart';
 
-// ─── Custom Events ───
+// --- Custom Events ---
 
 class AddBrand extends PaginatedEvent {
   final String name;
@@ -23,7 +23,7 @@ class DeleteBrand extends PaginatedEvent {
   const DeleteBrand(this.id);
 }
 
-// ─── Bloc ───
+// --- Bloc ---
 
 class BrandsBloc extends BasePaginatedBloc<MedicineBrandModel> {
   BrandsBloc() {
@@ -60,7 +60,7 @@ class BrandsBloc extends BasePaginatedBloc<MedicineBrandModel> {
 
   Future<void> _onAdd(AddBrand event, Emitter<PaginatedState<MedicineBrandModel>> emit) async {
     if (BrandService.nameExists(event.name)) {
-      AppSnackbar.error('اسم العلامة التجارية موجود مسبقاً');
+      AppSnackbar.error('??? ??????? ???????? ????? ??????');
       return;
     }
     await BrandService.add(
@@ -73,7 +73,7 @@ class BrandsBloc extends BasePaginatedBloc<MedicineBrandModel> {
 
   Future<void> _onUpdate(UpdateBrand event, Emitter<PaginatedState<MedicineBrandModel>> emit) async {
     if (BrandService.nameExists(event.brand.name, excludeId: event.brand.id)) {
-      AppSnackbar.error('اسم العلامة التجارية موجود مسبقاً');
+      AppSnackbar.error('??? ??????? ???????? ????? ??????');
       return;
     }
     await BrandService.update(event.brand);
@@ -85,4 +85,8 @@ class BrandsBloc extends BasePaginatedBloc<MedicineBrandModel> {
     add(const LoadItems(refresh: true));
   }
 }
+
+
+
+
 

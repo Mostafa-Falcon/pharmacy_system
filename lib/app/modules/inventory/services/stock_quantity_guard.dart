@@ -1,4 +1,4 @@
-﻿import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
 
 class StockQuantityGuard {
@@ -28,13 +28,13 @@ class StockQuantityGuard {
       {String medicineName = ''}) {
     final medicine = _getMedicine(medicineId);
     if (medicine == null) {
-      throw StateError('الصنف غير موجود');
+      throw StateError('????? ??? ?????');
     }
     final available = medicine.quantity.toDouble();
     if (available < quantity && !medicine.allowNegativeStock) {
       throw StateError(
-        'الكمية المتاحة من "${medicine.name}" غير كافية'
-        ' (المتاح: $available، المطلوب: $quantity)',
+        '?????? ??????? ?? "${medicine.name}" ??? ?????'
+        ' (??????: $available? ???????: $quantity)',
       );
     }
   }
@@ -43,4 +43,7 @@ class StockQuantityGuard {
     return BranchDataService.getMedicine(medicineId);
   }
 }
+
+
+
 

@@ -38,3 +38,5 @@ class ClearAllNotifications extends NotificationsEvent {
 class GenerateSystemNotifications extends NotificationsEvent {
   const GenerateSystemNotifications();
 }
+
+

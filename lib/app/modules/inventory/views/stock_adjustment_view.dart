@@ -1,15 +1,15 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../bloc/medicines_bloc.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
 class StockAdjustmentView extends StatelessWidget {
   final MedicineModel? medicine;
@@ -19,10 +19,10 @@ class StockAdjustmentView extends StatelessWidget {
   Widget build(BuildContext context) {
     if (medicine == null) {
       return HomeShell(
-        title: AppStrings.stockAdjustmentTitle,
+        title: InventoryStrings.stockAdjustmentTitle,
         child: Center(
           child: ReusableText(
-            AppStrings.medicineNotFound,
+            InventoryStrings.medicineNotFound,
             style: TextStyle(fontSize: 16.sp),
           ),
         ),
@@ -71,7 +71,7 @@ class _StockAdjustmentBodyState extends State<_StockAdjustmentBody> {
   Future<void> _save() async {
     final newQty = int.tryParse(_qtyController.text.trim());
     if (newQty == null || newQty < 0) {
-      AppSnackbar.error(AppStrings.invalidStockQuantity, title: AppStrings.error);
+      AppSnackbar.error(InventoryStrings.invalidStockQuantity, title: GeneralStrings.error);
       return;
     }
     if (newQty == medicine.quantity) {
@@ -89,8 +89,8 @@ class _StockAdjustmentBodyState extends State<_StockAdjustmentBody> {
     final scheme = Theme.of(context).colorScheme;
 
     return HomeShell(
-      title: '${AppStrings.stockAdjustmentTitle}: ${medicine.name}',
-      subtitle: AppStrings.stockAdjustmentSubtitle,
+      title: '${InventoryStrings.stockAdjustmentTitle}: ${medicine.name}',
+      subtitle: InventoryStrings.stockAdjustmentSubtitle,
       child: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
@@ -111,7 +111,7 @@ class _StockAdjustmentBodyState extends State<_StockAdjustmentBody> {
                         children: [
                           MedicineSearchField(
                             onSelected: _onMedicineSelected,
-                            hint: 'اختر دواء آخر للتعديل...',
+                            hint: '???? ???? ??? ???????...',
                           ),
                           SizedBox(height: AppSpacing.lg.h),
                           Row(
@@ -139,7 +139,7 @@ class _StockAdjustmentBodyState extends State<_StockAdjustmentBody> {
                                         Icon(Icons.inventory_2_outlined, size: 14.sp, color: scheme.onSurfaceVariant),
                                         SizedBox(width: AppSpacing.xs.w),
                                     ReusableText(
-                                      AppStrings.currentSystemStock,
+                                      InventoryStrings.currentSystemStock,
                                       style: TextStyle(fontSize: 12.sp, color: scheme.onSurfaceVariant, fontWeight: FontWeight.w500),
                                     ),
 
@@ -168,7 +168,7 @@ class _StockAdjustmentBodyState extends State<_StockAdjustmentBody> {
 
                           ReusableInput(
                             controller: _qtyController,
-                            label: '${AppStrings.currentStockLabel} الفعلي *',
+                            label: '${InventoryStrings.currentStockLabel} ?????? *',
                             keyboardType: TextInputType.number,
                             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                             prefixIcon: Icon(Icons.numbers_rounded, size: 20.sp, color: scheme.primary),
@@ -190,7 +190,7 @@ class _StockAdjustmentBodyState extends State<_StockAdjustmentBody> {
                                   Icon(Icons.warning_amber_rounded, size: 14.sp, color: AppColors.warning),
                                   SizedBox(width: AppSpacing.xs.w),
                                   ReusableText(
-                                    'حد التنبيه والنواقص لهذا الصنف: ${medicine.minStock} وحدة',
+                                    '?? ??????? ???????? ???? ?????: ${medicine.minStock} ????',
                                     style: TextStyle(fontSize: 11.5.sp, color: AppColors.warning, fontWeight: FontWeight.bold),
                                   ),
                                 ],
@@ -202,14 +202,14 @@ class _StockAdjustmentBodyState extends State<_StockAdjustmentBody> {
                           Row(
                             children: [
                               ReusableButton(
-                                text: AppStrings.cancel,
+                                text: GeneralStrings.cancel,
                                 onPressed: () => Navigator.pop(context),
                                 type: ButtonType.outlined,
                               ),
                               SizedBox(width: AppSpacing.xl.w),
                               Expanded(
                                 child: ReusableButton(
-                                  text: _isSaving ? AppStrings.submittingMedicine : AppStrings.approveNewQuantity,
+                                  text: _isSaving ? InventoryStrings.submittingMedicine : InventoryStrings.approveNewQuantity,
                                   onPressed: _isSaving ? null : _save,
                                   prefixIcon: Icons.check_circle_rounded,
                                 ),
@@ -229,4 +229,10 @@ class _StockAdjustmentBodyState extends State<_StockAdjustmentBody> {
     );
   }
 }
+
+
+
+
+
+
 

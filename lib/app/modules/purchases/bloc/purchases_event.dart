@@ -1,6 +1,6 @@
-﻿import 'package:equatable/equatable.dart';
-import 'package:pharmacy_system/app/modules/sales/models/purchase_model.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_unit_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:pharmacy_system/app/core/models/purchases/purchase_invoice_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_unit_model.dart';
 
 abstract class PurchasesEvent extends Equatable {
   const PurchasesEvent();
@@ -300,7 +300,7 @@ class ExportPurchasesCsv extends PurchasesEvent {
 }
 
 class LoadPurchaseForEdit extends PurchasesEvent {
-  final PurchaseModel purchase;
+  final PurchaseInvoiceModel purchase;
   const LoadPurchaseForEdit(this.purchase);
 
   @override
@@ -314,4 +314,8 @@ class LoadReferenceData extends PurchasesEvent {
 class ResetPurchaseForm extends PurchasesEvent {
   const ResetPurchaseForm();
 }
+
+
+
+
 

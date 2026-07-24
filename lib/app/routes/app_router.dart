@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pharmacy_system/app/modules/auth/bloc/auth_bloc.dart';
 
 import 'package:pharmacy_system/app/core/injection.dart';
-import 'package:pharmacy_system/app/core/navigation/route_cubit.dart';
+import 'package:pharmacy_system/app/shared/navigation/route_cubit.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 
 import 'app_routes.dart';
@@ -143,3 +143,5 @@ class _GoRouterRefreshStream extends ChangeNotifier {
     super.dispose();
   }
 }
+
+

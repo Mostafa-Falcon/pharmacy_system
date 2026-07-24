@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
@@ -130,4 +130,6 @@ class SalesRepService {
     };
   }
 }
+
+
 

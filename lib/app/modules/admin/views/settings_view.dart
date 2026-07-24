@@ -3,9 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
 
-import 'package:pharmacy_system/app/core/presentation/design_system/screen_tier.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/design_system/screen_tier.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import 'package:pharmacy_system/app/core/data/services/sound_service.dart';
 import 'package:pharmacy_system/app/core/data/services/print_settings_service.dart';
 import '../../../core/constants/app_strings.dart';
@@ -44,8 +44,8 @@ class _SettingsBody extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
 
     return HomeShell(
-      title: AppStrings.adminSettings,
-      subtitle: AppStrings.adminSettingsSubtitle,
+      title: AdminStrings.adminSettings,
+      subtitle: AdminStrings.adminSettingsSubtitle,
       child: Container(
         color: scheme.surfaceContainerLow.withValues(alpha: 0.15),
         child: BlocBuilder<SettingsBloc, SettingsState>(
@@ -99,7 +99,7 @@ class _TabSelector extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(AppSpacing.xs.w),
               child: ReusableInput(
-                hint: AppStrings.adminSearchSettings,
+                hint: AdminStrings.adminSearchSettings,
                 prefixIcon: const Icon(Icons.search_rounded, size: 20),
                 onChanged: (value) => bloc.add(SetSearchQuery(value)),
                 textDirection: TextDirection.rtl,
@@ -265,10 +265,10 @@ class _LegacySectionsState extends State<_LegacySections> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSection(
-          title: AppStrings.adminQuickControl,
+          title: AdminStrings.adminQuickControl,
           children: [
             _buildSwitchTile(
-              AppStrings.adminEnableSounds,
+              AdminStrings.adminEnableSounds,
               'system_sounds',
               Icons.volume_up_rounded,
               _systemSounds,
@@ -278,7 +278,7 @@ class _LegacySectionsState extends State<_LegacySections> {
               },
             ),
             _buildSwitchTile(
-              AppStrings.adminAutoPrint,
+              AdminStrings.adminAutoPrint,
               'auto_print',
               Icons.print_rounded,
               _autoPrint,
@@ -325,3 +325,8 @@ class _LegacySectionsState extends State<_LegacySections> {
     );
   }
 }
+
+
+
+
+

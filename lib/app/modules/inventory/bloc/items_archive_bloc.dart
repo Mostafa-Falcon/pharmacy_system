@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -6,11 +6,11 @@ import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 
 import 'package:pharmacy_system/app/core/data/database/daos/items_archive_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'items_archive_event.dart';
 import 'items_archive_state.dart';
 
@@ -27,11 +27,11 @@ abstract final class _SearchNormalizer {
     return v
         .replaceAll('\u0640', '')
         .replaceAll(_diacritics, '')
-        .replaceAll(RegExp(r'[أإآٱ]'), 'ا')
-        .replaceAll('ى', 'ي')
-        .replaceAll('ؤ', 'و')
-        .replaceAll('ئ', 'ي')
-        .replaceAll('ة', 'ه')
+        .replaceAll(RegExp(r'[????]'), '?')
+        .replaceAll('?', '?')
+        .replaceAll('?', '?')
+        .replaceAll('?', '?')
+        .replaceAll('?', '?')
         .toLowerCase()
         .trim()
         .replaceAll(_ws, ' ');
@@ -167,9 +167,9 @@ class ItemsArchiveBloc extends Bloc<ItemsArchiveEvent, ItemsArchiveState> {
       }
       emit(state.copyWith(selectedIds: const {}));
       if (failed == 0) {
-        AppSnackbar.success(AppStrings.itemsRestoredSuccess, title: AppStrings.restoreLabel);
+        AppSnackbar.success(InventoryStrings.itemsRestoredSuccess, title: GeneralStrings.restoreLabel);
       } else {
-        AppSnackbar.warning('${AppStrings.itemsRestorePartial} ($failed)', title: AppStrings.warning);
+        AppSnackbar.warning('${InventoryStrings.itemsRestorePartial} ($failed)', title: GeneralStrings.warning);
       }
       add(const LoadItemsArchive());
     } finally {
@@ -210,9 +210,9 @@ class ItemsArchiveBloc extends Bloc<ItemsArchiveEvent, ItemsArchiveState> {
       }
       emit(state.copyWith(selectedIds: const {}));
       if (failed == 0) {
-        AppSnackbar.error(AppStrings.itemsDeletedPermanently, title: AppStrings.permanentDelete);
+        AppSnackbar.error(InventoryStrings.itemsDeletedPermanently, title: SalesStrings.permanentDelete);
       } else {
-        AppSnackbar.warning('${AppStrings.itemsDeletePartial} ($failed)', title: AppStrings.warning);
+        AppSnackbar.warning('${InventoryStrings.itemsDeletePartial} ($failed)', title: GeneralStrings.warning);
       }
       add(const LoadItemsArchive());
     } finally {
@@ -220,4 +220,10 @@ class ItemsArchiveBloc extends Bloc<ItemsArchiveEvent, ItemsArchiveState> {
     }
   }
 }
+
+
+
+
+
+
 

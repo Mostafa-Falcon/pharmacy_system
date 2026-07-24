@@ -1,10 +1,10 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:drift/drift.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
-import 'package:pharmacy_system/app/core/data/database/daos/suppliers_dao.dart';
+import 'package:pharmacy_system/app/core/data/database/daos/contacts_dao.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_model.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_model.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/modules/archive/services/archive_service.dart';
 
@@ -29,23 +29,21 @@ class SuppliersRepository {
     return SupplierModel(
       id: d.id,
       name: d.name,
+      contactPerson: d.contactPerson,
       phone: d.phone,
-      address: d.address,
-      isActive: d.isActive,
-      partyType: SupplierPartyType.values.firstWhere(
-        (e) => e.name == d.partyType,
-        orElse: () => SupplierPartyType.company,
-      ),
-      companyName: d.companyName,
       email: d.email,
+      address: d.address,
       taxId: d.taxId,
-      creditLimit: d.creditLimit,
-      discountPercent: d.discountPercent,
+      creditAmount: d.creditAmount,
+      debitAmount: d.debitAmount,
       paymentTermDays: d.paymentTermDays,
+      isActive: d.isActive,
+      accountId: d.accountId,
+      branchId: d.branchId,
       notes: d.notes,
       lastModified: d.lastModified,
       isDeleted: d.isDeleted,
-      branchId: d.branchId,
+      syncVersion: d.syncVersion,
     );
   }
 
@@ -53,21 +51,21 @@ class SuppliersRepository {
     return SuppliersTableCompanion(
       id: Value(m.id),
       name: Value(m.name),
-      type: const Value('supplier'),
+      contactPerson: Value(m.contactPerson),
       phone: Value(m.phone),
-      address: Value(m.address),
-      isActive: Value(m.isActive),
-      partyType: Value(m.partyType.name),
-      companyName: Value(m.companyName),
       email: Value(m.email),
+      address: Value(m.address),
       taxId: Value(m.taxId),
-      creditLimit: Value(m.creditLimit),
-      discountPercent: Value(m.discountPercent),
+      creditAmount: Value(m.creditAmount),
+      debitAmount: Value(m.debitAmount),
       paymentTermDays: Value(m.paymentTermDays),
+      isActive: Value(m.isActive),
+      branchId: Value(m.branchId),
+      accountId: Value(m.accountId),
       notes: Value(m.notes),
       lastModified: Value(m.lastModified),
       isDeleted: Value(m.isDeleted),
-      branchId: Value(m.branchId ?? AuthService.currentBranchId ?? ''),
+      syncVersion: Value(m.syncVersion),
     );
   }
 
@@ -76,7 +74,7 @@ class SuppliersRepository {
     bool includeActive = true,
     bool includeDeleted = false,
   }) async {
-    var data = await _dao.getAll();
+    var data = await _dao.getAllSuppliers();
     var result = data.map(_toModel).toList();
     _updateCache(result);
 
@@ -110,7 +108,7 @@ class SuppliersRepository {
   }
 
   Future<SupplierModel?> getByIdAsync(String id) async {
-    final data = await _dao.getById(id);
+    final data = await _dao.getSupplierById(id);
     return data != null ? _toModel(data) : null;
   }
 
@@ -123,37 +121,41 @@ class SuppliersRepository {
   }
 
   Future<void> create(SupplierModel supplier) async {
-    supplier.lastModified = DateTime.now();
-    supplier.branchId ??= AuthService.currentBranchId;
-    await _dao.upsert(_toCompanion(supplier));
-    SyncService.onTableUpdated?.call('suppliers', supplier.branchId ?? '');
+    final model = supplier.copyWith(lastModified: DateTime.now());
+    await _dao.upsertSupplier(_toCompanion(model));
+    SyncService.onTableUpdated?.call(
+      'suppliers',
+      AuthService.currentBranchId ?? '',
+    );
     unawaited(
       SyncService.queueOperation(
         type: SyncOperationType.create,
         table: 'suppliers',
-        data: supplier.toJson(),
-        branchId: supplier.branchId ?? '',
+        data: model.toJson(),
+        branchId: AuthService.currentBranchId ?? '',
       ),
     );
   }
 
   Future<void> update(SupplierModel supplier) async {
-    supplier.lastModified = DateTime.now();
-    supplier.branchId ??= AuthService.currentBranchId;
-    await _dao.upsert(_toCompanion(supplier));
-    SyncService.onTableUpdated?.call('suppliers', supplier.branchId ?? '');
+    final model = supplier.copyWith(lastModified: DateTime.now());
+    await _dao.upsertSupplier(_toCompanion(model));
+    SyncService.onTableUpdated?.call(
+      'suppliers',
+      AuthService.currentBranchId ?? '',
+    );
     unawaited(
       SyncService.queueOperation(
         type: SyncOperationType.update,
         table: 'suppliers',
-        data: supplier.toJson(),
-        branchId: supplier.branchId ?? '',
+        data: model.toJson(),
+        branchId: AuthService.currentBranchId ?? '',
       ),
     );
   }
 
   Future<void> delete(SupplierModel supplier) async {
-    final branchId = supplier.branchId ?? AuthService.currentBranchId ?? '';
+    final branchId = AuthService.currentBranchId ?? '';
     await ArchiveService.record(
       entityType: 'supplier',
       entityId: supplier.id,
@@ -161,7 +163,7 @@ class SuppliersRepository {
       entityData: supplier.toJson(),
       branchId: branchId,
     );
-    await _dao.softDelete(supplier.id);
+    await _dao.softDeleteSupplier(supplier.id);
     SyncService.onTableUpdated?.call('suppliers', branchId);
     unawaited(
       SyncService.queueOperation(
@@ -173,14 +175,19 @@ class SuppliersRepository {
     );
   }
 
-  Future<void> batchCreate(List<SupplierModel> suppliers, {bool skipSync = false}) async {
-    await _dao.upsertBatch(suppliers.map(_toCompanion).toList());
+  Future<void> batchCreate(
+    List<SupplierModel> suppliers, {
+    bool skipSync = false,
+  }) async {
+    for (final supplier in suppliers) {
+      await _dao.upsertSupplier(_toCompanion(supplier));
+    }
   }
 
   bool _matchesSearch(SupplierModel supplier, String query) {
     return supplier.name.toLowerCase().contains(query) ||
         (supplier.phone?.contains(query) ?? false) ||
-        (supplier.companyName?.toLowerCase().contains(query) ?? false);
+        (supplier.agentPhone?.contains(query) ?? false);
   }
 
   static void dispose() {
@@ -191,4 +198,3 @@ class SuppliersRepository {
     _cacheTimers.clear();
   }
 }
-

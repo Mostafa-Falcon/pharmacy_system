@@ -10,15 +10,15 @@ import 'package:intl/intl.dart';
 
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 
-import 'package:pharmacy_system/app/modules/sales/models/purchase_model.dart';
+import 'package:pharmacy_system/app/core/models/purchases/purchase_invoice_model.dart';
 
-import 'package:pharmacy_system/app/modules/sales/models/sale_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/sale_invoice_model.dart';
 
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
 
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
 
 
@@ -148,7 +148,7 @@ class VoidOperationsView extends StatelessWidget {
 
 class _SalesTab extends StatelessWidget {
 
-  final List<SaleModel> sales;
+  final List<SaleInvoiceModel> sales;
 
   final VoidCallback onRefresh;
 
@@ -220,7 +220,7 @@ class _SalesTab extends StatelessWidget {
 
 class _SaleCard extends StatelessWidget {
 
-  final SaleModel sale;
+  final SaleInvoiceModel sale;
 
   final VoidCallback onRefresh;
 
@@ -523,7 +523,7 @@ class _SaleCard extends StatelessWidget {
 
           ReusableButton(
 
-            text: AppStrings.cancel,
+            text: GeneralStrings.cancel,
 
             type: ButtonType.text,
 
@@ -573,7 +573,7 @@ class _SaleCard extends StatelessWidget {
 
 class _PurchasesTab extends StatelessWidget {
 
-  final List<PurchaseModel> purchases;
+  final List<PurchaseInvoiceModel> purchases;
 
   final VoidCallback onRefresh;
 
@@ -647,7 +647,7 @@ class _PurchasesTab extends StatelessWidget {
 
 class _PurchaseCard extends StatelessWidget {
 
-  final PurchaseModel purchase;
+  final PurchaseInvoiceModel purchase;
 
   final VoidCallback onRefresh;
 
@@ -906,6 +906,12 @@ class _PurchaseCard extends StatelessWidget {
   }
 
 }
+
+
+
+
+
+
 
 
 

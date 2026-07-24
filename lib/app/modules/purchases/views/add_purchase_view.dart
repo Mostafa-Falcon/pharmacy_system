@@ -8,13 +8,13 @@ import 'package:go_router/go_router.dart';
 import '../../../core/data/services/sound_service.dart';
 import '../../../routes/app_routes.dart';
 import '../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/utils/format_utils.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../../../core/injection.dart';
 import '../bloc/purchases_bloc.dart';
 import '../bloc/purchases_event.dart';
@@ -34,10 +34,10 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
   String get _branchId => AuthService.currentBranchId ?? '';
 
   static const Map<String, String> _paymentAccounts = {
-    'system:cash': '1101 — ${AppStrings.accountCash}',
-    'system:bank': '1102 — ${AppStrings.accountBank}',
-    'system:mobile_wallet': '1103 — ${AppStrings.accountMobileWallet}',
-    'system:card_clearing': '1104 — ${AppStrings.accountCardClearing}',
+    'system:cash': '1101 — ${AccountingStrings.accountCash}',
+    'system:bank': '1102 — ${AccountingStrings.accountBank}',
+    'system:mobile_wallet': '1103 — ${AccountingStrings.accountMobileWallet}',
+    'system:card_clearing': '1104 — ${AccountingStrings.accountCardClearing}',
   };
 
   Future<void> _selectExpiry(BuildContext context, int index, DateTime? current) async {
@@ -64,8 +64,8 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
 
   void _submitForm(BuildContext context) {
     final state = context.read<PurchasesBloc>().state;
-    if (state.receiptLines.isEmpty) { AppSnackbar.error(AppStrings.emptyPurchaseError); return; }
-    if (state.selectedSupplierId == null) { AppSnackbar.error(AppStrings.selectSupplierError); return; }
+    if (state.receiptLines.isEmpty) { AppSnackbar.error(PurchasesStrings.emptyPurchaseError); return; }
+    if (state.selectedSupplierId == null) { AppSnackbar.error(PurchasesStrings.selectSupplierError); return; }
     context.read<PurchasesBloc>().add(const SubmitPurchase());
     Navigator.pop(context);
   }
@@ -75,14 +75,14 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
     if (state.receiptLines.isEmpty && state.selectedSupplierId == null) return true;
     final res = await ReusableDialog.show<bool>(
       context,
-      title: AppStrings.confirmExitTitle,
+      title: GeneralStrings.confirmExitTitle,
       headerIcon: const Icon(Icons.exit_to_app_rounded),
       children: [
-        ReusableText(AppStrings.confirmExitMessage, style: AppTextStyles.body(context)),
+        ReusableText(PurchasesStrings.confirmExitMessage, style: AppTextStyles.body(context)),
         SizedBox(height: 16.h),
         DialogActions(
-          cancelText: AppStrings.stayButton,
-          confirmText: AppStrings.exitAndIgnoreButton,
+          cancelText: GeneralStrings.stayButton,
+          confirmText: GeneralStrings.exitAndIgnoreButton,
           confirmType: ButtonType.outlined,
           onCancel: () => Navigator.pop(context, false),
           onConfirm: () => Navigator.pop(context, true),
@@ -110,7 +110,7 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
               }
             },
             child: HomeShell(
-              title: isEdit ? AppStrings.editPurchaseTitle : AppStrings.newPurchaseTitle,
+              title: isEdit ? PurchasesStrings.editPurchaseTitle : PurchasesStrings.newPurchaseTitle,
               child: Container(
                 color: scheme.surfaceContainerLow.withValues(alpha: 0.3),
                 child: state.status == PurchasesStatus.submitting
@@ -150,7 +150,7 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
       SizedBox(height: AppSpacing.lg.h),
       _buildItemSearchAndTable(context, scheme, state),
       SizedBox(height: AppSpacing.lg.h),
-      // القسم المالي المنظم
+      // ????? ?????? ??????
       Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -174,9 +174,9 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _responsiveFields(context, minWidth: 220, children: [
-            // المورد (موحد من الحالة)
+            // ?????? (???? ?? ??????)
             ReusableDropdown<Map<String, String>>(
-              hintText: AppStrings.select, labelText: AppStrings.supplierLabelPurchase,
+              hintText: GeneralStrings.select, labelText: PurchasesStrings.supplierLabel,
               items: vendors,
               value: vendors.firstWhereOrNull((v) => v['id'] == state.selectedSupplierId),
               itemAsString: (v) => v['name'] ?? '',
@@ -186,14 +186,14 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
                 }
               },
             ),
-            // الرقم المرجعي
+            // ????? ???????
             ReusableInput(
-              label: AppStrings.referenceNumberLabel,
+              label: PurchasesStrings.referenceNumberLabel,
               controller: TextEditingController(text: state.referenceNumber ?? ''),
-              hint: 'رقم الفاتورة الأصلي',
+              hint: '??? ???????? ??????',
               onChanged: (v) => context.read<PurchasesBloc>().add(SetPurchaseReferenceNumber(v)),
             ),
-            // تاريخ الشراء
+            // ????? ??????
             InkWell(
               onTap: () async {
                 final picked = await showDatePicker(
@@ -207,20 +207,20 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
                 }
               },
               child: ReusableInput(
-                label: AppStrings.purchaseDateLabel,
+                label: PurchasesStrings.purchaseDateLabel,
                 enabled: false,
                 controller: TextEditingController(text: FormatUtils.date(state.purchaseDate)),
                 suffixIcon: const Icon(Icons.calendar_today_rounded, size: 18),
               ),
             ),
-            // حالة الشراء
+            // ???? ??????
             ReusableDropdown<String>(
-              labelText: AppStrings.purchaseStatusLabel,
-              hintText: AppStrings.selectStatusHint,
-              items: const [AppStrings.statusReceived, AppStrings.statusPendingPurchase, AppStrings.statusOrdered],
+              labelText: PurchasesStrings.purchaseStatusLabel,
+              hintText: PurchasesStrings.selectStatusHint,
+              items: const [PurchasesStrings.statusReceived, PurchasesStrings.statusPending, PurchasesStrings.statusOrdered],
               value: state.purchaseStatus,
               itemAsString: (v) => v,
-              onChanged: (v) => context.read<PurchasesBloc>().add(SetPurchaseStatus(v ?? AppStrings.statusReceived)),
+              onChanged: (v) => context.read<PurchasesBloc>().add(SetPurchaseStatus(v ?? PurchasesStrings.statusReceived)),
             ),
           ]),
         ],
@@ -235,17 +235,17 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SectionHeader(icon: Icons.calculate_rounded, title: 'التعديلات المالية للفاتورة'),
+          const SectionHeader(icon: Icons.calculate_rounded, title: '????????? ??????? ????????'),
           SizedBox(height: AppSpacing.md.h),
           _responsiveFields(context, minWidth: 200, children: [
-             // خصم الفاتورة الإجمالي
+             // ??? ???????? ????????
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
                   flex: 3,
                   child: ReusableInput(
-                    label: 'خصم إجمالي الفاتورة',
+                    label: '??? ?????? ????????',
                     controller: TextEditingController(text: state.invoiceDiscountValue.toString()),
                     keyboardType: TextInputType.number,
                     onChanged: (v) => bloc.add(SetPurchaseInvoiceDiscount(state.invoiceDiscountType, double.tryParse(v) ?? 0)),
@@ -255,23 +255,23 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
                 Expanded(
                   flex: 2,
                   child: ReusableDropdown<String>(
-                    hintText: 'نوع الخصم',
+                    hintText: '??? ?????',
                     items: const ['fixed', '%'],
                     value: state.invoiceDiscountType,
-                    itemAsString: (v) => v == 'fixed' ? 'ج.م' : '%',
+                    itemAsString: (v) => v == 'fixed' ? '?.?' : '%',
                     onChanged: (v) => bloc.add(SetPurchaseInvoiceDiscount(v ?? 'fixed', state.invoiceDiscountValue)),
                   ),
                 ),
               ],
             ),
-            // الضريبة الإجمالية
+            // ??????? ?????????
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
                   flex: 3,
                   child: ReusableInput(
-                    label: 'ضريبة الفاتورة',
+                    label: '????? ????????',
                     controller: TextEditingController(text: state.invoiceTaxValue.toString()),
                     keyboardType: TextInputType.number,
                     onChanged: (v) => bloc.add(SetPurchaseInvoiceTax(state.invoiceTaxType, double.tryParse(v) ?? 0)),
@@ -281,26 +281,26 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
                 Expanded(
                   flex: 2,
                   child: ReusableDropdown<String>(
-                    hintText: 'نوع الضريبة',
+                    hintText: '??? ???????',
                     items: const ['fixed', '%'],
                     value: state.invoiceTaxType,
-                    itemAsString: (v) => v == 'fixed' ? 'ج.م' : '%',
+                    itemAsString: (v) => v == 'fixed' ? '?.?' : '%',
                     onChanged: (v) => bloc.add(SetPurchaseInvoiceTax(v ?? 'fixed', state.invoiceTaxValue)),
                   ),
                 ),
               ],
             ),
-            // مصاريف الشحن
+            // ?????? ?????
             ReusableInput(
-              label: 'مصاريف الشحن',
+              label: '?????? ?????',
               controller: TextEditingController(text: state.shippingAmount.toString()),
               keyboardType: TextInputType.number,
               prefixIcon: const Icon(Icons.local_shipping_rounded),
               onChanged: (v) => bloc.add(SetPurchaseShipping(double.tryParse(v) ?? 0)),
             ),
-            // مصاريف التوصيل/أخرى
+            // ?????? ???????/????
             ReusableInput(
-              label: 'مصاريف أخرى',
+              label: '?????? ????',
               controller: TextEditingController(text: state.deliveryAmount.toString()),
               keyboardType: TextInputType.number,
               prefixIcon: const Icon(Icons.add_task_rounded),
@@ -318,20 +318,20 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SectionHeader(icon: Icons.receipt_long_rounded, title: 'ملخص الحساب'),
+          const SectionHeader(icon: Icons.receipt_long_rounded, title: '???? ??????'),
           SizedBox(height: AppSpacing.md.h),
-          _summaryRow('إجمالي الأصناف', FormatUtils.currency(state.subtotal)),
-          _summaryRow('خصم الأصناف', '- ${FormatUtils.currency(state.itemsDiscountTotal)}', color: AppColors.error),
-          _summaryRow('خصم الفاتورة الإجمالي', '- ${FormatUtils.currency(state.calcInvoiceDiscountAmount)}', color: AppColors.error),
-          _summaryRow('إجمالي ضرائب الأصناف', '+ ${FormatUtils.currency(state.itemsTaxTotal)}', color: AppColors.success),
-          _summaryRow('ضريبة الفاتورة العامة', '+ ${FormatUtils.currency(state.calcInvoiceTaxAmount)}', color: AppColors.success),
-          _summaryRow('إجمالي مصاريف الشحن والتحميل', '+ ${FormatUtils.currency(state.totalAdditionalExpenses)}', color: AppColors.info),
+          _summaryRow('?????? ???????', FormatUtils.currency(state.subtotal)),
+          _summaryRow('??? ???????', '- ${FormatUtils.currency(state.itemsDiscountTotal)}', color: AppColors.error),
+          _summaryRow('??? ???????? ????????', '- ${FormatUtils.currency(state.calcInvoiceDiscountAmount)}', color: AppColors.error),
+          _summaryRow('?????? ????? ???????', '+ ${FormatUtils.currency(state.itemsTaxTotal)}', color: AppColors.success),
+          _summaryRow('????? ???????? ??????', '+ ${FormatUtils.currency(state.calcInvoiceTaxAmount)}', color: AppColors.success),
+          _summaryRow('?????? ?????? ????? ????????', '+ ${FormatUtils.currency(state.totalAdditionalExpenses)}', color: AppColors.info),
           const Divider(thickness: 1.5),
           SizedBox(height: 8.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ReusableText('الصافي النهائي', style: AppTextStyles.title(context).copyWith(fontWeight: FontWeight.w900, fontSize: 18.sp)),
+              ReusableText('?????? ???????', style: AppTextStyles.title(context).copyWith(fontWeight: FontWeight.w900, fontSize: 18.sp)),
               ReusableText(FormatUtils.currency(state.finalAmount), style: AppTextStyles.title(context).copyWith(fontWeight: FontWeight.w900, color: scheme.primary, fontSize: 20.sp)),
             ],
           ),
@@ -360,38 +360,38 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SectionHeader(icon: Icons.payments_rounded, title: 'السداد والدفع'),
+          const SectionHeader(icon: Icons.payments_rounded, title: '?????? ??????'),
           SizedBox(height: AppSpacing.md.h),
           _responsiveFields(context, minWidth: 260, children: [
-            // طريقة الدفع
+            // ????? ?????
             ReusableDropdown<String>(
-              labelText: AppStrings.paymentMethodLabelPurchase,
-              hintText: AppStrings.selectPaymentMethodHint,
-              items: const [AppStrings.paymentMethodCashPurchase, AppStrings.paymentMethodCardPurchase, AppStrings.paymentMethodCreditPurchase],
+              labelText: PurchasesStrings.paymentMethodLabel,
+              hintText: PurchasesStrings.selectPaymentMethodHint,
+              items: const [PurchasesStrings.paymentMethodCash, PurchasesStrings.paymentMethodCard, PurchasesStrings.paymentMethodCredit],
               value: state.getPaymentLabel(state.paymentMethod),
               itemAsString: (v) => v,
               onChanged: (v) {
                 final method = switch (v) {
-                  AppStrings.paymentMethodCashPurchase => 'cash',
-                  AppStrings.paymentMethodCreditPurchase => 'credit',
-                  AppStrings.paymentMethodCardPurchase => 'card',
+                  PurchasesStrings.paymentMethodCash => 'cash',
+                  PurchasesStrings.paymentMethodCredit => 'credit',
+                  PurchasesStrings.paymentMethodCard => 'card',
                   _ => 'cash'
                 };
                 bloc.add(SetPurchasePaymentMethod(method));
               },
             ),
-             // المبلغ المدفوع
+             // ?????? ???????
             ReusableInput(
-              label: AppStrings.paidAmountLabel,
+              label: PurchasesStrings.paidAmountLabel,
               controller: TextEditingController(text: state.paidAmount.toString()),
               suffixIcon: IconButton(icon: const Icon(Icons.done_all_rounded, size: 18), onPressed: () => bloc.add(const PayInFull())),
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               onChanged: (v) => bloc.add(SetPurchasePaidAmount(double.tryParse(v) ?? 0)),
             ),
-            // الحساب/الخزينة
+            // ??????/???????
             ReusableDropdown<String>(
-              labelText: AppStrings.accountLabel,
-              hintText: AppStrings.selectAccountHint,
+              labelText: PurchasesStrings.accountLabel,
+              hintText: PurchasesStrings.selectAccountHint,
               items: _paymentAccounts.keys.toList(),
               value: state.paymentAccountId ?? _paymentAccounts.keys.first,
               itemAsString: (v) => _paymentAccounts[v] ?? v,
@@ -400,9 +400,9 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
                 if (v != null) bloc.add(SetPurchasePaymentAccount(v, name));
               },
             ),
-            // ملاحظة الدفع
+            // ?????? ?????
             ReusableInput(
-              label: AppStrings.paymentNoteLabel,
+              label: PurchasesStrings.paymentNoteLabel,
               controller: TextEditingController(text: state.notes),
               onChanged: (v) => bloc.add(SetPurchaseNotes(v)),
             ),
@@ -420,7 +420,7 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl.w),
       child: Row(
         children: [
-          // المتبقي (لو آجل)
+          // ??????? (?? ???)
           if (isCredit)
             Container(
               padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 24.w),
@@ -431,15 +431,15 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
               ),
               child: Row(
                 children: [
-                  ReusableText('المتبقي (آجل): ', style: AppTextStyles.bodyBold(context).copyWith(color: AppColors.error)),
+                  ReusableText('??????? (???): ', style: AppTextStyles.bodyBold(context).copyWith(color: AppColors.error)),
                   ReusableText(FormatUtils.currency(remaining), style: AppTextStyles.bodyBold(context).copyWith(color: AppColors.error)),
                 ],
               ),
             ),
           const Spacer(),
-          // زرار الحفظ الكبير
+          // ???? ????? ??????
           ReusableButton(
-            text: state.editingPurchaseId != null ? 'حفظ التعديلات' : 'تسجيل الفاتورة النهائية',
+            text: state.editingPurchaseId != null ? '??? ?????????' : '????? ???????? ????????',
             prefixIcon: Icons.check_circle_rounded,
             size: ButtonSize.large,
             onPressed: () => _submitForm(context),
@@ -451,13 +451,13 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
 
   Widget _buildShortcutBar(ColorScheme scheme) {
     final shortcuts = [
-      {'key': 'F4', 'label': AppStrings.shortcutSearch},
-      {'key': 'Ctrl+S', 'label': AppStrings.shortcutSave},
-      {'key': 'Esc', 'label': AppStrings.shortcutFocusSearch},
-      {'key': '↑ / ↓', 'label': AppStrings.shortcutNavigateRows},
-      {'key': 'Ctrl+Enter', 'label': AppStrings.shortcutSave},
-      {'key': 'F2', 'label': AppStrings.shortcutItemSearch},
-      {'key': 'Esc', 'label': AppStrings.shortcutClearCancel},
+      {'key': 'F4', 'label': PurchasesStrings.shortcutSearch},
+      {'key': 'Ctrl+S', 'label': PurchasesStrings.shortcutSave},
+      {'key': 'Esc', 'label': PurchasesStrings.shortcutFocusSearch},
+      {'key': '? / ?', 'label': PurchasesStrings.shortcutNavigateRows},
+      {'key': 'Ctrl+Enter', 'label': PurchasesStrings.shortcutSave},
+      {'key': 'F2', 'label': PurchasesStrings.shortcutItemSearch},
+      {'key': 'Esc', 'label': PurchasesStrings.shortcutClearCancel},
     ];
 
     return Container(
@@ -469,7 +469,7 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
       ),
       child: Row(
         children: [
-          ReusableText(AppStrings.keyboardShortcuts, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold, color: scheme.onSurfaceVariant)),
+          ReusableText(PurchasesStrings.keyboardShortcuts, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold, color: scheme.onSurfaceVariant)),
           SizedBox(width: 16.w),
           Expanded(
             child: Wrap(
@@ -477,7 +477,7 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
               children: shortcuts.map((s) => _shortcutChip(scheme, s['key']!, s['label']!)).toList(),
             ),
           ),
-          ReusableText('Esc ${AppStrings.shortcutFocusSearch} — Ctrl+S ${AppStrings.shortcutSave} — F4 ${AppStrings.shortcutSearch}', style: AppTextStyles.caption(context).copyWith(color: scheme.onSurfaceVariant.withValues(alpha: 0.7))),
+          ReusableText('Esc ${PurchasesStrings.shortcutFocusSearch} — Ctrl+S ${PurchasesStrings.shortcutSave} — F4 ${PurchasesStrings.shortcutSearch}', style: AppTextStyles.caption(context).copyWith(color: scheme.onSurfaceVariant.withValues(alpha: 0.7))),
         ],
       ),
     );
@@ -523,30 +523,30 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
             .where((m) {
               if (searchQuery.isEmpty) return true;
               final q = searchQuery.toLowerCase();
-              return m.name.toLowerCase().contains(q) || m.barcodes.any((b) => b.toLowerCase().contains(q));
+              return m.name.toLowerCase().contains(q) || m.barcodes.any((b) => b.code.toLowerCase().contains(q));
             }).toList();
         final selectedMed = selectedId != null ? BranchDataService.getMedicine(selectedId!) : null;
         final lastPrice = findLastUnitPrice(selectedId);
 
         return ReusableDialog(
-          title: AppStrings.addItemToInvoiceTitle, maxWidth: 600,
+          title: PurchasesStrings.addItemToInvoiceTitle, maxWidth: 600,
           headerIcon: const Icon(Icons.add_shopping_cart_rounded),
           children: [
-            ReusableInput(hint: AppStrings.searchItemHint, prefixIcon: const Icon(Icons.search_rounded),
+            ReusableInput(hint: PurchasesStrings.searchItemHint, prefixIcon: const Icon(Icons.search_rounded),
               controller: TextEditingController(text: searchQuery), onChanged: (v) => setDialogState(() => searchQuery = v), showClearButton: false),
             SizedBox(height: 12.h),
             if (selectedId == null)
               Container(
                 constraints: BoxConstraints(maxHeight: 200.h),
                 decoration: BoxDecoration(border: Border.all(color: Theme.of(ctx).colorScheme.outlineVariant.withValues(alpha: 0.5)), borderRadius: BorderRadius.circular(AppRadius.md)),
-                child: results.isEmpty ? Center(child: Padding(padding: EdgeInsets.all(20.w), child: const ReusableText(AppStrings.noMatchingResultsPurchase))) : ListView.separated(
+                child: results.isEmpty ? Center(child: Padding(padding: EdgeInsets.all(20.w), child: const ReusableText(PurchasesStrings.noMatchingResults))) : ListView.separated(
                   shrinkWrap: true, itemCount: results.length,
                   separatorBuilder: (_, index) => const Divider(height: 1),
                   itemBuilder: (_, i) {
                     final m = results[i];
                     return ListTile(dense: true,
                       title: ReusableText(m.name, style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)),
-                      subtitle: ReusableText('${AppStrings.barcodeLabelPrefix}${m.barcodes.firstOrNull ?? "---"} | ${AppStrings.stockLabelPrefix}${m.quantity}', style: AppTextStyles.caption(context)),
+                      subtitle: ReusableText('${PurchasesStrings.barcodeLabelPrefix}${m.barcodes.firstOrNull?.code ?? "---"} | ${PurchasesStrings.stockLabelPrefix}${m.quantity}', style: AppTextStyles.caption(context)),
                       trailing: Icon(Icons.add_circle_outline_rounded, size: AppIconSize.md.value, color: AppColors.primary),
                       onTap: () => setDialogState(() {
                         selectedId = m.id;
@@ -564,20 +564,20 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
                 child: Row(children: [
                   Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     ReusableText(selectedMed.name, style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.primary)),
-                    ReusableText(AppStrings.currentStockLabelFormat.replaceFirst('%s', '${selectedMed.quantity}'), style: AppTextStyles.caption(context).copyWith(color: Theme.of(ctx).colorScheme.onSurfaceVariant)),
+                    ReusableText(PurchasesStrings.currentStockLabelFormat.replaceFirst('%s', '${selectedMed.quantity}'), style: AppTextStyles.caption(context).copyWith(color: Theme.of(ctx).colorScheme.onSurfaceVariant)),
                   ])),
                   IconButton(icon: const Icon(Icons.change_circle_outlined), onPressed: () => setDialogState(() => selectedId = null)),
                 ]),
               ),
               SizedBox(height: 16.h),
               Row(children: [
-                Expanded(child: ReusableInput(label: AppStrings.incomingQuantity, controller: qtyCtrl, keyboardType: TextInputType.number, prefixIcon: const Icon(Icons.unfold_more_rounded))),
+                Expanded(child: ReusableInput(label: PurchasesStrings.incomingQuantity, controller: qtyCtrl, keyboardType: TextInputType.number, prefixIcon: const Icon(Icons.unfold_more_rounded))),
                 SizedBox(width: 12.w),
-                Expanded(child: ReusableInput(label: AppStrings.buyUnitPrice, controller: priceCtrl, keyboardType: const TextInputType.numberWithOptions(decimal: true), prefixIcon: const Icon(Icons.attach_money_rounded))),
+                Expanded(child: ReusableInput(label: PurchasesStrings.buyUnitPrice, controller: priceCtrl, keyboardType: const TextInputType.numberWithOptions(decimal: true), prefixIcon: const Icon(Icons.attach_money_rounded))),
               ]),
               SizedBox(height: 12.h),
               Row(children: [
-                Expanded(child: ReusableInput(label: AppStrings.batchNumberLabel, controller: batchCtrl, prefixIcon: const Icon(Icons.tag_rounded),
+                Expanded(child: ReusableInput(label: PurchasesStrings.batchNumberLabel, controller: batchCtrl, prefixIcon: const Icon(Icons.tag_rounded),
                   suffixIcon: IconButton(icon: const Icon(Icons.auto_awesome_rounded, size: 18), onPressed: () => setDialogState(() => batchCtrl.text = _generateBatchNumber())),
                 )),
                 SizedBox(width: 12.w),
@@ -586,15 +586,15 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
                     final picked = await showDatePicker(context: ctx, initialDate: DateTime.now().add(const Duration(days: 365)), firstDate: DateTime.now(), lastDate: DateTime.now().add(const Duration(days: 3650)));
                     if (picked != null) setDialogState(() => expiryDate = picked);
                   },
-                  child: InputDecorator(decoration: InputDecoration(labelText: AppStrings.expiryDateLabel, isDense: true, border: const OutlineInputBorder(), suffixIcon: const Icon(Icons.calendar_month_rounded, size: 20)),
-                    child: ReusableText(expiryDate == null ? AppStrings.selectDatePurchase : FormatUtils.date(expiryDate!), style: AppTextStyles.body(context)),
+                  child: InputDecorator(decoration: InputDecoration(labelText: PurchasesStrings.expiryDateLabel, isDense: true, border: const OutlineInputBorder(), suffixIcon: const Icon(Icons.calendar_month_rounded, size: 20)),
+                    child: ReusableText(expiryDate == null ? PurchasesStrings.selectDate : FormatUtils.date(expiryDate!), style: AppTextStyles.body(context)),
                   ),
                 )),
               ]),
               if (selectedMed.units.length > 1) ...[
                 SizedBox(height: 12.h),
                 ReusableDropdown<String>(
-                  labelText: AppStrings.supplyUnit, hintText: AppStrings.selectUnitHintPurchase,
+                  labelText: PurchasesStrings.supplyUnit, hintText: PurchasesStrings.selectUnitHint,
                   items: selectedMed.units.map((u) => u.id).toList(), value: selectedUnitId,
                   itemAsString: (id) => selectedMed.units.firstWhereOrNull((x) => x.id == id)?.name ?? id,
                   onChanged: (v) {
@@ -605,28 +605,28 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
               ],
               SizedBox(height: 12.h),
               Row(children: [
-                Expanded(child: ReusableInput(label: AppStrings.itemDiscount, controller: discountCtrl, keyboardType: const TextInputType.numberWithOptions(decimal: true))),
+                Expanded(child: ReusableInput(label: PurchasesStrings.itemDiscount, controller: discountCtrl, keyboardType: const TextInputType.numberWithOptions(decimal: true))),
                 SizedBox(width: 8.w),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 10.w),
                   decoration: BoxDecoration(border: Border.all(color: Theme.of(ctx).colorScheme.outlineVariant), borderRadius: BorderRadius.circular(AppRadius.sm)),
                   child: DropdownButton<String>(value: discountType, underline: const SizedBox(),
-                    items: const [DropdownMenuItem(value: '%', child: ReusableText('%')), DropdownMenuItem(value: 'fixed', child: ReusableText(AppStrings.fixedValue))],
+                    items: const [DropdownMenuItem(value: '%', child: ReusableText('%')), DropdownMenuItem(value: 'fixed', child: ReusableText(PurchasesStrings.fixedValue))],
                     onChanged: (v) => setDialogState(() => discountType = v ?? '%'),
                   ),
                 ),
                 SizedBox(width: 12.w),
-                Expanded(child: ReusableInput(label: AppStrings.itemTaxValue, controller: taxCtrl, keyboardType: const TextInputType.numberWithOptions(decimal: true))),
+                Expanded(child: ReusableInput(label: PurchasesStrings.itemTaxValue, controller: taxCtrl, keyboardType: const TextInputType.numberWithOptions(decimal: true))),
               ]),
               if (lastPrice != null)
                 Padding(padding: EdgeInsets.only(top: 10.h), child: Row(children: [
                   Icon(Icons.info_outline_rounded, size: 14, color: AppColors.warning),
                   SizedBox(width: 6.w),
-                  ReusableText('${AppStrings.lastPurchasePriceInfo}${FormatUtils.currency(lastPrice)}', style: AppTextStyles.caption(context).copyWith(color: AppColors.warning, fontWeight: FontWeight.bold)),
+                  ReusableText('${PurchasesStrings.lastPurchasePriceInfo}${FormatUtils.currency(lastPrice)}', style: AppTextStyles.caption(context).copyWith(color: AppColors.warning, fontWeight: FontWeight.bold)),
                 ])),
             ],
             SizedBox(height: 24.h),
-            DialogActions(confirmText: AppStrings.addToInvoiceAction, onConfirm: selectedId == null ? null : () => Navigator.pop(ctx, true)),
+            DialogActions(confirmText: PurchasesStrings.addToInvoiceAction, onConfirm: selectedId == null ? null : () => Navigator.pop(ctx, true)),
           ],
         );
       });
@@ -671,7 +671,7 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
     final bloc = context.read<PurchasesBloc>();
 
     void onMedicineSelected(MedicineModel medicine) {
-      // ذكاء مهندسة: إضافة الصنف فوراً للفاتورة بالقيم الافتراضية
+      // ???? ??????: ????? ????? ????? ???????? ?????? ??????????
       bloc.add(AddPurchaseLine(
         medicineId: medicine.id,
         medicineName: medicine.name,
@@ -683,11 +683,11 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
         batchNumber: _generateBatchNumber(),
       ));
       
-      // تشغيل تنبيه صوتي بسيط للنجاح
+      // ????? ????? ???? ???? ??????
       SoundService.instance.play(SoundEffect.itemAdded);
       
-      // تنبيه خفيف في الواجهة
-      AppSnackbar.success('تم إضافة ${medicine.name} للفاتورة');
+      // ????? ???? ?? ???????
+      AppSnackbar.success('?? ????? ${medicine.name} ????????');
     }
 
     return FormCard(
@@ -699,7 +699,7 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
             child: Row(
               children: [
                 ReusableButton(
-                  text: AppStrings.newMedicineAction,
+                  text: PurchasesStrings.newMedicineAction,
                   prefixIcon: Icons.add,
                   type: ButtonType.outlined,
                   onPressed: () => context.push(Routes.INVENTORY_ADD),
@@ -727,17 +727,17 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
             ),
             child: Row(
               children: [
-                _tableHeader(AppStrings.columnHash, width: 30),
-                _tableHeader(AppStrings.columnItemName, isExpanded: true),
-                _tableHeader(AppStrings.columnStock, width: 80),
-                _tableHeader(AppStrings.columnUnit, width: 90),
-                _tableHeader(AppStrings.columnQuantity, width: 70),
-                _tableHeader(AppStrings.columnBuyPrice, width: 90),
-                _tableHeader(AppStrings.columnDiscountPercent, width: 60),
-                _tableHeader(AppStrings.columnTotal, width: 80),
-                _tableHeader(AppStrings.columnSellPrice, width: 90),
-                _tableHeader(AppStrings.columnBatch, width: 120),
-                _tableHeader(AppStrings.columnExpiry, width: 140),
+                _tableHeader(PurchasesStrings.columnHash, width: 30),
+                _tableHeader(PurchasesStrings.columnItemName, isExpanded: true),
+                _tableHeader(PurchasesStrings.columnStock, width: 80),
+                _tableHeader(PurchasesStrings.columnUnit, width: 90),
+                _tableHeader(PurchasesStrings.columnQuantity, width: 70),
+                _tableHeader(PurchasesStrings.columnBuyPrice, width: 90),
+                _tableHeader(PurchasesStrings.columnDiscountPercent, width: 60),
+                _tableHeader(PurchasesStrings.columnTotal, width: 80),
+                _tableHeader(PurchasesStrings.columnSellPrice, width: 90),
+                _tableHeader(PurchasesStrings.columnBatch, width: 120),
+                _tableHeader(PurchasesStrings.columnExpiry, width: 140),
                 _tableHeader('', width: 40),
               ],
             ),
@@ -746,7 +746,7 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
           if (state.receiptLines.isEmpty)
             Padding(
               padding: EdgeInsets.all(AppSpacing.xxl.h),
-              child: const Center(child: ReusableText(AppStrings.noItemsYet)),
+              child: const Center(child: ReusableText(PurchasesStrings.noItemsYet)),
             )
           else
             ListView.separated(
@@ -762,10 +762,10 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
             color: scheme.surfaceContainerLow,
             child: Row(
               children: [
-                ReusableText(AppStrings.totalQuantityLabel, style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)),
+                ReusableText(PurchasesStrings.totalQuantityLabel, style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)),
                 ReusableText(state.receiptLines.fold(0.0, (s, l) => s + l.quantity).toStringAsFixed(2), style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)),
                 SizedBox(width: 24.w),
-                ReusableText(AppStrings.totalAmountLabel, style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)),
+                ReusableText(PurchasesStrings.totalAmountLabel, style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)),
                 ReusableText(FormatUtils.currency(state.finalAmount), style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)),
               ],
             ),
@@ -823,7 +823,7 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 ReusableText('${med?.quantity ?? 0}', textAlign: TextAlign.center, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold)),
-                Text('بالمخزن', style: TextStyle(fontSize: 9.sp, color: scheme.onSurfaceVariant)),
+                Text('???????', style: TextStyle(fontSize: 9.sp, color: scheme.onSurfaceVariant)),
               ],
             ),
           ),
@@ -835,7 +835,7 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
               child: ReusableDropdown<String>(
                 items: line.units.map((u) => u.id).toList(),
                 value: line.unitId,
-                hintText: AppStrings.unitLabelShort,
+                hintText: PurchasesStrings.unitLabelShort,
                 itemAsString: (id) => line.units.firstWhereOrNull((u) => u.id == id)?.name ?? id,
                 onChanged: (v) {
                   final u = line.units.firstWhereOrNull((x) => x.id == v);
@@ -941,7 +941,7 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ReusableText(
-                        line.expiryDate == null ? AppStrings.expiryDateFormatHint : FormatUtils.date(line.expiryDate!),
+                        line.expiryDate == null ? PurchasesStrings.expiryDateFormatHint : FormatUtils.date(line.expiryDate!),
                         style: AppTextStyles.caption(context).copyWith(color: line.expiryDate == null ? scheme.onSurfaceVariant : null),
                       ),
                     ],
@@ -982,7 +982,7 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ReusableText(AppStrings.addPaymentTitle, style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)),
+              ReusableText(PurchasesStrings.addPaymentTitle, style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)),
               SizedBox(height: AppSpacing.md.h),
               // Total Color Bar
               Container(
@@ -995,22 +995,22 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ReusableText('${AppStrings.total}:', style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: scheme.primary)),
+                    ReusableText('${GeneralStrings.total}:', style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: scheme.primary)),
                     ReusableText(FormatUtils.currency(state.finalAmount), style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: scheme.primary)),
                   ],
                 ),
               ),
               SizedBox(height: AppSpacing.lg.h),
               _responsiveFields(context, minWidth: 260, children: [
-                // المبلغ المدفوع
+                // ?????? ???????
                 ReusableInput(
-                  label: AppStrings.paidAmountLabel,
+                  label: PurchasesStrings.paidAmountLabel,
                   controller: TextEditingController(text: state.paidAmount.toString()),
                   suffixIcon: const Icon(Icons.money_outlined, size: 18),
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   onChanged: (v) => bloc.add(SetPurchasePaidAmount(double.tryParse(v) ?? 0)),
                 ),
-                // المدفوعة على (التاريخ)
+                // ???????? ??? (???????)
                 InkWell(
                   onTap: () async {
                     final picked = await showDatePicker(
@@ -1024,32 +1024,32 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
                     }
                   },
                   child: ReusableInput(
-                    label: AppStrings.paidOnDateLabel,
+                    label: PurchasesStrings.paidOnDateLabel,
                     enabled: false,
                     controller: TextEditingController(text: FormatUtils.date(state.paymentDate)),
                     suffixIcon: const Icon(Icons.calendar_month, size: 18),
                   ),
                 ),
-                // طريقة الدفع
+                // ????? ?????
                 ReusableDropdown<String>(
-                  labelText: AppStrings.paymentMethodLabelPurchase,
-                  hintText: AppStrings.selectPaymentMethodHint,
-                  items: const [AppStrings.paymentMethodCashPurchase, AppStrings.paymentMethodCardPurchase, AppStrings.paymentMethodCreditPurchase],
+                  labelText: PurchasesStrings.paymentMethodLabel,
+                  hintText: PurchasesStrings.selectPaymentMethodHint,
+                  items: const [PurchasesStrings.paymentMethodCash, PurchasesStrings.paymentMethodCard, PurchasesStrings.paymentMethodCredit],
                   value: state.getPaymentLabel(state.paymentMethod),
                   itemAsString: (v) => v,
                   onChanged: (v) {
-                    final method = switch (v) { AppStrings.paymentMethodCashPurchase => 'cash', AppStrings.paymentMethodCreditPurchase => 'credit', AppStrings.paymentMethodCardPurchase => 'card', _ => 'cash' };
+                    final method = switch (v) { PurchasesStrings.paymentMethodCash => 'cash', PurchasesStrings.paymentMethodCredit => 'credit', PurchasesStrings.paymentMethodCard => 'card', _ => 'cash' };
                     bloc.add(SetPurchasePaymentMethod(method));
                   },
                 ),
               ]),
               SizedBox(height: AppSpacing.md.h),
-              // الحساب
+              // ??????
               _responsiveFields(context, minWidth: 260, children: [
                 const SizedBox(), // Empty for alignment like image
                 ReusableDropdown<String>(
-                  labelText: AppStrings.accountLabel,
-                  hintText: AppStrings.selectAccountHint,
+                  labelText: PurchasesStrings.accountLabel,
+                  hintText: PurchasesStrings.selectAccountHint,
                   items: _paymentAccounts.keys.toList(),
                   value: state.paymentAccountId ?? _paymentAccounts.keys.first,
                   itemAsString: (v) => _paymentAccounts[v] ?? v,
@@ -1060,9 +1060,9 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
                 ),
               ]),
               SizedBox(height: AppSpacing.md.h),
-              // ملاحظة الدفع
+              // ?????? ?????
               ReusableInput(
-                label: AppStrings.paymentNoteLabel,
+                label: PurchasesStrings.paymentNoteLabel,
                 maxLines: 3,
                 onChanged: (v) => bloc.add(SetPurchaseNotes(v)),
               ),
@@ -1079,7 +1079,7 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
             SizedBox(
               width: 150.w,
               child: ReusableButton(
-                text: AppStrings.save,
+                text: GeneralStrings.save,
                 prefixIcon: Icons.save,
                 onPressed: () => _submitForm(context),
               ),
@@ -1094,7 +1094,7 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
               ),
               child: Row(
                 children: [
-                  ReusableText(AppStrings.dueAmountLabel, style: AppTextStyles.body(context).copyWith(color: AppColors.error, fontWeight: FontWeight.bold)),
+                  ReusableText(PurchasesStrings.dueAmountLabel, style: AppTextStyles.body(context).copyWith(color: AppColors.error, fontWeight: FontWeight.bold)),
                   ReusableText(FormatUtils.currency(state.finalAmount - state.paidAmount), style: AppTextStyles.body(context).copyWith(color: AppColors.error, fontWeight: FontWeight.bold)),
                 ],
               ),
@@ -1115,5 +1115,11 @@ class _AddPurchaseViewState extends State<AddPurchaseView> {
     });
   }
 }
+
+
+
+
+
+
 
 

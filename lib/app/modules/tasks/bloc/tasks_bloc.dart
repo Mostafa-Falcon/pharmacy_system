@@ -156,3 +156,4 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
     if (!isClosed) add(LoadTasks());
   }
 }
+

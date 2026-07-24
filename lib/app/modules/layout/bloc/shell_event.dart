@@ -34,3 +34,5 @@ class NavigateTo extends ShellEvent {
 class LogoutRequested extends ShellEvent {
   const LogoutRequested();
 }
+
+

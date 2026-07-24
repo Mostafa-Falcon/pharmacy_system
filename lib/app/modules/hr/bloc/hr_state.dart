@@ -93,3 +93,5 @@ class HrState extends Equatable {
         error,
       ];
 }
+
+

@@ -2,15 +2,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
 import 'package:pharmacy_system/app/core/data/repositories/medicines_repository.dart';
 import '../bloc/medicines_bloc.dart';
 import 'widgets/medicine_form_content.dart';
 
-/// شاشة تعديل بيانات الدواء — محسنة لضمان جلب البيانات حتى بعد ريفريش الصفحة
+/// ???? ????? ?????? ?????? — ????? ????? ??? ???????? ??? ??? ?????? ??????
 class EditMedicineView extends StatefulWidget {
   final MedicineModel? medicine;
   final String? medicineId;
@@ -48,7 +48,7 @@ class _EditMedicineViewState extends State<EditMedicineView> {
     if (widget.medicineId == null) {
       setState(() {
         _isLoading = false;
-        _error = AppStrings.medicineNotFound;
+        _error = InventoryStrings.medicineNotFound;
       });
       return;
     }
@@ -59,14 +59,14 @@ class _EditMedicineViewState extends State<EditMedicineView> {
         setState(() {
           _medicine = medicine;
           _isLoading = false;
-          if (medicine == null) _error = AppStrings.medicineNotFound;
+          if (medicine == null) _error = InventoryStrings.medicineNotFound;
         });
       }
     } catch (e) {
       if (mounted) {
         setState(() {
           _isLoading = false;
-          _error = 'خطأ في تحميل بيانات الدواء: $e';
+          _error = '??? ?? ????? ?????? ??????: $e';
         });
       }
     }
@@ -76,25 +76,25 @@ class _EditMedicineViewState extends State<EditMedicineView> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return const HomeShell(
-        title: AppStrings.editMedicine,
+        title: InventoryStrings.editMedicine,
         child: Center(child: LoadingIndicator()),
       );
     }
 
     if (_medicine == null) {
       return HomeShell(
-        title: AppStrings.editMedicine,
+        title: InventoryStrings.editMedicine,
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ReusableText(
-                _error ?? AppStrings.medicineNotFound,
+                _error ?? InventoryStrings.medicineNotFound,
                 style: AppTextStyles.body(context),
               ),
               SizedBox(height: 16.h),
               ReusableButton(
-                text: 'العودة للمخزن',
+                text: '?????? ??????',
                 prefixIcon: Icons.arrow_back_rounded,
                 type: ButtonType.outlined,
                 onPressed: () => Navigator.of(context).pop(),
@@ -114,3 +114,8 @@ class _EditMedicineViewState extends State<EditMedicineView> {
     );
   }
 }
+
+
+
+
+

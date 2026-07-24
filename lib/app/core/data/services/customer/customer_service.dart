@@ -1,5 +1,5 @@
-﻿import 'package:uuid/uuid.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/customer_model.dart';
+import 'package:uuid/uuid.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_model.dart';
 import 'package:pharmacy_system/app/core/data/repositories/customers_repository.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
 
@@ -8,16 +8,16 @@ class CustomerService {
   static const _uuid = Uuid();
 
   static Future<void> init() async {
-    // تحميل مبدئي للكاش إذا لزم الأمر
+    // ????? ????? ????? ??? ??? ?????
     await _repo.getCustomers();
   }
 
-  /// ترجع قائمة العملاء من الكاش (تتوافق مع الواجهات المتزامنة)
+  /// ???? ????? ??????? ?? ????? (?????? ?? ???????? ?????????)
   static List<CustomerModel> getAll({bool activeOnly = false}) {
     return _repo.getCachedCustomers(activeOnly: activeOnly);
   }
 
-  /// طلب تحديث البيانات من الداتابيز (Async)
+  /// ??? ????? ???????? ?? ????????? (Async)
   static Future<List<CustomerModel>> refreshAll({bool activeOnly = false}) async {
     return await _repo.getCustomers(activeOnly: activeOnly);
   }
@@ -89,4 +89,7 @@ class CustomerService {
     }
   }
 }
+
+
+
 

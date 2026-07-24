@@ -1,9 +1,9 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/promotions_dao.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/promotion_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/promotion_model.dart';
 import '../auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
 import 'package:pharmacy_system/app/core/utils/app_utils.dart';
@@ -171,4 +171,7 @@ class PromotionService {
     return list.join(',');
   }
 }
+
+
+
 

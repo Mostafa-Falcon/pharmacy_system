@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pharmacy_system/app/shared/ui_core.dart';
 import 'base_state.dart';
-import '../utils/app_utils.dart';
-import '../data/services/sync/sync_service.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 
 abstract class BaseBloc<E, T> extends Bloc<E, BaseState<T>> {
   BaseBloc() : super(const BaseState.initial());
@@ -30,7 +30,8 @@ abstract class BaseBloc<E, T> extends Bloc<E, BaseState<T>> {
       SyncService.tableUpdateStream.listen((update) {
         final table = update.$1;
         final bid = update.$2;
-        if (tables.contains(table) && (branchId == null || bid == branchId || bid.isEmpty)) {
+        if (tables.contains(table) &&
+            (branchId == null || bid == branchId || bid.isEmpty)) {
           debounceTimer?.cancel();
           debounceTimer = Timer(debounceDuration, () {
             onUpdate();

@@ -1,13 +1,13 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pharmacy_system/app/modules/contacts/customers/bloc/customers_state.dart';
 
-import 'package:pharmacy_system/app/modules/contacts/models/customer_model.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_model.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/string_ext.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../bloc/customers_bloc.dart';
 import '../bloc/customers_event.dart';
 
@@ -56,13 +56,13 @@ class _AddCustomerViewState extends State<AddCustomerView> {
     final res = await showDialog<bool>(
       context: context,
       builder: (context) => ReusableDialog(
-        title: AppStrings.confirmExitTitle,
+        title: GeneralStrings.confirmExitTitle,
         children: [
-          const ReusableText(AppStrings.unsavedChangesConfirm),
+          const ReusableText(GeneralStrings.unsavedChangesConfirm),
           SizedBox(height: 16.h),
           DialogActions(
-            cancelText: AppStrings.stayButton,
-            confirmText: AppStrings.exitAndIgnoreButton,
+            cancelText: GeneralStrings.stayButton,
+            confirmText: GeneralStrings.exitAndIgnoreButton,
             onCancel: () => Navigator.pop(context, false),
             onConfirm: () => Navigator.pop(context, true),
           ),
@@ -94,43 +94,43 @@ class _AddCustomerViewState extends State<AddCustomerView> {
           }
         },
         child: StandardFormLayout(
-          title: AppStrings.addNewCustomerTitle,
-          subtitle: AppStrings.addNewCustomerSubtitle,
+          title: CustomersStrings.addNewCustomerTitle,
+          subtitle: CustomersStrings.addNewCustomerSubtitle,
           formKey: _formKey,
           maxWidth: 650,
           isSaving: isSaving,
-          confirmText: AppStrings.saveCustomerData,
+          confirmText: CustomersStrings.saveCustomerData,
           onConfirm: _submit,
           onCancel: () => Navigator.pop(context),
           children: [
             const SectionHeader(
               icon: Icons.person_outline_rounded,
-              title: 'البيانات الشخصية والأساسية',
+              title: '???????? ??????? ?????????',
             ),
             Row(
               children: [
                 Expanded(
                   flex: 2,
                   child: ReusableInput(
-                    label: AppStrings.fullNameRequired,
-                    hint: AppStrings.customerNameExampleHint,
+                    label: CustomersStrings.fullNameRequired,
+                    hint: CustomersStrings.customerNameExampleHint,
                     controller: nameCtrl,
                     textDirection: TextDirection.rtl,
                     validator: (v) => v?.trim().isEmpty == true
-                        ? AppStrings.nameIsRequired
+                        ? CustomersStrings.nameIsRequired
                         : null,
                   ),
                 ),
                 SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: ReusableDropdown<CustomerKind>(
-                    labelText: AppStrings.interactionType,
-                    hintText: AppStrings.selectInteractionType,
+                    labelText: CustomersStrings.interactionType,
+                    hintText: CustomersStrings.selectInteractionType,
                     items: const [CustomerKind.regular, CustomerKind.cash],
                     value: kind,
                     itemAsString: (k) => k == CustomerKind.regular
-                        ? AppStrings.regularInteraction
-                        : AppStrings.cashInteraction,
+                        ? CustomersStrings.regularInteraction
+                        : CustomersStrings.cashInteraction,
                     onChanged: (v) {
                       if (v != null) {
                         setState(() => kind = v);
@@ -145,7 +145,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
               children: [
                 Expanded(
                   child: ReusableInput(
-                    label: AppStrings.phone,
+                    label: GeneralStrings.phone,
                     controller: phoneCtrl,
                     keyboardType: TextInputType.phone,
                     prefixIcon: const Icon(Icons.phone_android_rounded),
@@ -154,7 +154,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
                 SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: ReusableInput(
-                    label: AppStrings.companyOrInstitution,
+                    label: CustomersStrings.companyOrInstitution,
                     controller: companyCtrl,
                     prefixIcon: const Icon(Icons.business_rounded),
                   ),
@@ -166,7 +166,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
               children: [
                 Expanded(
                   child: ReusableInput(
-                    label: AppStrings.emailLabel,
+                    label: AuthStrings.emailLabel,
                     controller: emailCtrl,
                     keyboardType: TextInputType.emailAddress,
                     prefixIcon: const Icon(Icons.email_outlined),
@@ -175,7 +175,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
                 SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: ReusableInput(
-                    label: AppStrings.taxIdLabel,
+                    label: CustomersStrings.taxIdLabel,
                     controller: taxCtrl,
                     prefixIcon: const Icon(Icons.assignment_ind_outlined),
                   ),
@@ -184,20 +184,20 @@ class _AddCustomerViewState extends State<AddCustomerView> {
             ),
             SizedBox(height: AppSpacing.md),
             ReusableInput(
-              label: AppStrings.detailedAddress,
+              label: CustomersStrings.detailedAddress,
               controller: addressCtrl,
               prefixIcon: const Icon(Icons.location_on_outlined),
             ),
             SizedBox(height: AppSpacing.lg),
             const SectionHeader(
               icon: Icons.account_balance_wallet_rounded,
-              title: AppStrings.financialSettings,
+              title: CustomersStrings.financialSettings,
             ),
             Row(
               children: [
                 Expanded(
                   child: ReusableInput(
-                    label: AppStrings.creditLimit,
+                    label: CustomersStrings.creditLimit,
                     controller: creditLimitCtrl,
                     keyboardType: TextInputType.number,
                     prefixIcon: const Icon(Icons.speed_rounded),
@@ -207,7 +207,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
                 SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: ReusableInput(
-                    label: AppStrings.discountPercentLabel,
+                    label: CustomersStrings.discountPercentLabel,
                     controller: discountCtrl,
                     keyboardType: TextInputType.number,
                     prefixIcon: const Icon(Icons.percent_rounded),
@@ -217,7 +217,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
                 SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: ReusableInput(
-                    label: AppStrings.paymentTermDaysLabel,
+                    label: CustomersStrings.paymentTermDaysLabel,
                     controller: paymentDaysCtrl,
                     keyboardType: TextInputType.number,
                     prefixIcon: const Icon(Icons.calendar_today_rounded),
@@ -231,7 +231,7 @@ class _AddCustomerViewState extends State<AddCustomerView> {
               children: [
                 Expanded(
                   child: ReusableInput(
-                    label: AppStrings.openingBalanceLabel,
+                    label: CustomersStrings.openingBalanceLabel,
                     controller: openingBalanceCtrl,
                     keyboardType: TextInputType.number,
                     hint: '0.00',
@@ -240,12 +240,12 @@ class _AddCustomerViewState extends State<AddCustomerView> {
                 SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: ReusableDropdown<bool>(
-                    labelText: AppStrings.balanceStatusLabel,
-                    hintText: AppStrings.select,
+                    labelText: CustomersStrings.balanceStatusLabel,
+                    hintText: GeneralStrings.select,
                     items: const [true, false],
                     value: openingBalanceDirection,
                     itemAsString: (v) =>
-                        v ? AppStrings.debitLabel : AppStrings.creditLabel,
+                        v ? CustomersStrings.debitLabel : CustomersStrings.creditLabel,
                     onChanged: (v) {
                       if (v != null) {
                         setState(() => openingBalanceDirection = v);
@@ -258,10 +258,10 @@ class _AddCustomerViewState extends State<AddCustomerView> {
             SizedBox(height: AppSpacing.lg),
             const SectionHeader(
               icon: Icons.notes_rounded,
-              title: AppStrings.additionalNotes,
+              title: CustomersStrings.additionalNotes,
             ),
             ReusableInput(
-              label: AppStrings.additionalNotes,
+              label: CustomersStrings.additionalNotes,
               controller: notesCtrl,
               maxLines: 3,
             ),
@@ -291,4 +291,9 @@ class _AddCustomerViewState extends State<AddCustomerView> {
         ));
   }
 }
+
+
+
+
+
 

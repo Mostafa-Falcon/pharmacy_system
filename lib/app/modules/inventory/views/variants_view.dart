@@ -1,13 +1,13 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_variant_model.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_variant_model.dart';
 import '../services/variant_service.dart';
 
 class VariantsView extends StatefulWidget {
@@ -72,7 +72,7 @@ class _VariantsViewState extends State<VariantsView> {
   @override
   Widget build(BuildContext context) {
     return HomeShell(
-      title: 'Ã˜Â¥Ã˜Â¯Ã˜Â§Ã˜Â±Ã˜Â© Ã˜Â§Ã™â€žÃ™â€¦Ã˜ÂªÃ˜ÂºÃ™Å Ã˜Â±Ã˜Â§Ã˜Âª',
+      title: 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù…ØªØºÙŠØ±Ø§Øª',
       child: Container(
         color: Theme.of(context)
             .colorScheme
@@ -103,7 +103,7 @@ class _VariantsViewState extends State<VariantsView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ReusableText(
-            'Ã˜Â§Ã˜Â®Ã˜ÂªÃ™Å Ã˜Â§Ã˜Â± Ã˜Â§Ã™â€žÃ˜ÂµÃ™â€ Ã™Â',
+            'Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„ØµÙ†Ù',
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.bold,
@@ -112,7 +112,7 @@ class _VariantsViewState extends State<VariantsView> {
           SizedBox(height: AppSpacing.sm.h),
           ReusableInput.text(
             controller: medicineSearchCtrl,
-            label: 'Ã˜Â¨Ã˜Â­Ã˜Â« Ã˜Â¹Ã™â€  Ã˜ÂµÃ™â€ Ã™Â...',
+            label: 'Ø¨Ø­Ø« Ø¹Ù† ØµÙ†Ù...',
             textDirection: TextDirection.rtl,
             onChanged: (_) => setState(() {}),
           ),
@@ -124,7 +124,7 @@ class _VariantsViewState extends State<VariantsView> {
               if (list.isEmpty) {
                 return const EmptyState(
                   icon: Icons.medication_outlined,
-                  title: 'Ã™â€žÃ˜Â§ Ã™Å Ã™Ë†Ã˜Â¬Ã˜Â¯ Ã˜Â£Ã˜ÂµÃ™â€ Ã˜Â§Ã™Â',
+                  title: 'Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ø£ØµÙ†Ø§Ù',
                 );
               }
               return ListView.separated(
@@ -178,7 +178,7 @@ class _VariantsViewState extends State<VariantsView> {
             Row(
               children: [
                 ReusableText(
-                  'Ã™â€¦Ã˜ÂªÃ˜ÂºÃ™Å Ã˜Â±Ã˜Â§Ã˜Âª: ${selectedMedicine!.name}',
+                  'Ù…ØªØºÙŠØ±Ø§Øª: ${selectedMedicine!.name}',
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.bold,
@@ -186,7 +186,7 @@ class _VariantsViewState extends State<VariantsView> {
                 ),
                 const Spacer(),
                 ReusableButton(
-                  text: 'Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â© Ã™â€¦Ã˜ÂªÃ˜ÂºÃ™Å Ã˜Â±',
+                  text: 'Ø¥Ø¶Ø§ÙØ© Ù…ØªØºÙŠØ±',
                   prefixIcon: Icons.add_rounded,
                   onPressed: () => _showVariantDialog(context),
                 ),
@@ -198,7 +198,7 @@ class _VariantsViewState extends State<VariantsView> {
                 if (variants.isEmpty) {
                   return const EmptyState(
                     icon: Icons.swap_horiz_rounded,
-                    title: 'Ã™â€žÃ˜Â§ Ã™Å Ã™Ë†Ã˜Â¬Ã˜Â¯ Ã™â€¦Ã˜ÂªÃ˜ÂºÃ™Å Ã˜Â±Ã˜Â§Ã˜Âª Ã™â€žÃ™â€¡Ã˜Â°Ã˜Â§ Ã˜Â§Ã™â€žÃ˜ÂµÃ™â€ Ã™Â',
+                    title: 'Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ù…ØªØºÙŠØ±Ø§Øª Ù„Ù‡Ø°Ø§ Ø§Ù„ØµÙ†Ù',
                   );
                 }
                 return ListView.separated(
@@ -215,7 +215,7 @@ class _VariantsViewState extends State<VariantsView> {
               child: Center(
                 child: EmptyState(
                   icon: Icons.touch_app_outlined,
-                  title: 'Ã˜Â§Ã˜Â®Ã˜ÂªÃ˜Â± Ã˜ÂµÃ™â€ Ã™ÂÃ˜Â§Ã™â€¹ Ã™â€¦Ã™â€  Ã˜Â§Ã™â€žÃ™â€šÃ˜Â§Ã˜Â¦Ã™â€¦Ã˜Â©',
+                  title: 'Ø§Ø®ØªØ± ØµÙ†ÙØ§Ù‹ Ù…Ù† Ø§Ù„Ù‚Ø§Ø¦Ù…Ø©',
                 ),
               ),
             ),
@@ -229,12 +229,12 @@ class _VariantsViewState extends State<VariantsView> {
       ReusableActionMenuItem(
         value: 'edit',
         icon: Icons.edit_outlined,
-        label: AppStrings.edit,
+        label: GeneralStrings.edit,
       ),
       ReusableActionMenuItem(
         value: 'delete',
         icon: Icons.delete_outline_rounded,
-        label: AppStrings.delete,
+        label: GeneralStrings.delete,
         color: AppColors.error,
       ),
     ];
@@ -248,11 +248,11 @@ class _VariantsViewState extends State<VariantsView> {
       subtitle: 'SKU: ${v.sku}${attrs.isNotEmpty ? ' | $attrs' : ''}',
       tags: [
         Tag(
-          label: 'Ã˜Â§Ã™â€žÃ˜Â³Ã˜Â¹Ã˜Â±: ${v.price.toStringAsFixed(2)}',
+          label: 'Ø§Ù„Ø³Ø¹Ø±: ${v.price.toStringAsFixed(2)}',
           color: AppColors.success,
         ),
         Tag(
-          label: 'Ã˜Â§Ã™â€žÃ˜ÂªÃ™Æ’Ã™â€žÃ™ÂÃ˜Â©: ${v.cost.toStringAsFixed(2)}',
+          label: 'Ø§Ù„ØªÙƒÙ„ÙØ©: ${v.cost.toStringAsFixed(2)}',
           color: AppColors.warning,
         ),
       ],
@@ -264,8 +264,8 @@ class _VariantsViewState extends State<VariantsView> {
           case 'delete':
             ConfirmDeleteDialog.show(
               context,
-              title: 'Ã˜Â­Ã˜Â°Ã™Â Ã™â€¦Ã˜ÂªÃ˜ÂºÃ™Å Ã˜Â±',
-              message: 'Ã™â€¡Ã™â€ž Ã˜Â£Ã™â€ Ã˜Âª Ã™â€¦Ã˜ÂªÃ˜Â£Ã™Æ’Ã˜Â¯ Ã™â€¦Ã™â€  Ã˜Â­Ã˜Â°Ã™Â Ã˜Â§Ã™â€žÃ™â€¦Ã˜ÂªÃ˜ÂºÃ™Å Ã˜Â± "${v.name}"Ã˜Å¸',
+              title: 'Ø­Ø°Ù Ù…ØªØºÙŠØ±',
+              message: 'Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯ Ù…Ù† Ø­Ø°Ù Ø§Ù„Ù…ØªØºÙŠØ± "${v.name}"ØŸ',
               onConfirm: () async {
                 await VariantService.delete(v.id);
                 setState(() {
@@ -299,11 +299,11 @@ class _VariantsViewState extends State<VariantsView> {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => ReusableDialog(
-          title: isEditing ? 'Ã˜ÂªÃ˜Â¹Ã˜Â¯Ã™Å Ã™â€ž Ã™â€¦Ã˜ÂªÃ˜ÂºÃ™Å Ã˜Â±' : 'Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â© Ã™â€¦Ã˜ÂªÃ˜ÂºÃ™Å Ã˜Â± Ã˜Â¬Ã˜Â¯Ã™Å Ã˜Â¯',
+          title: isEditing ? 'ØªØ¹Ø¯ÙŠÙ„ Ù…ØªØºÙŠØ±' : 'Ø¥Ø¶Ø§ÙØ© Ù…ØªØºÙŠØ± Ø¬Ø¯ÙŠØ¯',
           children: [
             ReusableInput.text(
               controller: nameCtrl,
-              label: 'Ã˜Â§Ã˜Â³Ã™â€¦ Ã˜Â§Ã™â€žÃ™â€¦Ã˜ÂªÃ˜ÂºÃ™Å Ã˜Â± *',
+              label: 'Ø§Ø³Ù… Ø§Ù„Ù…ØªØºÙŠØ± *',
               textDirection: TextDirection.rtl,
             ),
             SizedBox(height: AppSpacing.sm.h),
@@ -315,13 +315,13 @@ class _VariantsViewState extends State<VariantsView> {
             SizedBox(height: AppSpacing.sm.h),
             ReusableInput(
               controller: priceCtrl,
-              label: 'Ã˜Â³Ã˜Â¹Ã˜Â± Ã˜Â§Ã™â€žÃ˜Â¨Ã™Å Ã˜Â¹',
+              label: 'Ø³Ø¹Ø± Ø§Ù„Ø¨ÙŠØ¹',
               keyboardType: TextInputType.number,
             ),
             SizedBox(height: AppSpacing.sm.h),
             ReusableInput(
               controller: costCtrl,
-              label: 'Ã˜Â§Ã™â€žÃ˜ÂªÃ™Æ’Ã™â€žÃ™ÂÃ˜Â©',
+              label: 'Ø§Ù„ØªÙƒÙ„ÙØ©',
               keyboardType: TextInputType.number,
             ),
             SizedBox(height: AppSpacing.sm.h),
@@ -330,7 +330,7 @@ class _VariantsViewState extends State<VariantsView> {
                 Expanded(
                   child: ReusableInput.text(
                     controller: attrKeyCtrl,
-                    label: 'Ã˜Â§Ã™â€žÃ˜Â®Ã˜Â§Ã˜ÂµÃ™Å Ã˜Â©',
+                    label: 'Ø§Ù„Ø®Ø§ØµÙŠØ©',
                     textDirection: TextDirection.rtl,
                   ),
                 ),
@@ -338,7 +338,7 @@ class _VariantsViewState extends State<VariantsView> {
                 Expanded(
                   child: ReusableInput.text(
                     controller: attrValCtrl,
-                    label: 'Ã˜Â§Ã™â€žÃ™â€šÃ™Å Ã™â€¦Ã™â‚¬Ã˜Â©',
+                    label: 'Ø§Ù„Ù‚ÙŠÙ…Ù€Ø©',
                     textDirection: TextDirection.rtl,
                   ),
                 ),
@@ -378,7 +378,7 @@ class _VariantsViewState extends State<VariantsView> {
             ],
             SizedBox(height: AppSpacing.md.h),
             DialogActions(
-              confirmText: isEditing ? 'Ã˜Â­Ã™ÂÃ˜Â¸' : 'Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â©',
+              confirmText: isEditing ? 'Ø­ÙØ¸' : 'Ø¥Ø¶Ø§ÙØ©',
               onConfirm: () async {
                 if (nameCtrl.text.trim().isEmpty ||
                     skuCtrl.text.trim().isEmpty) {
@@ -415,5 +415,10 @@ class _VariantsViewState extends State<VariantsView> {
     );
   }
 }
+
+
+
+
+
 
 

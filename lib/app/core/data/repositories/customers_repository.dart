@@ -1,15 +1,14 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:drift/drift.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
-import 'package:pharmacy_system/app/core/data/database/daos/customers_dao.dart';
+import 'package:pharmacy_system/app/core/data/database/daos/contacts_dao.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/customer_model.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
-import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_model.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'package:pharmacy_system/app/modules/archive/services/archive_service.dart';
 
 class CustomersRepository {
-  CustomersDao get _dao => sl<CustomersDao>();
+  ContactsDao get _dao => sl<ContactsDao>();
   CustomersRepository();
 
   static final Map<String, List<CustomerModel>> _cache = {};
@@ -30,23 +29,21 @@ class CustomersRepository {
       id: d.id,
       name: d.name,
       phone: d.phone,
-      address: d.address,
-      isActive: d.isActive,
-      kind: CustomerKind.values.firstWhere(
-        (e) => e.name == d.kind,
-        orElse: () => CustomerKind.regular,
-      ),
-      companyName: d.companyName,
+      secondPhone: d.secondPhone,
       email: d.email,
-      taxId: d.taxId,
+      address: d.address,
+      groupId: d.groupId,
+      groupName: d.groupName,
       creditLimit: d.creditLimit,
-      discountPercent: d.discountPercent,
-      paymentTermDays: d.paymentTermDays,
+      debitAmount: d.debitAmount,
+      creditAmount: d.creditAmount,
+      isActive: d.isActive,
+      accountId: d.accountId,
       notes: d.notes,
+      branchId: d.branchId,
+      syncVersion: d.syncVersion,
       lastModified: d.lastModified,
       isDeleted: d.isDeleted,
-      salesRepId: d.salesRepId,
-      branchId: d.branchId,
     );
   }
 
@@ -55,20 +52,21 @@ class CustomersRepository {
       id: Value(m.id),
       name: Value(m.name),
       phone: Value(m.phone),
-      address: Value(m.address),
-      isActive: Value(m.isActive),
-      kind: Value(m.kind.name),
-      companyName: Value(m.companyName),
+      secondPhone: Value(m.secondPhone),
       email: Value(m.email),
-      taxId: Value(m.taxId),
+      address: Value(m.address),
+      groupId: Value(m.groupId),
+      groupName: Value(m.groupName),
       creditLimit: Value(m.creditLimit),
-      discountPercent: Value(m.discountPercent),
-      paymentTermDays: Value(m.paymentTermDays),
+      debitAmount: Value(m.debitAmount),
+      creditAmount: Value(m.creditAmount),
+      isActive: Value(m.isActive),
+      accountId: Value(m.accountId),
       notes: Value(m.notes),
+      branchId: Value(m.branchId),
+      syncVersion: Value(m.syncVersion),
       lastModified: Value(m.lastModified),
       isDeleted: Value(m.isDeleted),
-      salesRepId: Value(m.salesRepId),
-      branchId: Value(m.branchId ?? AuthService.currentBranchId ?? ''),
     );
   }
 
@@ -86,7 +84,7 @@ class CustomersRepository {
     bool includeInactive = true,
     bool includeDeleted = false,
   }) async {
-    var items = await _dao.search(searchQuery ?? '');
+    var items = await _dao.searchCustomers(searchQuery ?? '');
     var data = items.map(_toModel).toList();
     _updateCache(data);
 
@@ -101,11 +99,6 @@ class CustomersRepository {
       }
     }
 
-    if (searchQuery != null && searchQuery.isNotEmpty) {
-      final q = searchQuery.trim().toLowerCase();
-      data.removeWhere((c) => !_matchesSearch(c, q));
-    }
-
     data.sort((a, b) => a.name.compareTo(b.name));
     return data;
   }
@@ -114,16 +107,8 @@ class CustomersRepository {
     return _cached();
   }
 
-  Stream<List<CustomerModel>> watchCustomers() {
-    return _dao.db.select(_dao.db.customersTable).watch().map((rows) {
-      final result = rows.map(_toModel).toList();
-      _updateCache(result);
-      return result;
-    });
-  }
-
   Future<CustomerModel?> getByIdAsync(String id) async {
-    final data = await _dao.getById(id);
+    final data = await _dao.getCustomerById(id);
     return data != null ? _toModel(data) : null;
   }
 
@@ -136,37 +121,33 @@ class CustomersRepository {
   }
 
   Future<void> create(CustomerModel customer) async {
-    customer.lastModified = DateTime.now();
-    customer.branchId ??= AuthService.currentBranchId;
-    await _dao.upsert(_toCompanion(customer));
-    SyncService.onTableUpdated?.call('customers', customer.branchId ?? '');
+    await _dao.upsertCustomer(_toCompanion(customer));
+    SyncService.notifyTableUpdated('customers', customer.branchId ?? '');
     unawaited(
       SyncService.queueOperation(
         type: SyncOperationType.create,
         table: 'customers',
         data: customer.toJson(),
-        branchId: customer.branchId ?? '',
+        branchId: customer.branchId,
       ),
     );
   }
 
   Future<void> update(CustomerModel customer) async {
-    customer.lastModified = DateTime.now();
-    customer.branchId ??= AuthService.currentBranchId;
-    await _dao.upsert(_toCompanion(customer));
-    SyncService.onTableUpdated?.call('customers', customer.branchId ?? '');
+    await _dao.upsertCustomer(_toCompanion(customer));
+    SyncService.notifyTableUpdated('customers', customer.branchId ?? '');
     unawaited(
       SyncService.queueOperation(
         type: SyncOperationType.update,
         table: 'customers',
         data: customer.toJson(),
-        branchId: customer.branchId ?? '',
+        branchId: customer.branchId,
       ),
     );
   }
 
   Future<void> delete(CustomerModel customer) async {
-    final branchId = customer.branchId ?? AuthService.currentBranchId ?? '';
+    final branchId = customer.branchId ?? '';
     await ArchiveService.record(
       entityType: 'customer',
       entityId: customer.id,
@@ -174,26 +155,10 @@ class CustomersRepository {
       entityData: customer.toJson(),
       branchId: branchId,
     );
-    await _dao.softDelete(customer.id);
-    SyncService.onTableUpdated?.call('customers', branchId);
-    unawaited(
-      SyncService.queueOperation(
-        type: SyncOperationType.delete,
-        table: 'customers',
-        data: customer.toJson()..['is_deleted'] = true,
-        branchId: branchId,
-      ),
+    // Soft delete via update
+    await update(
+      customer.copyWith(isDeleted: true, lastModified: DateTime.now()),
     );
-  }
-
-  Future<void> batchCreate(List<CustomerModel> customers, {bool skipSync = false}) async {
-    await _dao.upsertBatch(customers.map(_toCompanion).toList());
-  }
-
-  bool _matchesSearch(CustomerModel customer, String query) {
-    return customer.name.toLowerCase().contains(query) ||
-        (customer.phone?.contains(query) ?? false) ||
-        (customer.companyName?.toLowerCase().contains(query) ?? false);
   }
 
   static void dispose() {
@@ -204,4 +169,3 @@ class CustomersRepository {
     _cacheTimers.clear();
   }
 }
-

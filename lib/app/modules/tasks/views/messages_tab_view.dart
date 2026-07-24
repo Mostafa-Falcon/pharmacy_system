@@ -6,9 +6,9 @@ import 'package:intl/intl.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/modules/tasks/models/task_models.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
 import '../bloc/tasks_bloc.dart';
 
@@ -126,7 +126,7 @@ class MessagesTabView extends StatelessWidget {
         ),
         actions: [
           ReusableButton(
-            text: AppStrings.cancel,
+            text: GeneralStrings.cancel,
             type: ButtonType.text,
             onPressed: () => Navigator.of(context).pop(),
           ),
@@ -232,7 +232,7 @@ class _MessageCard extends StatelessWidget {
             ReusableActionMenuItem(
               value: 'delete',
               icon: Icons.delete_outline_rounded,
-              label: AppStrings.delete,
+              label: GeneralStrings.delete,
               color: AppColors.error,
             ),
           ],
@@ -241,3 +241,7 @@ class _MessageCard extends StatelessWidget {
     );
   }
 }
+
+
+
+

@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -10,7 +10,7 @@ import 'package:pharmacy_system/app/core/data/database/daos/branches_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/permissions_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/app_settings_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'password_hasher.dart';
 import 'secure_storage_helper.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
@@ -102,7 +102,7 @@ class AuthService {
     if (_isLoginThrottled()) {
       return {
         'success': false,
-        'message': AppStrings.tooManyAttempts,
+        'message': AuthStrings.tooManyAttempts,
       };
     }
 
@@ -110,7 +110,7 @@ class AuthService {
       _startLoginThrottle();
       return {
         'success': false,
-        'message': AppStrings.loginRequiresInternet,
+        'message': AuthStrings.loginRequiresInternet,
       };
     }
 
@@ -138,7 +138,7 @@ class AuthService {
     if (_isRegisterThrottled()) {
       return {
         'success': false,
-        'message': AppStrings.tooManyAttempts,
+        'message': AuthStrings.tooManyAttempts,
       };
     }
 
@@ -146,7 +146,7 @@ class AuthService {
       _startRegisterThrottle();
       return {
         'success': false,
-        'message': AppStrings.registerRequiresInternet,
+        'message': AuthStrings.registerRequiresInternet,
       };
     }
 
@@ -194,7 +194,7 @@ class AuthService {
     } catch (_) {}
   }
 
-  // ─── Converters ──────────────────────────────────────────────────
+  // --- Converters --------------------------------------------------
 
   static final Map<String, BranchModel> _branchFromCache = {};
 
@@ -282,7 +282,7 @@ class AuthService {
         _currentUser?.id ?? '',
       );
 
-  // ─── Device Lock (الواجهة العامة) ───
+  // --- Device Lock (??????? ??????) ---
 
   static Future<Map<String, dynamic>> forceReleaseLock() =>
       AuthDeviceLock.forceReleaseLock();
@@ -290,4 +290,9 @@ class AuthService {
   static Future<String?> fetchLockedDevice(String userId) =>
       AuthDeviceLock.fetchLockedDevice(userId);
 }
+
+
+
+
+
 

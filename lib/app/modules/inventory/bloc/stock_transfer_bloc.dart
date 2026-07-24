@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,14 +8,14 @@ import 'package:pharmacy_system/app/core/data/database/daos/branches_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 
 import 'package:pharmacy_system/app/modules/auth/models/branch_model.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
 import 'package:pharmacy_system/app/core/data/services/inventory/stock_mutation_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/inventory_enums.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/stock_transfer_model.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/core/models/inventory/inventory_enums.dart';
+import 'package:pharmacy_system/app/core/models/inventory/stock_transfer_model.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import '../services/inventory_transaction_service.dart';
 import '../services/stock_quantity_guard.dart';
 import 'stock_transfer_event.dart';
@@ -197,9 +197,9 @@ class StockTransferBloc extends Bloc<StockTransferEvent, StockTransferState> {
 
       await _refreshCaches();
       emit(state.copyWith(transfers: _transfersCache, isProcessing: false));
-      AppSnackbar.success('تم إرسال التحويل رقم ${transfer.transferNumber}');
+      AppSnackbar.success('?? ????? ??????? ??? ${transfer.transferNumber}');
     } catch (e) {
-      AppSnackbar.error('فشل إرسال التحويل: $e');
+      AppSnackbar.error('??? ????? ???????: $e');
       emit(state.copyWith(isProcessing: false));
     }
   }
@@ -209,14 +209,14 @@ class StockTransferBloc extends Bloc<StockTransferEvent, StockTransferState> {
     try {
       final raw = await _transfersDao.getById(event.id);
       if (raw == null) {
-        AppSnackbar.error('التحويل غير موجود');
+        AppSnackbar.error('??????? ??? ?????');
         emit(state.copyWith(isProcessing: false));
         return;
       }
       final transfer = _transferFromData(raw);
 
       if (transfer.status != TransferStatus.sent) {
-        AppSnackbar.error('يمكن استلام التحويلات المرسلة فقط');
+        AppSnackbar.error('???? ?????? ????????? ??????? ???');
         emit(state.copyWith(isProcessing: false));
         return;
       }
@@ -258,9 +258,9 @@ class StockTransferBloc extends Bloc<StockTransferEvent, StockTransferState> {
 
       await _refreshCaches();
       emit(state.copyWith(transfers: _transfersCache, isProcessing: false));
-      AppSnackbar.success('تم استلام التحويل رقم ${transfer.transferNumber}');
+      AppSnackbar.success('?? ?????? ??????? ??? ${transfer.transferNumber}');
     } catch (e) {
-      AppSnackbar.error('فشل استلام التحويل: $e');
+      AppSnackbar.error('??? ?????? ???????: $e');
       emit(state.copyWith(isProcessing: false));
     }
   }
@@ -293,8 +293,8 @@ class StockTransferBloc extends Bloc<StockTransferEvent, StockTransferState> {
         await _refreshCaches();
         emit(state.copyWith(transfers: _transfersCache, isProcessing: false));
         AppSnackbar.warning(
-          'تم إلغاء التحويل رقم ${transfer.transferNumber}',
-          title: 'تم',
+          '?? ????? ??????? ??? ${transfer.transferNumber}',
+          title: '??',
         );
         return;
       }
@@ -334,14 +334,19 @@ class StockTransferBloc extends Bloc<StockTransferEvent, StockTransferState> {
         await _refreshCaches();
         emit(state.copyWith(transfers: _transfersCache, isProcessing: false));
         AppSnackbar.warning(
-          'تم إلغاء التحويل رقم ${transfer.transferNumber} وإرجاع المخزون',
-          title: 'تم',
+          '?? ????? ??????? ??? ${transfer.transferNumber} ?????? ???????',
+          title: '??',
         );
       }
     } catch (e) {
-      AppSnackbar.error('فشل إلغاء التحويل: $e');
+      AppSnackbar.error('??? ????? ???????: $e');
       emit(state.copyWith(isProcessing: false));
     }
   }
 }
+
+
+
+
+
 

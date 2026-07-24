@@ -1,4 +1,4 @@
-﻿import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
 import 'package:pharmacy_system/app/modules/notifications/models/app_notification_model.dart';
 
 enum NotificationsStatus { initial, loading, loaded, error }
@@ -31,4 +31,6 @@ class NotificationsState extends Equatable {
   @override
   List<Object?> get props => [status, notifications, error];
 }
+
+
 

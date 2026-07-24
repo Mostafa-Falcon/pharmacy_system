@@ -1,10 +1,10 @@
-import 'package:flutter_test/flutter_test.dart';
+﻿import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_engine.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_pull_service.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_push_service.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_dead_letter_service.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_compaction_service.dart';
+import 'package:pharmacy_system/app/core/sync/sync_engine.dart';
+import 'package:pharmacy_system/app/core/sync/sync_pull_service.dart';
+import 'package:pharmacy_system/app/core/sync/sync_push_service.dart';
+import 'package:pharmacy_system/app/core/sync/sync_dead_letter_service.dart';
+import 'package:pharmacy_system/app/core/sync/sync_compaction_service.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/sync_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -108,3 +108,4 @@ void main() {
 }
 
 Future<bool> _dummyFailedItemHandler(Map<String, dynamic> item) async => true;
+

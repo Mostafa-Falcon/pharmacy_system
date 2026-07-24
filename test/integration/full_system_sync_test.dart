@@ -1,8 +1,8 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:supabase/supabase.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_engine.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_models.dart';
+import 'package:pharmacy_system/app/core/sync/sync_engine.dart';
+import 'package:pharmacy_system/app/core/sync/sync_models.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/sync_dao.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
@@ -143,7 +143,7 @@ void main() {
     safeDebugPrint('\n--- STARTING GLOBAL SYNC ---');
     await syncEngine.syncAll();
     
-    // ننتظر قليلاً لمعالجة النتائج
+    // Ù†Ù†ØªØ¸Ø± Ù‚Ù„ÙŠÙ„Ø§Ù‹ Ù„Ù…Ø¹Ø§Ù„Ø¬Ø© Ø§Ù„Ù†ØªØ§Ø¦Ø¬
     await Future.delayed(const Duration(seconds: 3));
 
     safeDebugPrint('\n--- POST-SYNC VERIFICATION ---');
@@ -161,3 +161,4 @@ void main() {
     }
   });
 }
+

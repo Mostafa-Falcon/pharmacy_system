@@ -1,12 +1,12 @@
-﻿import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:pharmacy_system/app/core/bloc/base_bloc.dart';
 import 'package:pharmacy_system/app/core/bloc/base_state.dart';
-import 'package:pharmacy_system/app/modules/sales/models/cashier_shift_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/cashier_shift_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/sales/cashier_shift_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 
 // --- Events ---
@@ -49,7 +49,7 @@ class CashierShiftBloc extends BaseBloc<CashierShiftEvent, List<CashierShiftMode
   String get _branchId => AuthService.currentBranchId ?? '';
   String get _cashierId => AuthService.currentUser?.id ?? '';
 
-  /// الحصول على الوردية المفتوحة حالياً من البيانات المحملة
+  /// ?????? ??? ??????? ???????? ?????? ?? ???????? ???????
   CashierShiftModel? get currentShift {
     final list = state.data;
     if (list == null) return null;
@@ -77,7 +77,7 @@ class CashierShiftBloc extends BaseBloc<CashierShiftEvent, List<CashierShiftMode
         openingCash: event.openingCash,
         branchId: _branchId,
       );
-      AppSnackbar.success(AppStrings.shiftOpenedSuccess);
+      AppSnackbar.success(SalesStrings.shiftOpenedSuccess);
       return CashierShiftService.getAll(branchId: _branchId);
     });
   }
@@ -89,8 +89,13 @@ class CashierShiftBloc extends BaseBloc<CashierShiftEvent, List<CashierShiftMode
         countedCash: event.countedCash,
         notes: event.notes,
       );
-      AppSnackbar.success(AppStrings.shiftClosedSuccess);
+      AppSnackbar.success(SalesStrings.shiftClosedSuccess);
       return CashierShiftService.getAll(branchId: _branchId);
     });
   }
 }
+
+
+
+
+

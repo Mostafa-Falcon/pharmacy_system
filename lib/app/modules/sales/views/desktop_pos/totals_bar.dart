@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../bloc/pos_bloc.dart';
 import 'dialogs.dart';
@@ -47,13 +47,13 @@ class _DesktopTotalsBarState extends State<DesktopTotalsBar> {
                   ),
                   SizedBox(width: 8.w),
                   ReusableText(
-                    AppStrings.currency,
+                    GeneralStrings.currency,
                     style: TextStyle(color: isDark ? scheme.onSurfaceVariant : Colors.white70, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
               ReusableText(
-                AppStrings.grandTotalLabel,
+                SalesStrings.grandTotalLabel,
                 style: TextStyle(
                   color: isDark ? scheme.onSurface : Colors.white,
                   fontSize: 14.sp,
@@ -71,11 +71,11 @@ class _DesktopTotalsBarState extends State<DesktopTotalsBar> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      _infoItem(context, AppStrings.cartQuantity, '${state.itemCount}'),
+                      _infoItem(context, SalesStrings.cartQuantity, '${state.itemCount}'),
                       _divider(context),
                       _infoItem(
                         context,
-                        AppStrings.cartDiscount,
+                        SalesStrings.cartDiscount,
                         state.invoiceDiscountTotal.toStringAsFixed(2),
                         onTap:
                             () => DesktopDialogs.showInvoiceDiscountDialog(
@@ -86,7 +86,7 @@ class _DesktopTotalsBarState extends State<DesktopTotalsBar> {
                       _divider(context),
                       _infoItem(
                         context,
-                        AppStrings.tax,
+                        GeneralStrings.tax,
                         state.invoiceTax.toStringAsFixed(2),
                         onTap: () => DesktopDialogs.showInvoiceTaxDialog(context, widget.controller),
                       ),
@@ -94,7 +94,7 @@ class _DesktopTotalsBarState extends State<DesktopTotalsBar> {
                       InkWell(
                         onTap: () => setState(() => _isExpanded = false),
                         child: ReusableText(
-                          AppStrings.collapseLabel,
+                          SalesStrings.collapseLabel,
                           style: TextStyle(
                             fontSize: 10.sp,
                             fontWeight: FontWeight.bold,
@@ -110,7 +110,7 @@ class _DesktopTotalsBarState extends State<DesktopTotalsBar> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     ReusableText(
-                      AppStrings.itemCountFormat.replaceFirst('%s', '${state.itemCount}'),
+                      SalesStrings.itemCountFormat.replaceFirst('%s', '${state.itemCount}'),
                       style: TextStyle(
                         color: isDark ? scheme.onSurfaceVariant : Colors.white70,
                         fontWeight: FontWeight.bold,
@@ -118,7 +118,7 @@ class _DesktopTotalsBarState extends State<DesktopTotalsBar> {
                     ),
                     SizedBox(width: 16.w),
                     ReusableButton(
-                      text: AppStrings.detailsLabel,
+                      text: SalesStrings.detailsLabel,
                       type: ButtonType.outlined,
                       color: isDark ? scheme.primary : Colors.white,
                       height: 28.h,
@@ -167,3 +167,7 @@ class _DesktopTotalsBarState extends State<DesktopTotalsBar> {
     );
   }
 }
+
+
+
+

@@ -31,3 +31,5 @@ class PickCustomRange extends ReportsEvent {
   @override
   List<Object?> get props => [from, to];
 }
+
+

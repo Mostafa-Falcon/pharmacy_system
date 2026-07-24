@@ -5,7 +5,7 @@ import 'package:pharmacy_system/app/core/utils/app_utils.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/lookups_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
-import 'package:pharmacy_system/app/core/domain/models/base/lookup_model.dart';
+import 'package:pharmacy_system/app/core/models/base/lookup_model.dart';
 
 class LookupService {
   static final List<LookupModel> _cache = [];
@@ -165,3 +165,5 @@ class LookupService {
     }
   }
 }
+
+

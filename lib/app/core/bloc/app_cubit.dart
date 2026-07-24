@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 
 part 'app_state.dart';
 
@@ -40,3 +40,6 @@ class AppCubit extends Cubit<AppState> {
     return super.close();
   }
 }
+
+
+

@@ -1,12 +1,12 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pharmacy_system/app/modules/contacts/suppliers/bloc/suppliers_state.dart';
-import '../../../../core/navigation/app_navigator.dart';
+import '../../../../shared/navigation/app_navigator.dart';
 
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_model.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_model.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../bloc/suppliers_bloc.dart';
 import '../bloc/suppliers_event.dart';
 
@@ -62,41 +62,41 @@ class _AddSupplierViewState extends State<AddSupplierView> {
         }
       },
       child: StandardFormLayout(
-        title: AppStrings.addNewSupplierTitle,
+        title: SuppliersStrings.addNewSupplierTitle,
         formKey: _formKey,
         maxWidth: 550,
         isSaving: isSaving,
         onConfirm: _submit,
         onCancel: () => AppNavigator.back(),
-        confirmText: AppStrings.save,
-        cancelText: AppStrings.cancel,
+        confirmText: GeneralStrings.save,
+        cancelText: GeneralStrings.cancel,
         children: [
           const SectionHeader(
             icon: Icons.info_outline_rounded,
-            title: 'البيانات الأساسية',
+            title: '???????? ????????',
           ),
           ReusableInput(
-            label: AppStrings.nameLabelRequired,
-            hint: AppStrings.supplierNameHint,
+            label: SuppliersStrings.nameLabelRequired,
+            hint: SuppliersStrings.supplierNameHint,
             controller: nameCtrl,
             textDirection: TextDirection.rtl,
             validator: (v) => v?.trim().isEmpty == true
-                ? AppStrings.supplierNameRequired
+                ? SuppliersStrings.nameRequired
                 : null,
           ),
           SizedBox(height: AppSpacing.md),
           StatefulBuilder(
           builder: (context, setLocalState) => ReusableDropdown<SupplierPartyType>(
-            labelText: AppStrings.partyTypeLabel,
-            hintText: AppStrings.selectPartyTypeHint,
+            labelText: SuppliersStrings.partyTypeLabel,
+            hintText: SuppliersStrings.selectPartyTypeHint,
             items: const [
               SupplierPartyType.company,
               SupplierPartyType.individual,
             ],
             value: partyType,
             itemAsString: (t) => t == SupplierPartyType.company
-                ? AppStrings.enumPartyTypeCompany
-                : AppStrings.enumPartyTypeIndividual,
+                ? GeneralStrings.enumPartyTypeCompany
+                : GeneralStrings.enumPartyTypeIndividual,
             onChanged: (v) {
               if (v != null) setLocalState(() => partyType = v);
             },
@@ -104,7 +104,7 @@ class _AddSupplierViewState extends State<AddSupplierView> {
           ),
           SizedBox(height: AppSpacing.md),
           ReusableInput(
-            label: AppStrings.phoneLabelInput,
+            label: SuppliersStrings.phoneLabelInput,
             controller: phoneCtrl,
             keyboardType: TextInputType.phone,
             textDirection: TextDirection.rtl,
@@ -112,29 +112,29 @@ class _AddSupplierViewState extends State<AddSupplierView> {
           SizedBox(height: AppSpacing.lg),
           const SectionHeader(
             icon: Icons.business_rounded,
-            title: 'بيانات العمل والنشاط',
+            title: '?????? ????? ???????',
           ),
           ReusableInput(
-            label: AppStrings.companyLabelInput,
+            label: SuppliersStrings.companyLabelInput,
             controller: companyCtrl,
             textDirection: TextDirection.rtl,
           ),
           SizedBox(height: AppSpacing.md),
           ReusableInput(
-            label: AppStrings.emailLabelInput,
+            label: SuppliersStrings.emailLabelInput,
             controller: emailCtrl,
             keyboardType: TextInputType.emailAddress,
             textDirection: TextDirection.ltr,
           ),
           SizedBox(height: AppSpacing.md),
           ReusableInput(
-            label: AppStrings.taxIdLabelInput,
+            label: SuppliersStrings.taxIdLabelInput,
             controller: taxCtrl,
             textDirection: TextDirection.ltr,
           ),
           SizedBox(height: AppSpacing.md),
           ReusableInput(
-            label: AppStrings.addressLabelInput,
+            label: SuppliersStrings.addressLabelInput,
             controller: addressCtrl,
             maxLines: 2,
             textDirection: TextDirection.rtl,
@@ -143,16 +143,16 @@ class _AddSupplierViewState extends State<AddSupplierView> {
           StatefulBuilder(
             builder: (context, setLocalState) =>
                 ReusableDropdown<SupplierPartyType>(
-              labelText: AppStrings.partyTypeLabel,
-              hintText: AppStrings.selectPartyTypeHint,
+              labelText: SuppliersStrings.partyTypeLabel,
+              hintText: SuppliersStrings.selectPartyTypeHint,
               items: const [
                 SupplierPartyType.company,
                 SupplierPartyType.individual
               ],
               value: partyType,
               itemAsString: (p) => p == SupplierPartyType.company
-                  ? AppStrings.enumPartyTypeCompany
-                  : AppStrings.enumPartyTypeIndividual,
+                  ? GeneralStrings.enumPartyTypeCompany
+                  : GeneralStrings.enumPartyTypeIndividual,
               onChanged: (v) {
                 if (v != null) setLocalState(() => partyType = v);
               },
@@ -161,22 +161,22 @@ class _AddSupplierViewState extends State<AddSupplierView> {
           SizedBox(height: AppSpacing.lg),
           const SectionHeader(
             icon: Icons.account_balance_wallet_rounded,
-            title: 'السياسات المالية والائتمان',
+            title: '???????? ??????? ?????????',
           ),
           ReusableInput(
-            label: AppStrings.creditLimitLabelInput,
+            label: SuppliersStrings.creditLimitLabelInput,
             controller: creditLimitCtrl,
             keyboardType: TextInputType.number,
           ),
           SizedBox(height: AppSpacing.md),
           ReusableInput(
-            label: AppStrings.discountPercentLabelInput,
+            label: SuppliersStrings.discountPercentLabelInput,
             controller: discountCtrl,
             keyboardType: TextInputType.number,
           ),
           SizedBox(height: AppSpacing.md),
           ReusableInput(
-            label: AppStrings.paymentTermDaysLabelInput,
+            label: SuppliersStrings.paymentTermDaysLabelInput,
             controller: paymentDaysCtrl,
             keyboardType: TextInputType.number,
           ),
@@ -185,7 +185,7 @@ class _AddSupplierViewState extends State<AddSupplierView> {
             children: [
               Expanded(
                 child: ReusableInput(
-                  label: AppStrings.openingBalanceLabelInput,
+                  label: SuppliersStrings.openingBalanceLabelInput,
                   controller: openingBalanceCtrl,
                   keyboardType: TextInputType.number,
                 ),
@@ -194,13 +194,13 @@ class _AddSupplierViewState extends State<AddSupplierView> {
               Expanded(
                 child: StatefulBuilder(
                   builder: (context, setLocalState) => ReusableDropdown<bool>(
-                    labelText: AppStrings.balanceDirectionLabel,
-                    hintText: AppStrings.select,
+                    labelText: SuppliersStrings.balanceDirectionLabel,
+                    hintText: GeneralStrings.select,
                     items: const [true, false],
                     value: openingBalanceDirection,
                     itemAsString: (d) => d
-                        ? AppStrings.debitDirection
-                        : AppStrings.creditDirection,
+                        ? SuppliersStrings.debitDirection
+                        : SuppliersStrings.creditDirection,
                     onChanged: (v) {
                       if (v != null) setLocalState(() => openingBalanceDirection = v);
                     },
@@ -212,10 +212,10 @@ class _AddSupplierViewState extends State<AddSupplierView> {
           SizedBox(height: AppSpacing.lg),
           const SectionHeader(
             icon: Icons.notes_rounded,
-            title: 'ملاحظات إضافية',
+            title: '??????? ??????',
           ),
           ReusableInput(
-            label: AppStrings.notesLabelInput,
+            label: SuppliersStrings.notesLabelInput,
             controller: notesCtrl,
             maxLines: 3,
             textDirection: TextDirection.rtl,
@@ -245,5 +245,12 @@ class _AddSupplierViewState extends State<AddSupplierView> {
     ));
   }
 }
+
+
+
+
+
+
+
 
 

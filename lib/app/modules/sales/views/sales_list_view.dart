@@ -4,14 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import 'package:pharmacy_system/app/routes/app_routes.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/tables/shared_table_cells.dart';
 import 'package:pharmacy_system/app/core/utils/format_utils.dart';
 import 'package:intl/intl.dart';
-import 'package:pharmacy_system/app/modules/sales/models/sale_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/sale_invoice_model.dart';
 import 'package:pharmacy_system/app/modules/sales/bloc/sales_bloc.dart';
 import 'package:pharmacy_system/app/core/extensions/string_ext.dart';
 
@@ -23,9 +23,9 @@ class SalesListView extends StatefulWidget {
 }
 
 class _SalesListViewState extends State<SalesListView> {
-  String _selectedPaymentFilter = AppStrings.all;
-  String _selectedPaymentStatusFilter = AppStrings.all;
-  String _selectedShippingFilter = AppStrings.all;
+  String _selectedPaymentFilter = GeneralStrings.all;
+  String _selectedPaymentStatusFilter = GeneralStrings.all;
+  String _selectedShippingFilter = GeneralStrings.all;
   DateTime? _dateFrom;
   DateTime? _dateTo;
 
@@ -35,7 +35,7 @@ class _SalesListViewState extends State<SalesListView> {
     return BlocProvider(
       create: (_) => sl<SalesBloc>()..add(const LoadSales()),
       child: HomeShell(
-        title: AppStrings.allSales,
+        title: SalesStrings.allSales,
         child: Container(
           color: scheme.surfaceContainerLowest.withValues(alpha: 0.5),
           padding: EdgeInsets.all(AppSpacing.lg.w),
@@ -67,7 +67,7 @@ class _SalesListViewState extends State<SalesListView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ReusableText(
-              AppStrings.allSales,
+              SalesStrings.allSales,
               style: AppTextStyles.title(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.textPrimaryOf(context)),
             ),
             SizedBox(height: 2.h),
@@ -79,14 +79,14 @@ class _SalesListViewState extends State<SalesListView> {
         ),
         const Spacer(),
         ReusableButton(
-          text: AppStrings.newSale,
+          text: SalesStrings.newSale,
           prefixIcon: Icons.add_shopping_cart_rounded,
           color: AppColors.homeSales,
           onPressed: () => context.go(Routes.SALES_POS),
         ),
         SizedBox(width: 8.w),
         ReusableButton(
-          text: AppStrings.back,
+          text: GeneralStrings.back,
           type: ButtonType.outlined,
           prefixIcon: Icons.arrow_back_rounded,
           onPressed: () => context.pop(),
@@ -107,29 +107,29 @@ class _SalesListViewState extends State<SalesListView> {
           children: [
             _MetricCard(
               width: cardWidth,
-              title: AppStrings.todaySales,
+              title: SalesStrings.todaySales,
               value: formatMoney(state.todayTotal),
               icon: Icons.today_rounded,
               color: const Color(0xFF00B4D8),
             ),
             _MetricCard(
               width: cardWidth,
-              title: AppStrings.thisMonthSales,
+              title: SalesStrings.thisMonthSales,
               value: formatMoney(state.monthTotal),
               icon: Icons.calendar_month_rounded,
               color: AppColors.success,
             ),
             _MetricCard(
               width: cardWidth,
-              title: AppStrings.creditSales,
+              title: SalesStrings.creditSales,
               value: formatMoney(state.creditTotal),
               icon: Icons.credit_score_rounded,
               color: AppColors.warning,
             ),
             _MetricCard(
               width: cardWidth,
-              title: AppStrings.totalInvoices,
-              value: '${state.totalCount} ${AppStrings.invoiceLabelSales}',
+              title: SalesStrings.totalInvoices,
+              value: '${state.totalCount} ${SalesStrings.invoiceLabelSales}',
               icon: Icons.receipt_long_rounded,
               color: const Color(0xFF6366F1),
             ),
@@ -154,10 +154,10 @@ class _SalesListViewState extends State<SalesListView> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _statusChip(context, bloc, 'all', '${AppStrings.all} (${state.sales.length})', state.selectedFilter),
-                    _statusChip(context, bloc, 'today', AppStrings.todaySales, state.selectedFilter),
-                    _statusChip(context, bloc, 'this_month', AppStrings.thisMonth, state.selectedFilter),
-                    _statusChip(context, bloc, 'credit', AppStrings.cartPaymentCredit, state.selectedFilter),
+                    _statusChip(context, bloc, 'all', '${GeneralStrings.all} (${state.sales.length})', state.selectedFilter),
+                    _statusChip(context, bloc, 'today', SalesStrings.todaySales, state.selectedFilter),
+                    _statusChip(context, bloc, 'this_month', GeneralStrings.thisMonth, state.selectedFilter),
+                    _statusChip(context, bloc, 'credit', SalesStrings.cartPaymentCredit, state.selectedFilter),
                   ],
                 ),
               ),
@@ -194,23 +194,23 @@ class _SalesListViewState extends State<SalesListView> {
           Row(
             children: [
               FilterDropdown.string(
-                label: AppStrings.paymentMethodLabel,
+                label: SalesStrings.paymentMethodLabel,
                 value: _selectedPaymentFilter,
-                items: <String>[AppStrings.all, AppStrings.cartPaymentCash, AppStrings.cartPaymentCard, AppStrings.cartPaymentCredit],
+                items: <String>[GeneralStrings.all, SalesStrings.cartPaymentCash, SalesStrings.cartPaymentCard, SalesStrings.cartPaymentCredit],
                 onChanged: (v) => setState(() => _selectedPaymentFilter = v!),
               ),
               SizedBox(width: AppSpacing.md.w),
               FilterDropdown.string(
-                label: AppStrings.paymentStatus,
+                label: SalesStrings.paymentStatus,
                 value: _selectedPaymentStatusFilter,
-                items: <String>[AppStrings.all, AppStrings.paymentPaid, AppStrings.paymentPartial, AppStrings.paymentUnpaid],
+                items: <String>[GeneralStrings.all, SalesStrings.paymentPaid, SalesStrings.paymentPartial, SalesStrings.paymentUnpaid],
                 onChanged: (v) => setState(() => _selectedPaymentStatusFilter = v!),
               ),
               SizedBox(width: AppSpacing.md.w),
               FilterDropdown.string(
-                label: AppStrings.shippingStatus,
+                label: SalesStrings.shippingStatus,
                 value: _selectedShippingFilter,
-                items: <String>[AppStrings.all, AppStrings.shippingPending, AppStrings.shippingDelivered],
+                items: <String>[GeneralStrings.all, SalesStrings.shippingPending, SalesStrings.shippingDelivered],
                 onChanged: (v) => setState(() => _selectedShippingFilter = v!),
               ),
               SizedBox(width: AppSpacing.md.w),
@@ -218,14 +218,14 @@ class _SalesListViewState extends State<SalesListView> {
                 child: Padding(
                   padding: EdgeInsets.only(top: 18.h),
                   child: ReusableButton(
-                    text: AppStrings.resetFilters,
+                    text: SalesStrings.resetFilters,
                     prefixIcon: Icons.restart_alt_rounded,
                     type: ButtonType.text,
                     onPressed: () {
                       setState(() {
-                        _selectedPaymentFilter = AppStrings.all;
-                        _selectedPaymentStatusFilter = AppStrings.all;
-                        _selectedShippingFilter = AppStrings.all;
+                        _selectedPaymentFilter = GeneralStrings.all;
+                        _selectedPaymentStatusFilter = GeneralStrings.all;
+                        _selectedShippingFilter = GeneralStrings.all;
                         _dateFrom = null;
                         _dateTo = null;
                       });
@@ -273,16 +273,16 @@ class _SalesListViewState extends State<SalesListView> {
 
     // Apply UI dropdown filters
     var items = state.filteredSales.where((s) {
-      if (_selectedPaymentFilter != AppStrings.all) {
+      if (_selectedPaymentFilter != GeneralStrings.all) {
         final pm = s.paymentMethod;
-        if (_selectedPaymentFilter == AppStrings.cartPaymentCash && pm != 'cash') return false;
-        if (_selectedPaymentFilter == AppStrings.cartPaymentCard && pm != 'card') return false;
-        if (_selectedPaymentFilter == AppStrings.cartPaymentCredit && pm != 'credit') return false;
+        if (_selectedPaymentFilter == SalesStrings.cartPaymentCash && pm != 'cash') return false;
+        if (_selectedPaymentFilter == SalesStrings.cartPaymentCard && pm != 'card') return false;
+        if (_selectedPaymentFilter == SalesStrings.cartPaymentCredit && pm != 'credit') return false;
       }
-      if (_selectedPaymentStatusFilter != AppStrings.all) {
+      if (_selectedPaymentStatusFilter != GeneralStrings.all) {
         final isPaid = s.dueAmount <= 0;
-        if (_selectedPaymentStatusFilter == AppStrings.paymentPaid && !isPaid) return false;
-        if (_selectedPaymentStatusFilter == AppStrings.paymentUnpaid && isPaid) return false;
+        if (_selectedPaymentStatusFilter == SalesStrings.paymentPaid && !isPaid) return false;
+        if (_selectedPaymentStatusFilter == SalesStrings.paymentUnpaid && isPaid) return false;
       }
       if (_dateFrom != null && s.createdAt.isBefore(_dateFrom!)) return false;
       if (_dateTo != null && s.createdAt.isAfter(_dateTo!.add(const Duration(days: 1)))) return false;
@@ -297,34 +297,34 @@ class _SalesListViewState extends State<SalesListView> {
     final totalDue = items.fold(0.0, (sum, s) => sum + s.dueAmount);
 
     final columns = [
-      ReusableTableColumn<SaleModel>(
+      ReusableTableColumn<SaleInvoiceModel>(
         id: 'id',
-        title: AppStrings.invoiceNumberLabel,
+        title: SalesStrings.invoiceNumberLabel,
         width: 110.w,
         isSortable: true,
         textBuilder: (s) => '#${s.id.substring(0, 6).toUpperCase()}',
       ),
-      ReusableTableColumn<SaleModel>(
+      ReusableTableColumn<SaleInvoiceModel>(
         id: 'customer',
-        title: AppStrings.customerNameLabel,
+        title: SalesStrings.customerNameLabel,
         flex: 2,
         isSortable: true,
         cellBuilder: (s) => TableContactNameCell(
-          name: s.customerName ?? AppStrings.cashCustomer,
+          name: s.customerName ?? SalesStrings.cashCustomer,
           subtitle: s.notes?.nullIfEmpty ?? 'لا توجد ملاحظات',
           icon: s.paymentMethod == 'credit' ? Icons.person_rounded : Icons.money_rounded,
           iconColor: s.paymentMethod == 'cash' ? AppColors.success : (s.paymentMethod == 'card' ? AppColors.info : AppColors.warning),
         ),
       ),
-      ReusableTableColumn<SaleModel>(
+      ReusableTableColumn<SaleInvoiceModel>(
         id: 'method',
-        title: AppStrings.paymentMethodLabel,
+        title: SalesStrings.paymentMethodLabel,
         width: 110.w,
         cellBuilder: (s) {
           final label = switch (s.paymentMethod) {
-            'cash' => AppStrings.cartPaymentCash,
-            'card' => AppStrings.cartPaymentCard,
-            'credit' => AppStrings.cartPaymentCredit,
+            'cash' => SalesStrings.cartPaymentCash,
+            'card' => SalesStrings.cartPaymentCard,
+            'credit' => SalesStrings.cartPaymentCredit,
             _ => s.paymentMethod,
           };
           return StatusBadge(
@@ -333,35 +333,35 @@ class _SalesListViewState extends State<SalesListView> {
           );
         },
       ),
-      ReusableTableColumn<SaleModel>(
+      ReusableTableColumn<SaleInvoiceModel>(
         id: 'payment_status',
-        title: AppStrings.paymentStatus,
+        title: SalesStrings.paymentStatus,
         width: 110.w,
         cellBuilder: (s) {
           final isPaid = s.dueAmount <= 0;
           return StatusBadge(
-            label: isPaid ? AppStrings.paymentPaid : AppStrings.paymentPartial,
+            label: isPaid ? SalesStrings.paymentPaid : SalesStrings.paymentPartial,
             color: isPaid ? AppColors.success : AppColors.error,
           );
         },
       ),
-      ReusableTableColumn<SaleModel>(
+      ReusableTableColumn<SaleInvoiceModel>(
         id: 'amount',
-        title: AppStrings.totalValue,
+        title: SalesStrings.totalValue,
         width: 120.w,
         isNumeric: true,
-        cellBuilder: (s) => TableMoneyCell(amount: s.finalAmount, currency: AppStrings.currency, isHighlight: true),
+        cellBuilder: (s) => TableMoneyCell(amount: s.finalAmount, currency: GeneralStrings.currency, isHighlight: true),
       ),
-      ReusableTableColumn<SaleModel>(
+      ReusableTableColumn<SaleInvoiceModel>(
         id: 'due',
-        title: AppStrings.dueAmount,
+        title: SalesStrings.dueAmount,
         width: 120.w,
         isNumeric: true,
-        cellBuilder: (s) => TableMoneyCell(amount: s.dueAmount, currency: AppStrings.currency, isNegative: s.dueAmount > 0),
+        cellBuilder: (s) => TableMoneyCell(amount: s.dueAmount, currency: GeneralStrings.currency, isNegative: s.dueAmount > 0),
       ),
-      ReusableTableColumn<SaleModel>(
+      ReusableTableColumn<SaleInvoiceModel>(
         id: 'date',
-        title: AppStrings.date,
+        title: GeneralStrings.date,
         width: 150.w,
         isSortable: true,
         textBuilder: (s) => DateFormat('yyyy/MM/dd HH:mm').format(s.createdAt),
@@ -372,10 +372,10 @@ class _SalesListViewState extends State<SalesListView> {
       children: [
         _buildTableToolbar(context, state),
         Expanded(
-          child: ReusableTable<SaleModel>(
+          child: ReusableTable<SaleInvoiceModel>(
             columns: columns,
             items: items,
-            itemLabel: AppStrings.invoiceLabelSales,
+            itemLabel: SalesStrings.invoiceLabelSales,
             bodyRowHeight: 56.h,
             rowActions: (s) => TableOptionsButton(
               onSelected: (v) {
@@ -386,10 +386,10 @@ class _SalesListViewState extends State<SalesListView> {
                 }
               },
               menuItems: [
-                _menuItem('inspect', Icons.visibility_rounded, AppStrings.inspect, color: AppColors.info),
-                _menuItem('edit', Icons.edit_rounded, AppStrings.edit),
-                _menuItem('print', Icons.print_rounded, AppStrings.printInvoice),
-                _menuItem('void', Icons.delete_outline_rounded, AppStrings.voidInvoice, color: AppColors.error),
+                _menuItem('inspect', Icons.visibility_rounded, SalesStrings.inspect, color: AppColors.info),
+                _menuItem('edit', Icons.edit_rounded, GeneralStrings.edit),
+                _menuItem('print', Icons.print_rounded, SalesStrings.printInvoice),
+                _menuItem('void', Icons.delete_outline_rounded, SalesStrings.voidInvoice, color: AppColors.error),
               ],
             ),
             summaryRow: Row(
@@ -434,7 +434,7 @@ class _SalesListViewState extends State<SalesListView> {
             ),
             SizedBox(height: 16.h),
             ReusableText(
-              AppStrings.noSalesInvoices,
+              SalesStrings.noSalesInvoices,
               style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.textPrimaryOf(context)),
             ),
             SizedBox(height: 6.h),
@@ -472,19 +472,19 @@ class _SalesListViewState extends State<SalesListView> {
       padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 4.w),
       child: Row(
         children: [
-          ReusableText(AppStrings.showEntries, style: AppTextStyles.caption(context).copyWith(color: AppColors.textSecondaryOf(context))),
+          ReusableText(SalesStrings.showEntries, style: AppTextStyles.caption(context).copyWith(color: AppColors.textSecondaryOf(context))),
           SizedBox(width: 8.w),
           _rowsPerPageDropdown(),
           const Spacer(),
-          _toolbarButton(Icons.ios_share_rounded, AppStrings.exportCsv),
-          _toolbarButton(Icons.description_outlined, AppStrings.exportExcel),
-          _toolbarButton(Icons.print_outlined, AppStrings.print),
-          _toolbarButton(Icons.view_column_outlined, AppStrings.viewColumns),
+          _toolbarButton(Icons.ios_share_rounded, SalesStrings.exportCsv),
+          _toolbarButton(Icons.description_outlined, SalesStrings.exportExcel),
+          _toolbarButton(Icons.print_outlined, GeneralStrings.print),
+          _toolbarButton(Icons.view_column_outlined, SalesStrings.viewColumns),
           SizedBox(width: 14.w),
           SizedBox(
             width: 240.w,
             child: ReusableInput(
-              hint: AppStrings.searchSalesInvoicesHint,
+              hint: SalesStrings.searchSalesInvoicesHint,
               prefixIcon: const Icon(Icons.search_rounded),
               onChanged: (query) => bloc.add(FilterSalesQuery(query)),
             ),
@@ -543,21 +543,21 @@ class _SalesListViewState extends State<SalesListView> {
     );
   }
 
-  void _confirmVoidSale(BuildContext context, SaleModel sale) {
+  void _confirmVoidSale(BuildContext context, SaleInvoiceModel sale) {
     showDialog(
       context: context,
       builder: (ctx) => ReusableDialog(
-        title: AppStrings.voidInvoice,
+        title: SalesStrings.voidInvoice,
         headerIcon: const Icon(Icons.warning_amber_rounded, color: Colors.white),
         headerIconColor: AppColors.error,
         children: [
           ReusableText(
-            '${AppStrings.voidInvoiceConfirmPrefix}${sale.id.substring(0, 6).toUpperCase()}؟',
+            '${SalesStrings.voidInvoiceConfirmPrefix}${sale.id.substring(0, 6).toUpperCase()}؟',
             style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 8.h),
           ReusableText(
-            AppStrings.voidInvoiceWarning,
+            SalesStrings.voidInvoiceWarning,
             style: AppTextStyles.caption(context).copyWith(color: AppColors.textSecondaryOf(context)),
           ),
           SizedBox(height: 20.h),
@@ -565,13 +565,13 @@ class _SalesListViewState extends State<SalesListView> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ReusableButton(
-                text: AppStrings.backActionSales,
+                text: SalesStrings.back,
                 type: ButtonType.outlined,
                 onPressed: () => Navigator.pop(ctx),
               ),
               SizedBox(width: 10.w),
               ReusableButton(
-                text: AppStrings.voidInvoice,
+                text: SalesStrings.voidInvoice,
                 color: AppColors.error,
                 onPressed: () {
                   Navigator.pop(ctx);
@@ -647,6 +647,13 @@ class _MetricCard extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
 
 
 

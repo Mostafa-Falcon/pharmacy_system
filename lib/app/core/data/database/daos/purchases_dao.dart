@@ -1,35 +1,46 @@
 import 'package:drift/drift.dart';
 import '../database.dart';
+import '../tables/purchases_tables.dart';
 
-class PurchasesDao {
-  final AppDatabase db;
-  PurchasesDao(this.db);
+part 'purchases_dao.g.dart';
 
-  Future<List<PurchasesTableData>> getAll() =>
-      db.select(db.purchasesTable).get();
+/// 🧾 كائن الاستعلامات والتنفيذ المالي المباشر لموديول المشتريات والتوريدات
+@DriftAccessor(tables: [
+  PurchaseInvoicesTable,
+  SuppliedItemsTable,
+])
+class PurchasesDao extends DatabaseAccessor<AppDatabase> with _$PurchasesDaoMixin {
+  PurchasesDao(super.db);
 
-  Future<List<PurchasesTableData>> getByBranch(String branchId) =>
-      (db.select(db.purchasesTable)
+  // ─── 1. فواتير المشتريات ───
+  Future<List<PurchaseInvoicesTableData>> getInvoicesByBranch(String branchId) =>
+      (select(purchaseInvoicesTable)
             ..where((t) => t.branchId.equals(branchId) & t.isDeleted.not())
             ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
           .get();
 
-  Future<PurchasesTableData?> getById(String id) =>
-      (db.select(db.purchasesTable)..where((t) => t.id.equals(id)))
+  Future<PurchaseInvoicesTableData?> getInvoiceById(String id) =>
+      (select(purchaseInvoicesTable)..where((t) => t.id.equals(id)))
           .getSingleOrNull();
 
-  Future<void> upsert(PurchasesTableCompanion entry) async {
-    await db.into(db.purchasesTable).insertOnConflictUpdate(entry);
+  Future<void> upsertInvoice(PurchaseInvoicesTableCompanion invoice) async {
+    await into(purchaseInvoicesTable).insertOnConflictUpdate(invoice);
   }
 
-  Future<void> softDelete(String id) async {
-    await (db.update(db.purchasesTable)..where((t) => t.id.equals(id))).write(
-      PurchasesTableCompanion(
-        isDeleted: const Value(true),
-        lastModified: Value(DateTime.now()),
-      ),
-    );
-  }
+  // ─── 2. الأصناف الموردة ───
+  Future<List<SuppliedItemsTableData>> getSuppliedItemsByMedicine(String medicineId) =>
+      (select(suppliedItemsTable)
+            ..where((t) => t.medicineId.equals(medicineId))
+            ..orderBy([(t) => OrderingTerm.desc(t.lastPurchaseDate)]))
+          .get();
 
-  Future<int> count() => db.select(db.purchasesTable).get().then((r) => r.length);
+  Future<void> insertSuppliedItems(List<SuppliedItemsTableCompanion> items) async {
+    await db.batch((batch) {
+      for (final item in items) {
+        batch.insert(suppliedItemsTable, item, mode: InsertMode.insertOrReplace);
+      }
+    });
+  }
 }
+
+

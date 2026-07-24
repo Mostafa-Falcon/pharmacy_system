@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/shareds/sidebar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/shareds/sidebar.dart';
 import 'package:pharmacy_system/app/modules/auth/bloc/auth_bloc.dart' hide LogoutRequested;
 import '../../../core/utils/app_utils.dart';
 import '../../../core/injection.dart';
@@ -96,3 +96,6 @@ class ShellBloc extends Bloc<ShellEvent, ShellState> {
     AuthService.logout();
   }
 }
+
+
+

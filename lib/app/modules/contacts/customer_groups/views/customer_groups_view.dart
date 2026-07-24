@@ -3,12 +3,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/bloc/base_paginated_bloc.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/customer_group_model.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_group_model.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/string_ext.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../bloc/customer_groups_bloc.dart';
 
 class CustomerGroupsView extends StatelessWidget {
@@ -113,7 +113,7 @@ class _CustomerGroupsBody extends StatelessWidget {
       ReusableActionMenuItem(
         value: 'edit',
         icon: Icons.edit_outlined,
-        label: AppStrings.edit,
+        label: GeneralStrings.edit,
       ),
       ReusableActionMenuItem(
         value: 'toggle',
@@ -123,7 +123,7 @@ class _CustomerGroupsBody extends StatelessWidget {
       ReusableActionMenuItem(
         value: 'delete',
         icon: Icons.delete_outline_rounded,
-        label: AppStrings.delete,
+        label: GeneralStrings.delete,
         color: AppColors.error,
       ),
     ];
@@ -226,4 +226,9 @@ class _CustomerGroupsBody extends StatelessWidget {
     });
   }
 }
+
+
+
+
+
 

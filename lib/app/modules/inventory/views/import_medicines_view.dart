@@ -1,15 +1,15 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import 'package:pharmacy_system/app/core/data/services/sound_service.dart';
 import '../bloc/import_medicines_bloc.dart';
 import '../bloc/import_medicines_event.dart';
 import '../bloc/import_medicines_state.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
 class ImportMedicinesView extends StatelessWidget {
   const ImportMedicinesView({super.key});
@@ -25,10 +25,10 @@ class _ImportMedicinesBody extends StatelessWidget {
 
   String _stepLabel(String? step) {
     return switch (step) {
-      'reading' => AppStrings.importStepReading,
-      'parsing' => AppStrings.importStepParsing,
-      'saving' => AppStrings.importStepSaving,
-      'done' => AppStrings.importStepDone,
+      'reading' => InventoryStrings.importStepReading,
+      'parsing' => InventoryStrings.importStepParsing,
+      'saving' => InventoryStrings.importStepSaving,
+      'done' => InventoryStrings.importStepDone,
       _ => '',
     };
   }
@@ -48,7 +48,7 @@ class _ImportMedicinesBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return HomeShell(
-      title: AppStrings.importMedicinesTitle,
+      title: InventoryStrings.importMedicinesTitle,
       child: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
@@ -89,20 +89,20 @@ class _ImportMedicinesBody extends StatelessWidget {
                         if (state.status == ImportMedicinesStatus.success) {
                           SoundService.instance.play(SoundEffect.itemAdded);
                           AppSnackbar.success(
-                            '${AppStrings.importSnackbarSuccessPrefix}${state.itemsFound}${AppStrings.importSnackbarSuccessSuffix}',
-                            title: AppStrings.importSnackbarTitleSuccess,
+                            '${InventoryStrings.importSnackbarSuccessPrefix}${state.itemsFound}${InventoryStrings.importSnackbarSuccessSuffix}',
+                            title: InventoryStrings.importSnackbarTitleSuccess,
                           );
                         } else if (state.status == ImportMedicinesStatus.error) {
                           SoundService.instance.play(SoundEffect.error);
-                          if (state.resultMessage == '${AppStrings.importFailPrefix}${AppStrings.importNoData}' || state.resultMessage == AppStrings.importNoData) {
+                          if (state.resultMessage == '${InventoryStrings.importFailPrefix}${InventoryStrings.importNoData}' || state.resultMessage == InventoryStrings.importNoData) {
                             AppSnackbar.warning(
-                              AppStrings.importSnackbarNoData,
-                              title: AppStrings.importSnackbarTitleWarning,
+                              InventoryStrings.importSnackbarNoData,
+                              title: InventoryStrings.importSnackbarTitleWarning,
                             );
                           } else {
                             AppSnackbar.error(
-                              state.resultMessage ?? 'خطأ في عملية الاستيراد',
-                              title: AppStrings.importSnackbarTitleError,
+                              state.resultMessage ?? '??? ?? ????? ?????????',
+                              title: InventoryStrings.importSnackbarTitleError,
                             );
                           }
                         }
@@ -136,20 +136,20 @@ class _ImportMedicinesBody extends StatelessWidget {
                             ),
                             SizedBox(height: AppSpacing.lg.h),
                             ReusableText(
-                              isImporting ? AppStrings.importButtonLoading : AppStrings.importMedicinesTitle,
+                              isImporting ? InventoryStrings.importButtonLoading : InventoryStrings.importMedicinesTitle,
                               style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.bold),
                             ),
                             SizedBox(height: AppSpacing.xs.h),
                             ReusableText(
                               isImporting && stepLabel.isNotEmpty
                                   ? stepLabel
-                                  : AppStrings.importMedicinesDesc,
+                                  : InventoryStrings.importMedicinesDesc,
                               textAlign: TextAlign.center,
                               style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade600),
                             ),
                             SizedBox(height: AppSpacing.xl.h),
 
-                            // اسم الملف المختار
+                            // ??? ????? ???????
                             if (state.fileName != null)
                               Container(
                                 width: double.infinity,
@@ -184,11 +184,11 @@ class _ImportMedicinesBody extends StatelessWidget {
                                 padding: EdgeInsets.only(bottom: AppSpacing.lg.h),
                                 child: EmptyState(
                                   icon: Icons.table_chart_outlined,
-                                  title: AppStrings.importMedicinesNoFile,
+                                  title: InventoryStrings.importMedicinesNoFile,
                                 ),
                               ),
 
-                            // شريط التقدم + الخطوات
+                            // ???? ?????? + ???????
                             if (showProgress) ...[
                               SizedBox(height: AppSpacing.xl.h),
                               
@@ -196,7 +196,7 @@ class _ImportMedicinesBody extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   ReusableText(
-                                    '${AppStrings.importProgress}${(state.progress.clamp(0.0, 1.0) * 100).toInt()}%',
+                                    '${InventoryStrings.importProgress}${(state.progress.clamp(0.0, 1.0) * 100).toInt()}%',
                                     style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: scheme.primary),
                                   ),
                                   if (isImporting)
@@ -220,30 +220,30 @@ class _ImportMedicinesBody extends StatelessWidget {
                                 ),
                               ),
 
-                              // خطوات العملية
+                              // ????? ???????
                               SizedBox(height: AppSpacing.xl.h),
                               _StepRow(
                                 icon: Icons.folder_open_rounded,
-                                label: AppStrings.importStepReading,
+                                label: InventoryStrings.importStepReading,
                                 isActive: state.currentStep == 'reading',
                                 isDone: ['parsing', 'saving', 'done'].contains(state.currentStep),
                               ),
                               SizedBox(height: 14.h),
                               _StepRow(
                                 icon: Icons.analytics_rounded,
-                                label: AppStrings.importStepParsing,
+                                label: InventoryStrings.importStepParsing,
                                 isActive: state.currentStep == 'parsing',
                                 isDone: ['saving', 'done'].contains(state.currentStep),
                               ),
                               SizedBox(height: 14.h),
                               _StepRow(
                                 icon: Icons.save_rounded,
-                                label: AppStrings.importStepSaving,
+                                label: InventoryStrings.importStepSaving,
                                 isActive: state.currentStep == 'saving',
                                 isDone: state.currentStep == 'done',
                               ),
 
-                              // إحصائيات الحفظ
+                              // ???????? ?????
                               if (state.currentStep == 'parsing' || state.currentStep == 'saving' || state.currentStep == 'done') ...[
                                 SizedBox(height: AppSpacing.xl.h),
                                 _StatsRow(
@@ -258,10 +258,10 @@ class _ImportMedicinesBody extends StatelessWidget {
 
                             SizedBox(height: AppSpacing.xxl.h),
 
-                            // الأزرار
+                            // ???????
                             if (isImporting)
                               ReusableButton(
-                                text: AppStrings.importButtonLoading,
+                                text: InventoryStrings.importButtonLoading,
                                 type: ButtonType.primary,
                                 isLoading: true,
                                 prefixIcon: Icons.file_upload_rounded,
@@ -307,7 +307,7 @@ class _ImportMedicinesBody extends StatelessWidget {
                                       ),
                                     ),
                                   ReusableButton(
-                                    text: AppStrings.importNewImport,
+                                    text: InventoryStrings.importNewImport,
                                     type: ButtonType.primary,
                                     prefixIcon: Icons.file_upload_rounded,
                                     width: double.infinity,
@@ -318,7 +318,7 @@ class _ImportMedicinesBody extends StatelessWidget {
                               )
                             else
                               ReusableButton(
-                                text: AppStrings.importButton,
+                                text: InventoryStrings.importButton,
                                 type: ButtonType.primary,
                                 prefixIcon: Icons.file_upload_rounded,
                                 width: double.infinity,
@@ -431,13 +431,13 @@ class _StatsRow extends StatelessWidget {
         children: [
           if (currentStep == 'parsing')
             _StatItem(
-              label: 'جاري تحليل الأصناف...',
+              label: '???? ????? ???????...',
               value: '$itemsFound',
               color: scheme.primary,
             )
           else
             _StatItem(
-              label: AppStrings.importStatsTotal,
+              label: InventoryStrings.importStatsTotal,
               value: '$itemsFound',
               color: scheme.primary,
             ),
@@ -447,21 +447,21 @@ class _StatsRow extends StatelessWidget {
           Row(
             children: [
               Expanded(child: _StatItem(
-                label: AppStrings.importStatsNew,
+                label: InventoryStrings.importStatsNew,
                 value: '$itemsSaved',
                 color: AppColors.success,
                 compact: true,
               )),
               SizedBox(width: 8.w),
               Expanded(child: _StatItem(
-                label: AppStrings.importStatsUpdated,
+                label: InventoryStrings.importStatsUpdated,
                 value: '$itemsUpdated',
                 color: scheme.secondary,
                 compact: true,
               )),
               SizedBox(width: 8.w),
               Expanded(child: _StatItem(
-                label: AppStrings.importStatsSkipped,
+                label: InventoryStrings.importStatsSkipped,
                 value: '$itemsSkipped',
                 color: Colors.orange,
                 compact: true,
@@ -511,3 +511,8 @@ class _StatItem extends StatelessWidget {
     );
   }
 }
+
+
+
+
+

@@ -1,5 +1,5 @@
-﻿import 'package:equatable/equatable.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/stock_transfer_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:pharmacy_system/app/core/models/inventory/stock_transfer_model.dart';
 
 abstract class StockTransferEvent extends Equatable {
   const StockTransferEvent();
@@ -43,4 +43,7 @@ class CancelTransfer extends StockTransferEvent {
   @override
   List<Object?> get props => [id];
 }
+
+
+
 

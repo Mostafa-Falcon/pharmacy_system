@@ -7,30 +7,29 @@ import 'package:excel/excel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pharmacy_system/app/core/constants/strings/excel_strings.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
-import 'package:pharmacy_system/app/modules/accounting/models/expense_model.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/import_step_info.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
+import 'package:pharmacy_system/app/core/models/accounting/expense_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/import_step_info.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:pharmacy_system/app/core/injection.dart';
 import 'package:pharmacy_system/app/core/utils/app_utils.dart';
-import 'package:pharmacy_system/app/core/data/database/daos/customer_ledgers_dao.dart';
-import 'package:pharmacy_system/app/core/data/database/daos/expenses_dao.dart';
-import 'package:pharmacy_system/app/core/data/database/daos/supplier_ledgers_dao.dart';
+import 'package:pharmacy_system/app/core/data/database/daos/contacts_dao.dart';
+import 'package:pharmacy_system/app/core/data/database/daos/accounting_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/sync_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/repositories/customers_repository.dart';
 import 'package:pharmacy_system/app/core/data/repositories/suppliers_repository.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_engine.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/customer_ledger_model.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/customer_model.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_unit_model.dart';
+import 'package:pharmacy_system/app/core/sync/sync_engine.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_ledger_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_unit_model.dart';
 import 'package:pharmacy_system/app/modules/inventory/services/unit_normalizer.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_ledger_model.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_ledger_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_model.dart';
 
 class ExcelImportService {
   static String? _cell(List<dynamic> row, int i) {
@@ -500,7 +499,7 @@ class ExcelImportService {
 
     final col = _resolveCustomerColumnIndexes(rows[headerIndex]);
     final customers = <CustomerModel>[];
-    final ledgerEntries = <CustomerLedgerModel>[];
+    final ledgerEntries = <ContactLedgerModel>[];
 
     for (var i = headerIndex + 1; i < rows.length; i++) {
       final row = rows[i];
@@ -530,7 +529,7 @@ class ExcelImportService {
 
       if (openBal > 0) {
         ledgerEntries.add(
-          CustomerLedgerModel(
+          ContactLedgerModel(
             id: const Uuid().v4(),
             customerId: customer.id,
             branchId: branchId,
@@ -561,10 +560,10 @@ class ExcelImportService {
       }
 
       if (ledgerEntries.isNotEmpty) {
-        final dao = sl<CustomerLedgersDao>();
+        final dao = sl<ContactsDao>();
         for (var e in ledgerEntries) {
           final companion = _customerLedgerToCompanion(e);
-          await dao.upsert(companion);
+          await dao.insertLedgerEntry(companion);
           await syncDao.enqueue(
             operation: SyncOperationType.create.name,
             tableName: 'customer_ledgers',
@@ -855,7 +854,7 @@ class _SupplierImportColumns {
 // ─── Converters ──────────────────────────────────────────────────
 
 CustomerLedgersTableCompanion _customerLedgerToCompanion(
-  CustomerLedgerModel m,
+  ContactLedgerModel m,
 ) {
   return CustomerLedgersTableCompanion(
     id: Value(m.id),
@@ -908,4 +907,9 @@ ExpensesTableCompanion _expenseToCompanion(ExpenseModel m) {
     isDeleted: const Value(false),
   );
 }
+
+
+
+
+
 

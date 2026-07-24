@@ -1,13 +1,13 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../bloc/hr_bloc.dart';
 import 'package:pharmacy_system/app/modules/hr/models/leave_model.dart';
 import 'package:pharmacy_system/app/modules/hr/models/employee_model.dart';
 import '../services/leave_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 
 class LeaveView extends StatelessWidget {
   const LeaveView({super.key});
@@ -61,13 +61,13 @@ class LeaveView extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => ReusableDialog(
-        title: 'طلب إجازة جديدة',
+        title: '??? ????? ?????',
         headerIcon: const Icon(Icons.event_rounded),
         children: [
           if (employees.isNotEmpty)
             ReusableDropdown<String>(
-              labelText: 'الموظف',
-              hintText: 'اختر الموظف',
+              labelText: '??????',
+              hintText: '???? ??????',
               items: employees.map((e) => e.name).toList(),
               value: selectedEmployeeName.isEmpty ? null : selectedEmployeeName,
               itemAsString: (s) => s,
@@ -81,50 +81,50 @@ class LeaveView extends StatelessWidget {
             ),
           SizedBox(height: AppSpacing.sm.h),
           ReusableDropdown<String>(
-            labelText: 'نوع الإجازة',
-            hintText: 'اختر النوع',
+            labelText: '??? ???????',
+            hintText: '???? ?????',
             items: leaveTypes,
             value: selectedType,
             itemAsString: (s) => s == 'sick'
-                ? 'مرضية'
+                ? '?????'
                 : s == 'annual'
-                    ? 'سنوية'
+                    ? '?????'
                     : s == 'emergency'
-                        ? 'طارئة'
-                        : 'بدون راتب',
+                        ? '?????'
+                        : '???? ????',
             onChanged: (v) {
               if (v != null) selectedType = v;
             },
           ),
           SizedBox(height: AppSpacing.sm.h),
           ReusableInput(
-            label: 'تاريخ البداية',
+            label: '????? ???????',
             hint: 'YYYY-MM-DD',
             controller: startDateCtrl,
             prefixIcon: const Icon(Icons.calendar_today_rounded, size: 18),
           ),
           SizedBox(height: AppSpacing.sm.h),
           ReusableInput(
-            label: 'تاريخ النهاية',
+            label: '????? ???????',
             hint: 'YYYY-MM-DD',
             controller: endDateCtrl,
             prefixIcon: const Icon(Icons.calendar_today_rounded, size: 18),
           ),
           SizedBox(height: AppSpacing.sm.h),
           ReusableInput(
-            label: 'السبب',
-            hint: 'سبب الإجازة...',
+            label: '?????',
+            hint: '??? ???????...',
             controller: reasonCtrl,
             maxLines: 2,
             textDirection: TextDirection.rtl,
           ),
           SizedBox(height: AppSpacing.lg.h),
           DialogActions(
-            confirmText: 'تقديم طلب الإجازة',
+            confirmText: '????? ??? ???????',
             onConfirm: () async {
               if (selectedEmployeeId.isEmpty) return;
               if (startDateCtrl.text.isEmpty || endDateCtrl.text.isEmpty) {
-                AppSnackbar.error('يرجى تحديد تواريخ الإجازة');
+                AppSnackbar.error('???? ????? ?????? ???????');
                 return;
               }
               bloc.add(RequestLeave(
@@ -171,7 +171,7 @@ class _LeaveBalanceCardState extends State<_LeaveBalanceCard> {
   Widget build(BuildContext context) {
     if (widget.employees.isEmpty) {
       return const AppCard(
-        child: ReusableText('لا يوجد موظفون متاحون لعرض أرصدة الإجازات حالياً.'),
+        child: ReusableText('?? ???? ?????? ?????? ???? ????? ???????? ??????.'),
       );
     }
     final balance = _balance;
@@ -181,25 +181,25 @@ class _LeaveBalanceCardState extends State<_LeaveBalanceCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SectionHeader(icon: Icons.account_balance_wallet_rounded, title: 'أرصدة الإجازات المتاحة'),
+          const SectionHeader(icon: Icons.account_balance_wallet_rounded, title: '????? ???????? ???????'),
           SizedBox(height: AppSpacing.sm.h),
           _BalanceRow(
-              label: 'الإجازات المرضية',
+              label: '???????? ???????',
               used: balance.sick.used,
               total: balance.sick.total,
               color: AppColors.error),
           _BalanceRow(
-              label: 'الإجازات السنوية',
+              label: '???????? ???????',
               used: balance.annual.used,
               total: balance.annual.total,
               color: AppColors.primary),
           _BalanceRow(
-              label: 'إجازات طارئة',
+              label: '?????? ?????',
               used: balance.emergency.used,
               total: balance.emergency.total,
               color: AppColors.warning),
           _BalanceRow(
-              label: 'بدون راتب',
+              label: '???? ????',
               used: balance.unpaid.used,
               total: balance.unpaid.total,
               color: AppColors.textSecondaryOf(context)),
@@ -237,7 +237,7 @@ class _BalanceRow extends StatelessWidget {
           const Spacer(),
           ReusableText('$remaining', style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: color)),
           SizedBox(width: 6.w),
-          ReusableText('/ $total يوم', style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context))),
+          ReusableText('/ $total ???', style: AppTextStyles.caption(context).copyWith(color: AppColors.textMutedOf(context))),
         ],
       ),
     );
@@ -257,10 +257,10 @@ class _PendingLeavesCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Expanded(child: SectionHeader(icon: Icons.pending_actions_rounded, title: 'طلبات الإجازة المعلقة')),
+              const Expanded(child: SectionHeader(icon: Icons.pending_actions_rounded, title: '????? ??????? ???????')),
               if (pending.isNotEmpty)
                 ReusableBadge.tone(
-                  label: '${pending.length} طلبات',
+                  label: '${pending.length} ?????',
                   tone: ReusableBadgeTone.warning,
                 ),
             ],
@@ -269,7 +269,7 @@ class _PendingLeavesCard extends StatelessWidget {
           if (pending.isEmpty)
             Padding(
               padding: EdgeInsets.symmetric(vertical: AppSpacing.md.h),
-              child: const ReusableText('لا توجد طلبات إجازة معلقة حالياً.',
+              child: const ReusableText('?? ???? ????? ????? ????? ??????.',
                   style: TextStyle(color: Colors.grey)),
             )
           else
@@ -301,7 +301,7 @@ class _LeaveRequestTile extends StatelessWidget {
         style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold),
       ),
       subtitle: ReusableText(
-        'من ${leave.startDate} إلى ${leave.endDate} (${leave.duration} يوم)',
+        '?? ${leave.startDate} ??? ${leave.endDate} (${leave.duration} ???)',
         style: TextStyle(
             fontSize: 11.5.sp,
             color: AppColors.textSecondaryOf(context)),
@@ -313,7 +313,7 @@ class _LeaveRequestTile extends StatelessWidget {
             icon: Icon(Icons.check_circle_rounded,
                 color: AppColors.success, size: 22.sp),
             onPressed: () => bloc.add(ApproveLeave(leave.id)),
-            tooltip: 'قبول',
+            tooltip: '????',
           ),
           IconButton(
             icon: Icon(Icons.cancel_rounded,
@@ -321,13 +321,13 @@ class _LeaveRequestTile extends StatelessWidget {
             onPressed: () {
               ReusableDialog.show(
                 context,
-                title: 'رفض الإجازة',
+                title: '??? ???????',
                 headerIcon: const Icon(Icons.cancel_rounded, color: AppColors.error),
                 children: [
-                  ReusableText('هل أنت متأكد من رغبتك في رفض طلب الإجازة للموظف "${leave.employeeName}"؟'),
+                  ReusableText('?? ??? ????? ?? ????? ?? ??? ??? ??????? ?????? "${leave.employeeName}"?'),
                   SizedBox(height: 24.h),
                   DialogActions(
-                    confirmText: 'رفض الطلب',
+                    confirmText: '??? ?????',
                     confirmType: ButtonType.primary,
                     onConfirm: () {
                       bloc.add(RejectLeave(leave.id));
@@ -337,7 +337,7 @@ class _LeaveRequestTile extends StatelessWidget {
                 ],
               );
             },
-            tooltip: 'رفض',
+            tooltip: '???',
           ),
         ],
       ),
@@ -345,10 +345,10 @@ class _LeaveRequestTile extends StatelessWidget {
   }
 
   String _leaveTypeText(String type) => switch (type) {
-        'sick' => 'مرضية',
-        'annual' => 'سنوية',
-        'emergency' => 'طارئة',
-        'unpaid' => 'بدون راتب',
+        'sick' => '?????',
+        'annual' => '?????',
+        'emergency' => '?????',
+        'unpaid' => '???? ????',
         _ => type,
       };
 }
@@ -364,12 +364,12 @@ class _LeaveHistoryCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SectionHeader(icon: Icons.history_rounded, title: 'تاريخ طلبات الإجازة'),
+          const SectionHeader(icon: Icons.history_rounded, title: '????? ????? ???????'),
           SizedBox(height: AppSpacing.sm.h),
           if (records.isEmpty)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 20),
-              child: Center(child: ReusableText('لا توجد سجلات إجازات سابقة.', style: TextStyle(color: Colors.grey))),
+              child: Center(child: ReusableText('?? ???? ????? ?????? ?????.', style: TextStyle(color: Colors.grey))),
             )
           else
             ListView.separated(
@@ -380,9 +380,9 @@ class _LeaveHistoryCard extends StatelessWidget {
               itemBuilder: (context, i) {
                 final leave = records[i];
                 final (statusColor, statusLabel) = switch (leave.status) {
-                  'approved' => (AppColors.success, 'مقبولة'),
-                  'rejected' => (AppColors.error, 'مرفوضة'),
-                  _ => (AppColors.warning, 'معلقة'),
+                  'approved' => (AppColors.success, '??????'),
+                  'rejected' => (AppColors.error, '??????'),
+                  _ => (AppColors.warning, '?????'),
                 };
                 return ListTile(
                   dense: true,
@@ -397,7 +397,7 @@ class _LeaveHistoryCard extends StatelessWidget {
                     style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600),
                   ),
                   subtitle: ReusableText(
-                    '${leave.startDate} → ${leave.endDate}',
+                    '${leave.startDate} ? ${leave.endDate}',
                     style: TextStyle(
                         fontSize: 11.sp,
                         color: AppColors.textSecondaryOf(context)),
@@ -412,11 +412,14 @@ class _LeaveHistoryCard extends StatelessWidget {
   }
 
   String _leaveTypeText(String type) => switch (type) {
-        'sick' => 'مرضية',
-        'annual' => 'سنوية',
-        'emergency' => 'طارئة',
-        'unpaid' => 'بدون راتب',
+        'sick' => '?????',
+        'annual' => '?????',
+        'emergency' => '?????',
+        'unpaid' => '???? ????',
         _ => type,
       };
 }
+
+
+
 

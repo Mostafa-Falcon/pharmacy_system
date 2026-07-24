@@ -1,12 +1,12 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 
 import '../../../core/injection.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/expenses_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/journal_entries_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
-import 'package:pharmacy_system/app/modules/accounting/models/expense_model.dart';
-import 'package:pharmacy_system/app/modules/accounting/models/journal_entry_model.dart';
-import 'package:pharmacy_system/app/modules/accounting/models/account_enums.dart';
+import 'package:pharmacy_system/app/core/models/accounting/expense_model.dart';
+import 'package:pharmacy_system/app/core/models/accounting/journal_entry_model.dart';
+import 'package:pharmacy_system/app/core/models/accounting/account_enums.dart';
 
 class AccountBalanceProjection {
   final String accountId;
@@ -57,21 +57,21 @@ class AccountingProjectionService {
   static final ExpensesDao _expensesDao = sl<ExpensesDao>();
 
   static const Map<String, String> _arabicNames = {
-    'system:cash': 'Ã˜Â§Ã™â€žÃ˜Â®Ã˜Â²Ã™Å Ã™â€ Ã˜Â© Ã˜Â§Ã™â€žÃ˜Â±Ã˜Â¦Ã™Å Ã˜Â³Ã™Å Ã˜Â©',
-    'system:bank': 'Ã˜Â§Ã™â€žÃ˜Â¨Ã™â€ Ã™Æ’',
-    'system:card_clearing': 'Ã˜ÂªÃ˜Â³Ã™Ë†Ã™Å Ã˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ˜Â¨Ã˜Â·Ã˜Â§Ã™â€šÃ˜Â§Ã˜Âª',
-    'system:mobile_wallet': 'Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â­Ã˜Â§Ã™ÂÃ˜Â¸ Ã˜Â§Ã™â€žÃ˜Â¥Ã™â€žÃ™Æ’Ã˜ÂªÃ˜Â±Ã™Ë†Ã™â€ Ã™Å Ã˜Â©',
-    'system:accounts_receivable': 'Ã˜Â§Ã™â€žÃ˜Â¹Ã™â€¦Ã™â€žÃ˜Â§Ã˜Â¡',
-    'system:accounts_payable': 'Ã˜Â§Ã™â€žÃ™â€¦Ã™Ë†Ã˜Â±Ã˜Â¯Ã™Ë†Ã™â€ ',
-    'system:inventory': 'Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â®Ã˜Â²Ã™Ë†Ã™â€ ',
-    'system:sales_revenue': 'Ã˜Â¥Ã™Å Ã˜Â±Ã˜Â§Ã˜Â¯Ã˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â¨Ã™Å Ã˜Â¹Ã˜Â§Ã˜Âª',
-    'system:tax_payable': 'Ã˜Â¶Ã˜Â±Ã™Å Ã˜Â¨Ã˜Â© Ã™â€¦Ã˜Â³Ã˜ÂªÃ˜Â­Ã™â€šÃ˜Â©',
-    'system:cost_of_goods_sold': 'Ã˜ÂªÃ™Æ’Ã™â€žÃ™ÂÃ˜Â© Ã˜Â§Ã™â€žÃ˜Â¨Ã˜Â¶Ã˜Â§Ã˜Â¹Ã˜Â© Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â¨Ã˜Â§Ã˜Â¹Ã˜Â©',
-    'system:inventory_gain': 'Ã˜Â£Ã˜Â±Ã˜Â¨Ã˜Â§Ã˜Â­ Ã˜ÂªÃ˜Â³Ã™Ë†Ã™Å Ã˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â®Ã˜Â²Ã™Ë†Ã™â€ ',
-    'system:inventory_shrinkage': 'Ã˜Â¹Ã˜Â¬Ã˜Â² Ã™Ë†Ã˜ÂªÃ˜Â§Ã™â€žÃ™Â Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â®Ã˜Â²Ã™Ë†Ã™â€ ',
-    'system:supplier_adjustments': 'Ã˜ÂªÃ˜Â³Ã™Ë†Ã™Å Ã˜Â§Ã˜Âª Ã™â€¦Ã™Ë†Ã˜Â±Ã˜Â¯Ã™Å Ã™â€ ',
-    'system:purchase_discounts': 'Ã˜Â®Ã˜ÂµÃ™Ë†Ã™â€¦Ã˜Â§Ã˜Âª Ã™â€¦Ã˜Â´Ã˜ÂªÃ˜Â±Ã™Å Ã˜Â§Ã˜Âª',
-    'system:opening_balance_equity': 'Ã˜Â­Ã™â€šÃ™Ë†Ã™â€š Ã™â€¦Ã™â€žÃ™Æ’Ã™Å Ã˜Â© Ã˜Â§Ã™ÂÃ˜ÂªÃ˜ÂªÃ˜Â§Ã˜Â­Ã™Å Ã˜Â©',
+    'system:cash': 'Ø§Ù„Ø®Ø²ÙŠÙ†Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©',
+    'system:bank': 'Ø§Ù„Ø¨Ù†Ùƒ',
+    'system:card_clearing': 'ØªØ³ÙˆÙŠØ§Øª Ø§Ù„Ø¨Ø·Ø§Ù‚Ø§Øª',
+    'system:mobile_wallet': 'Ø§Ù„Ù…Ø­Ø§ÙØ¸ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠØ©',
+    'system:accounts_receivable': 'Ø§Ù„Ø¹Ù…Ù„Ø§Ø¡',
+    'system:accounts_payable': 'Ø§Ù„Ù…ÙˆØ±Ø¯ÙˆÙ†',
+    'system:inventory': 'Ø§Ù„Ù…Ø®Ø²ÙˆÙ†',
+    'system:sales_revenue': 'Ø¥ÙŠØ±Ø§Ø¯Ø§Øª Ø§Ù„Ù…Ø¨ÙŠØ¹Ø§Øª',
+    'system:tax_payable': 'Ø¶Ø±ÙŠØ¨Ø© Ù…Ø³ØªØ­Ù‚Ø©',
+    'system:cost_of_goods_sold': 'ØªÙƒÙ„ÙØ© Ø§Ù„Ø¨Ø¶Ø§Ø¹Ø© Ø§Ù„Ù…Ø¨Ø§Ø¹Ø©',
+    'system:inventory_gain': 'Ø£Ø±Ø¨Ø§Ø­ ØªØ³ÙˆÙŠØ§Øª Ø§Ù„Ù…Ø®Ø²ÙˆÙ†',
+    'system:inventory_shrinkage': 'Ø¹Ø¬Ø² ÙˆØªØ§Ù„Ù Ø§Ù„Ù…Ø®Ø²ÙˆÙ†',
+    'system:supplier_adjustments': 'ØªØ³ÙˆÙŠØ§Øª Ù…ÙˆØ±Ø¯ÙŠÙ†',
+    'system:purchase_discounts': 'Ø®ØµÙˆÙ…Ø§Øª Ù…Ø´ØªØ±ÙŠØ§Øª',
+    'system:opening_balance_equity': 'Ø­Ù‚ÙˆÙ‚ Ù…Ù„ÙƒÙŠØ© Ø§ÙØªØªØ§Ø­ÙŠØ©',
   };
 
   static Future<List<JournalEntryModel>> getJournals({
@@ -214,7 +214,7 @@ class AccountingProjectionService {
         'id': entry.id,
         'date': entry.entryDate,
         'number': entry.entryNumber,
-        'description': entry.description ?? 'Ã™â€šÃ™Å Ã˜Â¯ Ã™Å Ã™Ë†Ã™â€¦Ã™Å ',
+        'description': entry.description ?? 'Ù‚ÙŠØ¯ ÙŠÙˆÙ…ÙŠ',
         'amount': entry.totalDebit,
       });
     }
@@ -326,4 +326,7 @@ class _MutableBalance {
   double credit = 0;
   _MutableBalance({required this.accountId, required this.name, required this.type});
 }
+
+
+
 

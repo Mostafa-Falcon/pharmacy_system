@@ -203,3 +203,5 @@ class SelectDepartment extends HrEvent {
   @override
   List<Object?> get props => [id];
 }
+
+

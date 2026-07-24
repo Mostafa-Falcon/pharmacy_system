@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import '../bloc/accounting_bloc.dart';
-import 'package:pharmacy_system/app/modules/accounting/models/journal_entry_model.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/models/accounting/journal_entry_model.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/tables/shared_table_cells.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 
 class JournalView extends StatefulWidget {
@@ -47,7 +47,7 @@ class _JournalViewState extends State<JournalView> {
                 children: [
                   Expanded(
                     child: _DatePickerField(
-                      label: 'من تاريخ',
+                      label: '?? ?????',
                       initialDate: _fromDate,
                       onChanged: (d) {
                         setState(() => _fromDate = d);
@@ -60,7 +60,7 @@ class _JournalViewState extends State<JournalView> {
                   SizedBox(width: AppSpacing.sm.w),
                   Expanded(
                     child: _DatePickerField(
-                      label: 'إلى تاريخ',
+                      label: '??? ?????',
                       initialDate: _toDate,
                       onChanged: (d) {
                         setState(() => _toDate = d);
@@ -77,8 +77,8 @@ class _JournalViewState extends State<JournalView> {
               child: state.journalsInRange.isEmpty
                   ? const EmptyState(
                       icon: Icons.receipt_long_rounded,
-                      title: 'لا توجد قيود في هذه الفترة',
-                      subtitle: 'يرجى اختيار نطاق زمني آخر أو التأكد من وجود عمليات مسجلة.',
+                      title: '?? ???? ???? ?? ??? ??????',
+                      subtitle: '???? ?????? ???? ???? ??? ?? ?????? ?? ???? ?????? ?????.',
                     )
                   : _buildJournalTable(context, state),
             ),
@@ -101,11 +101,11 @@ class _JournalViewState extends State<JournalView> {
       ),
       ReusableTableColumn<JournalEntryModel>(
         id: 'description',
-        title: 'البيان والقيد',
+        title: '?????? ??????',
         flex: 2,
         isSortable: true,
         cellBuilder: (j) => TableContactNameCell(
-          name: j.description ?? 'قيد محاسبي',
+          name: j.description ?? '??? ??????',
           subtitle: _formatType(j.entryType.name),
           icon: Icons.receipt_long_rounded,
           iconColor: scheme.primary,
@@ -113,21 +113,21 @@ class _JournalViewState extends State<JournalView> {
       ),
       ReusableTableColumn<JournalEntryModel>(
         id: 'debit',
-        title: 'مدين',
+        title: '????',
         width: 120.w,
         isNumeric: true,
-        cellBuilder: (j) => TableMoneyCell(amount: j.totalDebit, currency: AppStrings.currency, isHighlight: false),
+        cellBuilder: (j) => TableMoneyCell(amount: j.totalDebit, currency: GeneralStrings.currency, isHighlight: false),
       ),
       ReusableTableColumn<JournalEntryModel>(
         id: 'credit',
-        title: 'دائن',
+        title: '????',
         width: 120.w,
         isNumeric: true,
-        cellBuilder: (j) => TableMoneyCell(amount: j.totalCredit, currency: AppStrings.currency, isHighlight: false),
+        cellBuilder: (j) => TableMoneyCell(amount: j.totalCredit, currency: GeneralStrings.currency, isHighlight: false),
       ),
       ReusableTableColumn<JournalEntryModel>(
         id: 'date',
-        title: 'تاريخ القيد',
+        title: '????? ?????',
         width: 140.w,
         isSortable: true,
         textBuilder: (j) => DateFormat('yyyy/MM/dd').format(j.entryDate),
@@ -139,7 +139,7 @@ class _JournalViewState extends State<JournalView> {
       child: ReusableTable<JournalEntryModel>(
         columns: columns,
         items: state.journalsInRange,
-        itemLabel: 'قيد يومية',
+        itemLabel: '??? ?????',
         onTapRow: (j) => _showEntryDetails(context, j),
         rowActions: (j) => TableOptionsButton(
           onSelected: (v) {
@@ -147,8 +147,8 @@ class _JournalViewState extends State<JournalView> {
              if (v == 'delete') context.read<AccountingBloc>().add(DeleteJournalEntry(id: j.id));
           },
           menuItems: [
-            const PopupMenuItem(value: 'view', child: ReusableText('عرض التفاصيل')),
-            const PopupMenuItem(value: 'delete', child: ReusableText('حذف القيد', color: AppColors.error)),
+            const PopupMenuItem(value: 'view', child: ReusableText('??? ????????')),
+            const PopupMenuItem(value: 'delete', child: ReusableText('??? ?????', color: AppColors.error)),
           ],
         ),
       ),
@@ -160,7 +160,7 @@ class _JournalViewState extends State<JournalView> {
     showDialog(
       context: context,
       builder: (ctx) => ReusableDialog(
-        title: 'تفاصيل القيد رقم #${entry.entryNumber}',
+        title: '?????? ????? ??? #${entry.entryNumber}',
         headerIcon: const Icon(Icons.receipt_long_rounded),
         maxWidth: 600,
         children: [
@@ -176,9 +176,9 @@ class _JournalViewState extends State<JournalView> {
                   color: scheme.surfaceContainerHighest.withValues(alpha: 0.3),
                   child: Row(
                     children: [
-                      const Expanded(child: ReusableText('الحساب', style: TextStyle(fontWeight: FontWeight.bold))),
-                      SizedBox(width: 100.w, child: const ReusableText('مدين', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold))),
-                      SizedBox(width: 100.w, child: const ReusableText('دائن', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold))),
+                      const Expanded(child: ReusableText('??????', style: TextStyle(fontWeight: FontWeight.bold))),
+                      SizedBox(width: 100.w, child: const ReusableText('????', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold))),
+                      SizedBox(width: 100.w, child: const ReusableText('????', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold))),
                     ],
                   ),
                 ),
@@ -198,7 +198,7 @@ class _JournalViewState extends State<JournalView> {
           ),
           if (entry.description != null) ...[
             SizedBox(height: 16.h),
-            ReusableText('البيان: ${entry.description!}', style: AppTextStyles.caption(context).copyWith(fontStyle: FontStyle.italic)),
+            ReusableText('??????: ${entry.description!}', style: AppTextStyles.caption(context).copyWith(fontStyle: FontStyle.italic)),
           ],
         ],
       ),
@@ -206,9 +206,9 @@ class _JournalViewState extends State<JournalView> {
   }
 
   String _formatType(String t) => switch (t) {
-    'sale' => 'مبيعات',
-    'purchase' => 'مشتريات',
-    'expense' => 'مصروفات',
+    'sale' => '??????',
+    'purchase' => '???????',
+    'expense' => '???????',
     _ => t,
   };
 }
@@ -281,3 +281,8 @@ class _DatePickerField extends StatelessWidget {
     );
   }
 }
+
+
+
+
+

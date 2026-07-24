@@ -8,3 +8,5 @@ class ReceiptNumberService {
     return '#${next.toString().padLeft(6, '0')}';
   }
 }
+
+

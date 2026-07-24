@@ -1,38 +1,67 @@
 import 'package:drift/drift.dart';
 import '../database.dart';
+import '../tables/inventory_tables.dart';
 
-class InventoryDao {
-  final AppDatabase db;
-  InventoryDao(this.db);
+part 'inventory_dao.g.dart';
 
-  Future<List<InventoryTableData>> getAll() =>
-      db.select(db.inventoryTable).get();
+/// 💊 كائن الاستعلامات والتنفيذ المالي والمخزني الموحد لحزمة الأصناف والمخزون
+@DriftAccessor(tables: [
+  MedicinesTable,
+  ItemBatchesTable,
+  ItemCategoriesTable,
+  MedicineBrandsTable,
+  ItemVariantsTable,
+  ItemWarrantiesTable,
+  PriceGroupsTable,
+  StocktakingTable,
+  StockAdjustmentsTable,
+  ItemSwapsTable,
+  OpeningStockTable,
+  BarcodeSettingsTable,
+  InventoryTransactionsTable,
+])
+class InventoryDao extends DatabaseAccessor<AppDatabase> with _$InventoryDaoMixin {
+  InventoryDao(super.db);
 
-  Future<List<InventoryTableData>> getByBranch(String branchId) =>
-      (db.select(db.inventoryTable)
-            ..where((t) => t.branchId.equals(branchId)))
-          .get();
+  // ─── 1. الأدوية والأصناف ───
+  Future<List<MedicinesTableData>> getAllMedicines() =>
+      (select(medicinesTable)..where((t) => t.isDeleted.not())).get();
 
-  Future<InventoryTableData?> getById(String id) =>
-      (db.select(db.inventoryTable)..where((t) => t.id.equals(id)))
+  Stream<List<MedicinesTableData>> watchAllMedicines() =>
+      (select(medicinesTable)..where((t) => t.isDeleted.not())).watch();
+
+  Future<MedicinesTableData?> getMedicineById(String id) =>
+      (select(medicinesTable)..where((t) => t.id.equals(id)))
           .getSingleOrNull();
 
-  Future<InventoryTableData?> getByMedicineAndBranch(
-    String medicineId,
-    String branchId,
-  ) =>
-      (db.select(db.inventoryTable)
+  Future<void> upsertMedicine(MedicinesTableCompanion entry) async {
+    await into(medicinesTable).insertOnConflictUpdate(entry);
+  }
+
+  // ─── 2. التشغيلات والصلاحيات (Batches & FEFO Auto Selection) ───
+  Future<ItemBatchesTableData?> getFEFOBatch(String medicineId) =>
+      (select(itemBatchesTable)
             ..where((t) =>
-                t.medicineId.equals(medicineId) & t.branchId.equals(branchId)))
+                t.medicineId.equals(medicineId) &
+                t.isActive.equals(true) &
+                t.isDeleted.not() &
+                t.quantity.isBiggerThanValue(0))
+            ..orderBy([(t) => OrderingTerm.asc(t.expiryDate)]))
           .getSingleOrNull();
 
-  Future<void> upsert(InventoryTableCompanion entry) async {
-    await db.into(db.inventoryTable).insertOnConflictUpdate(entry);
+  Future<void> upsertBatch(ItemBatchesTableCompanion batch) async {
+    await into(itemBatchesTable).insertOnConflictUpdate(batch);
   }
 
-  Future<void> delete(String id) async {
-    await (db.delete(db.inventoryTable)..where((t) => t.id.equals(id))).go();
-  }
+  // ─── 3. الفئات، الماركات، والشرائح ───
+  Future<List<ItemCategoriesTableData>> getAllCategories() =>
+      (select(itemCategoriesTable)..where((t) => t.isDeleted.not())).get();
 
-  Future<int> count() => db.select(db.inventoryTable).get().then((r) => r.length);
+  Future<List<MedicineBrandsTableData>> getAllBrands() =>
+      (select(medicineBrandsTable)..where((t) => t.isDeleted.not())).get();
+
+  Future<List<PriceGroupsTableData>> getAllPriceGroups() =>
+      (select(priceGroupsTable)..where((t) => t.isDeleted.not())).get();
 }
+
+

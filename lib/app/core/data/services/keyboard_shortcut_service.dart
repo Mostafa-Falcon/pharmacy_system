@@ -85,3 +85,5 @@ class KeyboardShortcutService {
     return '${control ? "ctrl_" : ""}${shift ? "shift_" : ""}${alt ? "alt_" : ""}${key.keyId}';
   }
 }
+
+

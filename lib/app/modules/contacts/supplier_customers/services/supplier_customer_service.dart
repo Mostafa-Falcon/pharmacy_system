@@ -1,12 +1,12 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:drift/drift.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/supplier_customers_dao.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_customer_model.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_customer_model.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import '../../../../core/injection.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/party_ledger_service.dart';
@@ -86,11 +86,11 @@ class SupplierCustomerService {
 
   static List<SupplierCustomerModel> getAll({bool activeOnly = true, bool includeDeleted = false}) {
     var items = _cached();
-    // ذكاء مهندسة: لو الكاش لسه فاضي، جرب تقرأ الداتا من الداتابيز مباشرة
-    // عشان ما تظهرش "لا يوجد سجلات" واليوزر لسه ضايف حاجة.
+    // ???? ??????: ?? ????? ??? ????? ??? ???? ?????? ?? ????????? ??????
+    // ???? ?? ????? "?? ???? ?????" ??????? ??? ???? ????.
     if (items.isEmpty) {
-       // ملحوظة: getAll() في الـ DAO هي Sync في Drift عادةً، بس هنا محتاجة await
-       // فبنكتفي بإرجاع الكاش ونعمل تريجر للـ init في الخلفية.
+       // ??????: getAll() ?? ??? DAO ?? Sync ?? Drift ?????? ?? ??? ?????? await
+       // ??????? ?????? ????? ????? ????? ??? init ?? ???????.
        init();
     }
     if (!includeDeleted) {
@@ -223,4 +223,8 @@ class SupplierCustomerService {
     }
   }
 }
+
+
+
+
 

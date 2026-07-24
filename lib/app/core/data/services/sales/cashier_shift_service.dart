@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'package:uuid/uuid.dart';
 import 'package:drift/drift.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
@@ -6,9 +6,9 @@ import 'package:pharmacy_system/app/core/data/database/daos/cashier_shifts_dao.d
 import 'package:pharmacy_system/app/core/data/database/daos/sales_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/returns_dao.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
-import 'package:pharmacy_system/app/modules/sales/models/cashier_shift_model.dart';
-import 'package:pharmacy_system/app/modules/sales/models/sale_model.dart';
-import 'package:pharmacy_system/app/modules/sales/models/return_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/cashier_shift_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/sale_invoice_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/return_model.dart';
 import '../auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/utils/app_utils.dart';
 
@@ -93,13 +93,13 @@ class CashierShiftService {
   }) async {
     final bid = branchId ?? AuthService.currentBranchId ?? '';
     final cashier = AuthService.currentUser;
-    if (cashier == null) throw StateError('لم يتم تسجيل الدخول');
+    if (cashier == null) throw StateError('?? ??? ????? ??????');
 
     await _refreshCache();
 
     final existing = findOpenShift(cashierId: cashier.id, branchId: bid);
     if (existing != null) {
-      throw StateError('وردية مفتوحة موجودة');
+      throw StateError('????? ?????? ??????');
     }
 
     final shift = CashierShiftModel(
@@ -123,10 +123,10 @@ class CashierShiftService {
     String? notes,
   }) async {
     final data = await _dao.getById(shiftId);
-    if (data == null) throw StateError('الوردية غير موجودة');
+    if (data == null) throw StateError('??????? ??? ??????');
     final shift = _toModel(data);
     if (shift.status == CashierShiftStatus.closed) {
-      throw StateError('الوردية مغلقة بالفعل');
+      throw StateError('??????? ????? ??????');
     }
 
     final expectedCash = await _calculateExpectedCash(shift);
@@ -160,7 +160,7 @@ class CashierShiftService {
         shift.closedAt ?? DateTime.now(),
       );
       cashSales = sales
-          .map(_toSaleModel)
+          .map(_toSaleInvoiceModel)
           .where(
             (s) => s.paymentMethod == 'cash' || s.paymentMethod == 'mixed',
           )
@@ -179,7 +179,7 @@ class CashierShiftService {
       shift.branchId,
       shift.openedAt,
       shift.closedAt ?? DateTime.now(),
-    )).map(_toSaleModel).toList();
+    )).map(_toSaleInvoiceModel).toList();
 
     return {
       'shift': shift,
@@ -197,7 +197,7 @@ class CashierShiftService {
     };
   }
 
-  static Future<List<SaleModel>> getShiftInvoices(String shiftId) async {
+  static Future<List<SaleInvoiceModel>> getShiftInvoices(String shiftId) async {
     final data = await _dao.getById(shiftId);
     if (data == null) return [];
     final shift = _toModel(data);
@@ -205,7 +205,7 @@ class CashierShiftService {
       shift.branchId,
       shift.openedAt,
       shift.closedAt ?? DateTime.now(),
-    )).map(_toSaleModel).toList()
+    )).map(_toSaleInvoiceModel).toList()
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return sales;
   }
@@ -219,7 +219,7 @@ class CashierShiftService {
       shift.branchId,
       shift.openedAt,
       shift.closedAt ?? DateTime.now(),
-    )).map(_toSaleModel).toList();
+    )).map(_toSaleInvoiceModel).toList();
 
     final returns = (await _returnsDao.getByBranch(shift.branchId))
         .map(_toReturnModel)
@@ -283,8 +283,8 @@ class CashierShiftService {
     );
   }
 
-  static SaleModel _toSaleModel(SalesTableData d) {
-    return SaleModel(
+  static SaleInvoiceModel _toSaleInvoiceModel(SalesTableData d) {
+    return SaleInvoiceModel(
       id: d.id,
       branchId: d.branchId,
       customerId: d.customerId,
@@ -334,4 +334,8 @@ class CashierShiftService {
     );
   }
 }
+
+
+
+
 

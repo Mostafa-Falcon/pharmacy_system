@@ -1,31 +1,31 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'dart:io';
 import 'package:excel/excel.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/customer_ledger_model.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_ledger_model.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_ledger_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_ledger_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_model.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 
 class ExportService {
   static Future<File> exportCustomerLedgerToXlsx({
-    required List<CustomerLedgerModel> entries,
+    required List<ContactLedgerModel> entries,
     required String customerName,
   }) async {
     final excel = Excel.createExcel();
-    final sheet = excel[AppStrings.exportTitleLedger];
+    final sheet = excel[ExportStrings.exportTitleLedger];
 
     sheet.appendRow([
-      TextCellValue(AppStrings.exportCustomerLedger),
+      TextCellValue(ExportStrings.exportCustomerLedger),
       TextCellValue(customerName),
     ]);
     sheet.appendRow([]);
     sheet.appendRow([
-      TextCellValue(AppStrings.exportColumnDate),
-      TextCellValue(AppStrings.exportColumnDescription),
-      TextCellValue(AppStrings.exportColumnDebit),
-      TextCellValue(AppStrings.exportColumnCredit),
-      TextCellValue(AppStrings.exportColumnBalance),
+      TextCellValue(ExportStrings.exportColumnDate),
+      TextCellValue(ExportStrings.exportColumnDescription),
+      TextCellValue(ExportStrings.exportColumnDebit),
+      TextCellValue(ExportStrings.exportColumnCredit),
+      TextCellValue(ExportStrings.exportColumnBalance),
     ]);
 
     for (final entry in entries) {
@@ -42,7 +42,7 @@ class ExportService {
     }
 
     final bytes = excel.encode();
-    if (bytes == null) throw Exception(AppStrings.exportFileError);
+    if (bytes == null) throw Exception(ExportStrings.exportFileError);
 
     final directory = await getApplicationDocumentsDirectory();
     final fileName =
@@ -58,19 +58,19 @@ class ExportService {
     required String supplierName,
   }) async {
     final excel = Excel.createExcel();
-    final sheet = excel[AppStrings.exportTitleLedger];
+    final sheet = excel[ExportStrings.exportTitleLedger];
 
     sheet.appendRow([
-      TextCellValue(AppStrings.exportSupplierLedger),
+      TextCellValue(ExportStrings.exportSupplierLedger),
       TextCellValue(supplierName),
     ]);
     sheet.appendRow([]);
     sheet.appendRow([
-      TextCellValue(AppStrings.exportColumnDate),
-      TextCellValue(AppStrings.exportColumnDescription),
-      TextCellValue(AppStrings.exportColumnDebit),
-      TextCellValue(AppStrings.exportColumnCredit),
-      TextCellValue(AppStrings.exportColumnBalance),
+      TextCellValue(ExportStrings.exportColumnDate),
+      TextCellValue(ExportStrings.exportColumnDescription),
+      TextCellValue(ExportStrings.exportColumnDebit),
+      TextCellValue(ExportStrings.exportColumnCredit),
+      TextCellValue(ExportStrings.exportColumnBalance),
     ]);
 
     for (final entry in entries) {
@@ -87,7 +87,7 @@ class ExportService {
     }
 
     final bytes = excel.encode();
-    if (bytes == null) throw Exception(AppStrings.exportFileError);
+    if (bytes == null) throw Exception(ExportStrings.exportFileError);
 
     final directory = await getApplicationDocumentsDirectory();
     final fileName =
@@ -99,7 +99,7 @@ class ExportService {
   }
 
   static Future<File> exportCustomerLedgerToHtml({
-    required List<CustomerLedgerModel> entries,
+    required List<ContactLedgerModel> entries,
     required String customerName,
   }) async {
     final buffer = StringBuffer();
@@ -108,7 +108,7 @@ class ExportService {
 <html dir="rtl" lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>${AppStrings.exportTitleLedger} - $customerName</title>
+    <title>${ExportStrings.exportTitleLedger} - $customerName</title>
     <style>
         body { font-family: Arial, sans-serif; direction: rtl; text-align: right; padding: 20px; }
         h1 { color: #333; }
@@ -119,14 +119,14 @@ class ExportService {
     </style>
 </head>
 <body>
-    <h1>${AppStrings.exportCustomerLedger}: $customerName</h1>
+    <h1>${ExportStrings.exportCustomerLedger}: $customerName</h1>
     <table>
         <tr>
-            <th>${AppStrings.exportColumnDate}</th>
-            <th>${AppStrings.exportColumnDescription}</th>
-            <th>${AppStrings.exportColumnDebit}</th>
-            <th>${AppStrings.exportColumnCredit}</th>
-            <th>${AppStrings.exportColumnBalance}</th>
+            <th>${ExportStrings.exportColumnDate}</th>
+            <th>${ExportStrings.exportColumnDescription}</th>
+            <th>${ExportStrings.exportColumnDebit}</th>
+            <th>${ExportStrings.exportColumnCredit}</th>
+            <th>${ExportStrings.exportColumnBalance}</th>
         </tr>
 ''');
 
@@ -168,7 +168,7 @@ class ExportService {
 <html dir="rtl" lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>${AppStrings.exportTitleLedger} - $supplierName</title>
+    <title>${ExportStrings.exportTitleLedger} - $supplierName</title>
     <style>
         body { font-family: Arial, sans-serif; direction: rtl; text-align: right; padding: 20px; }
         h1 { color: #333; }
@@ -179,14 +179,14 @@ class ExportService {
     </style>
 </head>
 <body>
-    <h1>${AppStrings.exportSupplierLedger}: $supplierName</h1>
+    <h1>${ExportStrings.exportSupplierLedger}: $supplierName</h1>
     <table>
         <tr>
-            <th>${AppStrings.exportColumnDate}</th>
-            <th>${AppStrings.exportColumnDescription}</th>
-            <th>${AppStrings.exportColumnDebit}</th>
-            <th>${AppStrings.exportColumnCredit}</th>
-            <th>${AppStrings.exportColumnBalance}</th>
+            <th>${ExportStrings.exportColumnDate}</th>
+            <th>${ExportStrings.exportColumnDescription}</th>
+            <th>${ExportStrings.exportColumnDebit}</th>
+            <th>${ExportStrings.exportColumnCredit}</th>
+            <th>${ExportStrings.exportColumnBalance}</th>
         </tr>
 ''');
 
@@ -219,13 +219,13 @@ class ExportService {
   }
 
   static Future<File> exportCustomerLedgerToXml({
-    required List<CustomerLedgerModel> entries,
+    required List<ContactLedgerModel> entries,
     required String customerName,
   }) async {
     final buffer = StringBuffer();
     buffer.write('''<?xml version="1.0" encoding="UTF-8"?>
 <ledger>
-    <title>${AppStrings.exportCustomerLedger}: $customerName</title>
+    <title>${ExportStrings.exportCustomerLedger}: $customerName</title>
     <entries>
 ''');
 
@@ -265,7 +265,7 @@ class ExportService {
     final buffer = StringBuffer();
     buffer.write('''<?xml version="1.0" encoding="UTF-8"?>
 <ledger>
-    <title>${AppStrings.exportSupplierLedger}: $supplierName</title>
+    <title>${ExportStrings.exportSupplierLedger}: $supplierName</title>
     <entries>
 ''');
 
@@ -300,33 +300,33 @@ class ExportService {
 
   static String _getCustomerEntryTypeLabel(CustomerLedgerEntryType type) =>
       switch (type) {
-        CustomerLedgerEntryType.openingBalance => AppStrings.entryTypeOpeningBalance,
-        CustomerLedgerEntryType.saleInvoice => AppStrings.entryTypeSaleInvoice,
-        CustomerLedgerEntryType.saleReturn => AppStrings.entryTypeSaleReturn,
-        CustomerLedgerEntryType.customerPayment => AppStrings.entryTypePayment,
-        CustomerLedgerEntryType.saleVoid => AppStrings.entryTypeVoidInvoice,
-        CustomerLedgerEntryType.manualAdjustment => AppStrings.entryTypeManualAdjustment,
-        CustomerLedgerEntryType.additionNotice => AppStrings.entryTypeAddition,
-        CustomerLedgerEntryType.discountNotice => AppStrings.entryTypeDiscount,
-        CustomerLedgerEntryType.checkReceipt => AppStrings.entryTypeCheckReceipt,
-        CustomerLedgerEntryType.checkPayment => AppStrings.entryTypeCheckPayment,
+        CustomerLedgerEntryType.openingBalance => ExportStrings.entryTypeOpeningBalance,
+        CustomerLedgerEntryType.saleInvoice => ExportStrings.entryTypeSaleInvoice,
+        CustomerLedgerEntryType.saleReturn => ExportStrings.entryTypeSaleReturn,
+        CustomerLedgerEntryType.customerPayment => ExportStrings.entryTypePayment,
+        CustomerLedgerEntryType.saleVoid => ExportStrings.entryTypeVoidInvoice,
+        CustomerLedgerEntryType.manualAdjustment => ExportStrings.entryTypeManualAdjustment,
+        CustomerLedgerEntryType.additionNotice => ExportStrings.entryTypeAddition,
+        CustomerLedgerEntryType.discountNotice => ExportStrings.entryTypeDiscount,
+        CustomerLedgerEntryType.checkReceipt => ExportStrings.entryTypeCheckReceipt,
+        CustomerLedgerEntryType.checkPayment => ExportStrings.entryTypeCheckPayment,
       };
 
   static String _getSupplierEntryTypeLabel(SupplierLedgerEntryType type) =>
       switch (type) {
-        SupplierLedgerEntryType.openingBalance => AppStrings.entryTypeOpeningBalance,
-        SupplierLedgerEntryType.purchaseInvoice => AppStrings.entryTypePurchaseInvoice,
-        SupplierLedgerEntryType.supplierPayment => AppStrings.entryTypePayment,
-        SupplierLedgerEntryType.purchaseVoid => AppStrings.entryTypeVoidInvoice,
-        SupplierLedgerEntryType.manualAdjustment => AppStrings.entryTypeManualAdjustment,
-        SupplierLedgerEntryType.additionNotice => AppStrings.entryTypeAddition,
-        SupplierLedgerEntryType.discountNotice => AppStrings.entryTypeDiscount,
-        SupplierLedgerEntryType.checkReceipt => AppStrings.entryTypeCheckReceipt,
-        SupplierLedgerEntryType.checkPayment => AppStrings.entryTypeCheckPayment,
+        SupplierLedgerEntryType.openingBalance => ExportStrings.entryTypeOpeningBalance,
+        SupplierLedgerEntryType.purchaseInvoice => ExportStrings.entryTypePurchaseInvoice,
+        SupplierLedgerEntryType.supplierPayment => ExportStrings.entryTypePayment,
+        SupplierLedgerEntryType.purchaseVoid => ExportStrings.entryTypeVoidInvoice,
+        SupplierLedgerEntryType.manualAdjustment => ExportStrings.entryTypeManualAdjustment,
+        SupplierLedgerEntryType.additionNotice => ExportStrings.entryTypeAddition,
+        SupplierLedgerEntryType.discountNotice => ExportStrings.entryTypeDiscount,
+        SupplierLedgerEntryType.checkReceipt => ExportStrings.entryTypeCheckReceipt,
+        SupplierLedgerEntryType.checkPayment => ExportStrings.entryTypeCheckPayment,
       };
 
   static Future<void> shareFile(File file) async {
-    // يتم مشاركة الملف من خلال واجهة المستخدم
+    // ??? ?????? ????? ?? ???? ????? ????????
   }
 
   static Future<File> exportToCsv({
@@ -343,26 +343,26 @@ class ExportService {
     required List<Map<String, dynamic>> entries,
   }) async {
     final excel = Excel.createExcel();
-    final sheet = excel[AppStrings.customersTitle];
+    final sheet = excel[CustomersStrings.customersTitle];
 
     sheet.appendRow([
-      TextCellValue(AppStrings.exportCustomerList),
-      TextCellValue('${AppStrings.exportDatePrefix}${DateTime.now().toString().split('.')[0]}'),
+      TextCellValue(ExportStrings.exportCustomerList),
+      TextCellValue('${ExportStrings.exportDatePrefix}${DateTime.now().toString().split('.')[0]}'),
     ]);
     sheet.appendRow([]);
     sheet.appendRow([
-      TextCellValue(AppStrings.exportColumnName),
-      TextCellValue(AppStrings.exportColumnType),
-      TextCellValue(AppStrings.exportColumnPhone),
-      TextCellValue(AppStrings.exportColumnCompany),
-      TextCellValue(AppStrings.exportColumnEmail),
-      TextCellValue(AppStrings.exportColumnTaxId),
-      TextCellValue(AppStrings.exportColumnAddress),
-      TextCellValue(AppStrings.exportColumnCreditLimit),
-      TextCellValue(AppStrings.exportColumnDiscountPercent),
-      TextCellValue(AppStrings.exportColumnPaymentTerm),
-      TextCellValue(AppStrings.balance),
-      TextCellValue(AppStrings.exportColumnStatus),
+      TextCellValue(ExportStrings.exportColumnName),
+      TextCellValue(ExportStrings.exportColumnType),
+      TextCellValue(ExportStrings.exportColumnPhone),
+      TextCellValue(ExportStrings.exportColumnCompany),
+      TextCellValue(ExportStrings.exportColumnEmail),
+      TextCellValue(ExportStrings.exportColumnTaxId),
+      TextCellValue(ExportStrings.exportColumnAddress),
+      TextCellValue(ExportStrings.exportColumnCreditLimit),
+      TextCellValue(ExportStrings.exportColumnDiscountPercent),
+      TextCellValue(ExportStrings.exportColumnPaymentTerm),
+      TextCellValue(GeneralStrings.balance),
+      TextCellValue(ExportStrings.exportColumnStatus),
     ]);
 
     for (final entry in entries) {
@@ -378,12 +378,12 @@ class ExportService {
         DoubleCellValue((entry['discountPercent'] as num?)?.toDouble() ?? 0),
         IntCellValue((entry['paymentTermDays'] as num?)?.toInt() ?? 0),
         DoubleCellValue((entry['balance'] as num?)?.toDouble() ?? 0),
-        TextCellValue(entry['isActive'] == true ? AppStrings.exportStatusActive : AppStrings.exportStatusInactive),
+        TextCellValue(entry['isActive'] == true ? ExportStrings.exportStatusActive : ExportStrings.exportStatusInactive),
       ]);
     }
 
     final bytes = excel.encode();
-    if (bytes == null) throw Exception(AppStrings.exportFileError);
+    if (bytes == null) throw Exception(ExportStrings.exportFileError);
 
     final directory = await getApplicationDocumentsDirectory();
     final fileName = 'customers_${DateTime.now().millisecondsSinceEpoch}.xlsx';
@@ -397,32 +397,32 @@ class ExportService {
     required List<SupplierModel> suppliers,
   }) async {
     final excel = Excel.createExcel();
-    final sheet = excel[AppStrings.suppliersTitle];
+    final sheet = excel[SuppliersStrings.suppliersTitle];
 
     sheet.appendRow([
-      TextCellValue(AppStrings.exportSupplierList),
-      TextCellValue('${AppStrings.exportDatePrefix}${DateTime.now().toString().split('.')[0]}'),
+      TextCellValue(ExportStrings.exportSupplierList),
+      TextCellValue('${ExportStrings.exportDatePrefix}${DateTime.now().toString().split('.')[0]}'),
     ]);
     sheet.appendRow([]);
     sheet.appendRow([
-      TextCellValue(AppStrings.exportColumnName),
-      TextCellValue(AppStrings.exportColumnType),
-      TextCellValue(AppStrings.exportColumnPartyType),
-      TextCellValue(AppStrings.exportColumnPhone),
-      TextCellValue(AppStrings.exportColumnCompany),
-      TextCellValue(AppStrings.exportColumnEmail),
-      TextCellValue(AppStrings.exportColumnTaxId),
-      TextCellValue(AppStrings.exportColumnAddress),
-      TextCellValue(AppStrings.exportColumnCreditLimit),
-      TextCellValue(AppStrings.exportColumnDiscountPercent),
-      TextCellValue(AppStrings.exportColumnPaymentTerm),
-      TextCellValue(AppStrings.exportColumnStatus),
+      TextCellValue(ExportStrings.exportColumnName),
+      TextCellValue(ExportStrings.exportColumnType),
+      TextCellValue(ExportStrings.exportColumnPartyType),
+      TextCellValue(ExportStrings.exportColumnPhone),
+      TextCellValue(ExportStrings.exportColumnCompany),
+      TextCellValue(ExportStrings.exportColumnEmail),
+      TextCellValue(ExportStrings.exportColumnTaxId),
+      TextCellValue(ExportStrings.exportColumnAddress),
+      TextCellValue(ExportStrings.exportColumnCreditLimit),
+      TextCellValue(ExportStrings.exportColumnDiscountPercent),
+      TextCellValue(ExportStrings.exportColumnPaymentTerm),
+      TextCellValue(ExportStrings.exportColumnStatus),
     ]);
 
     for (final supplier in suppliers) {
       sheet.appendRow([
         TextCellValue(supplier.name),
-        TextCellValue(AppStrings.supplierType),
+        TextCellValue(SuppliersStrings.supplierType),
         TextCellValue(supplier.partyTypeName),
         TextCellValue(supplier.phone ?? ''),
         TextCellValue(supplier.companyName ?? ''),
@@ -432,12 +432,12 @@ class ExportService {
         DoubleCellValue(supplier.creditLimit),
         DoubleCellValue(supplier.discountPercent),
         IntCellValue(supplier.paymentTermDays),
-        TextCellValue(supplier.isActive ? AppStrings.exportStatusActive : AppStrings.exportStatusInactive),
+        TextCellValue(supplier.isActive ? ExportStrings.exportStatusActive : ExportStrings.exportStatusInactive),
       ]);
     }
 
     final bytes = excel.encode();
-    if (bytes == null) throw Exception(AppStrings.exportFileError);
+    if (bytes == null) throw Exception(ExportStrings.exportFileError);
 
     final directory = await getApplicationDocumentsDirectory();
     final fileName = 'suppliers_${DateTime.now().millisecondsSinceEpoch}.xlsx';
@@ -447,4 +447,10 @@ class ExportService {
     return file;
   }
 }
+
+
+
+
+
+
 

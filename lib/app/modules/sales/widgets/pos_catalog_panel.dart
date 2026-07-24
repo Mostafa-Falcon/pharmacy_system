@@ -22,7 +22,7 @@ class PosCatalogPanel extends StatelessWidget {
               child: TextField(
                 onChanged: (q) => context.read<CatalogCubit>().updateSearch(q),
                 decoration: InputDecoration(
-                  hintText: AppStrings.searchItemsHint,
+                  hintText: SalesStrings.searchItemsHint,
                   prefixIcon: const Icon(Icons.search_rounded),
                   isDense: true,
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
@@ -31,7 +31,7 @@ class PosCatalogPanel extends StatelessWidget {
             ),
             Expanded(
               child: items.isEmpty
-                  ? Center(child: Text(AppStrings.noItemsFound, style: TextStyle(color: scheme.onSurfaceVariant)))
+                  ? Center(child: Text(SalesStrings.noItemsFound, style: TextStyle(color: scheme.onSurfaceVariant)))
                   : GridView.builder(
                       padding: EdgeInsets.all(8.w),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -59,7 +59,7 @@ class PosCatalogPanel extends StatelessWidget {
                               children: [
                                 Text(item.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.bold)),
                                 SizedBox(height: 4.h),
-                                Text('${item.sellPrice} ${AppStrings.currency}', style: TextStyle(color: scheme.primary, fontWeight: FontWeight.w600)),
+                                Text('${item.sellPrice} ${GeneralStrings.currency}', style: TextStyle(color: scheme.primary, fontWeight: FontWeight.w600)),
                               ],
                             ),
                           ),
@@ -73,3 +73,6 @@ class PosCatalogPanel extends StatelessWidget {
     );
   }
 }
+
+
+

@@ -1,4 +1,4 @@
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_unit_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_unit_model.dart';
 
 class UnitLevelInfo {
   final String name;
@@ -213,3 +213,6 @@ class UnitNormalizer {
     return UnitCategory.box;
   }
 }
+
+
+

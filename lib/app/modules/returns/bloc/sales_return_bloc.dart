@@ -1,14 +1,14 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
-import 'package:pharmacy_system/app/modules/sales/models/return_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/return_model.dart';
 import 'package:pharmacy_system/app/core/data/repositories/sales_return_repository.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import '../../../core/injection.dart';
 import 'package:pharmacy_system/app/core/data/services/inventory/batch_service.dart';
 import 'package:pharmacy_system/app/core/data/services/customer/customer_ledger_service.dart';
 import 'package:pharmacy_system/app/core/data/services/inventory/stock_mutation_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
 import '../../../core/utils/app_utils.dart';
 import 'sales_return_event.dart';
 import 'sales_return_state.dart';
@@ -101,8 +101,8 @@ class SalesReturnBloc extends Bloc<SalesReturnEvent, SalesReturnState> {
 
     await _salesReturnRepo.create(returnModel);
 
-    // إرجاع الكمية للمخزون + إضافة تشغيلة (batch) عشان الكمية القابلة
-    // للبيع تفضل متزامنة مع الكمية المعروضة (عكس استهلاك البيع بـ FEFO).
+    // ????? ?????? ??????? + ????? ?????? (batch) ???? ?????? ???????
+    // ????? ???? ??????? ?? ?????? ???????? (??? ??????? ????? ?? FEFO).
     for (final item in event.selectedItems) {
       await StockMutationService.adjustStock(
         medicineId: item.medicineId,
@@ -121,8 +121,8 @@ class SalesReturnBloc extends Bloc<SalesReturnEvent, SalesReturnState> {
       }
     }
 
-    // تخفيض مديونية العميل بنسبة قيمة المرتجع (لو الفاتورة الأصلية عليها
-    // مديونية). recordCustomerPayment بتعمل credit = خصم من الرصيد مع clamp.
+    // ????? ??????? ?????? ????? ???? ??????? (?? ???????? ??????? ?????
+    // ???????). recordCustomerPayment ????? credit = ??? ?? ?????? ?? clamp.
     final saleDue = event.originalSale.dueAmount;
     if (event.originalSale.customerId != null && saleDue > 0.0001) {
       final returnValue = returnModel.totalAmount;
@@ -133,13 +133,13 @@ class SalesReturnBloc extends Bloc<SalesReturnEvent, SalesReturnState> {
           branchId: _branchId,
           amount: double.parse(credit.toStringAsFixed(2)),
           createdBy: _userId,
-          notes: 'تخفيض مديونية بمرتجع فاتورة ${event.originalSale.id}',
+          notes: '????? ??????? ?????? ?????? ${event.originalSale.id}',
           referenceId: returnModel.id,
         );
       }
     }
 
-    AppSnackbar.success('تم تسجيل المرتجع بنجاح');
+    AppSnackbar.success('?? ????? ??????? ?????');
   }
 
   @override
@@ -148,4 +148,8 @@ class SalesReturnBloc extends Bloc<SalesReturnEvent, SalesReturnState> {
     return super.close();
   }
 }
+
+
+
+
 

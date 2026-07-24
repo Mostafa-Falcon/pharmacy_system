@@ -1,10 +1,10 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/core/data/services/excel_import_service.dart';
+import 'package:pharmacy_system/app/shared/constants/strings/app_strings.dart';
 import 'import_data_event.dart';
 import 'import_data_state.dart';
-import '../../modules/inventory/models/import_step_info.dart';
+import 'package:pharmacy_system/app/core/models/inventory/import_step_info.dart';
 
 class ImportDataBloc extends Bloc<ImportDataEvent, ImportDataState> {
   ImportDataBloc() : super(const ImportDataState()) {
@@ -29,17 +29,19 @@ class ImportDataBloc extends Bloc<ImportDataEvent, ImportDataState> {
     final bytes = file.bytes;
     if (bytes == null) return;
 
-    emit(state.copyWith(
-      status: ImportDataStatus.importing,
-      progress: 0.0,
-      fileName: file.name,
-      hasError: false,
-      resultMessage: null,
-      itemsFound: 0,
-      itemsSaved: 0,
-      itemsUpdated: 0,
-      itemsSkipped: 0,
-    ));
+    emit(
+      state.copyWith(
+        status: ImportDataStatus.importing,
+        progress: 0.0,
+        fileName: file.name,
+        hasError: false,
+        resultMessage: null,
+        itemsFound: 0,
+        itemsSaved: 0,
+        itemsUpdated: 0,
+        itemsSkipped: 0,
+      ),
+    );
 
     try {
       int count;
@@ -95,58 +97,69 @@ class ImportDataBloc extends Bloc<ImportDataEvent, ImportDataState> {
       }
 
       if (count > 0) {
-        emit(state.copyWith(
-          status: ImportDataStatus.success,
-          progress: 1.0,
-          currentStep: 'done',
-          resultMessage: _successMessage(event.entityType, count),
-          hasError: false,
-          itemsFound: count,
-          itemsSaved: count,
-        ));
+        emit(
+          state.copyWith(
+            status: ImportDataStatus.success,
+            progress: 1.0,
+            currentStep: 'done',
+            resultMessage: _successMessage(event.entityType, count),
+            hasError: false,
+            itemsFound: count,
+            itemsSaved: count,
+          ),
+        );
       } else {
-        emit(state.copyWith(
-          status: ImportDataStatus.error,
-          progress: 1.0,
-          resultMessage: AppStrings.importNoData,
-          hasError: true,
-          currentStep: null,
-        ));
+        emit(
+          state.copyWith(
+            status: ImportDataStatus.error,
+            progress: 1.0,
+            resultMessage: InventoryStrings.importNoData,
+            hasError: true,
+            currentStep: null,
+          ),
+        );
       }
     } catch (e) {
-      emit(state.copyWith(
-        status: ImportDataStatus.error,
-        progress: 1.0,
-        resultMessage: '${AppStrings.importFailPrefix}$e',
-        hasError: true,
-        currentStep: null,
-      ));
+      emit(
+        state.copyWith(
+          status: ImportDataStatus.error,
+          progress: 1.0,
+          resultMessage: '${InventoryStrings.importFailPrefix}$e',
+          hasError: true,
+          currentStep: null,
+        ),
+      );
     }
   }
 
   void _emitStep(Emitter<ImportDataState> emit, dynamic stepInfo) {
     if (stepInfo is ImportStepInfo) {
-      emit(state.copyWith(
-        currentStep: stepInfo.step,
-        itemsFound: stepInfo.itemsFound,
-        itemsSaved: stepInfo.itemsSaved,
-        itemsUpdated: stepInfo.itemsUpdated,
-        itemsSkipped: stepInfo.itemsSkipped,
-      ));
+      emit(
+        state.copyWith(
+          currentStep: stepInfo.step,
+          itemsFound: stepInfo.itemsFound,
+          itemsSaved: stepInfo.itemsSaved,
+          itemsUpdated: stepInfo.itemsUpdated,
+          itemsSkipped: stepInfo.itemsSkipped,
+        ),
+      );
     } else if (stepInfo is Map) {
-      emit(state.copyWith(
-        currentStep: stepInfo['step'] as String?,
-        itemsFound: stepInfo['itemsFound'] as int? ?? 0,
-        itemsSaved: stepInfo['itemsSaved'] as int? ?? 0,
-        itemsUpdated: stepInfo['itemsUpdated'] as int? ?? 0,
-        itemsSkipped: stepInfo['itemsSkipped'] as int? ?? 0,
-      ));
+      emit(
+        state.copyWith(
+          currentStep: stepInfo['step'] as String?,
+          itemsFound: stepInfo['itemsFound'] as int? ?? 0,
+          itemsSaved: stepInfo['itemsSaved'] as int? ?? 0,
+          itemsUpdated: stepInfo['itemsUpdated'] as int? ?? 0,
+          itemsSkipped: stepInfo['itemsSkipped'] as int? ?? 0,
+        ),
+      );
     }
   }
 
   String _successMessage(ImportEntityType type, int count) {
     return switch (type) {
-      ImportEntityType.medicines => '${AppStrings.importSuccessPrefix}$count${AppStrings.importSuccessSuffix}',
+      ImportEntityType.medicines =>
+        '${InventoryStrings.importSuccessPrefix}$count${InventoryStrings.importSuccessSuffix}',
       ImportEntityType.customers => 'تم استيراد $count عميل بنجاح',
       ImportEntityType.suppliers => 'تم استيراد $count مورد بنجاح',
       ImportEntityType.expenses => 'تم استيراد $count مصروف بنجاح',

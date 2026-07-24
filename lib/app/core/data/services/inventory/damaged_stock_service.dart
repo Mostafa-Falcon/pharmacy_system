@@ -1,16 +1,16 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:uuid/uuid.dart';
 import 'package:drift/drift.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/damaged_stock_dao.dart';
-import 'package:pharmacy_system/app/core/data/database/daos/medicines_dao.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/damaged_stock_model.dart';
+import 'package:pharmacy_system/app/core/data/database/daos/inventory_dao.dart';
+import 'package:pharmacy_system/app/core/models/inventory/damaged_stock_model.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
 import 'package:pharmacy_system/app/core/utils/app_utils.dart';
 
 class DamagedStockService {
   static DamagedStockDao get _dao => sl<DamagedStockDao>();
-  static MedicinesDao get _medDao => sl<MedicinesDao>();
+  static InventoryDao get _medDao => sl<InventoryDao>();
   static final _uuid = const Uuid();
 
   static Future<List<DamagedStockModel>> getAll({String? branchId}) async {
@@ -113,4 +113,8 @@ class DamagedStockService {
     );
   }
 }
+
+
+
+
 

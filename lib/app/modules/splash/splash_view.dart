@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import 'package:pharmacy_system/app/routes/app_routes.dart';
 import '../auth/bloc/auth_bloc.dart';
 
@@ -69,12 +69,12 @@ class _SplashViewState extends State<SplashView> {
                 ),
                 SizedBox(height: 24.h),
                 ReusableText(
-                  AppStrings.appNameSplash,
+                  AuthStrings.appNameSplash,
                   style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.w800, color: scheme.onSurface),
                 ),
                 SizedBox(height: 8.h),
                 ReusableText(
-                  AppStrings.appDescSplash,
+                  AuthStrings.appDescSplash,
                   style: TextStyle(fontSize: 14.sp, color: scheme.onSurfaceVariant),
                 ),
                 SizedBox(height: 48.h),
@@ -113,3 +113,7 @@ class _SplashViewState extends State<SplashView> {
     );
   }
 }
+
+
+
+

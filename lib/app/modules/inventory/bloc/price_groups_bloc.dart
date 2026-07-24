@@ -1,7 +1,7 @@
-﻿import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/price_group_model.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/core/models/inventory/price_group_model.dart';
 import 'package:pharmacy_system/app/modules/inventory/services/price_group_service.dart';
 
 // --- Events ---
@@ -121,7 +121,7 @@ class PriceGroupsBloc extends Bloc<PriceGroupsEvent, PriceGroupsState> {
 
   Future<void> _onAdd(AddPriceGroup event, Emitter<PriceGroupsState> emit) async {
     if (PriceGroupService.nameExists(event.name)) {
-      AppSnackbar.error('اسم مجموعة الأسعار موجود مسبقاً');
+      AppSnackbar.error('??? ?????? ??????? ????? ??????');
       return;
     }
     await PriceGroupService.add(
@@ -135,7 +135,7 @@ class PriceGroupsBloc extends Bloc<PriceGroupsEvent, PriceGroupsState> {
 
   Future<void> _onUpdate(UpdatePriceGroup event, Emitter<PriceGroupsState> emit) async {
     if (PriceGroupService.nameExists(event.group.name, excludeId: event.group.id)) {
-      AppSnackbar.error('اسم مجموعة الأسعار موجود مسبقاً');
+      AppSnackbar.error('??? ?????? ??????? ????? ??????');
       return;
     }
     await PriceGroupService.update(event.group);
@@ -160,4 +160,8 @@ class PriceGroupsBloc extends Bloc<PriceGroupsEvent, PriceGroupsState> {
     _applyFilter(emit);
   }
 }
+
+
+
+
 

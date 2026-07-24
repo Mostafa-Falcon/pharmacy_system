@@ -30,3 +30,5 @@ class BulkPriceUpdateApply extends BulkPriceUpdateEvent {
 class BulkPriceUpdateConfirmApply extends BulkPriceUpdateEvent {
   const BulkPriceUpdateConfirmApply();
 }
+
+

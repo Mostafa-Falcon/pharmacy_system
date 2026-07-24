@@ -1,5 +1,5 @@
-﻿import 'package:equatable/equatable.dart';
-import 'package:pharmacy_system/app/modules/sales/models/return_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:pharmacy_system/app/core/models/sales/return_model.dart';
 
 enum PurchaseReturnStatus { initial, loading, loaded, error }
 
@@ -66,4 +66,7 @@ class PurchaseReturnState extends Equatable {
   @override
   List<Object?> get props => [status, error, returns, searchQuery, selectedFilter, selectedIds];
 }
+
+
+
 

@@ -1,6 +1,6 @@
-﻿import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
 import 'package:pharmacy_system/app/modules/admin/models/settings_model.dart';
 import '../services/settings_service.dart';
 import '../services/access_control_service.dart';
@@ -178,7 +178,10 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       lastUpdated: formatted,
       clearError: true,
     ));
-    AppSnackbar.success('تم حفظ الإعدادات بنجاح', title: 'تم التحديث');
+    AppSnackbar.success('?? ??? ????????? ?????', title: '?? ???????');
   }
 }
+
+
+
 

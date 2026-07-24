@@ -100,3 +100,5 @@ class UpdateInvoiceLayoutSettings extends SettingsEvent {
   @override
   List<Object?> get props => [updater];
 }
+
+

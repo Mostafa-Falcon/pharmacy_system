@@ -1,25 +1,25 @@
 ﻿import '../../../core/bloc/base_state.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
 
-/// حالة شاشة الأدوية — مركزية وكاملة لكل العمليات (عرض/فلترة/ترتيب/صفحات/تحديد/CRUD).
+/// ???? ???? ??????? — ?????? ?????? ??? ???????? (???/?????/?????/?????/?????/CRUD).
 class MedicinesState extends BaseState<List<MedicineModel>> {
   final List<MedicineModel> filteredMedicines;
   final List<MedicineModel> pagedMedicines;
   final Set<String> selectedIds;
   final bool isLoadingAction;
-  final double bulkActionProgress; // من 0.0 إلى 1.0
+  final double bulkActionProgress; // ?? 0.0 ??? 1.0
   final String? bulkActionTitle;
-  final double importProgress; // من 0.0 إلى 1.0
+  final double importProgress; // ?? 0.0 ??? 1.0
 
-  // ─── بحث وفلترة وترتيب ───
+  // --- ??? ?????? ?????? ---
   final String searchQuery;
   final String selectedFilter; // all, low_stock, out_of_stock, expiring, expired
   final String? selectedCategory;
   final String? sortColumnId;
   final bool isSortAscending;
 
-  // ─── صفحات ───
-  final int currentPage; // صفر-based
+  // --- ????? ---
+  final int currentPage; // ???-based
   final int totalPages;
   final int pageSize;
 
@@ -53,7 +53,7 @@ class MedicinesState extends BaseState<List<MedicineModel>> {
   List<MedicineModel> get allMedicines => data ?? [];
   BaseState<List<MedicineModel>> get dataState => this;
 
-  // ─── إحصائيات الشريط العلوي ───
+  // --- ???????? ?????? ?????? ---
   int get totalCount => allMedicines.length;
 
   int get lowStockCount => allMedicines
@@ -159,4 +159,7 @@ class MedicinesState extends BaseState<List<MedicineModel>> {
         pageSize,
       ];
 }
+
+
+
 

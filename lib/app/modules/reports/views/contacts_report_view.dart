@@ -6,9 +6,9 @@ import 'package:pharmacy_system/app/core/data/services/customer/customer_ledger_
 import 'package:pharmacy_system/app/core/data/services/customer/customer_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_ledger_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_service.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 
 class ContactsReportView extends StatefulWidget {
@@ -45,7 +45,7 @@ class _ContactsReportViewState extends State<ContactsReportView> {
           name: c.name,
           phone: c.phone,
           company: c.companyName,
-          type: AppStrings.customerType,
+          type: ReportsStrings.customerType,
           kind: c.kindName,
           balance: balance,
           isActive: c.isActive,
@@ -60,7 +60,7 @@ class _ContactsReportViewState extends State<ContactsReportView> {
           name: s.name,
           phone: s.phone,
           company: null,
-          type: AppStrings.supplierType,
+          type: SuppliersStrings.supplierType,
           kind: null,
           balance: balance,
           isActive: s.isActive,
@@ -115,9 +115,9 @@ class _ContactsReportViewState extends State<ContactsReportView> {
       children: [
         SummaryCard(icon: Icons.group_outlined, label: ReportsStrings.totalCustomersLabel, value: '${_customers.length}', color: AppColors.primary),
         SummaryCard(icon: Icons.business_outlined, label: ReportsStrings.purchasesHeader, value: '${_suppliers.length}', color: AppColors.info),
-        SummaryCard(icon: Icons.account_balance_rounded, label: ReportsStrings.totalDebtsLabel, value: '${totalDebt.toStringAsFixed(0)} ${AppStrings.currency}', color: AppColors.warning),
+        SummaryCard(icon: Icons.account_balance_rounded, label: ReportsStrings.totalDebtsLabel, value: '${totalDebt.toStringAsFixed(0)} ${GeneralStrings.currency}', color: AppColors.warning),
         SummaryCard(icon: Icons.warning_rounded, label: ReportsStrings.debtorsCountLabel, value: '$debtors', color: AppColors.error),
-        SummaryCard(icon: Icons.payments_rounded, label: ReportsStrings.dueToSuppliersLabel, value: '${totalCredit.toStringAsFixed(0)} ${AppStrings.currency}', color: AppColors.success),
+        SummaryCard(icon: Icons.payments_rounded, label: ReportsStrings.dueToSuppliersLabel, value: '${totalCredit.toStringAsFixed(0)} ${GeneralStrings.currency}', color: AppColors.success),
       ],
     );
   }
@@ -145,7 +145,7 @@ class _ContactsReportViewState extends State<ContactsReportView> {
         ),
         const Spacer(),
         ReusableButton(
-          text: AppStrings.refresh,
+          text: GeneralStrings.refresh,
           prefixIcon: Icons.refresh_rounded,
           onPressed: _load,
           type: ButtonType.outlined,
@@ -160,7 +160,7 @@ class _ContactsReportViewState extends State<ContactsReportView> {
     if (rows.isEmpty) {
       return const EmptyState(
         icon: Icons.assessment_outlined,
-        title: AppStrings.noData,
+        title: GeneralStrings.noData,
       );
     }
     return Container(
@@ -185,11 +185,11 @@ class _ContactsReportViewState extends State<ContactsReportView> {
       decoration: BoxDecoration(color: scheme.surfaceContainerHighest, borderRadius: BorderRadius.circular(6)),
       child: Row(
         children: [
-          _cell(AppStrings.name, flex: 3),
+          _cell(GeneralStrings.name, flex: 3),
           _cell(ReportsStrings.taxColumnType, flex: 2),
           _cell(ReportsStrings.phoneHeader, flex: 2),
-          _cell(AppStrings.balance, flex: 2),
-          _cell(AppStrings.status, flex: 1),
+          _cell(GeneralStrings.balance, flex: 2),
+          _cell(GeneralStrings.status, flex: 1),
         ],
       ),
     );
@@ -209,7 +209,7 @@ class _ContactsReportViewState extends State<ContactsReportView> {
           Expanded(
             flex: 2,
             child: Text(
-              '${row.balance.toStringAsFixed(0)} ${AppStrings.currency}',
+              '${row.balance.toStringAsFixed(0)} ${GeneralStrings.currency}',
               style: TextStyle(
                 fontSize: 11.sp,
                 fontWeight: FontWeight.w600,
@@ -221,7 +221,7 @@ class _ContactsReportViewState extends State<ContactsReportView> {
           Expanded(
             flex: 1,
             child: StatusBadge(
-              label: row.isActive ? AppStrings.active : AppStrings.inactive,
+              label: row.isActive ? GeneralStrings.active : GeneralStrings.inactive,
               color: row.isActive ? AppColors.success : AppColors.error,
             ),
           ),
@@ -259,3 +259,7 @@ class _ContactReportRow {
     required this.isActive,
   });
 }
+
+
+
+

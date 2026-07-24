@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
 class SettingsShell extends StatelessWidget {
   final String title;
@@ -48,3 +48,6 @@ class SettingsShell extends StatelessWidget {
     );
   }
 }
+
+
+

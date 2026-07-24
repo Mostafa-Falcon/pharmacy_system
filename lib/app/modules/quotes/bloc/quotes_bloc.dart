@@ -1,7 +1,7 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/sales/quote_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
 import 'quotes_event.dart';
 import 'quotes_state.dart';
 
@@ -34,9 +34,9 @@ class QuotesBloc extends Bloc<QuotesEvent, QuotesState> {
         total: event.total,
       );
       add(const LoadQuotes());
-      AppSnackbar.success('تم إنشاء عرض السعر بنجاح');
+      AppSnackbar.success('?? ????? ??? ????? ?????');
     } catch (e) {
-      AppSnackbar.error('فشل في إنشاء عرض السعر: $e');
+      AppSnackbar.error('??? ?? ????? ??? ?????: $e');
     }
   }
 
@@ -44,9 +44,12 @@ class QuotesBloc extends Bloc<QuotesEvent, QuotesState> {
     try {
       await QuoteService.softDelete(event.id);
       add(const LoadQuotes());
-      AppSnackbar.success('تم حذف عرض السعر');
+      AppSnackbar.success('?? ??? ??? ?????');
     } catch (e) {
-      AppSnackbar.error('فشل في حذف عرض السعر: $e');
+      AppSnackbar.error('??? ?? ??? ??? ?????: $e');
     }
   }
 }
+
+
+

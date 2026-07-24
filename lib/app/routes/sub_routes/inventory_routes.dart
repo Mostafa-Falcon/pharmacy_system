@@ -1,4 +1,4 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pharmacy_system/app/modules/inventory/bloc/barcode_label_bloc.dart';
 import 'package:pharmacy_system/app/modules/inventory/bloc/barcode_settings_bloc.dart';
@@ -30,7 +30,7 @@ import 'package:pharmacy_system/app/modules/inventory/views/variants_view.dart';
 
 import 'package:pharmacy_system/app/core/injection.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
 
 import 'package:pharmacy_system/app/routes/app_routes.dart';
 import 'package:pharmacy_system/app/routes/sub_routes/auth_routes.dart';
@@ -213,3 +213,6 @@ final List<RouteBase> inventoryRoutes = [
     ),
   ),
 ];
+
+
+

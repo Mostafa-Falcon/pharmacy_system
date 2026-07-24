@@ -1,7 +1,7 @@
-import 'package:flutter_test/flutter_test.dart';
+﻿import 'package:flutter_test/flutter_test.dart';
 // ignore_for_file: avoid_print
 import 'package:supabase/supabase.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_engine.dart';
+import 'package:pharmacy_system/app/core/sync/sync_engine.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/sync_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/cashier_shifts_dao.dart';
@@ -27,7 +27,7 @@ void main() {
   setUpAll(() async {
     client = SupabaseClient(supabaseUrl, anonKey);
     
-    // محاكاة الجهاز (ب)
+    // Ù…Ø­Ø§ÙƒØ§Ø© Ø§Ù„Ø¬Ù‡Ø§Ø² (Ø¨)
     dbDeviceB = AppDatabase(NativeDatabase.memory());
     syncDaoB = SyncDao(dbDeviceB);
     
@@ -71,12 +71,12 @@ void main() {
       'is_deleted': false,
     };
     
-    // نرفع الوردية مباشرة للسحاب (كأن جهاز أ رفعها)
+    // Ù†Ø±ÙØ¹ Ø§Ù„ÙˆØ±Ø¯ÙŠØ© Ù…Ø¨Ø§Ø´Ø±Ø© Ù„Ù„Ø³Ø­Ø§Ø¨ (ÙƒØ£Ù† Ø¬Ù‡Ø§Ø² Ø£ Ø±ÙØ¹Ù‡Ø§)
     await client.from('cashier_shifts').upsert(shiftData);
     print('Device A successfully uploaded shift to cloud.');
 
     print('Step 2: Device B performing Sync...');
-    // الجهاز ب بيعمل مزامنة (Pull)
+    // Ø§Ù„Ø¬Ù‡Ø§Ø² Ø¨ Ø¨ÙŠØ¹Ù…Ù„ Ù…Ø²Ø§Ù…Ù†Ø© (Pull)
     await syncEngineB.syncAll();
     
     print('Step 3: Checking Device B local database...');
@@ -85,9 +85,10 @@ void main() {
 
     expect(found, isTrue, reason: 'Device B failed to pull the open shift from cloud.');
     
-    print('✅ SUCCESS! Shift shared across devices via cloud sync.');
+    print('âœ… SUCCESS! Shift shared across devices via cloud sync.');
     
     // Cleanup
     await client.from('cashier_shifts').delete().eq('id', shiftId);
   });
 }
+

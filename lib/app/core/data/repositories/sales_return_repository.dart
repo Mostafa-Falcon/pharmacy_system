@@ -1,24 +1,23 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
-import 'package:pharmacy_system/app/core/data/database/daos/returns_dao.dart';
+import 'package:pharmacy_system/app/core/data/database/daos/sales_dao.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
-import 'package:pharmacy_system/app/modules/sales/models/return_model.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
-import 'package:pharmacy_system/app/modules/archive/services/archive_service.dart';
+import 'package:pharmacy_system/app/core/models/sales/invoice_return_model.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 
 class SalesReturnRepository {
-  ReturnsDao get _dao => sl<ReturnsDao>();
+  SalesDao get _dao => sl<SalesDao>();
   SalesReturnRepository();
 
-  static final Map<String, List<ReturnModel>> _cache = {};
+  static final Map<String, List<InvoiceReturnModel>> _cache = {};
   static final Map<String, Timer> _cacheTimers = {};
 
-  List<ReturnModel> _cached(String branchId) =>
-      List<ReturnModel>.from(_cache[branchId] ?? []);
+  List<InvoiceReturnModel> _cached(String branchId) =>
+      List<InvoiceReturnModel>.from(_cache[branchId] ?? []);
 
-  void _updateCache(String branchId, List<ReturnModel> items) {
+  void _updateCache(String branchId, List<InvoiceReturnModel> items) {
     _cache[branchId] = items;
     _cacheTimers[branchId]?.cancel();
     _cacheTimers[branchId] = Timer(const Duration(seconds: 5), () {
@@ -26,198 +25,122 @@ class SalesReturnRepository {
     });
   }
 
-  ReturnModel _toModel(ReturnsTableData d) {
-    return ReturnModel(
-      id: d.id,
-      branchId: d.branchId,
-      returnType: 'sales', // Default for legacy records
-      saleId: d.saleId,
-      purchaseId: d.purchaseId,
-      items: (jsonDecode(d.items) as List)
-          .map((e) => ReturnItemModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      totalAmount: d.totalAmount,
-      finalAmount: d.totalAmount, // Default for legacy records
-      reason: ReturnReason.values.firstWhere(
-        (r) => r.name == d.reason,
-        orElse: () => ReturnReason.other,
-      ),
-      notes: d.notes,
-      createdBy: d.createdBy,
-      createdAt: d.createdAt,
-      syncVersion: d.syncVersion,
-      lastModified: d.lastModified,
-      isDeleted: d.isDeleted,
-    );
+  InvoiceReturnModel _toModel(InvoiceReturnsTableData d) {
+    return InvoiceReturnModel.fromJson({
+      'id': d.id,
+      'return_number': d.returnNumber,
+      'original_invoice_number': d.originalInvoiceNumber,
+      'original_invoice_id': d.originalInvoiceId,
+      'customer_name': d.customerName,
+      'customer_id': d.customerId,
+      'items': jsonDecode(d.items),
+      'return_discount': d.returnDiscount,
+      'total_return_amount': d.totalReturnAmount,
+      'created_by': d.createdBy,
+      'branch_id': d.branchId,
+      'account_id': d.accountId,
+      'notes': d.notes,
+      'created_at': d.createdAt.toIso8601String(),
+      'last_modified': d.lastModified.toIso8601String(),
+      'is_deleted': d.isDeleted,
+      'sync_version': d.syncVersion,
+    });
   }
 
-  ReturnsTableCompanion _toCompanion(ReturnModel m) {
-    return ReturnsTableCompanion(
+  InvoiceReturnsTableCompanion _toCompanion(InvoiceReturnModel m) {
+    return InvoiceReturnsTableCompanion(
       id: Value(m.id),
-      branchId: Value(m.branchId),
-      saleId: Value(m.saleId),
-      purchaseId: Value(m.purchaseId),
+      returnNumber: Value(m.returnNumber),
+      originalInvoiceNumber: Value(m.originalInvoiceNumber),
+      originalInvoiceId: Value(m.originalInvoiceId),
+      customerName: Value(m.customerName),
+      customerId: Value(m.customerId),
       items: Value(jsonEncode(m.items.map((i) => i.toJson()).toList())),
-      totalAmount: Value(m.totalAmount),
-      reason: Value(m.reason.name),
-      notes: Value(m.notes),
+      returnDiscount: Value(m.returnDiscount),
+      totalReturnAmount: Value(m.totalReturnAmount),
       createdBy: Value(m.createdBy),
+      branchId: Value(m.branchId),
+      accountId: Value(m.accountId),
+      notes: Value(m.notes),
       createdAt: Value(m.createdAt),
-      syncVersion: Value(m.syncVersion),
       lastModified: Value(m.lastModified),
       isDeleted: Value(m.isDeleted),
+      syncVersion: Value(m.syncVersion),
     );
   }
 
-  Future<List<ReturnModel>> getSalesReturns({
+  Future<List<InvoiceReturnModel>> getSalesReturns({
     required String branchId,
     String? searchQuery,
     String? filter,
     bool includeDeleted = false,
   }) async {
-    var items = await _dao.getByBranch(branchId);
+    final items = await _dao.getInvoiceReturns(branchId);
     var data = items.map(_toModel).toList();
-
-    // تصفية مرتجعات المبيعات فقط (saleId != null)
-    data.removeWhere((r) => r.saleId == null);
-
     _updateCache(branchId, data);
 
     if (filter == 'today') {
       final now = DateTime.now();
-      data.removeWhere((r) =>
-          r.createdAt.day != now.day ||
-          r.createdAt.month != now.month ||
-          r.createdAt.year != now.year);
-    } else if (filter == 'this_month') {
-      final now = DateTime.now();
-      data.removeWhere((r) =>
-          r.createdAt.month != now.month || r.createdAt.year != now.year);
+      data = data
+          .where(
+            (r) =>
+                r.createdAt.day == now.day &&
+                r.createdAt.month == now.month &&
+                r.createdAt.year == now.year,
+          )
+          .toList();
     }
 
     if (searchQuery != null && searchQuery.isNotEmpty) {
       final q = searchQuery.trim().toLowerCase();
-      data.removeWhere((r) => !_matchesSearch(r, q));
+      data = data.where((r) => _matchesSearch(r, q)).toList();
     }
 
     data.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return data;
   }
 
-  List<ReturnModel> getSalesReturnsSync({required String branchId}) {
+  List<InvoiceReturnModel> getSalesReturnsSync({required String branchId}) {
     return _cached(branchId);
   }
 
-  Stream<List<ReturnModel>> watchSalesReturns(String branchId) {
-    return _dao.db.select(_dao.db.returnsTable).watch().map((rows) {
-      final filtered =
-          rows.where((r) => r.branchId == branchId && !r.isDeleted);
-      final result = filtered.map(_toModel).toList();
-      _updateCache(branchId, result);
-      return result;
-    });
+  bool _matchesSearch(InvoiceReturnModel returnModel, String query) {
+    return returnModel.returnNumber.toLowerCase().contains(query) ||
+        returnModel.originalInvoiceNumber.toLowerCase().contains(query) ||
+        returnModel.customerName.toLowerCase().contains(query);
   }
 
-  bool _matchesSearch(ReturnModel returnModel, String query) {
-    return returnModel.id.toLowerCase().contains(query) ||
-        (returnModel.saleId?.toLowerCase().contains(query) ?? false) ||
-        returnModel.items
-            .any((i) => i.medicineName.toLowerCase().contains(query));
-  }
-
-  Future<ReturnModel?> getByIdAsync(String id) async {
-    final data = await _dao.getById(id);
-    return data != null ? _toModel(data) : null;
-  }
-
-  ReturnModel? getById(String id) {
-    for (final entry in _cache.entries) {
-      final match = entry.value.where((r) => r.id == id);
-      if (match.isNotEmpty) return match.first;
-    }
+  Future<InvoiceReturnModel?> getByIdAsync(String id) async {
+    // SalesDao needs a getReturnById if needed
     return null;
   }
 
-  Future<void> create(ReturnModel returnModel) async {
-    await _dao.upsert(_toCompanion(returnModel));
-    SyncService.onTableUpdated?.call('returns', returnModel.branchId);
+  Future<void> create(InvoiceReturnModel returnModel) async {
+    final model = returnModel.copyWith(lastModified: DateTime.now());
+    await _dao.upsertInvoiceReturn(_toCompanion(model));
+    SyncService.notifyTableUpdated('invoice_returns', model.branchId);
     unawaited(
       SyncService.queueOperation(
         type: SyncOperationType.create,
-        table: 'returns',
-        data: returnModel.toJson(),
-        branchId: returnModel.branchId,
+        table: 'invoice_returns',
+        data: model.toJson(),
+        branchId: model.branchId,
       ),
     );
   }
 
-  Future<void> update(ReturnModel returnModel) async {
-    await _dao.upsert(_toCompanion(returnModel));
-    SyncService.onTableUpdated?.call('returns', returnModel.branchId);
+  Future<void> update(InvoiceReturnModel returnModel) async {
+    final model = returnModel.copyWith(lastModified: DateTime.now());
+    await _dao.upsertInvoiceReturn(_toCompanion(model));
+    SyncService.notifyTableUpdated('invoice_returns', model.branchId);
     unawaited(
       SyncService.queueOperation(
         type: SyncOperationType.update,
-        table: 'returns',
-        data: returnModel.toJson(),
-        branchId: returnModel.branchId,
+        table: 'invoice_returns',
+        data: model.toJson(),
+        branchId: model.branchId,
       ),
     );
-  }
-
-  Future<void> delete(
-    ReturnModel returnModel, {
-    required String branchId,
-  }) async {
-    await ArchiveService.record(
-      entityType: 'return',
-      entityId: returnModel.id,
-      entityName: 'مرتجع #${returnModel.id.substring(0, 8)}',
-      entityData: returnModel.toJson(),
-      branchId: branchId,
-    );
-
-    await _dao.softDelete(returnModel.id);
-    SyncService.onTableUpdated?.call('returns', branchId);
-    unawaited(
-      SyncService.queueOperation(
-        type: SyncOperationType.delete,
-        table: 'returns',
-        data: returnModel.toJson()..['is_deleted'] = true,
-        branchId: branchId,
-      ),
-    );
-  }
-
-  Map<String, dynamic> calculateStats(List<ReturnModel> returns) {
-    final now = DateTime.now();
-
-    return {
-      'totalCount': returns.length,
-      'totalAmount': returns.fold(0.0, (sum, r) => sum + r.totalAmount),
-      'todayCount': returns
-          .where((r) =>
-              r.createdAt.day == now.day &&
-              r.createdAt.month == now.month &&
-              r.createdAt.year == now.year)
-          .length,
-      'todayAmount': returns
-          .where((r) =>
-              r.createdAt.day == now.day &&
-              r.createdAt.month == now.month &&
-              r.createdAt.year == now.year)
-          .fold(0.0, (sum, r) => sum + r.totalAmount),
-      'monthCount': returns
-          .where((r) =>
-              r.createdAt.month == now.month && r.createdAt.year == now.year)
-          .length,
-    };
-  }
-
-  Future<void> returnStockToMedicine({
-    required String medicineId,
-    required int quantity,
-    required String branchId,
-  }) async {
   }
 
   static void dispose() {
@@ -228,4 +151,3 @@ class SalesReturnRepository {
     _cacheTimers.clear();
   }
 }
-

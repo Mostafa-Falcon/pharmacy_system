@@ -55,3 +55,5 @@ class ReportsState extends Equatable {
         periodLabel,
       ];
 }
+
+

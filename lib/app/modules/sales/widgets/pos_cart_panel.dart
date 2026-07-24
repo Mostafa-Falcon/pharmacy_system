@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../bloc/pos_bloc.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
 class PosCartPanel extends StatelessWidget {
   const PosCartPanel({super.key});
@@ -24,7 +24,7 @@ class PosCartPanel extends StatelessWidget {
                 children: [
                   Icon(Icons.shopping_cart_outlined, size: 48.sp, color: scheme.onSurfaceVariant),
                   SizedBox(height: 12.h),
-                  ReusableText(AppStrings.posCartEmpty, style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 14.sp)),
+                  ReusableText(SalesStrings.posCartEmpty, style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 14.sp)),
                 ],
               ),
             ),
@@ -41,11 +41,11 @@ class PosCartPanel extends StatelessWidget {
             return ListTile(
               dense: true,
               title: Text(line.medicine.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: Text('${line.quantity} × ${line.unitPrice} ${AppStrings.currency}'),
+              subtitle: Text('${line.quantity} × ${line.unitPrice} ${GeneralStrings.currency}'),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('${line.lineTotal} ${AppStrings.currency}', style: TextStyle(fontWeight: FontWeight.bold, color: scheme.primary)),
+                  Text('${line.lineTotal} ${GeneralStrings.currency}', style: TextStyle(fontWeight: FontWeight.bold, color: scheme.primary)),
                   IconButton(
                     icon: const Icon(Icons.delete_outline_rounded, color: Colors.red, size: 18),
                     onPressed: () => context.read<PosBloc>().add(PosRemoveLine(line.medicine.id)),
@@ -59,3 +59,7 @@ class PosCartPanel extends StatelessWidget {
     );
   }
 }
+
+
+
+

@@ -1,11 +1,11 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/promotion_model.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/models/inventory/promotion_model.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../bloc/promotions/promotions_bloc.dart';
 
 class PromotionsView extends StatefulWidget {
@@ -27,17 +27,17 @@ class _PromotionsViewState extends State<PromotionsView> {
     return BlocBuilder<PromotionsBloc, PromotionsState>(
       builder: (context, state) {
         return StandardModuleLayout(
-          title: AppStrings.promotionsTitle,
+          title: SalesStrings.promotionsTitle,
           actions: [
             ReusableButton(
-              text: AppStrings.createPromotion,
+              text: SalesStrings.createPromotion,
               prefixIcon: Icons.add_rounded,
               onPressed: () => _showPromotionDialog(context),
             ),
           ],
           stats: [
             SummaryCard(
-              label: 'إجمالي العروض',
+              label: '?????? ??????',
               value: '${state.promotions.length}',
               icon: Icons.local_offer_rounded,
             ),
@@ -63,7 +63,7 @@ class _PromotionsViewState extends State<PromotionsView> {
               ReusableText(state.error ?? '', variant: ReusableTextVariant.body),
               SizedBox(height: AppSpacing.md.h),
               ReusableButton(
-                text: AppStrings.refresh,
+                text: GeneralStrings.refresh,
                 onPressed: () =>
                     context.read<PromotionsBloc>().add(const LoadPromotions()),
               ),
@@ -76,7 +76,7 @@ class _PromotionsViewState extends State<PromotionsView> {
     if (state.promotions.isEmpty) {
       return const EmptyState(
         icon: Icons.local_offer_outlined,
-        title: AppStrings.noPromotions,
+        title: SalesStrings.noPromotions,
       );
     }
 
@@ -101,18 +101,18 @@ class _PromotionsViewState extends State<PromotionsView> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(AppStrings.delete),
-        content: Text('${AppStrings.confirmDelete} "${promotion.name}"؟'),
+        title: Text(GeneralStrings.delete),
+        content: Text('${SalesStrings.confirmDelete} "${promotion.name}"?'),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(ctx), child: Text(AppStrings.cancel)),
+              onPressed: () => Navigator.pop(ctx), child: Text(GeneralStrings.cancel)),
           ElevatedButton(
             onPressed: () {
               context.read<PromotionsBloc>().add(DeletePromotion(promotion.id));
               Navigator.pop(ctx);
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
-            child: Text(AppStrings.delete, style: const TextStyle(color: Colors.white)),
+            child: Text(GeneralStrings.delete, style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -136,18 +136,18 @@ class _PromotionsViewState extends State<PromotionsView> {
         builder: (context, setDialogState) => ReusableDialog(
           headerIcon: Icon(isEdit ? Icons.edit_rounded : Icons.local_offer_rounded),
           headerIconColor: AppColors.warning,
-          title: isEdit ? AppStrings.edit : AppStrings.createPromotion,
+          title: isEdit ? GeneralStrings.edit : SalesStrings.createPromotion,
           children: [
             Form(
               key: formKey,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ReusableInput(label: AppStrings.promotionNameLabel, hint: 'ادخل اسم العرض', controller: nameCtrl),
+                  ReusableInput(label: SalesStrings.promotionNameLabel, hint: '???? ??? ?????', controller: nameCtrl),
                   SizedBox(height: AppSpacing.sm.h),
                   ReusableDropdown<PromotionType>(
-                    labelText: AppStrings.promotionTypeLabel,
-                    hintText: AppStrings.promotionTypeLabel,
+                    labelText: SalesStrings.promotionTypeLabel,
+                    hintText: SalesStrings.promotionTypeLabel,
                     items: PromotionType.values,
                     value: type,
                     itemAsString: (t) => t.name,
@@ -161,7 +161,7 @@ class _PromotionsViewState extends State<PromotionsView> {
                       Expanded(
                         flex: 2,
                         child: ReusableInput(
-                          label: AppStrings.promotionValueLabel,
+                          label: SalesStrings.promotionValueLabel,
                           hint: '0.00',
                           controller: valueCtrl,
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -172,8 +172,8 @@ class _PromotionsViewState extends State<PromotionsView> {
                         child: ReusableDropdown<String>(
                           labelText: '',
                           hintText: '',
-                          items: ['%', 'قيمة'],
-                          value: isPercentage ? '%' : 'قيمة',
+                          items: ['%', '????'],
+                          value: isPercentage ? '%' : '????',
                           itemAsString: (s) => s,
                           onChanged: (v) {
                             if (v != null) setDialogState(() => isPercentage = v == '%');
@@ -186,13 +186,13 @@ class _PromotionsViewState extends State<PromotionsView> {
                   Row(
                     children: [
                       Expanded(
-                        child: _dateField(context, AppStrings.promotionStartDate, startDate, (d) {
+                        child: _dateField(context, SalesStrings.promotionStartDate, startDate, (d) {
                           if (d != null) setDialogState(() => startDate = d);
                         }),
                       ),
                       SizedBox(width: AppSpacing.sm.w),
                       Expanded(
-                        child: _dateField(context, AppStrings.promotionEndDate, endDate, (d) {
+                        child: _dateField(context, SalesStrings.promotionEndDate, endDate, (d) {
                           if (d != null) setDialogState(() => endDate = d);
                         }),
                       ),
@@ -200,13 +200,13 @@ class _PromotionsViewState extends State<PromotionsView> {
                   ),
                   SizedBox(height: AppSpacing.sm.h),
                   SwitchListTile(
-                    title: Text(AppStrings.promotionActiveLabel),
+                    title: Text(SalesStrings.promotionActiveLabel),
                     value: isActive,
                     onChanged: (v) => setDialogState(() => isActive = v),
                   ),
                   SizedBox(height: AppSpacing.md.h),
                   ReusableButton(
-                    text: isEdit ? AppStrings.save : AppStrings.create,
+                    text: isEdit ? GeneralStrings.save : GeneralStrings.create,
                     onPressed: () async {
                       if (!formKey.currentState!.validate()) return;
                       final value = double.tryParse(valueCtrl.text) ?? 0;
@@ -283,12 +283,12 @@ class _PromotionCard extends StatelessWidget {
       ReusableActionMenuItem(
         value: 'edit',
         icon: Icons.edit_outlined,
-        label: AppStrings.edit,
+        label: GeneralStrings.edit,
       ),
       ReusableActionMenuItem(
         value: 'delete',
         icon: Icons.delete_outline_rounded,
-        label: AppStrings.delete,
+        label: GeneralStrings.delete,
         color: AppColors.error,
       ),
     ];
@@ -299,10 +299,10 @@ class _PromotionCard extends StatelessWidget {
       title: promotion.name,
       subtitle: promotion.isPercentage
           ? '${promotion.value.toStringAsFixed(0)}%'
-          : '${promotion.value.toStringAsFixed(2)} ${AppStrings.currency}',
+          : '${promotion.value.toStringAsFixed(2)} ${GeneralStrings.currency}',
       tags: [
         Tag(
-          label: isActive ? AppStrings.active : AppStrings.inactive,
+          label: isActive ? GeneralStrings.active : GeneralStrings.inactive,
           color: color,
         ),
       ],
@@ -327,4 +327,9 @@ class _PromotionCard extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
 

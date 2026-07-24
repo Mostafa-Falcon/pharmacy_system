@@ -1,6 +1,6 @@
-﻿import 'package:equatable/equatable.dart';
-import 'package:pharmacy_system/app/modules/sales/models/return_model.dart';
-import 'package:pharmacy_system/app/modules/sales/models/purchase_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:pharmacy_system/app/core/models/sales/return_model.dart';
+import 'package:pharmacy_system/app/core/models/purchases/purchase_invoice_model.dart';
 
 class PurchaseReturnItem {
   final String medicineId;
@@ -48,7 +48,7 @@ class SetPurchaseReturnFilter extends PurchaseReturnEvent {
 }
 
 class CreatePurchaseReturn extends PurchaseReturnEvent {
-  final PurchaseModel originalPurchase;
+  final PurchaseInvoiceModel originalPurchase;
   final List<PurchaseReturnItem> selectedItems;
   final ReturnReason reason;
   final String? notes;
@@ -77,4 +77,8 @@ class ToggleSelectAllReturns extends PurchaseReturnEvent {
   @override
   List<Object?> get props => [select];
 }
+
+
+
+
 

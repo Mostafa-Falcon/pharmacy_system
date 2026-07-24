@@ -1,12 +1,12 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/injection.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import 'package:pharmacy_system/app/modules/auth/models/branch_model.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../bloc/branches_bloc.dart';
 import '../bloc/branches_event.dart';
@@ -35,17 +35,17 @@ class _AdminDashboardBody extends StatelessWidget {
         builder: (context, state) {
           if (state.isLoading && state.branches.isEmpty) {
             return const HomeShell(
-              title: AppStrings.branchesManagementTitle,
+              title: AdminStrings.branchesManagementTitle,
               child: Center(child: LoadingIndicator()),
             );
           }
 
           return StandardModuleLayout(
-            title: AppStrings.branchesManagementTitle,
-            subtitle: AppStrings.branchesManagementSubtitle,
+            title: AdminStrings.branchesManagementTitle,
+            subtitle: AdminStrings.branchesManagementSubtitle,
             actions: [
               ReusableButton(
-                text: AppStrings.addBranchAction,
+                text: AdminStrings.addBranchAction,
                 prefixIcon: Icons.add_rounded,
                 type: ButtonType.primary,
                 onPressed: () => _showAddBranchDialog(context),
@@ -69,7 +69,7 @@ class _AdminDashboardBody extends StatelessWidget {
     if (branches.isEmpty) {
       return const EmptyState(
         icon: Icons.storefront_rounded,
-        title: AppStrings.noBranchesFound,
+        title: AdminStrings.noBranchesFound,
       );
     }
 
@@ -106,7 +106,7 @@ class _AdminDashboardBody extends StatelessWidget {
                   SizedBox(width: 4.w),
                   Expanded(
                     child: ReusableText(
-                      branch.address ?? AppStrings.noAddressDefined,
+                      branch.address ?? AdminStrings.noAddressDefined,
                       style: TextStyle(
                           fontSize: 12.5.sp,
                           color: AppColors.textSecondaryOf(context)),
@@ -123,13 +123,13 @@ class _AdminDashboardBody extends StatelessWidget {
                 IconButton(
                   icon: Icon(Icons.edit_note_rounded,
                       size: 22.sp, color: scheme.primary),
-                  tooltip: AppStrings.editBranchTooltip,
+                  tooltip: AdminStrings.editBranchTooltip,
                   onPressed: () => _showEditBranchDialog(context, branch),
                 ),
                 IconButton(
                   icon: Icon(Icons.delete_sweep_rounded,
                       size: 22.sp, color: scheme.error),
-                  tooltip: AppStrings.deleteBranchTooltip,
+                  tooltip: AdminStrings.deleteBranchTooltip,
                   onPressed: () => _confirmDeleteBranch(context, branch),
                 ),
               ],
@@ -150,37 +150,37 @@ class _AdminDashboardBody extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => ReusableDialog(
-        title: AppStrings.addBranchDialogTitle,
+        title: AdminStrings.addBranchDialogTitle,
         headerIcon: Icon(Icons.add_business_rounded, color: scheme.primary),
         children: [
           ReusableInput(
             controller: nameController,
-            label: AppStrings.branchFullNameLabel,
-            hint: AppStrings.branchNameExampleHint,
+            label: AdminStrings.branchFullNameLabel,
+            hint: AdminStrings.branchNameExampleHint,
           ),
           SizedBox(height: AppSpacing.md.h),
           ReusableInput(
             controller: addressController,
-            label: AppStrings.branchDetailedAddressLabel,
-            hint: AppStrings.branchAddressExampleHint,
+            label: AdminStrings.branchDetailedAddressLabel,
+            hint: AdminStrings.branchAddressExampleHint,
           ),
           SizedBox(height: AppSpacing.md.h),
           ReusableInput(
             controller: phoneController,
-            label: AppStrings.branchPhoneLabel,
-            hint: AppStrings.branchPhoneExampleHint,
+            label: AdminStrings.branchPhoneLabel,
+            hint: AdminStrings.branchPhoneExampleHint,
             keyboardType: TextInputType.phone,
           ),
           SizedBox(height: 16.h),
           DialogActions(
-            cancelText: AppStrings.cancelAddBranchAction,
-            confirmText: AppStrings.confirmAddBranchAction,
+            cancelText: AdminStrings.cancelAddBranchAction,
+            confirmText: AdminStrings.confirmAddBranchAction,
             onCancel: () => Navigator.pop(context),
             onConfirm: () {
               if (nameController.text.trim().isEmpty) {
                 AppSnackbar.info(
-                  AppStrings.enterBranchNameWarning,
-                  title: AppStrings.importantWarningTitle,
+                  AdminStrings.enterBranchNameWarning,
+                  title: AdminStrings.importantWarningTitle,
                 );
                 return;
               }
@@ -209,31 +209,31 @@ class _AdminDashboardBody extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => ReusableDialog(
-        title: AppStrings.editBranchDialogTitle,
+        title: AdminStrings.editBranchDialogTitle,
         headerIcon: Icon(Icons.edit_road_rounded, color: scheme.primary),
         children: [
-          ReusableInput(controller: nameController, label: AppStrings.branchFullNameLabel),
+          ReusableInput(controller: nameController, label: AdminStrings.branchFullNameLabel),
           SizedBox(height: AppSpacing.md.h),
           ReusableInput(
             controller: addressController,
-            label: AppStrings.branchDetailedAddressLabel,
+            label: AdminStrings.branchDetailedAddressLabel,
           ),
           SizedBox(height: AppSpacing.md.h),
           ReusableInput(
             controller: phoneController,
-            label: AppStrings.branchPhoneLabel,
+            label: AdminStrings.branchPhoneLabel,
             keyboardType: TextInputType.phone,
           ),
           SizedBox(height: 16.h),
           DialogActions(
-            cancelText: AppStrings.cancelEditBranchAction,
-            confirmText: AppStrings.saveBranchChangesAction,
+            cancelText: AdminStrings.cancelEditBranchAction,
+            confirmText: AdminStrings.saveBranchChangesAction,
             onCancel: () => Navigator.pop(context),
             onConfirm: () {
               if (nameController.text.trim().isEmpty) {
                 AppSnackbar.info(
-                  AppStrings.cannotClearBranchNameWarning,
-                  title: AppStrings.importantWarningTitle,
+                  AdminStrings.cannotClearBranchNameWarning,
+                  title: AdminStrings.importantWarningTitle,
                 );
                 return;
               }
@@ -257,11 +257,15 @@ class _AdminDashboardBody extends StatelessWidget {
     final bloc = context.read<BranchesBloc>();
     ConfirmDeleteDialog.show(
       context,
-      title: AppStrings.importantSecurityWarningTitle,
-      message: AppStrings.deleteBranchConfirmFormat.replaceFirst('%s', branch.name),
-      confirmText: AppStrings.confirmDeleteBranchAction,
+      title: AdminStrings.importantSecurityWarningTitle,
+      message: AdminStrings.deleteBranchConfirmFormat.replaceFirst('%s', branch.name),
+      confirmText: AdminStrings.confirmDeleteBranchAction,
       onConfirm: () => bloc.add(DeleteBranch(branch.id)),
     );
   }
 }
+
+
+
+
 

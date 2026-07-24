@@ -1,10 +1,10 @@
-﻿import 'package:equatable/equatable.dart';
-import 'package:pharmacy_system/app/modules/sales/models/cashier_shift_model.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
-import 'package:pharmacy_system/app/modules/sales/models/sale_model.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_model.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/customer_model.dart';
-import '../models/pos_cart_line.dart';
+import 'package:equatable/equatable.dart';
+import 'package:pharmacy_system/app/core/models/sales/cashier_shift_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/sale_invoice_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_model.dart';
+import 'package:pharmacy_system/app/modules/sales/models/pos_cart_line.dart';
 
 enum PaymentMode { cash, card, mixed, credit }
 
@@ -29,14 +29,14 @@ class PosState extends Equatable {
   final List<CustomerModel> customers;
   final List<SupplierModel> suppliers;
   final CashierShiftModel? currentShift;
-  final SaleModel? lastInvoice;
+  final SaleInvoiceModel? lastInvoice;
   final double customerBalance;
   final double supplierBalance;
   final List<MedicineModel> nearExpiryItems;
   final List<MedicineModel> lowStockItems;
   final List<String> categories;
   final List<MedicineModel> filteredMedicines;
-  final List<SaleModel> recentSales;
+  final List<SaleInvoiceModel> recentSales;
   final List<Map<String, dynamic>> suspendedSales;
   final String? warning;
   final String selectedPriceGroup;
@@ -100,14 +100,14 @@ class PosState extends Equatable {
     List<CustomerModel>? customers,
     List<SupplierModel>? suppliers,
     CashierShiftModel? currentShift,
-    SaleModel? lastInvoice,
+    SaleInvoiceModel? lastInvoice,
     double? customerBalance,
     double? supplierBalance,
     List<MedicineModel>? nearExpiryItems,
     List<MedicineModel>? lowStockItems,
     List<String>? categories,
     List<MedicineModel>? filteredMedicines,
-    List<SaleModel>? recentSales,
+    List<SaleInvoiceModel>? recentSales,
     List<Map<String, dynamic>>? suspendedSales,
     String? warning,
     String? selectedPriceGroup,
@@ -187,7 +187,7 @@ class PosState extends Equatable {
   int get expiredCount => medicines.where((m) => m.expiryDate != null && m.expiryDate!.isBefore(DateTime.now())).length;
   int get itemCount => cart.fold(0, (sum, l) => sum + l.quantity);
 
-  // ملخصات الوردية من الـ state مباشرة (أمان ولحظية)
+  // ?????? ??????? ?? ??? state ?????? (???? ??????)
   int get shiftSalesCount => (shiftSummary['sales_count'] as int?) ?? 0;
   double get shiftTotalSales => (shiftSummary['total_sales'] as num?)?.toDouble() ?? 0.0;
   double get shiftCashSales => (shiftSummary['cash_sales'] as num?)?.toDouble() ?? 0.0;
@@ -230,4 +230,9 @@ class PosState extends Equatable {
     shiftSummary,
   ];
 }
+
+
+
+
+
 

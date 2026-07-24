@@ -13,11 +13,11 @@ import 'app/modules/notifications/bloc/notifications_bloc.dart';
 import 'package:pharmacy_system/app/core/config/app_config.dart';
 import 'package:pharmacy_system/app/core/data/services/theme_service.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_engine.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/supabase_client.dart';
+import 'package:pharmacy_system/app/core/sync/sync_engine.dart';
+import 'package:pharmacy_system/app/core/sync/supabase_client.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/database/drift_init.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_theme.dart';
+import 'package:pharmacy_system/app/shared/presentation/theme/app_theme.dart';
 import 'package:pharmacy_system/app/core/data/services/sound_service.dart';
 import 'app/routes/app_router.dart';
 import 'package:pharmacy_system/app/core/bootstrap/sentry_init.dart';
@@ -120,3 +120,7 @@ class _PharmacyAppView extends StatelessWidget {
     );
   }
 }
+
+
+
+

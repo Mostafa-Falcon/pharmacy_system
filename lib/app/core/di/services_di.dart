@@ -1,14 +1,14 @@
 import 'package:get_it/get_it.dart';
+import 'package:pharmacy_system/app/core/sync/sync_engine.dart';
 
 import '../data/services/lookup_service.dart';
-import '../data/services/sync/sync_engine.dart';
 
 final sl = GetIt.instance;
 
 void registerCoreServiceDependencies() {
   sl.allowReassignment = true;
   _reg<LookupService>(() => LookupService());
-  
+
   // Register SyncEngine singleton
   if (!sl.isRegistered<SyncEngine>()) {
     sl.registerSingleton<SyncEngine>(SyncEngine.instance);

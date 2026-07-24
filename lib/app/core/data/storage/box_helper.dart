@@ -12,3 +12,5 @@ abstract final class BoxHelper {
 }
 
 typedef Box = Map<String, dynamic>;
+
+

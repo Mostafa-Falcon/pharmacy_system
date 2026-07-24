@@ -1,4 +1,4 @@
-﻿// ── Module hr Exports ──
+// -- Module hr Exports --
 export 'bloc/hr_bloc.dart';
 export 'package:pharmacy_system/app/modules/hr/models/attendance_model.dart';
 export 'package:pharmacy_system/app/modules/hr/models/department_model.dart';
@@ -16,4 +16,6 @@ export 'services/department_service.dart';
 export 'services/employee_service.dart';
 export 'services/leave_service.dart';
 export 'services/payroll_service.dart';
+
+
 

@@ -1,4 +1,4 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:pharmacy_system/app/modules/archive/models/archive_record_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
@@ -117,4 +117,6 @@ class ArchiveBloc extends Bloc<ArchiveEvent, ArchiveState> {
     }
   }
 }
+
+
 

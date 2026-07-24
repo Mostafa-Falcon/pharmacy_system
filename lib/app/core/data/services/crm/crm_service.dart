@@ -1,5 +1,5 @@
-﻿import 'package:pharmacy_system/app/modules/crm/models/crm_model.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
+import 'package:pharmacy_system/app/modules/crm/models/crm_model.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 
 class CrmService {
   static const String leadsBox = 'crm_leads';
@@ -83,4 +83,7 @@ class CrmService {
     await updateLead(lead);
   }
 }
+
+
+
 

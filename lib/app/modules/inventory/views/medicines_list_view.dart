@@ -6,12 +6,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
-import '../../../core/navigation/route_cubit.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
+import '../../../shared/navigation/route_cubit.dart';
 import 'package:pharmacy_system/app/core/data/services/lookup_service.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../../../routes/app_routes.dart';
 import '../bloc/medicines_bloc.dart';
 
@@ -67,14 +67,14 @@ class _MedicinesListViewState extends State<MedicinesListView> {
       builder: (context, state) {
         if (state.dataState.isLoading && state.allMedicines.isEmpty) {
           return const HomeShell(
-            title: AppStrings.inventoryTitle,
+            title: InventoryStrings.inventoryTitle,
             child: Center(child: LoadingIndicator()),
           );
         }
 
         return StandardModuleLayout(
-          title: AppStrings.inventoryTitle,
-          subtitle: AppStrings.inventorySubtitle,
+          title: InventoryStrings.inventoryTitle,
+          subtitle: InventoryStrings.inventorySubtitle,
           actions: _buildHeaderActions(context, state),
           stats: _buildStats(context, state),
           filters: _buildFilters(context, state),
@@ -90,27 +90,27 @@ class _MedicinesListViewState extends State<MedicinesListView> {
   List<Widget> _buildHeaderActions(BuildContext context, MedicinesState state) {
     return [
       ReusableButton(
-        text: AppStrings.addMedicine,
+        text: InventoryStrings.addMedicine,
         prefixIcon: Icons.add_rounded,
         onPressed: () => context.push(Routes.INVENTORY_ADD),
       ),
       SizedBox(width: 8.w),
       ReusableButton(
-        text: AppStrings.importExcel,
+        text: InventoryStrings.importExcel,
         type: ButtonType.tonal,
         prefixIcon: Icons.file_upload_rounded,
         onPressed: () => context.push(Routes.INVENTORY_IMPORT),
       ),
       SizedBox(width: 8.w),
       ReusableButton(
-        text: AppStrings.importExcelProducts,
+        text: InventoryStrings.importExcelProducts,
         type: ButtonType.tonal,
         prefixIcon: Icons.inventory_2_rounded,
         onPressed: () => context.push(Routes.INVENTORY_IMPORT_PRODUCTS),
       ),
       SizedBox(width: 8.w),
       ReusableButton(
-        text: AppStrings.deleteAllMedicines,
+        text: InventoryStrings.deleteAllMedicines,
         type: ButtonType.outlined,
         color: AppColors.error,
         prefixIcon: Icons.delete_sweep_rounded,
@@ -129,17 +129,17 @@ class _MedicinesListViewState extends State<MedicinesListView> {
           size: AppIconSize.xl.value,
         ),
         title: ReusableText(
-          AppStrings.confirmDeleteAllTitle,
+          InventoryStrings.confirmDeleteAllTitle,
           style: AppTextStyles.title(context),
         ),
         content: ReusableText(
-          AppStrings.confirmDeleteAllMessage.replaceAll('%s', '${state.totalCount}'),
+          InventoryStrings.confirmDeleteAllMessage.replaceAll('%s', '${state.totalCount}'),
           style: AppTextStyles.body(context),
         ),
         actions: [
           TextButton(
             onPressed: () => ctx.pop(),
-            child: ReusableText(AppStrings.cancel),
+            child: ReusableText(GeneralStrings.cancel),
           ),
           FilledButton(
             onPressed: () {
@@ -150,7 +150,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
             child: ReusableText(
-              AppStrings.deleteAllMedicines,
+              InventoryStrings.deleteAllMedicines,
               style: AppTextStyles.body(context).copyWith(
                 color: Theme.of(context).colorScheme.onError,
               ),
@@ -164,18 +164,18 @@ class _MedicinesListViewState extends State<MedicinesListView> {
   List<Widget> _buildStats(BuildContext context, MedicinesState state) {
     return [
       SummaryCard(
-        label: AppStrings.totalItems,
+        label: InventoryStrings.totalItems,
         value: '${state.totalCount}',
         icon: Icons.inventory_2_rounded,
       ),
       SummaryCard(
-        label: AppStrings.lowStock,
+        label: InventoryStrings.lowStock,
         value: '${state.lowStockCount}',
         color: AppColors.warning,
         icon: Icons.warning_amber_rounded,
       ),
       SummaryCard(
-        label: AppStrings.expired,
+        label: InventoryStrings.expired,
         value: '${state.expiredCount}',
         color: AppColors.error,
         icon: Icons.event_busy_rounded,
@@ -186,7 +186,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
   Widget _buildFilters(BuildContext context, MedicinesState state) {
     final bloc = context.read<MedicinesBloc>();
     final categories = [
-      AppStrings.all,
+      GeneralStrings.all,
       ...LookupService.getItemTypes().map((e) => e.name),
     ];
 
@@ -194,11 +194,11 @@ class _MedicinesListViewState extends State<MedicinesListView> {
       padding: EdgeInsets.all(12.w),
       child: Row(
         children: [
-          // حقل البحث الذكي بترميز الباركود والاسم
+          // ??? ????? ????? ?????? ???????? ??????
           Expanded(
             flex: 4,
             child: MedicineSearchField(
-              hint: AppStrings.searchInventoryHint,
+              hint: InventoryStrings.searchInventoryHint,
               clearOnSelect: false,
               onChanged: _onSearchChanged,
               onSelected: (m) => bloc.add(SearchMedicines(m.name)),
@@ -206,32 +206,32 @@ class _MedicinesListViewState extends State<MedicinesListView> {
           ),
           SizedBox(width: 12.w),
 
-          // القائمة المنسدلة للتصنيفات
+          // ??????? ???????? ?????????
           SizedBox(
             width: 180.w,
             child: ReusableDropdown<String>(
               items: categories,
-              value: state.selectedCategory ?? AppStrings.all,
-              hintText: AppStrings.displayCategory,
+              value: state.selectedCategory ?? GeneralStrings.all,
+              hintText: InventoryStrings.displayCategory,
               itemAsString: (cat) => cat,
-              onChanged: (v) => bloc.add(FilterByCategory(v == AppStrings.all ? null : v)),
+              onChanged: (v) => bloc.add(FilterByCategory(v == GeneralStrings.all ? null : v)),
             ),
           ),
           SizedBox(width: 12.w),
 
-          // شرائح التصفية السريعة
+          // ????? ??????? ???????
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
             child: Row(
               children: [
-                _buildFilterChip(AppStrings.all, 'all', state.selectedFilter, bloc),
+                _buildFilterChip(GeneralStrings.all, 'all', state.selectedFilter, bloc),
                 SizedBox(width: 6.w),
-                _buildFilterChip(AppStrings.lowStock, 'low_stock', state.selectedFilter, bloc),
+                _buildFilterChip(InventoryStrings.lowStock, 'low_stock', state.selectedFilter, bloc),
                 SizedBox(width: 6.w),
-                _buildFilterChip(AppStrings.outOfStock, 'out_of_stock', state.selectedFilter, bloc),
+                _buildFilterChip(InventoryStrings.outOfStock, 'out_of_stock', state.selectedFilter, bloc),
                 SizedBox(width: 6.w),
-                _buildFilterChip(AppStrings.expiringSoon, 'expiring', state.selectedFilter, bloc),
+                _buildFilterChip(InventoryStrings.expiringSoon, 'expiring', state.selectedFilter, bloc),
               ],
             ),
           ),
@@ -267,7 +267,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
     final columns = [
       ReusableTableColumn<MedicineModel>(
         id: 'name',
-        title: AppStrings.name,
+        title: GeneralStrings.name,
         flex: 4,
         isSortable: true,
         cellBuilder: (m) => Row(
@@ -312,7 +312,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
       ),
       ReusableTableColumn<MedicineModel>(
         id: 'barcode',
-        title: AppStrings.barcodeLabel,
+        title: InventoryStrings.barcodeLabel,
         flex: 2,
         isSortable: true,
         cellBuilder: (m) {
@@ -337,14 +337,14 @@ class _MedicinesListViewState extends State<MedicinesListView> {
       ),
       ReusableTableColumn<MedicineModel>(
         id: 'category',
-        title: AppStrings.displayCategory,
+        title: InventoryStrings.displayCategory,
         flex: 2,
         isSortable: true,
         textBuilder: (m) => m.category ?? '—',
       ),
       ReusableTableColumn<MedicineModel>(
         id: 'location',
-        title: AppStrings.storageLocation,
+        title: InventoryStrings.storageLocation,
         flex: 2,
         isSortable: true,
         cellBuilder: (m) => ReusableText(
@@ -354,7 +354,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
       ),
       ReusableTableColumn<MedicineModel>(
         id: 'quantity',
-        title: AppStrings.quantity,
+        title: SalesStrings.quantityLabel,
         flex: 3,
         isSortable: true,
         isNumeric: true,
@@ -381,15 +381,15 @@ class _MedicinesListViewState extends State<MedicinesListView> {
       ),
       ReusableTableColumn<MedicineModel>(
         id: 'sellPrice',
-        title: AppStrings.sellPriceLabel,
+        title: InventoryStrings.sellPriceLabel,
         flex: 2,
         isSortable: true,
         isNumeric: true,
-        textBuilder: (m) => '${f.format(m.sellPrice)} ${AppStrings.currency}',
+        textBuilder: (m) => '${f.format(m.sellPrice)} ${GeneralStrings.currency}',
       ),
       ReusableTableColumn<MedicineModel>(
         id: 'expiry',
-        title: AppStrings.currentExpiryDate,
+        title: InventoryStrings.currentExpiryDate,
         flex: 2,
         isSortable: true,
         cellBuilder: (m) {
@@ -423,8 +423,8 @@ class _MedicinesListViewState extends State<MedicinesListView> {
     if (state.allMedicines.isEmpty && !state.dataState.isLoading) {
       return const EmptyState(
         icon: Icons.medication_liquid_rounded,
-        title: AppStrings.emptyInventoryTitle,
-        subtitle: AppStrings.emptyInventorySubtitle,
+        title: InventoryStrings.emptyInventoryTitle,
+        subtitle: InventoryStrings.emptyInventorySubtitle,
       );
     }
 
@@ -448,7 +448,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
       onSort: (colId) => bloc.add(SortMedicines(colId)),
       sortColumnId: state.sortColumnId,
       isSortAscending: state.isSortAscending,
-      itemLabel: AppStrings.itemLabel,
+      itemLabel: InventoryStrings.itemLabel,
       showCheckbox: true,
       selectedIds: state.selectedIds,
       rowIdGetter: (m) => m.id,
@@ -456,7 +456,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
       onToggleAll: (selectAll) => bloc.add(ToggleSelectAll(selectAll)),
       bulkActions: [
         ReusableButton(
-          text: AppStrings.delete,
+          text: GeneralStrings.delete,
           type: ButtonType.outlined,
           color: AppColors.error,
           prefixIcon: Icons.delete_sweep_rounded,
@@ -470,17 +470,17 @@ class _MedicinesListViewState extends State<MedicinesListView> {
                   size: AppIconSize.xl.value,
                 ),
                 title: ReusableText(
-                  AppStrings.confirmDeleteSelectedTitle,
+                  InventoryStrings.confirmDeleteSelectedTitle,
                   style: AppTextStyles.title(context),
                 ),
                 content: ReusableText(
-                  AppStrings.confirmDeleteSelectedMessage.replaceAll('%s', '${state.selectedIds.length}'),
+                  InventoryStrings.confirmDeleteSelectedMessage.replaceAll('%s', '${state.selectedIds.length}'),
                   style: AppTextStyles.body(context),
                 ),
                 actions: [
                   TextButton(
                     onPressed: () => ctx.pop(),
-                    child: ReusableText(AppStrings.cancel),
+                    child: ReusableText(GeneralStrings.cancel),
                   ),
                   FilledButton(
                     onPressed: () {
@@ -491,7 +491,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
                       backgroundColor: Theme.of(context).colorScheme.error,
                     ),
                     child: ReusableText(
-                      AppStrings.delete,
+                      GeneralStrings.delete,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onError,
                       ),
@@ -503,7 +503,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
           },
         ),
         ReusableButton(
-          text: AppStrings.editPrice,
+          text: InventoryStrings.editPrice,
           type: ButtonType.outlined,
           prefixIcon: Icons.price_change_rounded,
           onPressed: () {},
@@ -519,16 +519,16 @@ class _MedicinesListViewState extends State<MedicinesListView> {
             case 'delete':
               ConfirmDeleteDialog.show(
                 context,
-                title: AppStrings.confirmDeleteItemTitle,
-                message: AppStrings.confirmDeleteItemMessage.replaceAll('%s', m.name),
+                title: InventoryStrings.confirmDeleteItemTitle,
+                message: InventoryStrings.confirmDeleteItemMessage.replaceAll('%s', m.name),
                 onConfirm: () => bloc.add(DeleteMedicine(m)),
               );
               break;
           }
         },
         itemBuilder: (_) => [
-          const PopupMenuItem(value: 'edit', child: ReusableText(AppStrings.edit)),
-          const PopupMenuItem(value: 'delete', child: ReusableText(AppStrings.delete, color: AppColors.error)),
+          const PopupMenuItem(value: 'edit', child: ReusableText(GeneralStrings.edit)),
+          const PopupMenuItem(value: 'delete', child: ReusableText(GeneralStrings.delete, color: AppColors.error)),
         ],
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
@@ -541,7 +541,7 @@ class _MedicinesListViewState extends State<MedicinesListView> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ReusableText(
-                AppStrings.options,
+                SalesStrings.options,
                 style: AppTextStyles.caption(context).copyWith(
                   fontWeight: FontWeight.bold,
                   color: scheme.primary,
@@ -556,4 +556,11 @@ class _MedicinesListViewState extends State<MedicinesListView> {
     );
   }
 }
+
+
+
+
+
+
+
 

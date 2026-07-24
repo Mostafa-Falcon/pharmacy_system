@@ -1,7 +1,7 @@
-﻿import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
 import 'package:pharmacy_system/app/modules/hr/models/employee_model.dart';
 import 'package:pharmacy_system/app/modules/hr/models/attendance_model.dart';
 import 'package:pharmacy_system/app/modules/hr/models/leave_model.dart';
@@ -79,7 +79,7 @@ class HrBloc extends Bloc<HrEvent, HrState> {
     if (event.departmentId.isNotEmpty) {
       await DepartmentService.incrementEmployeeCount(event.departmentId);
     }
-    AppSnackbar.success('تم إضافة الموظف بنجاح');
+    AppSnackbar.success('?? ????? ?????? ?????');
     add(const LoadHrData());
   }
 
@@ -96,7 +96,7 @@ class HrBloc extends Bloc<HrEvent, HrState> {
       status: event.status,
       notes: event.notes,
     );
-    AppSnackbar.success('تم تحديث بيانات الموظف');
+    AppSnackbar.success('?? ????? ?????? ??????');
     add(const LoadHrData());
   }
 
@@ -106,7 +106,7 @@ class HrBloc extends Bloc<HrEvent, HrState> {
     if (emp != null && emp.departmentId.isNotEmpty) {
       await DepartmentService.decrementEmployeeCount(emp.departmentId);
     }
-    AppSnackbar.success('تم حذف الموظف');
+    AppSnackbar.success('?? ??? ??????');
     add(const LoadHrData());
   }
 
@@ -124,13 +124,13 @@ class HrBloc extends Bloc<HrEvent, HrState> {
       employeeName: event.employeeName,
       notes: event.notes,
     );
-    AppSnackbar.success('تم تسجيل الحضور');
+    AppSnackbar.success('?? ????? ??????');
     add(const LoadHrData());
   }
 
   Future<void> _onClockOut(ClockOut event, Emitter<HrState> emit) async {
     await AttendanceService.clockOut(event.id, notes: event.notes);
-    AppSnackbar.success('تم تسجيل الانصراف');
+    AppSnackbar.success('?? ????? ????????');
     add(const LoadHrData());
   }
 
@@ -153,37 +153,37 @@ class HrBloc extends Bloc<HrEvent, HrState> {
       endDate: event.endDate,
       reason: event.reason,
     );
-    AppSnackbar.success('تم تقديم طلب الإجازة');
+    AppSnackbar.success('?? ????? ??? ???????');
     add(const LoadHrData());
   }
 
   Future<void> _onApproveLeave(ApproveLeave event, Emitter<HrState> emit) async {
     await LeaveService.approve(event.id, _userId);
-    AppSnackbar.success('تم الموافقة على الإجازة');
+    AppSnackbar.success('?? ???????? ??? ???????');
     add(const LoadHrData());
   }
 
   Future<void> _onRejectLeave(RejectLeave event, Emitter<HrState> emit) async {
     await LeaveService.reject(event.id, reason: event.reason);
-    AppSnackbar.success('تم رفض الإجازة');
+    AppSnackbar.success('?? ??? ???????');
     add(const LoadHrData());
   }
 
   Future<void> _onCreatePayroll(CreatePayroll event, Emitter<HrState> emit) async {
     await PayrollService.create(month: event.month, year: event.year);
-    AppSnackbar.success('تم إنشاء كشف الراتب');
+    AppSnackbar.success('?? ????? ??? ??????');
     add(const LoadHrData());
   }
 
   Future<void> _onProcessPayroll(ProcessPayroll event, Emitter<HrState> emit) async {
     await PayrollService.process(event.id);
-    AppSnackbar.success('تم تجهيز كشف الراتب');
+    AppSnackbar.success('?? ????? ??? ??????');
     add(const LoadHrData());
   }
 
   Future<void> _onApprovePayroll(ApprovePayroll event, Emitter<HrState> emit) async {
     await PayrollService.approve(event.id);
-    AppSnackbar.success('تم اعتماد كشف الراتب');
+    AppSnackbar.success('?? ?????? ??? ??????');
     add(const LoadHrData());
   }
 
@@ -202,7 +202,7 @@ class HrBloc extends Bloc<HrEvent, HrState> {
       managerName: event.managerName,
       description: event.description,
     );
-    AppSnackbar.success('تم إضافة الإدارة بنجاح');
+    AppSnackbar.success('?? ????? ??????? ?????');
     add(const LoadHrData());
   }
 
@@ -214,13 +214,13 @@ class HrBloc extends Bloc<HrEvent, HrState> {
       managerName: event.managerName,
       description: event.description,
     );
-    AppSnackbar.success('تم تحديث الإدارة');
+    AppSnackbar.success('?? ????? ???????');
     add(const LoadHrData());
   }
 
   Future<void> _onDeleteDepartment(DeleteDepartment event, Emitter<HrState> emit) async {
     await DepartmentService.delete(event.id);
-    AppSnackbar.success('تم حذف الإدارة');
+    AppSnackbar.success('?? ??? ???????');
     add(const LoadHrData());
   }
 
@@ -232,4 +232,7 @@ class HrBloc extends Bloc<HrEvent, HrState> {
     ));
   }
 }
+
+
+
 

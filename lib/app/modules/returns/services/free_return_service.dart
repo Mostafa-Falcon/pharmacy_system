@@ -4,8 +4,8 @@ import 'package:drift/drift.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/services/inventory/stock_mutation_service.dart';
 import 'package:pharmacy_system/app/core/data/services/party_ledger_service.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
-import 'package:pharmacy_system/app/modules/sales/models/return_model.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
+import 'package:pharmacy_system/app/core/models/sales/return_model.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
 import 'package:pharmacy_system/app/core/utils/app_utils.dart';
 
@@ -115,3 +115,7 @@ class FreeReturnService {
     }
   }
 }
+
+
+
+

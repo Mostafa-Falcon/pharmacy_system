@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/stocktaking_period_model.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/models/inventory/stocktaking_period_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
 import '../bloc/stocktaking_bloc.dart';
 
@@ -130,7 +130,7 @@ class StocktakingDetailView extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(AppStrings.cancel),
+            child: Text(GeneralStrings.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -227,7 +227,7 @@ class StocktakingDetailView extends StatelessWidget {
                                 dense: true,
                                 title: Text(m.name),
                                 subtitle: Text(
-                                  '${StocktakingStrings.stocktakingQuantityLabel}: ${m.quantity} | ${AppStrings.cartPrice}: ${m.buyPrice}',
+                                  '${StocktakingStrings.stocktakingQuantityLabel}: ${m.quantity} | ${SalesStrings.cartPrice}: ${m.buyPrice}',
                                 ),
                                 onTap: () {
                                   setState(() {
@@ -276,7 +276,7 @@ class StocktakingDetailView extends StatelessWidget {
             : [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text(AppStrings.cancel),
+                  child: Text(GeneralStrings.cancel),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -408,7 +408,7 @@ class _CountCard extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(AppStrings.cancel),
+            child: Text(GeneralStrings.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -425,7 +425,7 @@ class _CountCard extends StatelessWidget {
               );
               Navigator.of(context).pop();
             },
-            child: Text(AppStrings.save),
+            child: Text(GeneralStrings.save),
           ),
         ],
       ),
@@ -499,12 +499,12 @@ class _CountCard extends StatelessWidget {
                 ReusableActionMenuItem(
                   value: 'edit',
                   icon: Icons.edit_outlined,
-                  label: AppStrings.edit,
+                  label: GeneralStrings.edit,
                 ),
                 ReusableActionMenuItem(
                   value: 'delete',
                   icon: Icons.delete_outline_rounded,
-                  label: AppStrings.delete,
+                  label: GeneralStrings.delete,
                   color: AppColors.error,
                 ),
               ],
@@ -514,4 +514,9 @@ class _CountCard extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
 

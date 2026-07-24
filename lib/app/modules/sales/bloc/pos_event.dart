@@ -1,7 +1,7 @@
-﻿import 'package:equatable/equatable.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_unit_model.dart';
-import 'package:pharmacy_system/app/modules/sales/models/sale_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_unit_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/sale_invoice_model.dart';
 import 'cart_cubit.dart';
 
 import 'pos_state.dart';
@@ -305,7 +305,7 @@ class PosRecordSupplierPayment extends PosEvent {
 }
 
 class PosEditSale extends PosEvent {
-  final SaleModel sale;
+  final SaleInvoiceModel sale;
   const PosEditSale(this.sale);
   @override
   List<Object?> get props => [sale];
@@ -318,7 +318,7 @@ class PosEditQuote extends PosEvent {
   List<Object?> get props => [quote];
 }
 
-/// يغير المجموعة السعرية (تجزئة / جملة / نصف جملة)
+/// ???? ???????? ??????? (????? / ???? / ??? ????)
 class PosSetPriceGroup extends PosEvent {
   final String priceGroup;
   const PosSetPriceGroup(this.priceGroup);
@@ -326,8 +326,8 @@ class PosSetPriceGroup extends PosEvent {
   List<Object?> get props => [priceGroup];
 }
 
-/// يحذف السطر المحدد حالياً في السلة (أو آخر سطر لو مفيش محدد).
-/// مربوط باختصار Ctrl+D في الكيبورد.
+/// ???? ????? ?????? ?????? ?? ????? (?? ??? ??? ?? ???? ????).
+/// ????? ??????? Ctrl+D ?? ????????.
 class PosRemoveSelectedLine extends PosEvent {
   const PosRemoveSelectedLine();
 }
@@ -335,4 +335,8 @@ class PosRemoveSelectedLine extends PosEvent {
 class PosTogglePrint extends PosEvent {
   const PosTogglePrint();
 }
+
+
+
+
 

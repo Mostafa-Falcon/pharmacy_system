@@ -5,9 +5,9 @@ import 'package:intl/intl.dart' as intl;
 import 'package:pharmacy_system/app/core/constants/strings/sync_strings.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import 'package:pharmacy_system/app/modules/sync/models/sync_table_meta.dart';
 import 'package:pharmacy_system/app/modules/sync/bloc/sync_status_bloc.dart';
 
@@ -659,7 +659,7 @@ class _RotatingSyncIconState extends State<_RotatingSyncIcon>
 }
 
 class _SyncPendingList extends StatelessWidget {
-  final List<OutboxTableData> items;
+  final List<SyncOutboxTableData> items;
   final VoidCallback onClearAll;
   final Function(String) onRemove;
   final VoidCallback onRefresh;
@@ -760,7 +760,7 @@ class _SyncPendingList extends StatelessWidget {
 }
 
 class _PendingItemTile extends StatelessWidget {
-  final OutboxTableData item;
+  final SyncOutboxTableData item;
   final VoidCallback onRemove;
 
   const _PendingItemTile({
@@ -898,3 +898,8 @@ class _CommandButton extends StatelessWidget {
     );
   }
 }
+
+
+
+
+

@@ -4,11 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/stocktaking_period_model.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/models/inventory/stocktaking_period_model.dart';
 import '../../../routes/app_routes.dart';
 import '../bloc/stocktaking_bloc.dart';
 
@@ -333,12 +333,12 @@ class _StocktakingListViewState extends State<StocktakingListView> {
         ),
         actions: [
           ReusableButton(
-            text: AppStrings.cancel,
+            text: GeneralStrings.cancel,
             type: ButtonType.text,
             onPressed: () => Navigator.of(ctx).pop(),
           ),
           ReusableButton(
-            text: AppStrings.create,
+            text: GeneralStrings.create,
             onPressed: () {
               if (nameCtrl.text.trim().isEmpty) return;
               bloc.add(CreateStocktakingPeriod(
@@ -509,7 +509,7 @@ class _PeriodGridCard extends StatelessWidget {
                     itemBuilder: (_) => [
                       ReusableActionMenuItem(value: 'close', icon: Icons.lock_outline_rounded, label: StocktakingStrings.stocktakingClose),
                       ReusableActionMenuItem(value: 'cancel', icon: Icons.cancel_outlined, label: StocktakingStrings.stocktakingCancel),
-                      ReusableActionMenuItem(value: 'delete', icon: Icons.delete_outline_rounded, label: AppStrings.delete, color: AppColors.error),
+                      ReusableActionMenuItem(value: 'delete', icon: Icons.delete_outline_rounded, label: GeneralStrings.delete, color: AppColors.error),
                     ],
                   ),
                 ],
@@ -611,4 +611,9 @@ class _MetricPill extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
 

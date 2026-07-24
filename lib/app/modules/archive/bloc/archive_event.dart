@@ -1,4 +1,4 @@
-﻿import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
 import 'package:pharmacy_system/app/modules/archive/models/archive_record_model.dart';
 
 abstract class ArchiveEvent extends Equatable {
@@ -52,4 +52,6 @@ class PermanentDeleteArchiveItem extends ArchiveEvent {
   @override
   List<Object?> get props => [recordId];
 }
+
+
 

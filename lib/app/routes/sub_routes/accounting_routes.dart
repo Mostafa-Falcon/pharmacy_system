@@ -7,7 +7,7 @@ import 'package:pharmacy_system/app/modules/accounting/views/accounting_shell_vi
 import 'package:pharmacy_system/app/core/bloc/import_data_bloc.dart';
 import 'package:pharmacy_system/app/core/bloc/import_data_event.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
-import 'package:pharmacy_system/app/core/presentation/views/import_data_view.dart';
+import 'package:pharmacy_system/app/shared/presentation/views/import_data_view.dart';
 
 import 'package:pharmacy_system/app/routes/app_routes.dart';
 import 'package:pharmacy_system/app/routes/sub_routes/auth_routes.dart';
@@ -99,3 +99,5 @@ final List<RouteBase> accountingRoutes = [
     ),
   ),
 ];
+
+

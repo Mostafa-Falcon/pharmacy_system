@@ -1,12 +1,12 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../bloc/hr_bloc.dart';
 import 'package:pharmacy_system/app/modules/hr/models/department_model.dart';
 import 'package:pharmacy_system/app/modules/hr/models/employee_model.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
 
 class DepartmentsView extends StatelessWidget {
@@ -24,8 +24,8 @@ class DepartmentsView extends StatelessWidget {
           body: state.departments.isEmpty
               ? EmptyState(
                   icon: Icons.business_rounded,
-                  title: 'Ã™â€žÃ˜Â§ Ã˜ÂªÃ™Ë†Ã˜Â¬Ã˜Â¯ Ã˜Â¥Ã˜Â¯Ã˜Â§Ã˜Â±Ã˜Â§Ã˜Âª',
-                  subtitle: 'Ã™â€žÃ™â€¦ Ã™Å Ã˜ÂªÃ™â€¦ Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â© Ã˜Â£Ã™Å  Ã˜Â¥Ã˜Â¯Ã˜Â§Ã˜Â±Ã˜Â§Ã˜Âª Ã˜Â¨Ã˜Â¹Ã˜Â¯',
+                  title: 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¥Ø¯Ø§Ø±Ø§Øª',
+                  subtitle: 'Ù„Ù… ÙŠØªÙ… Ø¥Ø¶Ø§ÙØ© Ø£ÙŠ Ø¥Ø¯Ø§Ø±Ø§Øª Ø¨Ø¹Ø¯',
                 )
               : ListView.builder(
                   padding: EdgeInsets.all(AppSpacing.md.w),
@@ -68,7 +68,7 @@ class DepartmentsView extends StatelessWidget {
           (context) => StatefulBuilder(
             builder:
                 (context, setState) => ReusableDialog(
-                  title: 'Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â© Ã˜Â¥Ã˜Â¯Ã˜Â§Ã˜Â±Ã˜Â© Ã˜Â¬Ã˜Â¯Ã™Å Ã˜Â¯Ã˜Â©',
+                  title: 'Ø¥Ø¶Ø§ÙØ© Ø¥Ø¯Ø§Ø±Ø© Ø¬Ø¯ÙŠØ¯Ø©',
                   headerIcon: Icon(
                     Icons.add_business_rounded,
                     color: AppColors.primary,
@@ -76,21 +76,21 @@ class DepartmentsView extends StatelessWidget {
                   ),
                   children: [
                     ReusableInput.text(
-                      label: 'Ã˜Â§Ã˜Â³Ã™â€¦ Ã˜Â§Ã™â€žÃ˜Â¥Ã˜Â¯Ã˜Â§Ã˜Â±Ã˜Â©',
-                      hint: 'Ã™â€¦Ã˜Â«Ã˜Â§Ã™â€ž: Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â¨Ã™Å Ã˜Â¹Ã˜Â§Ã˜Âª',
+                      label: 'Ø§Ø³Ù… Ø§Ù„Ø¥Ø¯Ø§Ø±Ø©',
+                      hint: 'Ù…Ø«Ø§Ù„: Ø§Ù„Ù…Ø¨ÙŠØ¹Ø§Øª',
                       controller: nameCtrl,
                     ),
                     SizedBox(height: AppSpacing.md.h),
                     ReusableInput.text(
-                      label: 'Ã˜Â§Ã™â€žÃ™Ë†Ã˜ÂµÃ™Â',
-                      hint: 'Ã™Ë†Ã˜ÂµÃ™Â Ã™â€¦Ã˜Â®Ã˜ÂªÃ˜ÂµÃ˜Â±',
+                      label: 'Ø§Ù„ÙˆØµÙ',
+                      hint: 'ÙˆØµÙ Ù…Ø®ØªØµØ±',
                       controller: descCtrl,
                     ),
                     SizedBox(height: AppSpacing.md.h),
                     if (employees.isNotEmpty)
                       ReusableDropdown<String>(
-                        labelText: 'Ã™â€¦Ã˜Â¯Ã™Å Ã˜Â± Ã˜Â§Ã™â€žÃ˜Â¥Ã˜Â¯Ã˜Â§Ã˜Â±Ã˜Â©',
-                        hintText: 'Ã˜Â§Ã˜Â®Ã˜ÂªÃ˜Â± Ã™â€¦Ã™Ë†Ã˜Â¸Ã™Â',
+                        labelText: 'Ù…Ø¯ÙŠØ± Ø§Ù„Ø¥Ø¯Ø§Ø±Ø©',
+                        hintText: 'Ø§Ø®ØªØ± Ù…ÙˆØ¸Ù',
                         items: employees.map((e) => e.name).toList(),
                         value: managerName,
                         itemAsString: (s) => s,
@@ -106,7 +106,7 @@ class DepartmentsView extends StatelessWidget {
                       ),
                     SizedBox(height: AppSpacing.lg.h),
                     DialogActions(
-                      confirmText: 'Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â©',
+                      confirmText: 'Ø¥Ø¶Ø§ÙØ©',
                       onConfirm: () async {
                         final name = nameCtrl.text.trim();
                         if (name.isEmpty) return;
@@ -169,7 +169,7 @@ class _DepartmentCard extends StatelessWidget {
             if (department.managerName != null &&
                 department.managerName!.isNotEmpty)
               ReusableText(
-                'Ã™â€¦Ã˜Â¯Ã™Å Ã˜Â±: ${department.managerName}',
+                'Ù…Ø¯ÙŠØ±: ${department.managerName}',
                 style: TextStyle(
                   fontSize: 12.sp,
                   color: AppColors.textSecondaryOf(context),
@@ -196,7 +196,7 @@ class _DepartmentCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppRadius.pill.r),
               ),
               child: ReusableText(
-                '${department.employeeCount} Ã™â€¦Ã™Ë†Ã˜Â¸Ã™Â',
+                '${department.employeeCount} Ù…ÙˆØ¸Ù',
                 style: TextStyle(
                   fontSize: 11.sp,
                   color: AppColors.primary,
@@ -212,8 +212,8 @@ class _DepartmentCard extends StatelessWidget {
                   case 'delete':
                     ConfirmDeleteDialog.show(
                       context,
-                      title: 'Ã˜Â­Ã˜Â°Ã™Â Ã˜Â§Ã™â€žÃ˜Â¥Ã˜Â¯Ã˜Â§Ã˜Â±Ã˜Â©',
-                      message: 'Ã™â€¡Ã™â€ž Ã˜Â£Ã™â€ Ã˜Âª Ã™â€¦Ã˜ÂªÃ˜Â£Ã™Æ’Ã˜Â¯ Ã™â€¦Ã™â€  Ã˜Â­Ã˜Â°Ã™Â ${department.name}Ã˜Å¸',
+                      title: 'Ø­Ø°Ù Ø§Ù„Ø¥Ø¯Ø§Ø±Ø©',
+                      message: 'Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯ Ù…Ù† Ø­Ø°Ù ${department.name}ØŸ',
                       onConfirm: () => bloc.add(DeleteDepartment(department.id)),
                     );
                 }
@@ -222,12 +222,12 @@ class _DepartmentCard extends StatelessWidget {
                 ReusableActionMenuItem(
                   value: 'edit',
                   icon: Icons.edit_outlined,
-                  label: AppStrings.edit,
+                  label: GeneralStrings.edit,
                 ),
                 ReusableActionMenuItem(
                   value: 'delete',
                   icon: Icons.delete_outline_rounded,
-                  label: AppStrings.delete,
+                  label: GeneralStrings.delete,
                   color: AppColors.error,
                 ),
               ],
@@ -250,19 +250,19 @@ class _DepartmentCard extends StatelessWidget {
       context: context,
       builder:
           (context) => ReusableDialog(
-            title: 'Ã˜ÂªÃ˜Â¹Ã˜Â¯Ã™Å Ã™â€ž Ã˜Â§Ã™â€žÃ˜Â¥Ã˜Â¯Ã˜Â§Ã˜Â±Ã˜Â©',
+            title: 'ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ø¥Ø¯Ø§Ø±Ø©',
             headerIcon: Icon(
               Icons.edit_rounded,
               color: AppColors.primary,
               size: 20.sp,
             ),
             children: [
-              ReusableInput.text(label: 'Ã˜Â§Ã™â€žÃ˜Â§Ã˜Â³Ã™â€¦', controller: nameCtrl),
+              ReusableInput.text(label: 'Ø§Ù„Ø§Ø³Ù…', controller: nameCtrl),
               SizedBox(height: AppSpacing.md.h),
-              ReusableInput.text(label: 'Ã˜Â§Ã™â€žÃ™Ë†Ã˜ÂµÃ™Â', controller: descCtrl),
+              ReusableInput.text(label: 'Ø§Ù„ÙˆØµÙ', controller: descCtrl),
               SizedBox(height: AppSpacing.lg.h),
               DialogActions(
-                confirmText: 'Ã˜Â­Ã™ÂÃ˜Â¸',
+                confirmText: 'Ø­ÙØ¸',
                 onConfirm: () async {
                   bloc.add(
                     UpdateDepartment(
@@ -282,5 +282,9 @@ class _DepartmentCard extends StatelessWidget {
     );
   }
 }
+
+
+
+
 
 

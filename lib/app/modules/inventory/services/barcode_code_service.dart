@@ -1,10 +1,12 @@
+import 'package:pharmacy_system/app/core/constants/logic/app_logic.dart';
+
 enum BarcodeGenerationFormat {
   shortCode128,
   ean13,
 }
 
 abstract final class BarcodeCodeService {
-  static String digitsOnly(String value) => value.replaceAll(RegExp(r'\D'), '');
+  static String digitsOnly(String value) => value.replaceAll(AppRegex.digitsOnly, '');
 
   static String normalizePrefix(
     String value, {
@@ -29,7 +31,7 @@ abstract final class BarcodeCodeService {
     final normalized = pharmacyName
         .trim()
         .toLowerCase()
-        .replaceAll(RegExp(r'\s+'), ' ');
+        .replaceAll(AppRegex.whitespace, ' ');
     if (normalized.isEmpty) return '2000';
 
     var hash = 2166136261;
@@ -132,3 +134,4 @@ abstract final class BarcodeCodeService {
         int.parse(digits.substring(12));
   }
 }
+

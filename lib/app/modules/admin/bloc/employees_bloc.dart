@@ -1,4 +1,4 @@
-﻿import 'package:drift/drift.dart';
+import 'package:drift/drift.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/users_dao.dart';
@@ -6,7 +6,7 @@ import 'package:pharmacy_system/app/core/data/database/database.dart';
 import '../../../core/injection.dart';
 import 'package:pharmacy_system/app/modules/auth/models/user_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/permission_service.dart';
 import '../../../core/utils/app_utils.dart';
 import '../../admin/services/access_control_service.dart';
@@ -63,7 +63,7 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
       } else {
         emit(state.copyWith(
           status: EmployeesStatus.error,
-          error: result['message'] as String? ?? 'Ã™ÂÃ˜Â´Ã™â€ž Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â© Ã˜Â§Ã™â€žÃ™â€¦Ã™Ë†Ã˜Â¸Ã™Â',
+          error: result['message'] as String? ?? 'ÙØ´Ù„ Ø¥Ø¶Ø§ÙØ© Ø§Ù„Ù…ÙˆØ¸Ù',
         ));
       }
     } catch (e) {
@@ -110,7 +110,7 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
         branchId: user.assignedBranchId ?? '',
       );
     } catch (e, st) {
-      safeDebugPrint('EmployeesBloc: Ã™ÂÃ˜Â´Ã™â€ž Ã™â€¦Ã˜Â²Ã˜Â§Ã™â€¦Ã™â€ Ã˜Â© Ã˜ÂªÃ˜Â­Ã˜Â¯Ã™Å Ã˜Â« Ã˜Â§Ã™â€žÃ™â€¦Ã™Ë†Ã˜Â¸Ã™Â ${user.id}: $e\n$st');
+      safeDebugPrint('EmployeesBloc: ÙØ´Ù„ Ù…Ø²Ø§Ù…Ù†Ø© ØªØ­Ø¯ÙŠØ« Ø§Ù„Ù…ÙˆØ¸Ù ${user.id}: $e\n$st');
     }
   }
 
@@ -150,7 +150,7 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
         branchId: user.assignedBranchId ?? '',
       );
     } catch (e, st) {
-      safeDebugPrint('EmployeesBloc: Ã™ÂÃ˜Â´Ã™â€ž Ã™â€¦Ã˜Â²Ã˜Â§Ã™â€¦Ã™â€ Ã˜Â© Ã˜Â­Ã˜Â°Ã™Â Ã˜Â§Ã™â€žÃ™â€¦Ã™Ë†Ã˜Â¸Ã™Â ${user.id}: $e\n$st');
+      safeDebugPrint('EmployeesBloc: ÙØ´Ù„ Ù…Ø²Ø§Ù…Ù†Ø© Ø­Ø°Ù Ø§Ù„Ù…ÙˆØ¸Ù ${user.id}: $e\n$st');
     }
   }
 
@@ -182,4 +182,7 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
     activeDeviceId: d.activeDeviceId,
   );
 }
+
+
+
 

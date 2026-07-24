@@ -69,3 +69,5 @@ class ImportMedicinesState extends Equatable {
     currentStep, itemsFound, itemsParsed, itemsSaved, itemsUpdated, itemsSkipped,
   ];
 }
+
+

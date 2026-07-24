@@ -3,13 +3,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
-import 'package:pharmacy_system/app/modules/sales/models/purchase_model.dart';
-import 'package:pharmacy_system/app/modules/sales/models/return_model.dart';
+import 'package:pharmacy_system/app/core/models/purchases/purchase_invoice_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/return_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import 'package:pharmacy_system/app/core/utils/format_utils.dart';
 import 'package:pharmacy_system/app/core/constants/strings/purchases_strings.dart';
 import '../bloc/purchase_return_bloc.dart';
@@ -24,11 +24,11 @@ class AddPurchaseReturnView extends StatefulWidget {
 }
 
 class _AddPurchaseReturnViewState extends State<AddPurchaseReturnView> {
-  PurchaseModel? _selectedPurchase;
+  PurchaseInvoiceModel? _selectedPurchase;
   ReturnReason _selectedReason = ReturnReason.damaged;
   final _notesController = TextEditingController();
   final _searchController = TextEditingController();
-  final _searchResults = <PurchaseModel>[];
+  final _searchResults = <PurchaseInvoiceModel>[];
   final _returnQuantities = <String, int>{};
   var _isLoading = false;
 
@@ -74,7 +74,7 @@ class _AddPurchaseReturnViewState extends State<AddPurchaseReturnView> {
     });
   }
 
-  void _selectPurchase(PurchaseModel p) {
+  void _selectPurchase(PurchaseInvoiceModel p) {
     setState(() {
       _selectedPurchase = p;
       _returnQuantities.clear();
@@ -819,3 +819,8 @@ class _AddPurchaseReturnViewState extends State<AddPurchaseReturnView> {
     );
   }
 }
+
+
+
+
+

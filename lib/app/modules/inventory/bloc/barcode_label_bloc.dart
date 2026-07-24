@@ -1,14 +1,14 @@
-﻿import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 import 'package:printing/printing.dart';
 
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
 
 // --- Models ---
 class SelectedLabelItem extends Equatable {
@@ -163,7 +163,7 @@ class BarcodeLabelBloc extends Bloc<BarcodeLabelEvent, BarcodeLabelState> {
 
   Future<void> _onPrint(PrintLabels event, Emitter<BarcodeLabelState> emit) async {
     if (state.selectedMedicines.isEmpty) {
-      AppSnackbar.warning(AppStrings.selectAtLeastOneMedicine, title: AppStrings.warning);
+      AppSnackbar.warning(InventoryStrings.selectAtLeastOneMedicine, title: GeneralStrings.warning);
       return;
     }
 
@@ -211,10 +211,15 @@ class BarcodeLabelBloc extends Bloc<BarcodeLabelEvent, BarcodeLabelState> {
             height: 16,
           ),
           pw.Text(barcode, style: pw.TextStyle(fontSize: 5, color: PdfColors.grey)),
-          pw.Text('${medicine.sellPrice.toStringAsFixed(2)} ${AppStrings.currency}', style: pw.TextStyle(fontSize: 7, fontWeight: pw.FontWeight.bold)),
+          pw.Text('${medicine.sellPrice.toStringAsFixed(2)} ${GeneralStrings.currency}', style: pw.TextStyle(fontSize: 7, fontWeight: pw.FontWeight.bold)),
         ],
       ),
     );
   }
 }
+
+
+
+
+
 

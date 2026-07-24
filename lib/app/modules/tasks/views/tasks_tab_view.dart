@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -6,13 +6,13 @@ import 'package:intl/intl.dart';
 import 'package:pharmacy_system/app/core/constants/strings/tasks_strings.dart';
 import 'package:pharmacy_system/app/core/extensions/string_ext.dart';
 import 'package:pharmacy_system/app/modules/tasks/models/task_models.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
 import '../bloc/tasks_bloc.dart';
 
-/// علامة تبويب المهام (BLoC).
+/// ????? ????? ?????? (BLoC).
 class TasksTabView extends StatelessWidget {
   const TasksTabView({super.key});
 
@@ -41,15 +41,15 @@ class TasksTabView extends StatelessWidget {
         final s = state.taskStats;
         return Row(
           children: [
-            Expanded(child: SummaryCard(label: 'إجمالي المهام', value: '${s['total']}', color: AppColors.primary, icon: Icons.assignment_rounded)),
+            Expanded(child: SummaryCard(label: '?????? ??????', value: '${s['total']}', color: AppColors.primary, icon: Icons.assignment_rounded)),
             SizedBox(width: AppSpacing.sm.w),
-            Expanded(child: SummaryCard(label: 'معلق', value: '${s['pending']}', color: AppColors.warning, icon: Icons.pending_actions_rounded)),
+            Expanded(child: SummaryCard(label: '????', value: '${s['pending']}', color: AppColors.warning, icon: Icons.pending_actions_rounded)),
             SizedBox(width: AppSpacing.sm.w),
-            Expanded(child: SummaryCard(label: 'قيد التنفيذ', value: '${s['inProgress']}', color: AppColors.info, icon: Icons.running_with_errors_rounded)),
+            Expanded(child: SummaryCard(label: '??? ???????', value: '${s['inProgress']}', color: AppColors.info, icon: Icons.running_with_errors_rounded)),
             SizedBox(width: AppSpacing.sm.w),
-            Expanded(child: SummaryCard(label: 'مكتملة', value: '${s['completed']}', color: AppColors.success, icon: Icons.task_alt_rounded)),
+            Expanded(child: SummaryCard(label: '??????', value: '${s['completed']}', color: AppColors.success, icon: Icons.task_alt_rounded)),
             SizedBox(width: AppSpacing.sm.w),
-            Expanded(child: SummaryCard(label: 'متأخرة', value: '${s['overdue']}', color: AppColors.error, icon: Icons.notification_important_rounded)),
+            Expanded(child: SummaryCard(label: '??????', value: '${s['overdue']}', color: AppColors.error, icon: Icons.notification_important_rounded)),
           ],
         );
       },
@@ -61,7 +61,7 @@ class TasksTabView extends StatelessWidget {
     return Row(
       children: [
         ReusableButton(
-          text: 'إضافة مهمة جديدة',
+          text: '????? ???? ?????',
           prefixIcon: Icons.add_task_rounded,
           onPressed: () => _showTaskDialog(context),
         ),
@@ -71,14 +71,14 @@ class TasksTabView extends StatelessWidget {
           child: BlocBuilder<TasksBloc, TasksState>(
             builder: (context, state) {
               return ReusableDropdown<String?>(
-                hintText: 'جميع الحالات',
+                hintText: '???? ???????',
                 value: state.tasksFilterStatusOrNull,
                 items: const [null, 'pending', 'inProgress', 'completed'],
                 itemAsString: (v) => switch (v) {
-                  'pending' => 'معلق',
-                  'inProgress' => 'قيد التنفيذ',
-                  'completed' => 'مكتمل',
-                  _ => 'جميع الحالات',
+                  'pending' => '????',
+                  'inProgress' => '??? ???????',
+                  'completed' => '?????',
+                  _ => '???? ???????',
                 },
                 onChanged: (v) => bloc.add(FilterTasks(status: v, priority: null)),
                 isCompact: true,
@@ -92,15 +92,15 @@ class TasksTabView extends StatelessWidget {
           child: BlocBuilder<TasksBloc, TasksState>(
             builder: (context, state) {
               return ReusableDropdown<String?>(
-                hintText: 'جميع الأولويات',
+                hintText: '???? ?????????',
                 value: state.tasksFilterPriorityOrNull,
                 items: const [null, 'low', 'medium', 'high', 'urgent'],
                 itemAsString: (v) => switch (v) {
-                  'low' => 'أولوية منخفضة',
-                  'medium' => 'أولوية متوسطة',
-                  'high' => 'أولوية عالية',
-                  'urgent' => 'أولوية عاجلة جداً',
-                  _ => 'جميع الأولويات',
+                  'low' => '?????? ??????',
+                  'medium' => '?????? ??????',
+                  'high' => '?????? ?????',
+                  'urgent' => '?????? ????? ????',
+                  _ => '???? ?????????',
                 },
                 onChanged: (v) => bloc.add(FilterTasks(priority: v, status: null)),
                 isCompact: true,
@@ -110,7 +110,7 @@ class TasksTabView extends StatelessWidget {
         ),
         const Spacer(),
         ReusableButton(
-          text: 'تحديث القائمة',
+          text: '????? ???????',
           prefixIcon: Icons.refresh_rounded,
           type: ButtonType.outlined,
           onPressed: () => bloc.add(LoadTasks()),
@@ -125,7 +125,7 @@ class TasksTabView extends StatelessWidget {
         if (state.isLoading) return const Center(child: LoadingIndicator());
         final list = state.tasks;
         if (list.isEmpty) {
-          return const EmptyState(icon: Icons.task_outlined, title: 'لا توجد مهام مطابقة للتصفية حالياً');
+          return const EmptyState(icon: Icons.task_outlined, title: '?? ???? ???? ?????? ??????? ??????');
         }
         return ListView.separated(
           itemCount: list.length,
@@ -145,26 +145,26 @@ class TasksTabView extends StatelessWidget {
 
     ReusableDialog.show(
       context,
-      title: 'إنشاء مهمة عمل جديدة',
+      title: '????? ???? ??? ?????',
       headerIcon: const Icon(Icons.add_task_rounded),
       children: [
-        ReusableInput(controller: titleCtrl, label: 'عنوان المهمة *', hint: 'اكتب ماذا يجب فعله...', autofocus: true),
+        ReusableInput(controller: titleCtrl, label: '????? ?????? *', hint: '???? ???? ??? ????...', autofocus: true),
         SizedBox(height: 12.h),
-        ReusableInput(controller: descCtrl, label: 'تفاصيل إضافية (اختياري)', hint: 'اكتب وصفاً مفصلاً للمهمة...', maxLines: 3),
+        ReusableInput(controller: descCtrl, label: '?????? ?????? (???????)', hint: '???? ????? ?????? ??????...', maxLines: 3),
         SizedBox(height: 12.h),
         ReusableDropdown<String>(
-          labelText: 'درجة الأهمية (الأولوية)',
-          hintText: 'اختر الأولوية',
+          labelText: '???? ??????? (????????)',
+          hintText: '???? ????????',
           items: const ['low', 'medium', 'high', 'urgent'],
           value: priority,
-          itemAsString: (v) => switch (v) { 'low' => 'منخفضة', 'medium' => 'متوسطة', 'high' => 'عالية', 'urgent' => 'عاجلة جداً', _ => v },
+          itemAsString: (v) => switch (v) { 'low' => '??????', 'medium' => '??????', 'high' => '?????', 'urgent' => '????? ????', _ => v },
           onChanged: (v) => priority = v ?? 'medium',
         ),
         SizedBox(height: 12.h),
-        _buildDatePickerField(context, label: 'تاريخ الاستحقاق النهائي', date: dueDate, onPicked: (d) => dueDate = d),
+        _buildDatePickerField(context, label: '????? ????????? ???????', date: dueDate, onPicked: (d) => dueDate = d),
         SizedBox(height: 24.h),
         DialogActions(
-          confirmText: 'حفظ المهمة',
+          confirmText: '??? ??????',
           onConfirm: () {
             if (titleCtrl.text.trim().isEmpty) return;
             bloc.add(AddTask(title: titleCtrl.text.trim(), description: descCtrl.text.trim().nullIfEmpty, priority: priority, dueDate: dueDate));
@@ -187,7 +187,7 @@ class TasksTabView extends StatelessWidget {
         },
         child: InputDecorator(
           decoration: InputDecoration(labelText: label, border: const OutlineInputBorder(), prefixIcon: const Icon(Icons.calendar_month_rounded)),
-          child: Text(date != null ? DateFormat('yyyy/MM/dd').format(date!) : 'اضغط لتحديد التاريخ...', style: TextStyle(fontSize: 13.sp)),
+          child: Text(date != null ? DateFormat('yyyy/MM/dd').format(date!) : '???? ?????? ???????...', style: TextStyle(fontSize: 13.sp)),
         ),
       );
     });
@@ -255,7 +255,7 @@ class _TaskCard extends StatelessWidget {
                   if (v == 'complete') bloc.add(CompleteTask(task.id));
                   if (v == 'reopen') bloc.add(ReopenTask(task.id));
                   if (v == 'delete') {
-                    ConfirmDeleteDialog.show(context, title: 'حذف المهمة', message: 'هل أنت متأكد من حذف المهمة "${task.title}"؟', onConfirm: () => bloc.add(DeleteTask(task.id)));
+                    ConfirmDeleteDialog.show(context, title: '??? ??????', message: '?? ??? ????? ?? ??? ?????? "${task.title}"?', onConfirm: () => bloc.add(DeleteTask(task.id)));
                   }
                 },
                 icon: const Icon(Icons.more_horiz_rounded),
@@ -289,6 +289,9 @@ class _TaskCard extends StatelessWidget {
     );
   }
 
-  String _statusLabel(String status) => switch (status) { 'pending' => 'معلقة', 'inProgress' => 'قيد التنفيذ', 'completed' => 'مكتملة', 'cancelled' => 'ملغاة', _ => status };
-  String _priorityLabel(String p) => switch (p) { 'low' => 'منخفضة', 'medium' => 'متوسطة', 'high' => 'عالية', 'urgent' => 'عاجلة جداً', _ => p };
+  String _statusLabel(String status) => switch (status) { 'pending' => '?????', 'inProgress' => '??? ???????', 'completed' => '??????', 'cancelled' => '?????', _ => status };
+  String _priorityLabel(String p) => switch (p) { 'low' => '??????', 'medium' => '??????', 'high' => '?????', 'urgent' => '????? ????', _ => p };
 }
+
+
+

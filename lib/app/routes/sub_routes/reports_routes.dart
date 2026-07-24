@@ -76,3 +76,4 @@ final List<RouteBase> reportsRoutes = [
     pageBuilder: (context, state) => fadePage(state, const AdvancedLedgerReportView()),
   ),
 ];
+

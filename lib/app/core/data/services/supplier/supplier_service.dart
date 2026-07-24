@@ -1,5 +1,5 @@
-﻿import 'package:uuid/uuid.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_model.dart';
+import 'package:uuid/uuid.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_model.dart';
 import 'package:pharmacy_system/app/core/data/repositories/suppliers_repository.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
 import 'package:pharmacy_system/app/core/utils/app_utils.dart';
@@ -119,4 +119,7 @@ class SupplierService {
     );
   }
 }
+
+
+
 

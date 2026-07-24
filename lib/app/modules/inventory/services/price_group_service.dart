@@ -1,10 +1,10 @@
-﻿import 'package:drift/drift.dart';
+import 'package:drift/drift.dart';
 import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:pharmacy_system/app/core/data/database/daos/price_groups_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/price_group_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/price_group_model.dart';
 
 class PriceGroupService {
   static PriceGroupsDao get _dao =>
@@ -112,4 +112,7 @@ class PriceGroupService {
     return markedUp * (1 - group.discountPercentage / 100);
   }
 }
+
+
+
 

@@ -1,7 +1,7 @@
-import 'package:flutter_test/flutter_test.dart';
+﻿import 'package:flutter_test/flutter_test.dart';
 // ignore_for_file: avoid_print
 import 'package:supabase/supabase.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_engine.dart';
+import 'package:pharmacy_system/app/core/sync/sync_engine.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/sync_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/medicines_dao.dart';
@@ -65,7 +65,7 @@ void main() {
     final branchId = 'br_sync_$timestamp';
     final medicineId = 'med_sync_$timestamp';
 
-    // 1. إعداد الفرع محلياً (المزامنة الذكية هترفعه لوحدها)
+    // 1. Ø¥Ø¹Ø¯Ø§Ø¯ Ø§Ù„ÙØ±Ø¹ Ù…Ø­Ù„ÙŠØ§Ù‹ (Ø§Ù„Ù…Ø²Ø§Ù…Ù†Ø© Ø§Ù„Ø°ÙƒÙŠØ© Ù‡ØªØ±ÙØ¹Ù‡ Ù„ÙˆØ­Ø¯Ù‡Ø§)
     print('Step 1: Setting up local branch...');
     final branchesDao = GetIt.instance<BranchesDao>();
     await branchesDao.upsert(BranchesTableCompanion.insert(
@@ -79,7 +79,7 @@ void main() {
     ));
     AuthService.currentBranchId = branchId;
 
-    // 2. إضافة الدواء عبر الـ Repository
+    // 2. Ø¥Ø¶Ø§ÙØ© Ø§Ù„Ø¯ÙˆØ§Ø¡ Ø¹Ø¨Ø± Ø§Ù„Ù€ Repository
     print('Step 2: Adding Medicine via Repository...');
     final medicine = MedicineModel(
       id: medicineId,
@@ -93,23 +93,23 @@ void main() {
     
     await medicinesRepo.create(medicine, branchId: branchId);
 
-    // 3. تشغيل المزامنة
+    // 3. ØªØ´ØºÙŠÙ„ Ø§Ù„Ù…Ø²Ø§Ù…Ù†Ø©
     print('Step 3: Triggering SyncEngine.syncAll()...');
     await syncEngine.syncAll();
     
-    // انتظار الرفع
+    // Ø§Ù†ØªØ¸Ø§Ø± Ø§Ù„Ø±ÙØ¹
     await Future.delayed(const Duration(seconds: 5));
 
-    // 4. التحقق من السحابة
+    // 4. Ø§Ù„ØªØ­Ù‚Ù‚ Ù…Ù† Ø§Ù„Ø³Ø­Ø§Ø¨Ø©
     print('Step 4: Verifying from Supabase Cloud...');
     final res = await client.from('medicines').select().eq('id', medicineId).maybeSingle();
 
     if (res != null) {
-      print('✅ SUCCESS: Medicine "${res['name']}" found in Cloud!');
+      print('âœ… SUCCESS: Medicine "${res['name']}" found in Cloud!');
       expect(res['id'], medicineId);
     } else {
-      print('❌ FAILED: Medicine not found in cloud. Check RLS or Foreign Key.');
-      // فحص الأخطاء في الطابور المحلي
+      print('âŒ FAILED: Medicine not found in cloud. Check RLS or Foreign Key.');
+      // ÙØ­Øµ Ø§Ù„Ø£Ø®Ø·Ø§Ø¡ ÙÙŠ Ø§Ù„Ø·Ø§Ø¨ÙˆØ± Ø§Ù„Ù…Ø­Ù„ÙŠ
       final pending = await GetIt.instance<SyncDao>().peekPending(10);
       for (var p in pending) {
         print('Pending Item: ${p.targetTable}, Last Error: ${p.lastError}');
@@ -122,3 +122,4 @@ void main() {
     await client.from('branches').delete().eq('id', branchId);
   });
 }
+

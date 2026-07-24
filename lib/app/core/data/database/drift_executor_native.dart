@@ -9,3 +9,5 @@ Future<QueryExecutor> createDriftExecutor() async {
   final dbPath = p.join(dir.path, 'pharmacy_db.sqlite');
   return NativeDatabase(File(dbPath), logStatements: false);
 }
+
+

@@ -1,16 +1,16 @@
-﻿// views/party_payments_view.dart
+// views/party_payments_view.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:collection/collection.dart';
 import '../bloc/party_payments_bloc.dart';
-import 'package:pharmacy_system/app/modules/accounting/models/party_payment_model.dart';
-import 'package:pharmacy_system/app/modules/accounting/models/party_payment_enums.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/customer_model.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_model.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/models/accounting/party_payment_model.dart';
+import 'package:pharmacy_system/app/core/models/accounting/party_payment_enums.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_model.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 
 class PartyPaymentsView extends StatelessWidget {
   const PartyPaymentsView({super.key});
@@ -30,8 +30,8 @@ class PartyPaymentsView extends StatelessWidget {
               preferredSize: Size.fromHeight(40.h),
               child: TabBar(
                 tabs: const [
-                  Tab(text: 'Ã˜Â³Ã™â€ Ã˜Â¯Ã˜Â§Ã˜Âª Ã™â€¦Ã™â€šÃ˜Â¨Ã™Ë†Ã˜Â¶Ã˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ˜Â¹Ã™â€¦Ã™â€žÃ˜Â§Ã˜Â¡'),
-                  Tab(text: 'Ã˜Â³Ã™â€ Ã˜Â¯Ã˜Â§Ã˜Âª Ã™â€¦Ã˜Â¯Ã™ÂÃ™Ë†Ã˜Â¹Ã˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ™â€¦Ã™Ë†Ã˜Â±Ã˜Â¯Ã™Å Ã™â€ '),
+                  Tab(text: 'Ø³Ù†Ø¯Ø§Øª Ù…Ù‚Ø¨ÙˆØ¶Ø§Øª Ø§Ù„Ø¹Ù…Ù„Ø§Ø¡'),
+                  Tab(text: 'Ø³Ù†Ø¯Ø§Øª Ù…Ø¯ÙÙˆØ¹Ø§Øª Ø§Ù„Ù…ÙˆØ±Ø¯ÙŠÙ†'),
                 ],
                 labelStyle: TextStyle(
                   fontFamily: 'Cairo',
@@ -92,7 +92,7 @@ class PartyPaymentsView extends StatelessWidget {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => ReusableDialog(
-          title: 'Ã˜Â¥Ã™â€ Ã˜Â´Ã˜Â§Ã˜Â¡ Ã˜Â¥Ã™Å Ã˜ÂµÃ˜Â§Ã™â€ž Ã™â€¦Ã˜Â§Ã™â€žÃ™Å  Ã˜Â¬Ã˜Â¯Ã™Å Ã˜Â¯',
+          title: 'Ø¥Ù†Ø´Ø§Ø¡ Ø¥ÙŠØµØ§Ù„ Ù…Ø§Ù„ÙŠ Ø¬Ø¯ÙŠØ¯',
           headerIcon: Icon(
             Icons.payment_rounded,
             color: Theme.of(context).colorScheme.primary,
@@ -100,14 +100,14 @@ class PartyPaymentsView extends StatelessWidget {
           ),
           children: [
             ReusableDropdown<PartyPaymentKind>(
-              labelText: 'Ã™â€ Ã™Ë†Ã˜Â¹ Ã˜Â§Ã™â€žÃ˜Â³Ã™â€ Ã˜Â¯ Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â§Ã™â€žÃ™Å ',
-              hintText: 'Ã˜Â§Ã˜Â®Ã˜ÂªÃ˜Â± Ã™â€ Ã™Ë†Ã˜Â¹ Ã˜Â§Ã™â€žÃ˜Â³Ã™â€ Ã˜Â¯',
+              labelText: 'Ù†ÙˆØ¹ Ø§Ù„Ø³Ù†Ø¯ Ø§Ù„Ù…Ø§Ù„ÙŠ',
+              hintText: 'Ø§Ø®ØªØ± Ù†ÙˆØ¹ Ø§Ù„Ø³Ù†Ø¯',
               items: kinds,
               value: selectedKind,
               itemAsString: (k) =>
                   k == PartyPaymentKind.customerReceipt
-                      ? 'Ã˜Â³Ã™â€ Ã˜Â¯ Ã™â€šÃ˜Â¨Ã˜Â¶ Ã™â€ Ã™â€šÃ˜Â¯Ã™Å Ã˜Â© Ã™â€¦Ã™â€  Ã˜Â¹Ã™â€¦Ã™Å Ã™â€ž'
-                      : 'Ã˜Â³Ã™â€ Ã˜Â¯ Ã˜ÂµÃ˜Â±Ã™Â Ã™â€ Ã™â€šÃ˜Â¯Ã™Å Ã˜Â© Ã™â€žÃ™â€¦Ã™Ë†Ã˜Â±Ã˜Â¯',
+                      ? 'Ø³Ù†Ø¯ Ù‚Ø¨Ø¶ Ù†Ù‚Ø¯ÙŠØ© Ù…Ù† Ø¹Ù…ÙŠÙ„'
+                      : 'Ø³Ù†Ø¯ ØµØ±Ù Ù†Ù‚Ø¯ÙŠØ© Ù„Ù…ÙˆØ±Ø¯',
               onChanged: (v) {
                 if (v != null) {
                   setState(() {
@@ -132,8 +132,8 @@ class PartyPaymentsView extends StatelessWidget {
               );
 
               return ReusableDropdown<dynamic>(
-                labelText: isCustomer ? 'Ã˜Â§Ã™â€žÃ˜Â¹Ã™â€¦Ã™Å Ã™â€ž Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â³Ã˜ÂªÃ™â€¡Ã˜Â¯Ã™Â' : 'Ã˜Â§Ã™â€žÃ™â€¦Ã™Ë†Ã˜Â±Ã˜Â¯ Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â³Ã˜ÂªÃ™â€¡Ã˜Â¯Ã™Â',
-                hintText: 'Ã˜Â§Ã˜Â®Ã˜ÂªÃ˜Â± Ã˜Â§Ã™â€žÃ˜Â­Ã˜Â³Ã˜Â§Ã˜Â¨ Ã˜Â§Ã™â€žÃ˜Â¬Ã˜Â§Ã˜Â±Ã™Å ',
+                labelText: isCustomer ? 'Ø§Ù„Ø¹Ù…ÙŠÙ„ Ø§Ù„Ù…Ø³ØªÙ‡Ø¯Ù' : 'Ø§Ù„Ù…ÙˆØ±Ø¯ Ø§Ù„Ù…Ø³ØªÙ‡Ø¯Ù',
+                hintText: 'Ø§Ø®ØªØ± Ø§Ù„Ø­Ø³Ø§Ø¨ Ø§Ù„Ø¬Ø§Ø±ÙŠ',
                 items: items,
                 value: selectedItem,
                 itemAsString: (p) =>
@@ -141,7 +141,7 @@ class PartyPaymentsView extends StatelessWidget {
                         ? p.name
                         : p is SupplierModel
                         ? p.name
-                        : 'Ã˜Â­Ã˜Â³Ã˜Â§Ã˜Â¨ Ã™â€¦Ã˜Â¬Ã™â€¡Ã™Ë†Ã™â€ž',
+                        : 'Ø­Ø³Ø§Ø¨ Ù…Ø¬Ù‡ÙˆÙ„',
                 onChanged: (v) {
                   if (v != null) {
                     setState(() {
@@ -159,38 +159,38 @@ class PartyPaymentsView extends StatelessWidget {
             }(),
             SizedBox(height: AppSpacing.md.h),
             ReusableInput(
-              label: 'Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â¨Ã™â€žÃ˜Âº Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â³Ã˜ÂªÃ˜Â­Ã™â€š (Ã˜Â¬.Ã™â€¦)',
+              label: 'Ø§Ù„Ù…Ø¨Ù„Øº Ø§Ù„Ù…Ø³ØªØ­Ù‚ (Ø¬.Ù…)',
               hint: '0.00',
               controller: amountCtrl,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
             ),
             SizedBox(height: AppSpacing.md.h),
             ReusableDropdown<String>(
-              labelText: 'Ã™â€šÃ™â€ Ã˜Â§Ã˜Â© Ã˜Â§Ã™â€žÃ˜Â¥Ã™Å Ã˜Â¯Ã˜Â§Ã˜Â¹ / Ã˜Â§Ã™â€žÃ˜ÂµÃ˜Â±Ã™Â',
-              hintText: 'Ã˜Â§Ã˜Â®Ã˜ÂªÃ˜Â± Ã˜Â·Ã˜Â±Ã™Å Ã™â€šÃ˜Â© Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â³Ã™Ë†Ã™Å Ã˜Â©',
+              labelText: 'Ù‚Ù†Ø§Ø© Ø§Ù„Ø¥ÙŠØ¯Ø§Ø¹ / Ø§Ù„ØµØ±Ù',
+              hintText: 'Ø§Ø®ØªØ± Ø·Ø±ÙŠÙ‚Ø© Ø§Ù„ØªØ³ÙˆÙŠØ©',
               items: const ['cash', 'card', 'bank_transfer', 'mobile_wallet'],
               value: selectedMethod,
               itemAsString: (s) =>
                   s == 'cash'
-                      ? 'Ã™â€ Ã™â€šÃ˜Â¯Ã˜Â§Ã™â€¹ Ã˜Â¨Ã˜Â§Ã™â€žÃ˜Â®Ã˜Â²Ã™Å Ã™â€ Ã˜Â©'
+                      ? 'Ù†Ù‚Ø¯Ø§Ù‹ Ø¨Ø§Ù„Ø®Ø²ÙŠÙ†Ø©'
                       : s == 'card'
-                      ? 'Ã™â€¦Ã˜Â¯Ã™ÂÃ™Ë†Ã˜Â¹Ã˜Â§Ã˜Âª Ã˜Â¨Ã˜Â·Ã˜Â§Ã™â€šÃ˜Â© (Ã˜Â´Ã˜Â¨Ã™Æ’Ã˜Â©)'
+                      ? 'Ù…Ø¯ÙÙˆØ¹Ø§Øª Ø¨Ø·Ø§Ù‚Ø© (Ø´Ø¨ÙƒØ©)'
                       : s == 'bank_transfer'
-                      ? 'Ã˜ÂªÃ˜Â­Ã™Ë†Ã™Å Ã™â€ž Ã˜Â¨Ã™â€ Ã™Æ’Ã™Å  Ã™â€¦Ã˜Â¨Ã˜Â§Ã˜Â´Ã˜Â±'
-                      : 'Ã™â€¦Ã˜Â­Ã™ÂÃ˜Â¸Ã˜Â© Ã™Æ’Ã˜Â§Ã˜Â´ Ã˜Â¥Ã™â€žÃ™Æ’Ã˜ÂªÃ˜Â±Ã™Ë†Ã™â€ Ã™Å Ã˜Â©',
+                      ? 'ØªØ­ÙˆÙŠÙ„ Ø¨Ù†ÙƒÙŠ Ù…Ø¨Ø§Ø´Ø±'
+                      : 'Ù…Ø­ÙØ¸Ø© ÙƒØ§Ø´ Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠØ©',
               onChanged: (v) {
                 if (v != null) setState(() => selectedMethod = v);
               },
             ),
             SizedBox(height: AppSpacing.md.h),
             ReusableInput.text(
-              label: 'Ã™â€¦Ã™â€žÃ˜Â§Ã˜Â­Ã˜Â¸Ã˜Â§Ã˜Âª Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ™Å Ã˜Â©',
-              hint: 'Ã˜Â§Ã˜Â®Ã˜ÂªÃ™Å Ã˜Â§Ã˜Â±Ã™Å ...',
+              label: 'Ù…Ù„Ø§Ø­Ø¸Ø§Øª Ø¥Ø¶Ø§ÙÙŠØ©',
+              hint: 'Ø§Ø®ØªÙŠØ§Ø±ÙŠ...',
               controller: notesCtrl,
             ),
             SizedBox(height: AppSpacing.lg.h),
             DialogActions(
-              confirmText: 'Ã˜Â§Ã˜Â¹Ã˜ÂªÃ™â€¦Ã˜Â§Ã˜Â¯ Ã™Ë†Ã˜ÂªÃ˜Â±Ã˜Â­Ã™Å Ã™â€ž Ã˜Â§Ã™â€žÃ˜Â³Ã™â€ Ã˜Â¯',
+              confirmText: 'Ø§Ø¹ØªÙ…Ø§Ø¯ ÙˆØªØ±Ø­ÙŠÙ„ Ø§Ù„Ø³Ù†Ø¯',
               onConfirm: () async {
                 final amount = double.tryParse(amountCtrl.text);
                 if (amount == null || amount <= 0 || selectedPartyId.isEmpty) {
@@ -239,8 +239,8 @@ class _PaymentList extends StatelessWidget {
     if (payments.isEmpty) {
       return EmptyState(
         icon: Icons.receipt_long_rounded,
-        title: 'Ã™â€žÃ˜Â§ Ã˜ÂªÃ™Ë†Ã˜Â¬Ã˜Â¯ Ã˜Â¥Ã™Å Ã˜ÂµÃ˜Â§Ã™â€žÃ˜Â§Ã˜Âª Ã˜Â£Ã™Ë† Ã˜Â³Ã™â€ Ã˜Â¯Ã˜Â§Ã˜Âª Ã™â€¦Ã˜Â³Ã˜Â¬Ã™â€žÃ˜Â©',
-        subtitle: 'Ã™â€žÃ™â€¦ Ã™Å Ã˜ÂªÃ™â€¦ Ã˜Â¥Ã™â€ Ã˜Â´Ã˜Â§Ã˜Â¡ Ã˜Â£Ã™Å  Ã˜Â³Ã™â€ Ã˜Â¯Ã˜Â§Ã˜Âª Ã™â€¦Ã˜Â§Ã™â€žÃ™Å Ã˜Â© Ã™â€¡Ã™â€ Ã˜Â§ Ã˜Â¨Ã˜Â¹Ã˜Â¯',
+        title: 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¥ÙŠØµØ§Ù„Ø§Øª Ø£Ùˆ Ø³Ù†Ø¯Ø§Øª Ù…Ø³Ø¬Ù„Ø©',
+        subtitle: 'Ù„Ù… ÙŠØªÙ… Ø¥Ù†Ø´Ø§Ø¡ Ø£ÙŠ Ø³Ù†Ø¯Ø§Øª Ù…Ø§Ù„ÙŠØ© Ù‡Ù†Ø§ Ø¨Ø¹Ø¯',
       );
     }
     return ListView.builder(
@@ -254,17 +254,21 @@ class _PaymentList extends StatelessWidget {
           child: TransactionCard(
             icon: Icons.payments_rounded,
             iconColor: color,
-            title: 'Ã˜Â±Ã™â€šÃ™â€¦ Ã˜Â§Ã™â€žÃ˜Â³Ã™â€ Ã˜Â¯: #${p.number} Ã¢â‚¬â€ Ã˜Â§Ã™â€žÃ˜Â·Ã˜Â±Ã™Â: ${p.partyName} Ã¢â‚¬â€ Ã˜Â§Ã™â€žÃ™â€šÃ™Å Ã™â€¦Ã˜Â©: ${p.amount.toStringAsFixed(2)} Ã˜Â¬.Ã™â€¦',
+            title: 'Ø±Ù‚Ù… Ø§Ù„Ø³Ù†Ø¯: #${p.number} â€” Ø§Ù„Ø·Ø±Ù: ${p.partyName} â€” Ø§Ù„Ù‚ÙŠÙ…Ø©: ${p.amount.toStringAsFixed(2)} Ø¬.Ù…',
             tags: p.notes != null && p.notes!.isNotEmpty
                 ? [Tag(label: p.notes!, color: AppColors.textSecondaryOf(context))]
                 : const [],
             amount: p.paymentDate.toString().substring(0, 10),
-            date: 'Ã˜Â·Ã˜Â±Ã™Å Ã™â€šÃ˜Â© Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â³Ã™Ë†Ã™Å Ã˜Â©: ${p.paymentMethod}',
+            date: 'Ø·Ø±ÙŠÙ‚Ø© Ø§Ù„ØªØ³ÙˆÙŠØ©: ${p.paymentMethod}',
           ),
         );
       },
     );
   }
 }
+
+
+
+
 
 

@@ -14,3 +14,5 @@ void _reg<T extends Object>(T Function() factory) {
     sl.registerLazySingleton<T>(factory);
   }
 }
+
+

@@ -21,17 +21,19 @@ export 'bloc/promotions/promotions_bloc.dart';
 export 'bloc/stock_transfer_bloc.dart';
 export 'bloc/stock_transfer_event.dart';
 export 'bloc/stock_transfer_state.dart';
-export 'models/import_step_info.dart';
-export 'models/barcode_settings_model.dart';
-export 'models/inventory_enums.dart';
-export 'models/medicine_brand_model.dart';
-export 'models/medicine_model.dart';
-export 'models/medicine_variant_model.dart';
-export 'models/price_group_model.dart';
-export 'models/stock_adjustment_model.dart';
-export 'models/stock_movement_model.dart';
-export 'models/stock_transfer_model.dart';
-export 'models/stocktaking_period_model.dart';
+
+// Models moved to core
+export '../../core/models/inventory/barcode_settings_model.dart';
+export '../../core/models/inventory/inventory_enums.dart';
+export '../../core/models/inventory/medicine_brand_model.dart';
+export '../../core/models/inventory/medicine_model.dart';
+export '../../core/models/inventory/medicine_variant_model.dart';
+export '../../core/models/inventory/price_group_model.dart';
+export '../../core/models/inventory/stock_adjustment_model.dart';
+export '../../core/models/inventory/stock_movement_model.dart';
+export '../../core/models/inventory/stock_transfer_model.dart';
+export '../../core/models/inventory/stocktaking_period_model.dart';
+
 export 'views/add_medicine_form_data.dart';
 export 'views/add_medicine_unit_card.dart';
 export 'views/add_medicine_view.dart';

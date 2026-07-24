@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import 'package:pharmacy_system/app/modules/sales/bloc/pos_bloc.dart';
 import 'package:pharmacy_system/app/modules/sales/widgets/pos_catalog_panel.dart';
 import '../pos_nav_drawer.dart';
@@ -29,7 +29,7 @@ class MobileLayout extends StatelessWidget {
             child: ReusableInput(
               controller: TextEditingController(),
               focusNode: FocusNode(),
-              hint: AppStrings.searchHint,
+              hint: GeneralStrings.searchHint,
               prefixIcon: Icon(
                 Icons.search_rounded,
                 size: 18.sp,
@@ -63,8 +63,8 @@ class MobileLayout extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              ReusableNavTab(icon: Icons.store_rounded, label: AppStrings.itemsLabelSales, isSelected: true, onTap: () {}),
-              ReusableNavTab(icon: Icons.shopping_cart_rounded, label: AppStrings.cartTitle, onTap: () {}),
+              ReusableNavTab(icon: Icons.store_rounded, label: SalesStrings.itemsLabelSales, isSelected: true, onTap: () {}),
+              ReusableNavTab(icon: Icons.shopping_cart_rounded, label: SalesStrings.cartTitle, onTap: () {}),
             ],
           ),
         ),
@@ -72,3 +72,7 @@ class MobileLayout extends StatelessWidget {
     );
   }
 }
+
+
+
+

@@ -1,10 +1,10 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/injection.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../../../core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/sales/cashier_shift_service.dart';
@@ -47,14 +47,14 @@ class _EmployeeDashboardViewState extends State<EmployeeDashboardView> {
           employeeId: user.id,
           employeeName: user.name,
         );
-        AppSnackbar.success(AppStrings.hrMsgAttendanceIn);
+        AppSnackbar.success(HrStrings.hrMsgAttendanceIn);
       } else {
         await AttendanceService.clockOut(_attendanceId!);
-        AppSnackbar.success(AppStrings.hrMsgAttendanceOut);
+        AppSnackbar.success(HrStrings.hrMsgAttendanceOut);
       }
       _loadAttendance();
     } catch (e) {
-      AppSnackbar.error('${AppStrings.errorGeneral}: $e');
+      AppSnackbar.error('${AuthStrings.errorGeneral}: $e');
     }
     setState(() => _isClocking = false);
   }
@@ -73,8 +73,8 @@ class _EmployeeDashboardViewState extends State<EmployeeDashboardView> {
         BlocProvider.value(value: sl<MonitoringDashboardBloc>()),
       ],
       child: HomeShell(
-        title: AppStrings.employeeDashboardTitle,
-        subtitle: user?.name ?? 'مستخدم',
+        title: HomeStrings.employeeDashboardTitle,
+        subtitle: user?.name ?? '??????',
         child: DefaultTabController(
           length: 2,
           child: Column(
@@ -87,8 +87,8 @@ class _EmployeeDashboardViewState extends State<EmployeeDashboardView> {
                   labelColor: scheme.primary,
                   unselectedLabelColor: scheme.onSurfaceVariant,
                   tabs: [
-                    Tab(text: AppStrings.employeeIndicators),
-                    Tab(text: AppStrings.employeeQuickActions),
+                    Tab(text: HomeStrings.employeeIndicators),
+                    Tab(text: HomeStrings.employeeQuickActions),
                   ],
                 ),
               ),
@@ -136,10 +136,10 @@ class _QuickActionsTab extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SectionHeader(icon: Icons.access_time_rounded, title: AppStrings.hrAttendance),
+              SectionHeader(icon: Icons.access_time_rounded, title: HrStrings.hrAttendance),
               SizedBox(height: AppSpacing.md.h),
               ReusableButton(
-                text: attendanceId == null ? AppStrings.hrCheckIn : AppStrings.hrCheckOut,
+                text: attendanceId == null ? HrStrings.hrCheckIn : HrStrings.hrCheckOut,
                 prefixIcon: attendanceId == null ? Icons.login_rounded : Icons.logout_rounded,
                 type: attendanceId == null ? ButtonType.success : ButtonType.error,
                 isLoading: isClocking,
@@ -154,10 +154,10 @@ class _QuickActionsTab extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SectionHeader(icon: Icons.point_of_sale_rounded, title: AppStrings.sidebarPos),
+              SectionHeader(icon: Icons.point_of_sale_rounded, title: HomeStrings.sidebarPos),
               SizedBox(height: AppSpacing.md.h),
               ReusableButton(
-                text: AppStrings.employeeOpenPos,
+                text: HomeStrings.employeeOpenPos,
                 prefixIcon: Icons.shopping_cart_rounded,
                 type: ButtonType.primary,
                 onPressed: () => context.go('/sales/pos'),
@@ -169,3 +169,7 @@ class _QuickActionsTab extends StatelessWidget {
     );
   }
 }
+
+
+
+

@@ -42,3 +42,5 @@ class SettingsState extends Equatable {
   @override
   List<Object?> get props => [status, settings, activeTab, searchQuery, lastUpdated, error];
 }
+
+

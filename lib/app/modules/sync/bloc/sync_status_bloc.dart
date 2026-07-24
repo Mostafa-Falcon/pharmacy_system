@@ -6,7 +6,7 @@
 
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'package:pharmacy_system/app/core/data/services/sound_service.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/modules/sync/models/sync_table_meta.dart';
@@ -18,7 +18,7 @@ class SyncStatusState {
   final bool isSyncing;
   final DateTime? lastSyncTime;
   final String? lastSyncError;
-  final List<OutboxTableData> pending;
+  final List<SyncOutboxTableData> pending;
   final int deadLetterCount;
   final Map<String, String> tableStates; // table -> 'idle'|'pending'|'synced'|'error'
   final Map<String, String?> tableErrors;
@@ -43,7 +43,7 @@ class SyncStatusState {
     bool? isSyncing,
     DateTime? lastSyncTime,
     String? lastSyncError,
-    List<OutboxTableData>? pending,
+    List<SyncOutboxTableData>? pending,
     int? deadLetterCount,
     Map<String, String>? tableStates,
     Map<String, String?>? tableErrors,
@@ -108,7 +108,7 @@ class SyncStatusClearQueue extends SyncStatusEvent {
 }
 
 class SyncStatusRefreshManual extends SyncStatusEvent {
-  final List<OutboxTableData> pending;
+  final List<SyncOutboxTableData> pending;
   final Map<String, int> tableCounts;
   final SyncStatusState state;
   const SyncStatusRefreshManual({
@@ -329,3 +329,7 @@ class SyncStatusBloc extends Bloc<SyncStatusEvent, SyncStatusState> {
     return super.close();
   }
 }
+
+
+
+

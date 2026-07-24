@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:collection/collection.dart';
 
 import '../../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
 import '../../../../core/extensions/string_ext.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../../core/utils/format_utils.dart';
-import '../../models/pos_cart_line.dart';
+import '../package:pharmacy_system/app/modules/sales/models/pos_cart_line.dart';
 import '../../bloc/pos_bloc.dart';
 import 'package:pharmacy_system/app/core/data/services/print_service.dart';
 import 'package:pharmacy_system/app/core/data/services/sales/quote_service.dart';
@@ -17,15 +17,15 @@ import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service
 import 'package:pharmacy_system/app/core/data/services/inventory/promotion_service.dart';
 import 'package:pharmacy_system/app/core/data/services/inventory/damaged_stock_service.dart';
 import 'package:pharmacy_system/app/core/data/services/inventory/opening_stock_service.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/promotion_model.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/damaged_stock_model.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/opening_stock_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/promotion_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/damaged_stock_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/opening_stock_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 
 // Modular Sub-Dialogs
 import 'dialogs/shift_report_dialog.dart';
 import 'dialogs/edit_cart_line_dialog.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
 class PosDiscountResult {
   final double value;
@@ -47,7 +47,7 @@ class PosDiscountDialog {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: Text(isTax ? AppStrings.addTaxTitle : AppStrings.addInvoiceDiscountTitle),
+          title: Text(isTax ? SalesStrings.addTaxTitle : SalesStrings.addInvoiceDiscountTitle),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -55,21 +55,21 @@ class PosDiscountDialog {
                 controller: ctrl,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 decoration: InputDecoration(
-                  labelText: isTax ? AppStrings.taxAmountFieldLabel : AppStrings.discountAmountFieldLabel,
-                  suffixText: isPercent ? '%' : AppStrings.currency,
+                  labelText: isTax ? SalesStrings.taxAmountFieldLabel : SalesStrings.discountAmountFieldLabel,
+                  suffixText: isPercent ? '%' : GeneralStrings.currency,
                 ),
               ),
               const SizedBox(height: 12),
               Row(
                 children: [
                   ChoiceChip(
-                    label: const Text(AppStrings.fixedAmountChipLabel),
+                    label: const Text(SalesStrings.fixedAmountChipLabel),
                     selected: !isPercent,
                     onSelected: (v) => setState(() => isPercent = !v),
                   ),
                   const SizedBox(width: 8),
                   ChoiceChip(
-                    label: const Text(AppStrings.cartDiscountPercent),
+                    label: const Text(SalesStrings.cartDiscountPercent),
                     selected: isPercent,
                     onSelected: (v) => setState(() => isPercent = v),
                   ),
@@ -78,14 +78,14 @@ class PosDiscountDialog {
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text(AppStrings.cancel)),
+            TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text(GeneralStrings.cancel)),
             FilledButton(
               onPressed: () {
                 final val = double.tryParse(ctrl.text) ?? 0.0;
                 onApply(PosDiscountResult(val, isPercentage: isPercent));
                 Navigator.of(ctx).pop();
               },
-              child: const Text(AppStrings.apply),
+              child: const Text(GeneralStrings.apply),
             ),
           ],
         ),
@@ -102,7 +102,7 @@ class DesktopDialogs {
       builder: (context) => ReusableDialog(
         headerIcon: const Icon(Icons.search_rounded),
         headerIconColor: Theme.of(context).colorScheme.primary,
-        title: AppStrings.posItemInquiry,
+        title: SalesStrings.posItemInquiry,
         maxWidth: 700,
         children: [
           SizedBox(
@@ -121,7 +121,7 @@ class DesktopDialogs {
                       if (items.isEmpty) {
                         return const EmptyState(
                           icon: Icons.search_off_rounded, 
-                          title: AppStrings.noMatchingSearchResults,
+                          title: SalesStrings.noMatchingSearchResults,
                         );
                       }
                       return ListView.separated(
@@ -133,11 +133,11 @@ class DesktopDialogs {
                             contentPadding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                             title: ReusableText(m.name, style: const TextStyle(fontWeight: FontWeight.bold)),
                             subtitle: ReusableText(
-                              '${AppStrings.balance}: ${m.quantity} | ${AppStrings.cartPrice}: ${FormatUtils.currency(m.sellPrice)}',
+                              '${GeneralStrings.balance}: ${m.quantity} | ${SalesStrings.cartPrice}: ${FormatUtils.currency(m.sellPrice)}',
                               style: AppTextStyles.caption(context).copyWith(color: AppColors.textSecondaryOf(context)),
                             ),
                             trailing: ReusableButton(
-                              text: AppStrings.addToCart,
+                              text: SalesStrings.addToCart,
                               onPressed: () {
                                 bloc.add(PosAddMedicine(m));
                                 Navigator.pop(context);
@@ -179,7 +179,7 @@ class DesktopDialogs {
   static void showExpenseDialog(BuildContext context, PosBloc bloc) {
     final amountCtrl = TextEditingController();
     final descCtrl = TextEditingController();
-    final List<String> commonExpenses = AppStrings.quickExpenseOptions;
+    final List<String> commonExpenses = SalesStrings.quickExpenseOptions;
 
     showDialog(
       context: context,
@@ -187,16 +187,16 @@ class DesktopDialogs {
         builder: (context, setState) => ReusableDialog(
           headerIcon: const Icon(Icons.add_card_rounded),
           headerIconColor: AppColors.error,
-          title: AppStrings.addExpensesFromCashier,
+          title: SalesStrings.addExpensesFromCashier,
           footerActions: [
             DialogActions(
-              confirmText: AppStrings.recordExpense,
+              confirmText: SalesStrings.recordExpense,
               confirmType: ButtonType.error,
               onConfirm: () async {
                 final amount = double.tryParse(amountCtrl.text);
                 final desc = descCtrl.text.trim();
                 if (desc.isEmpty || amount == null || amount <= 0) {
-                  AppSnackbar.error(AppStrings.invalidExpenseInput);
+                  AppSnackbar.error(SalesStrings.invalidExpenseInput);
                   return;
                 }
                 bloc.add(PosAddExpense(desc, amount));
@@ -206,7 +206,7 @@ class DesktopDialogs {
           ],
           children: [
             ReusableText(
-              AppStrings.quickExpensesLabel,
+              SalesStrings.quickExpensesLabel,
               style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8.h),
@@ -221,15 +221,15 @@ class DesktopDialogs {
             ),
             SizedBox(height: 16.h),
             ReusableInput(
-              label: AppStrings.expenseDescriptionLabel,
-              hint: AppStrings.expenseDescriptionHint,
+              label: SalesStrings.expenseDescriptionLabel,
+              hint: SalesStrings.expenseDescriptionHint,
               controller: descCtrl,
               textDirection: TextDirection.rtl,
               onChanged: (v) => setState(() {}),
             ),
             SizedBox(height: AppSpacing.sm.h),
             ReusableInput(
-              label: AppStrings.expenseAmountLabel,
+              label: SalesStrings.expenseAmountLabel,
               hint: '0.00',
               controller: amountCtrl,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -253,7 +253,7 @@ class DesktopDialogs {
       builder: (context) => ReusableDialog(
         headerIcon: const Icon(Icons.bolt_rounded),
         headerIconColor: AppColors.warning,
-        title: AppStrings.topRequestedItems,
+        title: SalesStrings.topRequestedItems,
         maxWidth: 600,
         children: [
           SizedBox(
@@ -261,7 +261,7 @@ class DesktopDialogs {
             child: topItems.isEmpty
                 ? const EmptyState(
                     icon: Icons.inventory_2_outlined,
-                    title: AppStrings.noItemsAvailable,
+                    title: SalesStrings.noItemsAvailable,
                   )
                 : GridView.builder(
                     gridDelegate:
@@ -315,14 +315,14 @@ class DesktopDialogs {
       builder: (context) => ReusableDialog(
         headerIcon: const Icon(Icons.pause_circle_outline_rounded),
         headerIconColor: AppColors.info,
-        title: '${AppStrings.posSuspendedSales} (${AppStrings.drafts})',
+        title: '${SalesStrings.posSuspendedSales} (${SalesStrings.drafts})',
         maxWidth: 600,
         children: [
               suspended.isEmpty
                   ? const EmptyState(
                       icon: Icons.pause_circle_outline_rounded,
-                      title: AppStrings.noPendingSales,
-                      subtitle: AppStrings.emptySalesSubtitle,
+                      title: SalesStrings.noPendingSales,
+                      subtitle: SalesStrings.emptySalesSubtitle,
                     )
 
               : SizedBox(
@@ -349,7 +349,7 @@ class DesktopDialogs {
                             children: [
                               IconButton(
                                 icon: const Icon(Icons.play_circle_fill_rounded, color: AppColors.success),
-                                 tooltip: AppStrings.resumeSale,
+                                 tooltip: SalesStrings.resumeSale,
                                  onPressed: () {
 
                                   bloc.add(PosResumeSale(s));
@@ -358,7 +358,7 @@ class DesktopDialogs {
                               ),
                               IconButton(
                                 icon: const Icon(Icons.delete_outline_rounded, color: AppColors.error),
-                                 tooltip: AppStrings.delete,
+                                 tooltip: GeneralStrings.delete,
                                  onPressed: () {
 
                                   bloc.add(PosDeleteSuspendedSale(s['id'] as String));
@@ -403,8 +403,8 @@ class DesktopDialogs {
     if (selectedId == null) {
       AppSnackbar.warning(
         isCustomer
-            ? AppStrings.selectCustomerFirst
-            : AppStrings.selectSupplierFirst,
+            ? SalesStrings.selectCustomerFirst
+            : SalesStrings.selectSupplierFirst,
       );
       return;
     }
@@ -418,14 +418,14 @@ class DesktopDialogs {
       builder: (context) => ReusableDialog(
         headerIcon: Icon(isCustomer ? Icons.payments_rounded : Icons.account_balance_wallet_rounded),
         headerIconColor: AppColors.success,
-        title: '${isCustomer ? AppStrings.customerPaymentTitle : AppStrings.supplierPaymentTitle}: $name',
+        title: '${isCustomer ? SalesStrings.customerPaymentTitle : SalesStrings.supplierPaymentTitle}: $name',
         footerActions: [
           DialogActions(
-            confirmText: AppStrings.recordPayment,
+            confirmText: SalesStrings.recordPayment,
             onConfirm: () async {
               final amount = double.tryParse(amountCtrl.text);
               if (amount == null || amount <= 0) {
-                AppSnackbar.error(AppStrings.invalidAmount);
+                AppSnackbar.error(CustomersStrings.invalidAmount);
                 return;
               }
               if (isCustomer) {
@@ -446,7 +446,7 @@ class DesktopDialogs {
                 const Icon(Icons.info_outline_rounded, size: 16, color: AppColors.info),
                 SizedBox(width: 8.w),
                 ReusableText(
-                  AppStrings.currentBalanceFormat.replaceFirst('%s', FormatUtils.currency(isCustomer ? state.customerBalance : state.supplierBalance)),
+                  SalesStrings.currentBalanceFormat.replaceFirst('%s', FormatUtils.currency(isCustomer ? state.customerBalance : state.supplierBalance)),
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
@@ -454,14 +454,14 @@ class DesktopDialogs {
           ),
           SizedBox(height: 16.h),
           ReusableInput(
-            label: '${AppStrings.amount} *',
+            label: '${GeneralStrings.amount} *',
             controller: amountCtrl,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             prefixIcon: const Icon(Icons.payments_rounded, size: 18),
           ),
           SizedBox(height: AppSpacing.sm.h),
           ReusableInput(
-            label: AppStrings.notesLabel,
+            label: SuppliersStrings.notesLabel,
             controller: notesCtrl,
             maxLines: 2,
             textDirection: TextDirection.rtl,
@@ -477,7 +477,7 @@ class DesktopDialogs {
     final selectedId = state.selectedCustomerId;
 
     if (selectedId == null) {
-      AppSnackbar.warning(AppStrings.selectCustomerFirstWarning);
+      AppSnackbar.warning(SalesStrings.selectCustomerFirstWarning);
       return;
     }
 
@@ -494,14 +494,14 @@ class DesktopDialogs {
       builder: (context) => ReusableDialog(
         headerIcon: const Icon(Icons.download_rounded),
         headerIconColor: scheme.primary,
-        title: '${AppStrings.posLoadFromCustomer}: ${customer.name}',
+        title: '${SalesStrings.posLoadFromCustomer}: ${customer.name}',
         maxWidth: 600,
         children: [
           if (quotes.isEmpty && drafts.isEmpty)
             const EmptyState(
               icon: Icons.folder_open_rounded,
-              title: AppStrings.noDataForCustomerTitle,
-              subtitle: AppStrings.noDataForCustomerSubtitle,
+              title: SalesStrings.noDataForCustomerTitle,
+              subtitle: SalesStrings.noDataForCustomerSubtitle,
             )
           else
             SizedBox(
@@ -509,7 +509,7 @@ class DesktopDialogs {
               child: ListView(
                 children: [
                   if (quotes.isNotEmpty) ...[
-                    const SectionHeader(title: AppStrings.customerQuotesSectionTitle, icon: Icons.request_quote_rounded),
+                    const SectionHeader(title: SalesStrings.customerQuotesSectionTitle, icon: Icons.request_quote_rounded),
                     ...quotes.map((q) => AppCard(
                       margin: EdgeInsets.only(bottom: 8.h),
                       onTap: () {
@@ -522,7 +522,7 @@ class DesktopDialogs {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                ReusableText(AppStrings.quoteNumberFormatShort.replaceFirst('%s', '${q.number}'), style: const TextStyle(fontWeight: FontWeight.bold)),
+                                ReusableText(SalesStrings.quoteNumberFormatShort.replaceFirst('%s', '${q.number}'), style: const TextStyle(fontWeight: FontWeight.bold)),
                                 ReusableText(FormatUtils.dateTime(q.createdAt), variant: ReusableTextVariant.caption),
                               ],
                             ),
@@ -534,7 +534,7 @@ class DesktopDialogs {
                   ],
                   if (drafts.isNotEmpty) ...[
                     SizedBox(height: 16.h),
-                    const SectionHeader(title: AppStrings.pendingDraftsSectionTitle, icon: Icons.drafts_rounded),
+                    const SectionHeader(title: SalesStrings.pendingDraftsSectionTitle, icon: Icons.drafts_rounded),
                     ...drafts.map((d) => AppCard(
                       margin: EdgeInsets.only(bottom: 8.h),
                       onTap: () {
@@ -547,7 +547,7 @@ class DesktopDialogs {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                ReusableText(d['notes']?.isNotEmpty == true ? d['notes'] : AppStrings.untitledDraft, style: const TextStyle(fontWeight: FontWeight.bold)),
+                                ReusableText(d['notes']?.isNotEmpty == true ? d['notes'] : SalesStrings.untitledDraft, style: const TextStyle(fontWeight: FontWeight.bold)),
                                 ReusableText(FormatUtils.dateTime(DateTime.tryParse(d['created_at']) ?? DateTime.now()), variant: ReusableTextVariant.caption),
                               ],
                             ),
@@ -589,7 +589,7 @@ class DesktopDialogs {
       builder: (context) => ReusableDialog(
         headerIcon: const Icon(Icons.local_offer_rounded),
         headerIconColor: AppColors.warning,
-        title: AppStrings.promotionsTitle,
+        title: SalesStrings.promotionsTitle,
         maxWidth: 700,
         children: [
           SizedBox(
@@ -600,7 +600,7 @@ class DesktopDialogs {
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const EmptyState(
                     icon: Icons.local_offer_outlined,
-                    title: AppStrings.noPromotions,
+                    title: SalesStrings.noPromotions,
                   );
                 }
                 final promos = snapshot.data!;
@@ -634,8 +634,8 @@ class DesktopDialogs {
                                 ReusableText(p.name, style: const TextStyle(fontWeight: FontWeight.bold)),
                                 ReusableText(
                                   p.isPercentage
-                                      ? AppStrings.discountPercentFormat.replaceFirst('%s', p.value.toStringAsFixed(0))
-                                      : AppStrings.discountFixedFormat.replaceFirst('%s', FormatUtils.currency(p.value)),
+                                      ? SalesStrings.discountPercentFormat.replaceFirst('%s', p.value.toStringAsFixed(0))
+                                      : SalesStrings.discountFixedFormat.replaceFirst('%s', FormatUtils.currency(p.value)),
                                   variant: ReusableTextVariant.caption,
                                 ),
                               ],
@@ -661,7 +661,7 @@ class DesktopDialogs {
       builder: (context) => ReusableDialog(
         headerIcon: const Icon(Icons.warning_amber_rounded),
         headerIconColor: AppColors.error,
-        title: AppStrings.damagedStockTitle,
+        title: SalesStrings.damagedStockTitle,
         maxWidth: 700,
         children: [
           SizedBox(
@@ -672,7 +672,7 @@ class DesktopDialogs {
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const EmptyState(
                     icon: Icons.inventory_2_outlined,
-                    title: AppStrings.noDamagedStock,
+                    title: SalesStrings.noDamagedStock,
                   );
                 }
                 final items = snapshot.data!;
@@ -697,7 +697,7 @@ class DesktopDialogs {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 ReusableText(d.medicineName, style: const TextStyle(fontWeight: FontWeight.bold)),
-                                ReusableText('${AppStrings.cartQuantity}: ${d.quantity} — ${d.reason}', variant: ReusableTextVariant.caption),
+                                ReusableText('${SalesStrings.cartQuantity}: ${d.quantity} — ${d.reason}', variant: ReusableTextVariant.caption),
                               ],
                             ),
                           ),
@@ -721,7 +721,7 @@ class DesktopDialogs {
       builder: (context) => ReusableDialog(
         headerIcon: const Icon(Icons.playlist_add_check_rounded),
         headerIconColor: AppColors.info,
-        title: AppStrings.openingStockTitle,
+        title: SalesStrings.openingStockTitle,
         maxWidth: 700,
         children: [
           SizedBox(
@@ -732,7 +732,7 @@ class DesktopDialogs {
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const EmptyState(
                     icon: Icons.inventory_2_outlined,
-                    title: AppStrings.noOpeningStock,
+                    title: SalesStrings.noOpeningStock,
                   );
                 }
                 final items = snapshot.data!;
@@ -757,7 +757,7 @@ class DesktopDialogs {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 ReusableText(o.medicineName, style: const TextStyle(fontWeight: FontWeight.bold)),
-                                ReusableText('${AppStrings.cartQuantity}: ${o.quantity} — ${FormatUtils.currency(o.buyPrice)}', variant: ReusableTextVariant.caption),
+                                ReusableText('${SalesStrings.cartQuantity}: ${o.quantity} — ${FormatUtils.currency(o.buyPrice)}', variant: ReusableTextVariant.caption),
                               ],
                             ),
                           ),
@@ -826,16 +826,16 @@ class _RecentOperationsDialogState extends State<RecentOperationsDialog> {
     return ReusableDialog(
       headerIcon: const Icon(Icons.history_rounded),
       headerIconColor: AppColors.primary,
-      title: AppStrings.recentOperations,
+      title: SalesStrings.recentOperations,
       maxWidth: 800,
       children: [
         Row(
           children: [
-            _tabHeader(0, AppStrings.salesInvoices, Icons.receipt_long_rounded),
+            _tabHeader(0, SalesStrings.salesInvoices, Icons.receipt_long_rounded),
             SizedBox(width: 8.w),
-            _tabHeader(1, AppStrings.priceQuotes, Icons.request_quote_rounded),
+            _tabHeader(1, SalesStrings.priceQuotes, Icons.request_quote_rounded),
             SizedBox(width: 8.w),
-            _tabHeader(2, AppStrings.drafts, Icons.drafts_rounded),
+            _tabHeader(2, SalesStrings.drafts, Icons.drafts_rounded),
           ],
         ),
         SizedBox(height: 16.h),
@@ -859,7 +859,7 @@ class _RecentOperationsDialogState extends State<RecentOperationsDialog> {
           if (sales.isEmpty) {
             return const EmptyState(
               icon: Icons.receipt_long_outlined,
-              title: AppStrings.noSalesInvoices,
+              title: SalesStrings.noSalesInvoices,
             );
           }
 
@@ -868,11 +868,11 @@ class _RecentOperationsDialogState extends State<RecentOperationsDialog> {
             separatorBuilder: (_, index) => SizedBox(height: 8.h),
             itemBuilder: (context, i) {
               final sale = sales[i];
-              final customerLabel = sale.customerName ?? AppStrings.cashCustomerLabel;
+              final customerLabel = sale.customerName ?? SalesStrings.cashCustomerLabel;
               final paymentLabel = switch(sale.paymentMethod) {
-                'cash' => AppStrings.cartPaymentCash,
-                'card' => AppStrings.cartPaymentCard,
-                _ => AppStrings.cartPaymentCredit,
+                'cash' => SalesStrings.cartPaymentCash,
+                'card' => SalesStrings.cartPaymentCard,
+                _ => SalesStrings.cartPaymentCredit,
               };
 
               return AppCard(
@@ -896,7 +896,7 @@ class _RecentOperationsDialogState extends State<RecentOperationsDialog> {
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           ReusableText(
-                            AppStrings.invoiceItemSummaryFormat
+                            SalesStrings.invoiceItemSummaryFormat
                                 .replaceFirst('%s', FormatUtils.dateTime(sale.createdAt))
                                 .replaceFirst('%s', '${sale.items.length}')
                                 .replaceFirst('%s', paymentLabel),
@@ -924,7 +924,7 @@ class _RecentOperationsDialogState extends State<RecentOperationsDialog> {
                         _miniAction(Icons.delete_outline_rounded, AppColors.error, () {
                           _confirmDelete(
                             context,
-                            AppStrings.confirmVoidInvoiceMsg,
+                            SalesStrings.confirmVoidInvoiceMsg,
                             () async {
                               await BranchDataService.voidSale(sale.id);
                               setState(() {});
@@ -943,7 +943,7 @@ class _RecentOperationsDialogState extends State<RecentOperationsDialog> {
     } else if (_activeTab == 1) {
       final quotes = QuoteService.getAll();
       final scheme = Theme.of(context).colorScheme;
-      if (quotes.isEmpty) return const EmptyState(icon: Icons.request_quote_outlined, title: AppStrings.noPriceQuotes);
+      if (quotes.isEmpty) return const EmptyState(icon: Icons.request_quote_outlined, title: SalesStrings.noPriceQuotes);
 
       return ListView.separated(
         itemCount: quotes.length,
@@ -958,8 +958,8 @@ class _RecentOperationsDialogState extends State<RecentOperationsDialog> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ReusableText('${AppStrings.priceQuotes} #${quote.number} (${quote.customerName})', style: const TextStyle(fontWeight: FontWeight.bold)),
-                      ReusableText('${FormatUtils.dateTime(quote.createdAt)} — ${quote.items.length} ${AppStrings.item}', variant: ReusableTextVariant.caption),
+                      ReusableText('${SalesStrings.priceQuotes} #${quote.number} (${quote.customerName})', style: const TextStyle(fontWeight: FontWeight.bold)),
+                      ReusableText('${FormatUtils.dateTime(quote.createdAt)} — ${quote.items.length} ${HomeStrings.item}', variant: ReusableTextVariant.caption),
                     ],
                   ),
                 ),
@@ -977,7 +977,7 @@ class _RecentOperationsDialogState extends State<RecentOperationsDialog> {
                     }),
                     SizedBox(width: 6.w),
                      _miniAction(Icons.delete_outline_rounded, AppColors.error, () {
-                        _confirmDelete(context, AppStrings.confirmDeleteQuote, () async {
+                        _confirmDelete(context, SalesStrings.confirmDeleteQuote, () async {
 
                         await QuoteService.softDelete(quote.id);
                         setState(() {});
@@ -994,14 +994,14 @@ class _RecentOperationsDialogState extends State<RecentOperationsDialog> {
       return BlocBuilder<PosBloc, PosState>(
         builder: (context, state) {
           final drafts = state.suspendedSales;
-          if (drafts.isEmpty) return const EmptyState(icon: Icons.drafts_outlined, title: AppStrings.noDraftsPending);
+          if (drafts.isEmpty) return const EmptyState(icon: Icons.drafts_outlined, title: SalesStrings.noDraftsPending);
 
           return ListView.separated(
             itemCount: drafts.length,
             separatorBuilder: (_, index) => SizedBox(height: 8.h),
             itemBuilder: (context, i) {
               final d = drafts[i];
-              final notes = d['notes']?.isNotEmpty == true ? d['notes'] : AppStrings.untitledDraft;
+              final notes = d['notes']?.isNotEmpty == true ? d['notes'] : SalesStrings.untitledDraft;
               return AppCard(
                 padding: EdgeInsets.all(10.w),
                 child: Row(
@@ -1046,13 +1046,13 @@ class _RecentOperationsDialogState extends State<RecentOperationsDialog> {
   void _confirmDelete(BuildContext context, String msg, VoidCallback onConfirm) {
     ReusableDialog.show(
       context,
-      title: AppStrings.confirmDelete,
+      title: SalesStrings.confirmDelete,
       headerIcon: const Icon(Icons.delete_forever_rounded, color: AppColors.error),
       children: [
         ReusableText(msg),
         SizedBox(height: 24.h),
         DialogActions(
-          confirmText: AppStrings.permanentDelete,
+          confirmText: SalesStrings.permanentDelete,
           confirmType: ButtonType.primary,
           onConfirm: () {
             Navigator.pop(context);
@@ -1063,3 +1063,9 @@ class _RecentOperationsDialogState extends State<RecentOperationsDialog> {
     );
   }
 }
+
+
+
+
+
+

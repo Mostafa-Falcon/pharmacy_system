@@ -2,26 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
 import '../../../routes/app_routes.dart';
 
 class PosNavDrawer extends StatelessWidget {
   const PosNavDrawer({super.key});
 
   static const List<_NavItem> _items = [
-    _NavItem(Icons.point_of_sale_rounded, AppStrings.saleScreenNav, Routes.SALES_POS),
-    _NavItem(Icons.receipt_long_rounded, AppStrings.salesInvoicesNav, Routes.SALES_LIST),
-    _NavItem(Icons.assignment_return_rounded, AppStrings.salesReturnNav, Routes.SALES_RETURN),
-    _NavItem(Icons.confirmation_number_rounded, AppStrings.priceQuotes, Routes.PRICE_QUOTES),
-    _NavItem(Icons.payments_rounded, AppStrings.shiftsNav, Routes.SALES_CASHIER_SHIFTS),
-    _NavItem(Icons.inventory_2_rounded, AppStrings.inventoryNav, Routes.INVENTORY_LIST),
-    _NavItem(Icons.local_shipping_rounded, AppStrings.purchasesNav, Routes.PURCHASE_LIST),
-    _NavItem(Icons.people_alt_rounded, AppStrings.customersNav, Routes.CUSTOMERS),
-    _NavItem(Icons.business_rounded, AppStrings.suppliersNav, Routes.SUPPLIERS),
-    _NavItem(Icons.bar_chart_rounded, AppStrings.salesReportsNav, Routes.SALES_REPORT),
-    _NavItem(Icons.account_balance_rounded, AppStrings.accountingNav, Routes.ACCOUNTING),
-    _NavItem(Icons.settings_rounded, AppStrings.settings, Routes.SETTINGS),
-    _NavItem(Icons.home_rounded, AppStrings.homeNav, Routes.HOME),
+    _NavItem(Icons.point_of_sale_rounded, SalesStrings.saleScreenNav, Routes.SALES_POS),
+    _NavItem(Icons.receipt_long_rounded, SalesStrings.salesInvoicesNav, Routes.SALES_LIST),
+    _NavItem(Icons.assignment_return_rounded, SalesStrings.salesReturnNav, Routes.SALES_RETURN),
+    _NavItem(Icons.confirmation_number_rounded, SalesStrings.priceQuotes, Routes.PRICE_QUOTES),
+    _NavItem(Icons.payments_rounded, SalesStrings.shiftsNav, Routes.SALES_CASHIER_SHIFTS),
+    _NavItem(Icons.inventory_2_rounded, SalesStrings.inventoryNav, Routes.INVENTORY_LIST),
+    _NavItem(Icons.local_shipping_rounded, SalesStrings.purchasesNav, Routes.PURCHASE_LIST),
+    _NavItem(Icons.people_alt_rounded, SalesStrings.customersNav, Routes.CUSTOMERS),
+    _NavItem(Icons.business_rounded, SalesStrings.suppliersNav, Routes.SUPPLIERS),
+    _NavItem(Icons.bar_chart_rounded, SalesStrings.salesReportsNav, Routes.SALES_REPORT),
+    _NavItem(Icons.account_balance_rounded, SalesStrings.accountingNav, Routes.ACCOUNTING),
+    _NavItem(Icons.settings_rounded, GeneralStrings.settings, Routes.SETTINGS),
+    _NavItem(Icons.home_rounded, SalesStrings.homeNav, Routes.HOME),
   ];
 
   @override
@@ -43,7 +43,7 @@ class PosNavDrawer extends StatelessWidget {
                 SizedBox(width: 10.w),
                 Expanded(
                   child: Text(
-                    AppStrings.quickNavTooltip,
+                    SalesStrings.quickNavTooltip,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 15.sp,
@@ -101,3 +101,7 @@ class _NavItem {
 
   const _NavItem(this.icon, this.label, this.route);
 }
+
+
+
+

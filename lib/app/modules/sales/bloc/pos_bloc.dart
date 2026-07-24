@@ -7,8 +7,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:window_manager/window_manager.dart';
 
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
-import 'package:pharmacy_system/app/modules/sales/models/quote_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/quote_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
 import 'package:pharmacy_system/app/core/data/services/sales/cashier_shift_service.dart';
@@ -20,7 +20,7 @@ import 'package:pharmacy_system/app/core/data/services/sales/quote_service.dart'
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_ledger_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_service.dart';
 import 'package:pharmacy_system/app/core/data/services/theme_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
 import 'package:pharmacy_system/app/core/utils/app_utils.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
@@ -30,9 +30,9 @@ import 'package:pharmacy_system/app/modules/sales/models/pos_cart_line.dart';
 import 'package:pharmacy_system/app/modules/sales/services/sale_engine.dart';
 import 'package:uuid/uuid.dart';
 import 'package:pharmacy_system/app/core/data/services/sound_service.dart';
-import 'package:pharmacy_system/app/core/domain/models/base/correction_model.dart';
+import 'package:pharmacy_system/app/core/models/base/correction_model.dart';
 import 'package:pharmacy_system/app/core/data/services/accounting/correction_service.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'package:pharmacy_system/app/core/data/repositories/medicines_repository.dart';
 import 'package:pharmacy_system/app/core/data/repositories/customers_repository.dart';
 import 'package:pharmacy_system/app/core/data/repositories/suppliers_repository.dart';
@@ -101,7 +101,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
 
   String get _branchId => AuthService.currentBranchId ?? '';
   String get _cashierId => AuthService.currentUser?.id ?? '';
-  String get userName => AuthService.currentUser?.name ?? AppStrings.defaultUserName;
+  String get userName => AuthService.currentUser?.name ?? GeneralStrings.defaultUserName;
 
   final List<StreamSubscription> _subscriptions = [];
 
@@ -314,7 +314,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     if (available <= 0 && !medicine.allowNegativeStock) {
       _warn(
         emit,
-        AppStrings.posNoStockFormat(medicine.name, medicine.quantity.toString()),
+        SalesStrings.posNoStockFormat(medicine.name, medicine.quantity.toString()),
       );
       return;
     }
@@ -352,7 +352,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
       (m) => m.barcodes.any((b) => b.toLowerCase() == q),
     );
     if (medicine == null) {
-      _warn(emit, AppStrings.posBarcodeNotFoundFormat(event.code));
+      _warn(emit, SalesStrings.posBarcodeNotFoundFormat(event.code));
       return;
     }
     add(PosAddMedicine(medicine));
@@ -365,7 +365,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     if (available <= 0 && !line.medicine.allowNegativeStock) {
       _warn(
         emit,
-        AppStrings.posNoStockFormat(line.medicine.name, line.medicine.quantity.toString()),
+        SalesStrings.posNoStockFormat(line.medicine.name, line.medicine.quantity.toString()),
       );
       return;
     }
@@ -402,7 +402,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     if (event.quantity > available && !line.medicine.allowNegativeStock) {
       _warn(
         emit,
-        AppStrings.posNoStockFormat(line.medicine.name, available.toString()),
+        SalesStrings.posNoStockFormat(line.medicine.name, available.toString()),
       );
       return;
     }
@@ -532,7 +532,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
   void _onSetPaymentMode(PosSetPaymentMode event, Emitter<PosState> emit) {
     var mode = event.mode;
     if (mode == PaymentMode.credit && state.selectedCustomerId == null) {
-      _warn(emit, AppStrings.posCreditNeedsCustomer);
+      _warn(emit, SalesStrings.posCreditNeedsCustomer);
       return;
     }
     double cash = state.cashAmount;
@@ -575,7 +575,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     await CashierShiftService.refresh();
     emit(state.copyWith(currentShift: shift));
     await _updateShiftSummary(emit);
-    _success(emit, AppStrings.posShiftOpenedFormat(shift.shiftNumber.toString()));
+    _success(emit, SalesStrings.posShiftOpenedFormat(shift.shiftNumber.toString()));
   }
 
   Future<void> _onRefreshShift(PosRefreshShift event, Emitter<PosState> emit) async {
@@ -594,7 +594,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
   ) async {
     final shift = state.currentShift;
     if (shift == null) {
-      _warn(emit, AppStrings.posShiftNotFound);
+      _warn(emit, SalesStrings.posShiftNotFound);
       return;
     }
     try {
@@ -606,10 +606,10 @@ class PosBloc extends Bloc<PosEvent, PosState> {
       emit(state.copyWith(currentShift: closed));
       _success(
         emit,
-        AppStrings.posShiftClosedFormat(shift.shiftNumber.toString(), closed.difference?.toStringAsFixed(2) ?? '0'),
+        SalesStrings.posShiftClosedFormat(shift.shiftNumber.toString(), closed.difference?.toStringAsFixed(2) ?? '0'),
       );
     } catch (e) {
-      _error(emit, AppStrings.posShiftCloseFailedFormat(e.toString()));
+      _error(emit, SalesStrings.posShiftCloseFailedFormat(e.toString()));
     }
   }
 
@@ -632,7 +632,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
   ) async {
     if (!state.canComplete) return;
     if (state.currentShift == null) {
-      _warn(emit, AppStrings.posShiftRequired);
+      _warn(emit, SalesStrings.posShiftRequired);
       return;
     }
     emit(state.copyWith(isProcessing: true));
@@ -641,7 +641,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
           ? CustomerService.getById(state.selectedCustomerId!)
           : null;
       if (state.paymentMode == PaymentMode.credit && customer == null) {
-        _warn(emit, AppStrings.posCreditNeedsCustomer);
+        _warn(emit, SalesStrings.posCreditNeedsCustomer);
         emit(state.copyWith(isProcessing: false));
         return;
       }
@@ -650,7 +650,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
       if (state.paymentMode == PaymentMode.mixed) {
         final totalPaid = state.cashAmount + state.cardAmount;
         if ((totalPaid - state.grandTotal).abs() > 0.01) {
-          _warn(emit, AppStrings.paymentMismatch.replaceFirst('%s', totalPaid.toStringAsFixed(2)).replaceFirst('%s', state.grandTotal.toStringAsFixed(2)));
+          _warn(emit, SalesStrings.paymentMismatch.replaceFirst('%s', totalPaid.toStringAsFixed(2)).replaceFirst('%s', state.grandTotal.toStringAsFixed(2)));
           emit(state.copyWith(isProcessing: false));
           return;
         }
@@ -697,13 +697,13 @@ class PosBloc extends Bloc<PosEvent, PosState> {
         add(const PosPrintLastInvoice());
       }
 
-      _success(emit, AppStrings.posSaleSuccessFormat(sale.receiptNumber ?? ''));
+      _success(emit, SalesStrings.posSaleSuccessFormat(sale.receiptNumber ?? ''));
     } catch (e) {
       safeDebugPrint('PosBloc: Sale execution failed: $e');
       SoundService.instance.play(SoundEffect.saleError);
       _error(
         emit,
-        AppStrings.posSaleFailedFormat(e.toString().replaceAll('Exception: ', '')),
+        SalesStrings.posSaleFailedFormat(e.toString().replaceAll('Exception: ', '')),
       );
       emit(state.copyWith(isProcessing: false));
     }
@@ -760,7 +760,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
       safeDebugPrint('Print failed: $e');
       _warn(
         emit,
-        AppStrings.posPrintWarningFormat(e.toString().split(':').last.trim()),
+        SalesStrings.posPrintWarningFormat(e.toString().split(':').last.trim()),
       );
     }
   }
@@ -792,7 +792,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     Emitter<PosState> emit,
   ) async {
     if (state.cart.isEmpty) {
-      _warn(emit, AppStrings.posCartEmpty);
+      _warn(emit, SalesStrings.posCartEmpty);
       return;
     }
     final dao = sl<SuspendedSalesDao>();
@@ -826,7 +826,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     );
     add(const PosClearCart());
     emit(state.copyWith(suspendedSales: await _readSuspended()));
-    _success(emit, AppStrings.posSaleSuspended);
+    _success(emit, SalesStrings.posSaleSuspended);
   }
 
   Future<void> _onResumeSale(
@@ -866,7 +866,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
       await sl<SuspendedSalesDao>().softDelete(event.suspended['id']);
       emit(state.copyWith(suspendedSales: await _readSuspended()));
     }
-    _success(emit, AppStrings.posSaleResumed);
+    _success(emit, SalesStrings.posSaleResumed);
   }
 
   Future<void> _onDeleteSuspendedSale(
@@ -882,7 +882,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     Emitter<PosState> emit,
   ) async {
     if (state.cart.isEmpty) {
-      _warn(emit, AppStrings.posCartEmptyForQuote);
+      _warn(emit, SalesStrings.posCartEmptyForQuote);
       return;
     }
     final customerName = state.selectedCustomerId != null
@@ -899,7 +899,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
         )
         .toList();
     await QuoteService.create(
-      customerName: customerName.isNotEmpty ? customerName : AppStrings.posCashCustomer,
+      customerName: customerName.isNotEmpty ? customerName : SalesStrings.posCashCustomer,
       notes: state.notes,
       items: items,
       subtotal: state.subtotal,
@@ -907,7 +907,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
       total: state.grandTotal,
     );
     add(const PosClearCart());
-    _success(emit, AppStrings.posQuoteCreated);
+    _success(emit, SalesStrings.posQuoteCreated);
   }
 
   Future<void> _onAddExpense(
@@ -916,7 +916,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
   ) async {
     final shift = state.currentShift;
     if (shift == null) {
-      _warn(emit, AppStrings.posShiftRequired);
+      _warn(emit, SalesStrings.posShiftRequired);
       return;
     }
     CorrectionService.record(
@@ -924,9 +924,9 @@ class PosBloc extends Bloc<PosEvent, PosState> {
       referenceId: shift.id,
       action: CorrectionAction.modified,
       details:
-          AppStrings.posExpenseRecordedFormat(shift.shiftNumber.toString(), event.description, event.amount.toString()),
+          SalesStrings.posExpenseRecordedFormat(shift.shiftNumber.toString(), event.description, event.amount.toString()),
     );
-    _success(emit, AppStrings.posExpenseLogged);
+    _success(emit, SalesStrings.posExpenseLogged);
   }
 
   Future<void> _onLoadCustomerBalance(
@@ -946,7 +946,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
   ) async {
     final customer = CustomerService.getById(event.customerId);
     if (customer == null) {
-      _warn(emit, AppStrings.posCustomerNotFound);
+      _warn(emit, SalesStrings.posCustomerNotFound);
       return;
     }
     try {
@@ -967,7 +967,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
       );
       _success(
         emit,
-        AppStrings.posCustomerPaymentFormat(customer.name, event.amount.toString()),
+        SalesStrings.posCustomerPaymentFormat(customer.name, event.amount.toString()),
       );
     } catch (e) {
       _error(emit, e.toString());
@@ -991,7 +991,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
   ) async {
     final supplier = SupplierService.getById(event.supplierId);
     if (supplier == null) {
-      _warn(emit, AppStrings.posSupplierNotFound);
+      _warn(emit, SalesStrings.posSupplierNotFound);
       return;
     }
     try {
@@ -1012,7 +1012,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
       );
       _success(
         emit,
-        AppStrings.posSupplierPaymentFormat(supplier.name, event.amount.toString()),
+        SalesStrings.posSupplierPaymentFormat(supplier.name, event.amount.toString()),
       );
     } catch (e) {
       _error(emit, e.toString());
@@ -1077,7 +1077,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     emit(state.copyWith(cart: cart));
     await BranchDataService.voidSale(event.sale.id, branchId: _branchId);
     _loadRecentSales(emit);
-    _success(emit, AppStrings.posEditSaleLoaded);
+    _success(emit, SalesStrings.posEditSaleLoaded);
   }
 
   Future<void> _onEditQuote(PosEditQuote event, Emitter<PosState> emit) async {
@@ -1106,7 +1106,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     }
     emit(state.copyWith(cart: cart));
     await QuoteService.softDelete(quote.id);
-    _success(emit, AppStrings.posEditQuoteLoaded);
+    _success(emit, SalesStrings.posEditQuoteLoaded);
   }
 
   Future<void> _onRemoveSelectedLine(
@@ -1131,8 +1131,16 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     emit(state.copyWith(isPrintEnabled: newVal));
     _success(
       emit,
-      newVal ? AppStrings.posAutoPrintEnabled : AppStrings.posAutoPrintDisabled,
+      newVal ? SalesStrings.posAutoPrintEnabled : SalesStrings.posAutoPrintDisabled,
     );
   }
 }
+
+
+
+
+
+
+
+
 

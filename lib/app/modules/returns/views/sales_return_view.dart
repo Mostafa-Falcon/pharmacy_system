@@ -1,16 +1,16 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
-import 'package:pharmacy_system/app/modules/sales/models/sale_model.dart';
-import 'package:pharmacy_system/app/modules/sales/models/return_model.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
+import 'package:pharmacy_system/app/core/models/sales/sale_invoice_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/return_model.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
 import '../../../core/utils/format_utils.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../../../core/injection.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
@@ -27,7 +27,7 @@ class SalesReturnView extends StatelessWidget {
     return BlocProvider.value(
       value: sl<SalesReturnBloc>()..add(const LoadSalesReturns()),
       child: HomeShell(
-        title: AppStrings.salesReturnsTitle,
+        title: SalesStrings.salesReturnsTitle,
         child: Container(
           color: scheme.surfaceContainerLow.withValues(alpha: 0.15),
           padding: EdgeInsets.all(AppSpacing.xl.w),
@@ -54,14 +54,14 @@ class SalesReturnView extends StatelessWidget {
     return Row(
       children: [
         ReusableButton(
-          text: AppStrings.add,
+          text: GeneralStrings.add,
           prefixIcon: Icons.add_rounded,
           color: AppColors.homeSales,
           onPressed: () => _showCreateReturnDialog(context),
         ),
         const Spacer(),
         ReusableButton(
-          text: AppStrings.back,
+          text: GeneralStrings.back,
           type: ButtonType.outlined,
           prefixIcon: Icons.arrow_back_rounded,
           onPressed: () => context.pop(),
@@ -79,7 +79,7 @@ class SalesReturnView extends StatelessWidget {
           Row(
             children: [
               SummaryCard(
-                label: 'إجمالي مرتجعات البيع',
+                label: '?????? ??????? ?????',
                 value: '${state.totalCount}',
                 color: scheme.primary,
                 icon: Icons.assignment_return_rounded,
@@ -87,7 +87,7 @@ class SalesReturnView extends StatelessWidget {
               ),
               SizedBox(width: AppSpacing.md.w),
               SummaryCard(
-                label: 'إجمالي المبالغ المرتجعة',
+                label: '?????? ??????? ????????',
                 value: formatMoney(state.totalReturned),
                 color: AppColors.error,
                 icon: Icons.money_off_rounded,
@@ -101,20 +101,20 @@ class SalesReturnView extends StatelessWidget {
           Row(
             children: [
               FilterDropdown.string(
-                label: AppStrings.customerNameLabel,
-                items: ['الكل'],
+                label: SalesStrings.customerNameLabel,
+                items: ['????'],
                 onChanged: (v) {},
               ),
               SizedBox(width: AppSpacing.md.w),
               FilterDropdown.string(
-                label: AppStrings.reasonLabel,
-                items: ['الكل', 'منتهي الصلاحية', 'تالف', 'خطأ في الصنف'],
+                label: PurchasesStrings.reasonLabel,
+                items: ['????', '????? ????????', '????', '??? ?? ?????'],
                 onChanged: (v) {},
               ),
               SizedBox(width: AppSpacing.md.w),
               FilterDropdown.string(
-                label: 'المخزن',
-                items: ['الكل'],
+                label: '??????',
+                items: ['????'],
                 onChanged: (v) {},
               ),
               SizedBox(width: AppSpacing.md.w),
@@ -137,75 +137,75 @@ class SalesReturnView extends StatelessWidget {
     final columns = [
       ReusableTableColumn<ReturnModel>(
         id: 'actions',
-        title: 'خيار',
+        title: '????',
         width: 100.w,
         cellBuilder: (r) => _buildRowActions(context, r),
       ),
       ReusableTableColumn<ReturnModel>(
         id: 'date',
-        title: AppStrings.date,
+        title: GeneralStrings.date,
         width: 160.w,
         isSortable: true,
         textBuilder: (r) => DateFormat('yyyy/MM/dd HH:mm').format(r.createdAt),
       ),
       ReusableTableColumn<ReturnModel>(
         id: 'id',
-        title: 'رقم المرتجع',
+        title: '??? ???????',
         width: 120.w,
         isSortable: true,
         textBuilder: (r) => '#${r.id.substring(0, 8).toUpperCase()}',
       ),
       ReusableTableColumn<ReturnModel>(
         id: 'saleId',
-        title: 'الفاتورة الأصلية',
+        title: '???????? ???????',
         width: 120.w,
         textBuilder: (r) => r.saleId != null ? '#${r.saleId!.substring(0, 8).toUpperCase()}' : '---',
       ),
       ReusableTableColumn<ReturnModel>(
         id: 'customer',
-        title: 'العميل',
+        title: '??????',
         flex: 2,
         textBuilder: (r) {
           if (r.saleId != null) {
             final s = BranchDataService.getSale(r.saleId!);
-            if (s != null) return s.customerName ?? AppStrings.cashCustomer;
+            if (s != null) return s.customerName ?? SalesStrings.cashCustomer;
           }
-          return 'غير محدد';
+          return '??? ????';
         },
       ),
       ReusableTableColumn<ReturnModel>(
         id: 'reason',
-        title: AppStrings.reasonLabel,
+        title: PurchasesStrings.reasonLabel,
         width: 130.w,
         cellBuilder: (r) {
           final label = switch (r.reason) {
-            ReturnReason.expired => AppStrings.reasonExpired,
-            ReturnReason.damaged => AppStrings.reasonDamaged,
-            ReturnReason.wrongItem => AppStrings.reasonWrongItem,
-            _ => AppStrings.reasonOther,
+            ReturnReason.expired => PurchasesStrings.reasonExpired,
+            ReturnReason.damaged => PurchasesStrings.reasonDamaged,
+            ReturnReason.wrongItem => PurchasesStrings.reasonWrongItem,
+            _ => PurchasesStrings.reasonOther,
           };
           return StatusBadge(label: label, color: AppColors.warning);
         },
       ),
       ReusableTableColumn<ReturnModel>(
         id: 'amount',
-        title: 'القيمة الإجمالية',
+        title: '?????? ?????????',
         width: 140.w,
         isNumeric: true,
         textBuilder: (r) => formatMoney(r.totalAmount),
       ),
       ReusableTableColumn<ReturnModel>(
         id: 'qty',
-        title: AppStrings.quantity,
+        title: SalesStrings.quantityLabel,
         width: 80.w,
         isNumeric: true,
         textBuilder: (r) => '${r.items.length}.00',
       ),
       ReusableTableColumn<ReturnModel>(
         id: 'added_by',
-        title: AppStrings.addedBy,
+        title: SalesStrings.addedBy,
         width: 120.w,
-        textBuilder: (r) => 'المسؤول',
+        textBuilder: (r) => '???????',
       ),
     ];
 
@@ -216,7 +216,7 @@ class SalesReturnView extends StatelessWidget {
           child: ReusableTable<ReturnModel>(
             columns: columns,
             items: items,
-            itemLabel: 'مرتجع مبيعات',
+            itemLabel: '????? ??????',
             bodyRowHeight: 56.h,
             tableFooter: Container(
               padding: EdgeInsets.symmetric(vertical: 12.h),
@@ -231,7 +231,7 @@ class SalesReturnView extends StatelessWidget {
                   SizedBox(width: 120.w), // id
                   SizedBox(width: 120.w), // saleId
                   Expanded(flex: 2, child: const SizedBox()), // customer
-                  SizedBox(width: 130.w, child: _cellPadding(ReusableText('المجموع:', style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)), false)),
+                  SizedBox(width: 130.w, child: _cellPadding(ReusableText('???????:', style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)), false)),
                   SizedBox(width: 140.w, child: _cellPadding(ReusableText(formatMoney(totalAmount), style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)), true)),
                   SizedBox(width: 80.w), // qty
                   SizedBox(width: 120.w), // added_by
@@ -259,20 +259,20 @@ class SalesReturnView extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
       child: Row(
         children: [
-          ReusableText('إدخالات', style: AppTextStyles.body(context)),
+          ReusableText('???????', style: AppTextStyles.body(context)),
           SizedBox(width: 8.w),
           _rowsPerPageDropdown(),
           SizedBox(width: 8.w),
-          ReusableText('عرض', style: AppTextStyles.body(context)),
+          ReusableText('???', style: AppTextStyles.body(context)),
           const Spacer(),
-          _toolbarButton(Icons.ios_share_rounded, 'تصدير إلى CSV'),
-          _toolbarButton(Icons.print_outlined, AppStrings.print),
-          _toolbarButton(Icons.view_column_outlined, AppStrings.viewColumns),
+          _toolbarButton(Icons.ios_share_rounded, '????? ??? CSV'),
+          _toolbarButton(Icons.print_outlined, GeneralStrings.print),
+          _toolbarButton(Icons.view_column_outlined, SalesStrings.viewColumns),
           SizedBox(width: 16.w),
           SizedBox(
             width: 250.w,
             child: ReusableInput(
-              hint: 'بحث...',
+              hint: '???...',
               prefixIcon: const Icon(Icons.search_rounded),
               onChanged: (v) => context.read<SalesReturnBloc>().add(SearchSalesReturns(v)),
             ),
@@ -317,9 +317,9 @@ class SalesReturnView extends StatelessWidget {
         if (v == 'view') { /* logic */ }
       },
       itemBuilder: (ctx) => [
-        _menuItem(ctx, 'view', Icons.visibility_rounded, AppStrings.inspect),
-        _menuItem(ctx, 'print', Icons.print_rounded, AppStrings.print),
-        _menuItem(ctx, 'delete', Icons.delete_outline_rounded, AppStrings.delete, color: AppColors.error),
+        _menuItem(ctx, 'view', Icons.visibility_rounded, SalesStrings.inspect),
+        _menuItem(ctx, 'print', Icons.print_rounded, GeneralStrings.print),
+        _menuItem(ctx, 'delete', Icons.delete_outline_rounded, GeneralStrings.delete, color: AppColors.error),
       ],
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
@@ -330,7 +330,7 @@ class SalesReturnView extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ReusableText('خيارات', style: AppTextStyles.caption(context).copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
+            ReusableText('??????', style: AppTextStyles.caption(context).copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
             Icon(Icons.keyboard_arrow_down_rounded, size: AppIconSize.sm.value, color: Colors.white),
           ],
         ),
@@ -361,22 +361,22 @@ class SalesReturnView extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => ReusableDialog(
-        title: AppStrings.createSalesReturnTitle,
+        title: SalesStrings.createSalesReturnTitle,
         maxWidth: 500,
         children: [
-          ReusableText(AppStrings.selectOriginalInvoiceHint, style: AppTextStyles.body(context)),
+          ReusableText(SalesStrings.selectOriginalInvoiceHint, style: AppTextStyles.body(context)),
           SizedBox(height: AppSpacing.md.h),
           StatefulBuilder(
             builder: (ctx2, setLocalState) {
-              SaleModel? selectedSale;
+              SaleInvoiceModel? selectedSale;
               ReturnReason? selectedReason = ReturnReason.damaged;
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ReusableDropdown<SaleModel>(
-                    hintText: AppStrings.selectInvoiceHint,
+                  ReusableDropdown<SaleInvoiceModel>(
+                    hintText: SalesStrings.selectInvoiceHint,
                     items: sales,
-                    itemAsString: (s) => AppStrings.invoiceNumberDateFormat.replaceFirst('%s', s.id.substring(0, 8)).replaceFirst('%s', formatDate(s.createdAt)),
+                    itemAsString: (s) => SalesStrings.invoiceNumberDateFormat.replaceFirst('%s', s.id.substring(0, 8)).replaceFirst('%s', formatDate(s.createdAt)),
                     onChanged: (sale) {
                       if (sale != null) {
                         setLocalState(() => selectedSale = sale);
@@ -386,15 +386,15 @@ class SalesReturnView extends StatelessWidget {
                   if (selectedSale != null) ...[
                     SizedBox(height: AppSpacing.md.h),
                     ReusableDropdown<ReturnReason>(
-                      hintText: AppStrings.returnReasonLabel,
+                      hintText: SalesStrings.returnReasonLabel,
                       value: selectedReason,
                       items: ReturnReason.values,
                       itemAsString: (r) => switch (r) {
-                        ReturnReason.expired => AppStrings.reasonExpired,
-                        ReturnReason.damaged => AppStrings.reasonDamaged,
-                        ReturnReason.wrongItem => AppStrings.reasonWrongItemSales,
-                        ReturnReason.customerReturn => AppStrings.reasonCustomerReturn,
-                        ReturnReason.other => AppStrings.reasonOther,
+                        ReturnReason.expired => PurchasesStrings.reasonExpired,
+                        ReturnReason.damaged => PurchasesStrings.reasonDamaged,
+                        ReturnReason.wrongItem => SalesStrings.reasonWrongItemSales,
+                        ReturnReason.customerReturn => SalesStrings.reasonCustomerReturn,
+                        ReturnReason.other => PurchasesStrings.reasonOther,
                       },
                       onChanged: (r) {
                         if (r != null) {
@@ -423,7 +423,7 @@ class SalesReturnView extends StatelessWidget {
 }
 
 class _SaleReturnItemSelector extends StatefulWidget {
-  final SaleModel sale;
+  final SaleInvoiceModel sale;
   final void Function(List<SelectedItem>) onConfirm;
   const _SaleReturnItemSelector({required this.sale, required this.onConfirm});
 
@@ -467,10 +467,10 @@ class _SaleReturnItemSelectorState extends State<_SaleReturnItemSelector> {
                     Expanded(child: Text(item.medicineName, style: AppTextStyles.body(context))),
                     SizedBox(width: AppSpacing.sm.w),
                     SizedBox(width: 80.w, child: ReusableInput(
-                      controller: _ctrls[i], keyboardType: TextInputType.number, label: AppStrings.quantityLabel, hint: '1-${item.quantity}',
+                      controller: _ctrls[i], keyboardType: TextInputType.number, label: SalesStrings.quantityLabel, hint: '1-${item.quantity}',
                     )),
                     SizedBox(width: AppSpacing.sm.w),
-                    Text('${AppStrings.cartPrice}: ${item.unitPrice.toStringAsFixed(0)} ${AppStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: Colors.grey)),
+                    Text('${SalesStrings.cartPrice}: ${item.unitPrice.toStringAsFixed(0)} ${GeneralStrings.currency}', style: AppTextStyles.caption(context).copyWith(color: Colors.grey)),
                   ],
                 ),
               );
@@ -479,7 +479,7 @@ class _SaleReturnItemSelectorState extends State<_SaleReturnItemSelector> {
         ),
         SizedBox(height: AppSpacing.md.h),
         DialogActions(
-          confirmText: AppStrings.confirmReturnAction,
+          confirmText: SalesStrings.confirmReturnAction,
           onConfirm: () {
             final items = <SelectedItem>[];
             for (var i = 0; i < widget.sale.items.length; i++) {
@@ -495,7 +495,7 @@ class _SaleReturnItemSelectorState extends State<_SaleReturnItemSelector> {
                 ));
               }
             }
-            if (items.isEmpty) { AppSnackbar.error(AppStrings.selectAtLeastOneItemError); return; }
+            if (items.isEmpty) { AppSnackbar.error(SalesStrings.selectAtLeastOneItemError); return; }
             widget.onConfirm(items);
           },
         ),
@@ -503,5 +503,11 @@ class _SaleReturnItemSelectorState extends State<_SaleReturnItemSelector> {
     );
   }
 }
+
+
+
+
+
+
 
 

@@ -1,5 +1,5 @@
-﻿import 'package:pharmacy_system/app/core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_ledger_model.dart';
+import 'package:pharmacy_system/app/core/constants/app_strings.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_ledger_model.dart';
 import 'package:pharmacy_system/app/core/data/services/ledger_service.dart';
 
 class SupplierLedgerService {
@@ -29,7 +29,7 @@ class SupplierLedgerService {
       balanceAfter: newBalance,
       referenceId: purchaseId,
       referenceNumber: invoiceNumber,
-      notes: 'ديون مورد ناتجة عن فاتورة مشتريات آجلة / جزئية',
+      notes: '???? ???? ????? ?? ?????? ??????? ???? / ?????',
       createdBy: createdBy,
       entryDate: DateTime.now(),
     );
@@ -45,7 +45,7 @@ class SupplierLedgerService {
     String? notes,
     String? referenceId,
   }) async {
-    if (amount <= 0) throw Exception(AppStrings.errorPaymentMustBePositive);
+    if (amount <= 0) throw Exception(AccountingStrings.errorPaymentMustBePositive);
 
     final currentBalance = await LedgerService.getSupplierBalance(
       supplierId,
@@ -62,7 +62,7 @@ class SupplierLedgerService {
       credit: amount,
       balanceAfter: newBalance,
       referenceId: referenceId,
-      notes: notes ?? 'سداد للمورد',
+      notes: notes ?? '???? ??????',
       createdBy: createdBy,
       entryDate: DateTime.now(),
     );
@@ -96,7 +96,7 @@ class SupplierLedgerService {
       balanceAfter: newBalance,
       referenceId: purchaseId,
       referenceNumber: invoiceNumber,
-      notes: 'عكس ديون فاتورة مشتريات ملغاة',
+      notes: '??? ???? ?????? ??????? ?????',
       createdBy: createdBy,
       entryDate: DateTime.now(),
     );
@@ -126,7 +126,7 @@ class SupplierLedgerService {
     String? notes,
     String? referenceId,
   }) async {
-    if (amount <= 0) throw Exception(AppStrings.errorAdditionMustBePositive);
+    if (amount <= 0) throw Exception(AccountingStrings.errorAdditionMustBePositive);
 
     final currentBalance = await LedgerService.getSupplierBalance(
       supplierId,
@@ -143,7 +143,7 @@ class SupplierLedgerService {
       credit: 0,
       balanceAfter: newBalance,
       referenceId: referenceId,
-      notes: notes ?? 'إشعار إضافة لحساب المورد',
+      notes: notes ?? '????? ????? ????? ??????',
       createdBy: createdBy,
       entryDate: DateTime.now(),
     );
@@ -159,7 +159,7 @@ class SupplierLedgerService {
     String? notes,
     String? referenceId,
   }) async {
-    if (amount <= 0) throw Exception(AppStrings.errorDiscountMustBePositive);
+    if (amount <= 0) throw Exception(AccountingStrings.errorDiscountMustBePositive);
 
     final currentBalance = await LedgerService.getSupplierBalance(
       supplierId,
@@ -176,7 +176,7 @@ class SupplierLedgerService {
       credit: amount,
       balanceAfter: newBalance,
       referenceId: referenceId,
-      notes: notes ?? 'إشعار خصم لحساب المورد',
+      notes: notes ?? '????? ??? ????? ??????',
       createdBy: createdBy,
       entryDate: DateTime.now(),
     );
@@ -195,7 +195,7 @@ class SupplierLedgerService {
     String? notes,
     String? referenceId,
   }) async {
-    if (amount <= 0) throw Exception(AppStrings.errorCheckMustBePositive);
+    if (amount <= 0) throw Exception(AccountingStrings.errorCheckMustBePositive);
 
     final currentBalance = await LedgerService.getSupplierBalance(
       supplierId,
@@ -204,9 +204,9 @@ class SupplierLedgerService {
     final newBalance = (currentBalance - amount).clamp(0.0, double.infinity);
 
     final checkNotes = [
-      if (checkNumber != null) 'شيك رقم: $checkNumber',
-      if (bankName != null) 'البنك: $bankName',
-      if (dueDate != null) 'تاريخ الاستحقاق: $dueDate',
+      if (checkNumber != null) '??? ???: $checkNumber',
+      if (bankName != null) '?????: $bankName',
+      if (dueDate != null) '????? ?????????: $dueDate',
       notes ?? '',
     ].join(' | ');
 
@@ -219,7 +219,7 @@ class SupplierLedgerService {
       credit: amount,
       balanceAfter: newBalance,
       referenceId: referenceId,
-      notes: checkNotes.isNotEmpty ? checkNotes : 'دفع شيك للمورد',
+      notes: checkNotes.isNotEmpty ? checkNotes : '??? ??? ??????',
       createdBy: createdBy,
       entryDate: DateTime.now(),
     );
@@ -238,7 +238,7 @@ class SupplierLedgerService {
     String? notes,
     String? referenceId,
   }) async {
-    if (amount <= 0) throw Exception(AppStrings.errorCheckMustBePositive);
+    if (amount <= 0) throw Exception(AccountingStrings.errorCheckMustBePositive);
 
     final currentBalance = await LedgerService.getSupplierBalance(
       supplierId,
@@ -247,9 +247,9 @@ class SupplierLedgerService {
     final newBalance = currentBalance + amount;
 
     final checkNotes = [
-      if (checkNumber != null) 'شيك رقم: $checkNumber',
-      if (bankName != null) 'البنك: $bankName',
-      if (dueDate != null) 'تاريخ الاستحقاق: $dueDate',
+      if (checkNumber != null) '??? ???: $checkNumber',
+      if (bankName != null) '?????: $bankName',
+      if (dueDate != null) '????? ?????????: $dueDate',
       notes ?? '',
     ].join(' | ');
 
@@ -262,7 +262,7 @@ class SupplierLedgerService {
       credit: 0,
       balanceAfter: newBalance,
       referenceId: referenceId,
-      notes: checkNotes.isNotEmpty ? checkNotes : 'استلام شيك من المورد',
+      notes: checkNotes.isNotEmpty ? checkNotes : '?????? ??? ?? ??????',
       createdBy: createdBy,
       entryDate: DateTime.now(),
     );
@@ -270,7 +270,7 @@ class SupplierLedgerService {
     await LedgerService.insertSupplierEntry(entry);
   }
 
-  /// تسجيل الرصيد الافتتاحي مباشرة - debit يعني مديونية علينا (المورد عليه رصيد)
+  /// ????? ?????? ????????? ?????? - debit ???? ??????? ????? (?????? ???? ????)
   static Future<void> recordOpeningBalanceDirect({
     required String supplierId,
     required String branchId,
@@ -280,7 +280,7 @@ class SupplierLedgerService {
     String? referenceId,
   }) async {
     if (amount <= 0) {
-      throw Exception(AppStrings.errorOpeningMustBePositive);
+      throw Exception(AccountingStrings.errorOpeningMustBePositive);
     }
 
     final currentBalance = await LedgerService.getSupplierBalance(
@@ -298,7 +298,7 @@ class SupplierLedgerService {
       credit: 0,
       balanceAfter: newBalance,
       referenceId: referenceId,
-      notes: notes ?? 'رصيد افتتاحي',
+      notes: notes ?? '???? ???????',
       createdBy: createdBy,
       entryDate: DateTime.now(),
     );
@@ -306,7 +306,7 @@ class SupplierLedgerService {
     await LedgerService.insertSupplierEntry(entry);
   }
 
-  /// تسجيل الرصيد الافتتاحي كدائن - credit يعني رصيد علينا (يعني المورد عليه مال)
+  /// ????? ?????? ????????? ????? - credit ???? ???? ????? (???? ?????? ???? ???)
   static Future<void> recordOpeningBalanceAsCredit({
     required String supplierId,
     required String branchId,
@@ -316,7 +316,7 @@ class SupplierLedgerService {
     String? referenceId,
   }) async {
     if (amount <= 0) {
-      throw Exception(AppStrings.errorOpeningMustBePositive);
+      throw Exception(AccountingStrings.errorOpeningMustBePositive);
     }
 
     final currentBalance = await LedgerService.getSupplierBalance(
@@ -334,7 +334,7 @@ class SupplierLedgerService {
       credit: amount,
       balanceAfter: newBalance,
       referenceId: referenceId,
-      notes: notes ?? 'رصيد افتتاحي - رصيد علينا',
+      notes: notes ?? '???? ??????? - ???? ?????',
       createdBy: createdBy,
       entryDate: DateTime.now(),
     );
@@ -342,4 +342,8 @@ class SupplierLedgerService {
     await LedgerService.insertSupplierEntry(entry);
   }
 }
+
+
+
+
 

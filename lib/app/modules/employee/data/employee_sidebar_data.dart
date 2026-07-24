@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/shareds/sidebar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/shareds/sidebar.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
 
 List<SidebarGroup> getEmployeeSidebarGroups() {
   final user = AuthService.currentUser;
@@ -189,3 +189,6 @@ List<SidebarGroup> getEmployeeSidebarGroups() {
 
   return groups;
 }
+
+
+

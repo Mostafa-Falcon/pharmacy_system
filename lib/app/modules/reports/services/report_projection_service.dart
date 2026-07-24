@@ -1,7 +1,7 @@
-﻿import '../../accounting/services/accounting_projection_service.dart';
+import '../../accounting/services/accounting_projection_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
-import 'package:pharmacy_system/app/modules/sales/models/sale_model.dart';
-import 'package:pharmacy_system/app/modules/sales/models/return_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/sale_invoice_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/return_model.dart';
 
 class ProfitReportBundle {
   final double netProfit;
@@ -69,7 +69,7 @@ class ReportProjectionService {
     );
   }
 
-  List<SaleModel> _getSales(String branchId, DateTime from, DateTime to) {
+  List<SaleInvoiceModel> _getSales(String branchId, DateTime from, DateTime to) {
     return BranchDataService.getSales(branchId: branchId)
         .where((s) => !s.isDeleted && _inside(s.createdAt, from, to))
         .toList();
@@ -94,4 +94,8 @@ class ReportProjectionService {
     );
   }
 }
+
+
+
+
 

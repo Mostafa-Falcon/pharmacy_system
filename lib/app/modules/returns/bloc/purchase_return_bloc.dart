@@ -1,13 +1,13 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
-import 'package:pharmacy_system/app/core/domain/models/base/correction_model.dart';
-import 'package:pharmacy_system/app/modules/sales/models/return_model.dart';
+import 'package:pharmacy_system/app/core/models/base/correction_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/return_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
 import 'package:pharmacy_system/app/core/data/services/accounting/correction_service.dart';
 import 'package:pharmacy_system/app/core/data/services/inventory/stock_mutation_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_ledger_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
 import 'purchase_return_event.dart';
 import 'purchase_return_state.dart';
 
@@ -99,12 +99,12 @@ class PurchaseReturnBloc extends Bloc<PurchaseReturnEvent, PurchaseReturnState> 
       referenceType: CorrectionReferenceType.purchase,
       referenceId: event.originalPurchase.id,
       action: CorrectionAction.returned,
-      details: 'مرتجع مشتريات بقيمة ${returnModel.totalAmount.toStringAsFixed(2)} ج.م — سبب: ${event.reason.name}',
+      details: '????? ??????? ????? ${returnModel.totalAmount.toStringAsFixed(2)} ?.? — ???: ${event.reason.name}',
     );
 
     for (final item in event.selectedItems) {
-      // ننقص المخزون عبر نظام StockMutationService الموحّد (قفل FIFO + sync queue)
-      // بدل التعديل المباشر على Hive — ده بيضمن عدم التباين وتتبّع المزامنة.
+      // ???? ??????? ??? ???? StockMutationService ??????? (??? FIFO + sync queue)
+      // ??? ??????? ??????? ??? Hive — ?? ????? ??? ??????? ?????? ????????.
       await StockMutationService.adjustStock(
         medicineId: item.medicineId,
         delta: -item.returnQuantity,
@@ -112,8 +112,8 @@ class PurchaseReturnBloc extends Bloc<PurchaseReturnEvent, PurchaseReturnState> 
       );
     }
 
-    // تخفيض ديون المورد بقيمة المرتجع (recordSupplierPayment بتعمل credit =
-    // خصم من الرصيد المستحق علينا مع clamp لمنع السالب).
+    // ????? ???? ?????? ????? ??????? (recordSupplierPayment ????? credit =
+    // ??? ?? ?????? ??????? ????? ?? clamp ???? ??????).
     if (event.originalPurchase.supplierId != null) {
       final returnValue = returnModel.totalAmount;
       await SupplierLedgerService.recordSupplierPayment(
@@ -121,13 +121,17 @@ class PurchaseReturnBloc extends Bloc<PurchaseReturnEvent, PurchaseReturnState> 
         branchId: _branchId,
         amount: double.parse(returnValue.toStringAsFixed(2)),
         createdBy: _userId,
-        notes: 'خصم مرتجع مشتريات ${event.originalPurchase.id}',
+        notes: '??? ????? ??????? ${event.originalPurchase.id}',
         referenceId: returnModel.id,
       );
     }
 
     add(const LoadPurchaseReturns());
-    AppSnackbar.success('تم تسجيل مرتجع المشتريات بنجاح');
+    AppSnackbar.success('?? ????? ????? ????????? ?????');
   }
 }
+
+
+
+
 

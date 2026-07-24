@@ -1,13 +1,13 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../bloc/hr_bloc.dart';
 import 'package:pharmacy_system/app/modules/hr/models/employee_model.dart';
 import 'package:pharmacy_system/app/modules/hr/models/department_model.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/tables/shared_table_cells.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
 
 class EmployeesView extends StatelessWidget {
@@ -28,8 +28,8 @@ class EmployeesView extends StatelessWidget {
             backgroundColor: Colors.transparent,
             body: const EmptyState(
               icon: Icons.people_outline_rounded,
-              title: 'لا يوجد موظفون',
-              subtitle: 'لم يتم إضافة أي موظفين بعد في هذا الفرع',
+              title: '?? ???? ??????',
+              subtitle: '?? ??? ????? ?? ?????? ??? ?? ??? ?????',
             ),
             floatingActionButton: ReusableFab(
               icon: Icons.person_add_rounded,
@@ -42,7 +42,7 @@ class EmployeesView extends StatelessWidget {
         final columns = [
           ReusableTableColumn<EmployeeModel>(
             id: 'name',
-            title: 'الموظف والوظيفة',
+            title: '?????? ????????',
             flex: 2,
             isSortable: true,
             cellBuilder: (e) => TableContactNameCell(
@@ -54,20 +54,20 @@ class EmployeesView extends StatelessWidget {
           ),
           ReusableTableColumn<EmployeeModel>(
             id: 'dept',
-            title: 'القسم',
+            title: '?????',
             width: 150.w,
-            textBuilder: (e) => e.departmentName.isNotEmpty ? e.departmentName : 'عام',
+            textBuilder: (e) => e.departmentName.isNotEmpty ? e.departmentName : '???',
           ),
           ReusableTableColumn<EmployeeModel>(
             id: 'salary',
-            title: 'الراتب',
+            title: '??????',
             width: 130.w,
             isNumeric: true,
-            cellBuilder: (e) => TableMoneyCell(amount: e.salary, currency: AppStrings.currency, isHighlight: true),
+            cellBuilder: (e) => TableMoneyCell(amount: e.salary, currency: GeneralStrings.currency, isHighlight: true),
           ),
           ReusableTableColumn<EmployeeModel>(
             id: 'status',
-            title: 'الحالة',
+            title: '??????',
             width: 110.w,
             cellBuilder: (e) {
                final (color, text, icon) = _getStatus(e.status);
@@ -76,7 +76,7 @@ class EmployeesView extends StatelessWidget {
           ),
           ReusableTableColumn<EmployeeModel>(
             id: 'phone',
-            title: 'رقم الهاتف',
+            title: '??? ??????',
             width: 140.w,
             textBuilder: (e) => e.phone,
           ),
@@ -89,22 +89,22 @@ class EmployeesView extends StatelessWidget {
             child: ReusableTable<EmployeeModel>(
               columns: columns,
               items: state.employees,
-              itemLabel: 'موظف',
+              itemLabel: '????',
               rowActions: (e) => TableOptionsButton(
                 onSelected: (val) {
                   if (val == 'edit') _showEditDialog(context, context.read<HrBloc>(), e);
                   if (val == 'delete') {
                     ConfirmDeleteDialog.show(
                       context,
-                      title: 'حذف الموظف',
-                      message: 'هل أنت متأكد من حذف الموظف "${e.name}"؟ سيتم حذف جميع بياناته نهائياً.',
+                      title: '??? ??????',
+                      message: '?? ??? ????? ?? ??? ?????? "${e.name}"? ???? ??? ???? ??????? ???????.',
                       onConfirm: () => context.read<HrBloc>().add(DeleteEmployee(e.id)),
                     );
                   }
                 },
                 menuItems: [
-                  const PopupMenuItem(value: 'edit', child: ReusableText('تعديل البيانات')),
-                  const PopupMenuItem(value: 'delete', child: ReusableText('حذف نهائي', color: AppColors.error)),
+                  const PopupMenuItem(value: 'edit', child: ReusableText('????? ????????')),
+                  const PopupMenuItem(value: 'delete', child: ReusableText('??? ?????', color: AppColors.error)),
                 ],
               ),
             ),
@@ -122,9 +122,9 @@ class EmployeesView extends StatelessWidget {
 
   (Color, String, IconData) _getStatus(String status) {
     return switch (status) {
-      'active' => (AppColors.success, 'نشط', Icons.check_circle_rounded),
-      'inactive' => (AppColors.warning, 'غير نشط', Icons.pause_circle_rounded),
-      'left' => (AppColors.error, 'غادر', Icons.exit_to_app_rounded),
+      'active' => (AppColors.success, '???', Icons.check_circle_rounded),
+      'inactive' => (AppColors.warning, '??? ???', Icons.pause_circle_rounded),
+      'left' => (AppColors.error, '????', Icons.exit_to_app_rounded),
       _ => (Colors.grey, status, Icons.help_outline_rounded),
     };
   }
@@ -152,40 +152,40 @@ class EmployeesView extends StatelessWidget {
           (context) => StatefulBuilder(
             builder:
                 (context, setState) => ReusableDialog(
-                  title: 'إضافة موظف جديد',
+                  title: '????? ???? ????',
                   headerIcon: const Icon(Icons.person_add_rounded),
                   children: [
                     ReusableInput(
-                      label: 'اسم الموظف *',
-                      hint: 'الاسم الكامل',
+                      label: '??? ?????? *',
+                      hint: '????? ??????',
                       controller: nameCtrl,
                       textDirection: TextDirection.rtl,
                     ),
                     SizedBox(height: AppSpacing.sm.h),
                     ReusableInput(
-                      label: 'رقم الهاتف',
-                      hint: 'رقم الجوال',
+                      label: '??? ??????',
+                      hint: '??? ??????',
                       controller: phoneCtrl,
                       keyboardType: TextInputType.phone,
                     ),
                     SizedBox(height: AppSpacing.sm.h),
                     ReusableInput.email(
-                      label: 'البريد الإلكتروني',
+                      label: '?????? ??????????',
                       hint: 'example@domain.com',
                       controller: emailCtrl,
                     ),
                     SizedBox(height: AppSpacing.sm.h),
                     ReusableInput(
-                      label: 'المسمى الوظيفي',
-                      hint: 'مثل: صيدلي، كاشير',
+                      label: '?????? ???????',
+                      hint: '???: ?????? ?????',
                       controller: jobTitleCtrl,
                       textDirection: TextDirection.rtl,
                     ),
                     SizedBox(height: AppSpacing.sm.h),
                     if (departmentOptions.isNotEmpty)
                       ReusableDropdown<String>(
-                        labelText: 'الإدارة',
-                        hintText: 'اختر الإدارة',
+                        labelText: '???????',
+                        hintText: '???? ???????',
                         items: departmentOptions,
                         value: selectedDepartmentName,
                         itemAsString: (s) => s,
@@ -202,7 +202,7 @@ class EmployeesView extends StatelessWidget {
                       ),
                     SizedBox(height: AppSpacing.sm.h),
                     ReusableInput(
-                      label: 'الراتب الأساسي (ج.م)',
+                      label: '?????? ??????? (?.?)',
                       hint: '0.00',
                       controller: salaryCtrl,
                       keyboardType: const TextInputType.numberWithOptions(
@@ -211,15 +211,15 @@ class EmployeesView extends StatelessWidget {
                     ),
                     SizedBox(height: AppSpacing.sm.h),
                     ReusableInput(
-                      label: 'ملاحظات',
-                      hint: 'ملاحظات إضافية',
+                      label: '???????',
+                      hint: '??????? ??????',
                       controller: notesCtrl,
                       maxLines: 2,
                       textDirection: TextDirection.rtl,
                     ),
                     SizedBox(height: AppSpacing.lg.h),
                     DialogActions(
-                      confirmText: 'إضافة الموظف',
+                      confirmText: '????? ??????',
                       onConfirm: () async {
                         final name = nameCtrl.text.trim();
                         if (name.isEmpty) return;
@@ -263,31 +263,31 @@ class EmployeesView extends StatelessWidget {
           (context) => StatefulBuilder(
             builder:
                 (context, setState) => ReusableDialog(
-                  title: 'تعديل بيانات الموظف',
+                  title: '????? ?????? ??????',
                   headerIcon: const Icon(Icons.edit_rounded),
                   children: [
                     ReusableInput(
-                      label: 'الاسم',
+                      label: '?????',
                       controller: nameCtrl,
                       textDirection: TextDirection.rtl,
                     ),
                     SizedBox(height: AppSpacing.sm.h),
                     ReusableInput(
-                      label: 'رقم الهاتف',
+                      label: '??? ??????',
                       controller: phoneCtrl,
                       keyboardType: TextInputType.phone,
                     ),
                     SizedBox(height: AppSpacing.sm.h),
-                    ReusableInput.email(label: 'البريد الإلكتروني', controller: emailCtrl),
+                    ReusableInput.email(label: '?????? ??????????', controller: emailCtrl),
                     SizedBox(height: AppSpacing.sm.h),
                     ReusableInput(
-                      label: 'المسمى الوظيفي',
+                      label: '?????? ???????',
                       controller: jobTitleCtrl,
                       textDirection: TextDirection.rtl,
                     ),
                     SizedBox(height: AppSpacing.sm.h),
                     ReusableInput(
-                      label: 'الراتب الأساسي',
+                      label: '?????? ???????',
                       controller: salaryCtrl,
                       keyboardType: const TextInputType.numberWithOptions(
                         decimal: true,
@@ -295,15 +295,15 @@ class EmployeesView extends StatelessWidget {
                     ),
                     SizedBox(height: AppSpacing.sm.h),
                     ReusableDropdown<String>(
-                      labelText: 'حالة الموظف',
-                      hintText: 'اختر الحالة',
+                      labelText: '???? ??????',
+                      hintText: '???? ??????',
                       items: const ['active', 'inactive', 'left'],
                       value: selectedStatus,
                       itemAsString:
                           (s) => switch (s) {
-                            'active' => 'نشط',
-                            'inactive' => 'غير نشط',
-                            'left' => 'غادر',
+                            'active' => '???',
+                            'inactive' => '??? ???',
+                            'left' => '????',
                             _ => s,
                           },
                       onChanged: (v) {
@@ -312,7 +312,7 @@ class EmployeesView extends StatelessWidget {
                     ),
                     SizedBox(height: AppSpacing.lg.h),
                     DialogActions(
-                      confirmText: 'حفظ التغييرات',
+                      confirmText: '??? ?????????',
                       onConfirm: () async {
                         final salary =
                             double.tryParse(salaryCtrl.text) ?? emp.salary;
@@ -336,3 +336,7 @@ class EmployeesView extends StatelessWidget {
     );
   }
 }
+
+
+
+

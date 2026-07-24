@@ -1,14 +1,14 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/customer_ledger_model.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_customer_model.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_ledger_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_ledger_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_customer_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_ledger_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/operations/export_service.dart';
 import 'package:pharmacy_system/app/core/data/services/party_ledger_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../services/supplier_customer_service.dart';
 import 'supplier_customers_event.dart';
@@ -35,7 +35,7 @@ class SupplierCustomersBloc extends Bloc<SupplierCustomersEvent, SupplierCustome
     on<ClearSupplierCustomerSelection>(_onClearSelection);
     on<ExportSupplierCustomerLedger>(_onExportLedger);
 
-    // ذكاء مهندسة: مراقبة حية للتغييرات في قاعدة البيانات
+    // ???? ??????: ?????? ??? ????????? ?? ????? ????????
     _subscription = SupplierCustomerService.watchAll().listen((_) {
       if (!isClosed) add(const LoadSupplierCustomers());
     });
@@ -54,7 +54,7 @@ class SupplierCustomersBloc extends Bloc<SupplierCustomersEvent, SupplierCustome
     try {
       final all = SupplierCustomerService.getAll(activeOnly: false);
       
-      // تحسين الأداء: حساب الأرصدة الموحدة بكفاءة
+      // ????? ??????: ???? ??????? ??????? ??????
       final balances = await PartyLedgerService.getAllCombinedBalances();
       
       final filtered = _applyFilters(all, state.searchQuery, state.selectedFilter, balances);
@@ -92,10 +92,10 @@ class SupplierCustomersBloc extends Bloc<SupplierCustomersEvent, SupplierCustome
       );
       if (!isClosed) add(const LoadSupplierCustomers());
       emit(state.copyWith(isSuccess: true));
-      AppSnackbar.success(AppStrings.msgPartyAdded);
+      AppSnackbar.success(CrmStrings.msgPartyAdded);
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('${AppStrings.msgAddFailed}$e');
+      AppSnackbar.error('${CrmStrings.msgAddFailed}$e');
     }
   }
 
@@ -104,10 +104,10 @@ class SupplierCustomersBloc extends Bloc<SupplierCustomersEvent, SupplierCustome
       await SupplierCustomerService.update(event.supplier);
       if (!isClosed) add(const LoadSupplierCustomers());
       emit(state.copyWith(isSuccess: true));
-      AppSnackbar.success(AppStrings.msgUpdatedSuccess);
+      AppSnackbar.success(CrmStrings.msgUpdatedSuccess);
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('${AppStrings.msgUpdateFailed}$e');
+      AppSnackbar.error('${CrmStrings.msgUpdateFailed}$e');
     }
   }
 
@@ -115,10 +115,10 @@ class SupplierCustomersBloc extends Bloc<SupplierCustomersEvent, SupplierCustome
     try {
       await SupplierCustomerService.delete(event.id);
       if (!isClosed) add(const LoadSupplierCustomers());
-      AppSnackbar.success(AppStrings.msgDeletedSuccess);
+      AppSnackbar.success(CrmStrings.msgDeletedSuccess);
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('${AppStrings.msgDeleteFailedCrm}$e');
+      AppSnackbar.error('${CrmStrings.msgDeleteFailed}$e');
     }
   }
 
@@ -156,10 +156,10 @@ class SupplierCustomersBloc extends Bloc<SupplierCustomersEvent, SupplierCustome
         createdBy: AuthService.currentUser?.id ?? '', notes: event.notes,
       );
       if (!isClosed) add(LoadSupplierCustomerLedger(event.partyId));
-      AppSnackbar.success(AppStrings.msgReceiptRecorded);
+      AppSnackbar.success(CrmStrings.msgReceiptRecorded);
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('${AppStrings.msgReceiptFailed}$e');
+      AppSnackbar.error('${CrmStrings.msgReceiptFailed}$e');
     }
   }
 
@@ -170,10 +170,10 @@ class SupplierCustomersBloc extends Bloc<SupplierCustomersEvent, SupplierCustome
         createdBy: AuthService.currentUser?.id ?? '', notes: event.notes,
       );
       if (!isClosed) add(LoadSupplierCustomerLedger(event.partyId));
-      AppSnackbar.success(AppStrings.msgPaymentRecorded);
+      AppSnackbar.success(CrmStrings.msgPaymentRecorded);
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('${AppStrings.msgPaymentFailedCrm}$e');
+      AppSnackbar.error('${CrmStrings.msgPaymentFailed}$e');
     }
   }
 
@@ -185,10 +185,10 @@ class SupplierCustomersBloc extends Bloc<SupplierCustomersEvent, SupplierCustome
         ledgerTarget: event.ledgerTarget,
       );
       if (!isClosed) add(LoadSupplierCustomerLedger(event.partyId));
-      AppSnackbar.success(AppStrings.msgAdditionRecorded);
+      AppSnackbar.success(CrmStrings.msgAdditionRecorded);
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('${AppStrings.msgAdditionFailed}$e');
+      AppSnackbar.error('${CrmStrings.msgAdditionFailed}$e');
     }
   }
 
@@ -200,10 +200,10 @@ class SupplierCustomersBloc extends Bloc<SupplierCustomersEvent, SupplierCustome
         ledgerTarget: event.ledgerTarget,
       );
       if (!isClosed) add(LoadSupplierCustomerLedger(event.partyId));
-      AppSnackbar.success(AppStrings.msgDiscountRecorded);
+      AppSnackbar.success(CrmStrings.msgDiscountRecorded);
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('${AppStrings.msgDiscountFailed}$e');
+      AppSnackbar.error('${CrmStrings.msgDiscountFailed}$e');
     }
   }
 
@@ -216,10 +216,10 @@ class SupplierCustomersBloc extends Bloc<SupplierCustomersEvent, SupplierCustome
         dueDate: event.dueDate, notes: event.notes,
       );
       if (!isClosed) add(LoadSupplierCustomerLedger(event.partyId));
-      AppSnackbar.success(AppStrings.msgCheckReceiptRecorded);
+      AppSnackbar.success(CrmStrings.msgCheckReceiptRecorded);
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('${AppStrings.msgCheckReceiptFailed}$e');
+      AppSnackbar.error('${CrmStrings.msgCheckReceiptFailed}$e');
     }
   }
 
@@ -232,10 +232,10 @@ class SupplierCustomersBloc extends Bloc<SupplierCustomersEvent, SupplierCustome
         dueDate: event.dueDate, notes: event.notes,
       );
       if (!isClosed) add(LoadSupplierCustomerLedger(event.partyId));
-      AppSnackbar.success(AppStrings.msgCheckPaymentRecorded);
+      AppSnackbar.success(CrmStrings.msgCheckPaymentRecorded);
     } catch (e) {
       if (isClosed) return;
-      AppSnackbar.error('${AppStrings.msgCheckPaymentFailed}$e');
+      AppSnackbar.error('${CrmStrings.msgCheckPaymentFailed}$e');
     }
   }
 
@@ -264,7 +264,7 @@ class SupplierCustomersBloc extends Bloc<SupplierCustomersEvent, SupplierCustome
           break;
         case 'xlsx':
           if (isCustomer) {
-            final models = entries.map((e) => CustomerLedgerModel(
+            final models = entries.map((e) => ContactLedgerModel(
               id: e['id'] as String, customerId: party.id, branchId: '',
               type: CustomerLedgerEntryType.values.firstWhere((t) => t.name == (e['entryType'] as String), orElse: () => CustomerLedgerEntryType.openingBalance),
               debit: (e['debit'] as double?) ?? 0, credit: (e['credit'] as double?) ?? 0,
@@ -289,7 +289,7 @@ class SupplierCustomersBloc extends Bloc<SupplierCustomersEvent, SupplierCustome
           break;
         case 'html':
           if (isCustomer) {
-            final models = entries.map((e) => CustomerLedgerModel(
+            final models = entries.map((e) => ContactLedgerModel(
               id: e['id'] as String, customerId: party.id, branchId: '',
               type: CustomerLedgerEntryType.values.firstWhere((t) => t.name == (e['entryType'] as String), orElse: () => CustomerLedgerEntryType.openingBalance),
               debit: (e['debit'] as double?) ?? 0, credit: (e['credit'] as double?) ?? 0,
@@ -314,7 +314,7 @@ class SupplierCustomersBloc extends Bloc<SupplierCustomersEvent, SupplierCustome
           break;
         case 'xml':
           if (isCustomer) {
-            final models = entries.map((e) => CustomerLedgerModel(
+            final models = entries.map((e) => ContactLedgerModel(
               id: e['id'] as String, customerId: party.id, branchId: '',
               type: CustomerLedgerEntryType.values.firstWhere((t) => t.name == (e['entryType'] as String), orElse: () => CustomerLedgerEntryType.openingBalance),
               debit: (e['debit'] as double?) ?? 0, credit: (e['credit'] as double?) ?? 0,
@@ -338,12 +338,12 @@ class SupplierCustomersBloc extends Bloc<SupplierCustomersEvent, SupplierCustome
           }
           break;
         default:
-          AppSnackbar.error(AppStrings.msgExportUnsupported);
+          AppSnackbar.error(CrmStrings.msgExportUnsupported);
           return;
       }
-      AppSnackbar.success(AppStrings.msgExportSuccessCrm);
+      AppSnackbar.success(CrmStrings.msgExportSuccess);
     } catch (e) {
-      AppSnackbar.error('${AppStrings.msgExportFailedCrm}$e');
+      AppSnackbar.error('${CrmStrings.msgExportFailed}$e');
     }
   }
 
@@ -374,4 +374,10 @@ class SupplierCustomersBloc extends Bloc<SupplierCustomersEvent, SupplierCustome
     return list;
   }
 }
+
+
+
+
+
+
 

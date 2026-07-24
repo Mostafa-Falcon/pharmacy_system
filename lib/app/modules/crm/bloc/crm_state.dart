@@ -1,4 +1,4 @@
-﻿import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
 import 'package:pharmacy_system/app/modules/crm/models/crm_model.dart';
 
 enum CrmStatus { initial, loading, loaded, error }
@@ -63,4 +63,6 @@ class CrmState extends Equatable {
   @override
   List<Object?> get props => [status, allLeads, filteredLeads, searchQuery, stats, error];
 }
+
+
 

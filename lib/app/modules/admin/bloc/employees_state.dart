@@ -37,3 +37,5 @@ final class EmployeesState extends Equatable {
   @override
   List<Object?> get props => [status, employees, selectedEmployee, selectedEmployeePermissions, error];
 }
+
+

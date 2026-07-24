@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../bloc/pos_bloc.dart';
-import '../../../models/pos_cart_line.dart';
+import '../../package:pharmacy_system/app/modules/sales/models/pos_cart_line.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
 class EditCartLineDialog {
   static void show(
@@ -17,7 +17,7 @@ class EditCartLineDialog {
     );
     final discountCtrl = TextEditingController();
 
-    String discountType = AppStrings.fixedAmountShort;
+    String discountType = SalesStrings.fixedAmountShort;
 
     if (line.discountPercent > 0) {
       discountCtrl.text = line.discountAmount.toStringAsFixed(2);
@@ -37,7 +37,7 @@ class EditCartLineDialog {
               children: [
                 Expanded(
                   child: ReusableInput(
-                    label: AppStrings.unitPriceLabel,
+                    label: SalesStrings.unitPriceLabel,
                     controller: priceCtrl,
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
                     prefixIcon: const Icon(Icons.attach_money_rounded),
@@ -46,10 +46,10 @@ class EditCartLineDialog {
                 SizedBox(width: 12.w),
                 Expanded(
                   child: ReusableDropdown<String>(
-                    labelText: AppStrings.discountTypeFieldLabel,
-                    hintText: AppStrings.select,
+                    labelText: SalesStrings.discountTypeFieldLabel,
+                    hintText: GeneralStrings.select,
                     value: discountType,
-                    items: const [AppStrings.fixedAmountShort, AppStrings.cartDiscountPercent],
+                    items: const [SalesStrings.fixedAmountShort, SalesStrings.cartDiscountPercent],
                     itemAsString: (v) => v,
                     onChanged: (v) {
                       if (v != null) {
@@ -62,14 +62,14 @@ class EditCartLineDialog {
             ),
             SizedBox(height: 12.h),
             ReusableInput(
-              label: AppStrings.discountAmountFieldLabel,
+              label: SalesStrings.discountAmountFieldLabel,
               controller: discountCtrl,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               prefixIcon: const Icon(Icons.money_off_rounded),
             ),
             SizedBox(height: 12.h),
             ReusableInput(
-              label: AppStrings.itemNotesFieldLabel,
+              label: SalesStrings.itemNotesFieldLabel,
               controller: TextEditingController(
                 text: line.medicine.description ?? line.medicine.name,
               ),
@@ -78,13 +78,13 @@ class EditCartLineDialog {
             ),
             SizedBox(height: 24.h),
             DialogActions(
-              confirmText: AppStrings.apply,
+              confirmText: GeneralStrings.apply,
               onConfirm: () {
                 final newPrice = double.tryParse(priceCtrl.text) ?? line.unitPrice;
                 final discountVal = double.tryParse(discountCtrl.text) ?? 0.0;
 
                 double percent = 0.0;
-                if (discountType == AppStrings.cartDiscountPercent) {
+                if (discountType == SalesStrings.cartDiscountPercent) {
                   percent = discountVal;
                 } else {
                   final gross = newPrice * line.quantity;
@@ -104,3 +104,8 @@ class EditCartLineDialog {
     );
   }
 }
+
+
+
+
+

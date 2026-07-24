@@ -1,13 +1,13 @@
-﻿
+
 import 'package:uuid/uuid.dart';
-import 'package:pharmacy_system/app/modules/sales/models/sale_model.dart';
-import 'package:pharmacy_system/app/modules/sales/models/purchase_model.dart';
-import 'package:pharmacy_system/app/core/domain/models/base/correction_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/sale_invoice_model.dart';
+import 'package:pharmacy_system/app/core/models/purchases/purchase_invoice_model.dart';
+import 'package:pharmacy_system/app/core/models/base/correction_model.dart';
 import '../auth/auth_service.dart';
 import '../admin/branch_data_service.dart';
 import '../accounting/correction_service.dart';
-import 'package:pharmacy_system/app/modules/accounting/models/journal_entry_model.dart';
-import 'package:pharmacy_system/app/modules/accounting/models/account_enums.dart';
+import 'package:pharmacy_system/app/core/models/accounting/journal_entry_model.dart';
+import 'package:pharmacy_system/app/core/models/accounting/account_enums.dart';
 import 'package:pharmacy_system/app/modules/accounting/services/journal_entry_service.dart';
 import 'package:pharmacy_system/app/modules/accounting/services/accounting_engine_service.dart';
 import 'package:get_it/get_it.dart';
@@ -28,7 +28,7 @@ class VoidOperationsService {
   String get _branchId => AuthService.currentBranchId ?? '';
 
   Future<void> voidSale({
-    required SaleModel sale,
+    required SaleInvoiceModel sale,
     required String reason,
   }) async {
     await BranchDataService.voidSale(sale.id);
@@ -42,7 +42,7 @@ class VoidOperationsService {
   }
 
   Future<void> voidPurchase({
-    required PurchaseModel purchase,
+    required PurchaseInvoiceModel purchase,
     required String reason,
   }) async {
     await BranchDataService.voidPurchase(purchase.id);
@@ -55,7 +55,7 @@ class VoidOperationsService {
     );
   }
 
-  Future<void> _createSaleVoidEntry(SaleModel sale) async {
+  Future<void> _createSaleVoidEntry(SaleInvoiceModel sale) async {
     final entry = await _salesEngine.buildEntry(sale: sale, actorId: _userId);
 
     final reversedLines = entry.lines
@@ -64,7 +64,7 @@ class VoidOperationsService {
             id: const Uuid().v4(),
             debit: l.credit,
             credit: l.debit,
-            description: 'إلغاء: ${l.description ?? ''}',
+            description: '?????: ${l.description ?? ''}',
           ),
         )
         .toList();
@@ -78,7 +78,7 @@ class VoidOperationsService {
       entryType: JournalEntryType.salesReturn,
       referenceId: sale.id,
       referenceNumber: sale.id,
-      description: 'إلغاء فاتورة بيع: ${sale.id} - ${sale.customerName ?? ''}',
+      description: '????? ?????? ???: ${sale.id} - ${sale.customerName ?? ''}',
       lines: reversedLines,
       totalDebit: entry.totalCredit,
       totalCredit: entry.totalDebit,
@@ -90,7 +90,7 @@ class VoidOperationsService {
     await JournalEntryService.create(reversed);
   }
 
-  Future<void> _createPurchaseVoidEntry(PurchaseModel purchase) async {
+  Future<void> _createPurchaseVoidEntry(PurchaseInvoiceModel purchase) async {
     final paidAmount = purchase.paidAmount ?? 0;
     final paymentAccount = purchase.paymentMethod == 'cash'
         ? _purchasePolicy.cashAccountId
@@ -108,7 +108,7 @@ class VoidOperationsService {
             id: const Uuid().v4(),
             debit: l.credit,
             credit: l.debit,
-            description: 'إلغاء: ${l.description ?? ''}',
+            description: '?????: ${l.description ?? ''}',
           ),
         )
         .toList();
@@ -123,7 +123,7 @@ class VoidOperationsService {
       referenceId: purchase.id,
       referenceNumber: purchase.id,
       description:
-          'إلغاء فاتورة مشتريات: ${purchase.id} - ${purchase.supplierName}',
+          '????? ?????? ???????: ${purchase.id} - ${purchase.supplierName}',
       lines: reversedLines,
       totalDebit: entry.totalCredit,
       totalCredit: entry.totalDebit,
@@ -135,18 +135,22 @@ class VoidOperationsService {
     await JournalEntryService.create(reversed);
   }
 
-  List<SaleModel> getVoidableSales() {
+  List<SaleInvoiceModel> getVoidableSales() {
     return BranchDataService.getSales(
         branchId: _branchId,
       ).where((s) => !s.isDeleted).toList()
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 
-  List<PurchaseModel> getVoidablePurchases() {
+  List<PurchaseInvoiceModel> getVoidablePurchases() {
     return BranchDataService.getPurchases(
         branchId: _branchId,
       ).where((p) => !p.isDeleted).toList()
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 }
+
+
+
+
 

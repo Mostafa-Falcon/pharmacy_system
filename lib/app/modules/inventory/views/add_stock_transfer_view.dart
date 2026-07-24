@@ -1,14 +1,14 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../bloc/stock_transfer_bloc.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/stock_transfer_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/stock_transfer_model.dart';
 import '../services/stock_quantity_guard.dart';
 
 class AddStockTransferView extends StatefulWidget {
@@ -39,14 +39,14 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
   void _addItem(MedicineModel medicine) {
     final qty = int.tryParse(_qtyController.text.trim());
     if (qty == null || qty <= 0) {
-      AppSnackbar.error('يرجى إدخال كمية صحيحة');
+      AppSnackbar.error('???? ????? ???? ?????');
       return;
     }
 
     final cost = double.tryParse(_costController.text.trim()) ?? medicine.buyPrice;
 
     if (_items.any((i) => i.medicineId == medicine.id)) {
-      AppSnackbar.warning('هذا الصنف مضاف بالفعل');
+      AppSnackbar.warning('??? ????? ???? ??????');
       return;
     }
 
@@ -74,7 +74,7 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
 
   void _submit() {
     if (_selectedBranchId == null) {
-      AppSnackbar.error('يرجى اختيار الفرع المستهدف');
+      AppSnackbar.error('???? ?????? ????? ????????');
       return;
     }
 
@@ -83,7 +83,7 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
           AuthService.currentBranchId ?? '',
           item.medicineId,
           item.quantity.toDouble())) {
-        AppSnackbar.error('الكمية غير كافية للصنف: ${item.medicineName}');
+        AppSnackbar.error('?????? ??? ????? ?????: ${item.medicineName}');
         return;
       }
     }
@@ -120,10 +120,10 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
     return BlocBuilder<StockTransferBloc, StockTransferState>(
       builder: (context, state) {
         return StandardFormLayout(
-          title: 'تحويل مخزون جديد',
+          title: '????? ????? ????',
           maxWidth: 700,
           isSaving: state.isProcessing,
-          confirmText: 'إرسال التحويل',
+          confirmText: '????? ???????',
           onConfirm: _submit,
           onCancel: () => Navigator.pop(context),
           children: [
@@ -144,10 +144,10 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
       children: [
         const SectionHeader(
           icon: Icons.business_rounded,
-          title: 'الفرع المستهدف',
+          title: '????? ????????',
         ),
         ReusableDropdown<String>(
-          hintText: 'اختر الفرع',
+          hintText: '???? ?????',
           items: state.branches.map((b) => b.id).toList(),
           value: _selectedBranchId,
           itemAsString: (id) {
@@ -169,7 +169,7 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
       children: [
         const SectionHeader(
           icon: Icons.inventory_2_rounded,
-          title: 'الأصناف المنقولة',
+          title: '??????? ????????',
         ),
         MedicineSearchField(
           onSelected: (med) {
@@ -185,7 +185,7 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
         if (_items.isEmpty)
           const EmptyState(
             icon: Icons.inventory_2_outlined,
-            title: 'لم يتم إضافة أصناف بعد',
+            title: '?? ??? ????? ????? ???',
           )
         else
           _buildAddedItemsList(context, scheme),
@@ -224,7 +224,7 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
                             color: scheme.onSurface),
                       ),
                       ReusableText(
-                        'الرصيد: ${med.quantity}',
+                        '??????: ${med.quantity}',
                         style: TextStyle(
                             fontSize: 11.sp,
                             color: scheme.onSurfaceVariant),
@@ -236,7 +236,7 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
                   width: 120.w,
                   child: ReusableInput(
                     controller: _qtyController,
-                    label: 'الكمية',
+                    label: '??????',
                     hint: '0',
                     keyboardType: TextInputType.number,
                     showClearButton: false,
@@ -246,8 +246,8 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
                   width: 140.w,
                   child: ReusableInput(
                     controller: _costController,
-                    hint: 'تكلفة الوحدة',
-                    label: 'سعر التكلفة',
+                    hint: '????? ??????',
+                    label: '??? ???????',
                     keyboardType:
                         const TextInputType.numberWithOptions(
                             decimal: true),
@@ -258,8 +258,8 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
                   width: 180.w,
                   child: ReusableInput(
                     controller: _batchNumberController,
-                    hint: 'رقم الدفعة',
-                    label: 'الدفعة (اختياري)',
+                    hint: '??? ??????',
+                    label: '?????? (???????)',
                     showClearButton: false,
                   ),
                 ),
@@ -269,7 +269,7 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
             Align(
               alignment: AlignmentDirectional.centerEnd,
               child: ReusableButton(
-                text: 'إضافة للصنف',
+                text: '????? ?????',
                 onPressed: () => _addItem(med),
                 prefixIcon: Icons.add_rounded,
               ),
@@ -286,7 +286,7 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
       children: [
         SectionHeader(
           icon: Icons.list_alt_rounded,
-          title: 'الأصناف المضافة (${_items.length})',
+          title: '??????? ??????? (${_items.length})',
         ),
         ListView.separated(
           shrinkWrap: true,
@@ -312,7 +312,7 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
               subtitle: Row(
                 children: [
                   ReusableText(
-                    '${item.quantity} × ${item.unitCost.toStringAsFixed(2)} ر.س',
+                    '${item.quantity} × ${item.unitCost.toStringAsFixed(2)} ?.?',
                     style: TextStyle(
                         fontSize: 11.sp,
                         color: scheme.onSurfaceVariant),
@@ -324,7 +324,7 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
                         color: scheme.onSurfaceVariant),
                     SizedBox(width: 2.w),
                     ReusableText(
-                      'دفعة: ${item.batchNumber}',
+                      '????: ${item.batchNumber}',
                       style: TextStyle(
                           fontSize: 10.sp,
                           color: scheme.onSurfaceVariant),
@@ -347,11 +347,15 @@ class _AddStockTransferViewState extends State<AddStockTransferView> {
   Widget _buildNotesField(BuildContext context) {
     return ReusableInput(
       controller: _notesController,
-      label: 'ملاحظات',
-      hint: 'ملاحظات إضافية (اختياري)',
+      label: '???????',
+      hint: '??????? ?????? (???????)',
       maxLines: 3,
     );
   }
 
 }
+
+
+
+
 

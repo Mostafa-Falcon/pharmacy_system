@@ -1,9 +1,9 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
-import 'package:pharmacy_system/app/modules/contacts/models/customer_ledger_model.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_ledger_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_ledger_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_ledger_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/customer/customer_ledger_service.dart';
 import 'package:pharmacy_system/app/core/data/services/customer/customer_service.dart';
@@ -12,10 +12,10 @@ import 'package:pharmacy_system/app/core/data/services/supplier/supplier_service
 import '../../contacts/supplier_customers/services/supplier_customer_service.dart';
 import 'package:pharmacy_system/app/core/data/services/party_ledger_service.dart';
 import 'package:pharmacy_system/app/core/data/services/operations/export_service.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
 class AdvancedLedgerReportView extends StatefulWidget {
   const AdvancedLedgerReportView({super.key});
@@ -83,7 +83,7 @@ class _AdvancedLedgerReportViewState extends State<AdvancedLedgerReportView> {
             unpaidPurchases: unpaidPurchases,
             purchaseReturns: returns,
             finalDue: balance,
-            type: AppStrings.customerType,
+            type: ReportsStrings.customerType,
           ),
         );
       }
@@ -121,7 +121,7 @@ class _AdvancedLedgerReportViewState extends State<AdvancedLedgerReportView> {
             unpaidPurchases: unpaidPurchases,
             purchaseReturns: returns,
             finalDue: balance,
-            type: AppStrings.supplierType,
+            type: SuppliersStrings.supplierType,
           ),
         );
       }
@@ -142,7 +142,7 @@ class _AdvancedLedgerReportViewState extends State<AdvancedLedgerReportView> {
             unpaidPurchases: 0,
             purchaseReturns: 0,
             finalDue: balance,
-            type: AppStrings.supplierCustomerTypeReport,
+            type: ReportsStrings.supplierCustomerType,
           ),
         );
       }
@@ -234,9 +234,9 @@ class _AdvancedLedgerReportViewState extends State<AdvancedLedgerReportView> {
         fileName:
             'ledger_report_${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.csv',
       );
-      AppSnackbar.success(AppStrings.exportSuccessReports);
+      AppSnackbar.success(ReportsStrings.exportSuccess);
     } catch (e) {
-      AppSnackbar.error(AppStrings.exportFailedFormat.replaceFirst('%s', e.toString()));
+      AppSnackbar.error(ReportsStrings.exportFailedFormat.replaceFirst('%s', e.toString()));
     }
   }
 
@@ -244,7 +244,7 @@ class _AdvancedLedgerReportViewState extends State<AdvancedLedgerReportView> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return HomeShell(
-      title: AppStrings.advancedLedgerReportTitle,
+      title: ReportsStrings.advancedLedgerReportTitle,
       child: Container(
         color: scheme.surfaceContainerLow.withValues(alpha: 0.3),
         padding: EdgeInsets.all(AppSpacing.xl.w),
@@ -263,14 +263,14 @@ class _AdvancedLedgerReportViewState extends State<AdvancedLedgerReportView> {
     return Row(
       children: [
         ReusableButton(
-          text: AppStrings.refresh,
+          text: GeneralStrings.refresh,
           prefixIcon: Icons.refresh_rounded,
           onPressed: _load,
           type: ButtonType.outlined,
         ),
         SizedBox(width: AppSpacing.md.w),
         ReusableButton(
-          text: AppStrings.export,
+          text: GeneralStrings.export,
           prefixIcon: Icons.download_rounded,
           onPressed: _exportCsv,
           type: ButtonType.outlined,
@@ -278,7 +278,7 @@ class _AdvancedLedgerReportViewState extends State<AdvancedLedgerReportView> {
         ReusableButton(
           text: _fromDate != null
               ? DateFormat('yyyy-MM-dd').format(_fromDate!)
-              : AppStrings.fromDateLabel,
+              : ReportsStrings.fromDateLabel,
           prefixIcon: Icons.date_range_rounded,
           onPressed: () => _pickDate(true),
           type: ButtonType.outlined,
@@ -287,7 +287,7 @@ class _AdvancedLedgerReportViewState extends State<AdvancedLedgerReportView> {
         ReusableButton(
           text: _toDate != null
               ? DateFormat('yyyy-MM-dd').format(_toDate!)
-              : AppStrings.toDateLabel,
+              : ReportsStrings.toDateLabel,
           prefixIcon: Icons.date_range_rounded,
           onPressed: () => _pickDate(false),
           type: ButtonType.outlined,
@@ -296,13 +296,13 @@ class _AdvancedLedgerReportViewState extends State<AdvancedLedgerReportView> {
         SizedBox(
           width: 180.w,
           child: ReusableDropdown<String>(
-            hintText: AppStrings.sortLabel,
+            hintText: ReportsStrings.sortLabel,
             value: _sortField,
             items: const ['balance', 'name', 'date'],
             itemAsString: (v) => switch (v) {
-              'balance' => AppStrings.sortByBalance,
-              'name' => AppStrings.sortByName,
-              'date' => AppStrings.sortByDate,
+              'balance' => ReportsStrings.sortByBalance,
+              'name' => ReportsStrings.sortByName,
+              'date' => ReportsStrings.sortByDate,
               _ => v,
             },
             onChanged: (v) {
@@ -328,7 +328,7 @@ class _AdvancedLedgerReportViewState extends State<AdvancedLedgerReportView> {
     if (_rows.isEmpty) {
       return const EmptyState(
         icon: Icons.assessment_outlined,
-        title: AppStrings.noData,
+        title: GeneralStrings.noData,
       );
     }
     return Container(
@@ -359,17 +359,17 @@ class _AdvancedLedgerReportViewState extends State<AdvancedLedgerReportView> {
       child: Row(
         children: [
           _cell('ID', flex: 1),
-          _cell(AppStrings.name, flex: 2),
-          _cell(AppStrings.company, flex: 2),
-          _cell(AppStrings.phone, flex: 1),
-          _cell(AppStrings.address, flex: 2),
-          _cell(AppStrings.openingBalanceLabelReports, flex: 1, align: TextAlign.center),
-          _cell(AppStrings.prepaidLabel, flex: 1, align: TextAlign.center),
-          _cell(AppStrings.addedDateLabel, flex: 1, align: TextAlign.center),
-          _cell(AppStrings.unpaidPurchasesLabel, flex: 1, align: TextAlign.center),
-          _cell(AppStrings.purchaseReturnsLabelReports, flex: 1, align: TextAlign.center),
-          _cell(AppStrings.finalDueLabel, flex: 1, align: TextAlign.center),
-          _cell(AppStrings.type, flex: 1, align: TextAlign.center),
+          _cell(GeneralStrings.name, flex: 2),
+          _cell(GeneralStrings.company, flex: 2),
+          _cell(GeneralStrings.phone, flex: 1),
+          _cell(CustomersStrings.address, flex: 2),
+          _cell(ReportsStrings.openingBalanceLabel, flex: 1, align: TextAlign.center),
+          _cell(ReportsStrings.prepaidLabel, flex: 1, align: TextAlign.center),
+          _cell(ReportsStrings.addedDateLabel, flex: 1, align: TextAlign.center),
+          _cell(ReportsStrings.unpaidPurchasesLabel, flex: 1, align: TextAlign.center),
+          _cell(ReportsStrings.purchaseReturnsLabel, flex: 1, align: TextAlign.center),
+          _cell(ReportsStrings.finalDueLabel, flex: 1, align: TextAlign.center),
+          _cell(GeneralStrings.type, flex: 1, align: TextAlign.center),
         ],
       ),
     );
@@ -477,4 +477,9 @@ class _LedgerReportRow {
     required this.type,
   });
 }
+
+
+
+
+
 

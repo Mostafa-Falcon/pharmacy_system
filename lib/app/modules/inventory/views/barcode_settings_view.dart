@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../bloc/barcode_settings_bloc.dart';
 
 class BarcodeSettingsView extends StatefulWidget {
@@ -75,8 +75,8 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
         }
 
         return StandardModuleLayout(
-          title: AppStrings.barcodeSettingsTitle,
-          subtitle: AppStrings.barcodeSettingsSubtitle,
+          title: InventoryStrings.barcodeSettingsTitle,
+          subtitle: InventoryStrings.barcodeSettingsSubtitle,
           content: LayoutBuilder(
             builder: (context, constraints) {
               final isDesktop = constraints.maxWidth > 900;
@@ -127,7 +127,7 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
           width: double.infinity,
           height: 52.h,
           child: ReusableButton(
-            text: AppStrings.saveBarcodeSettings,
+            text: InventoryStrings.saveBarcodeSettings,
             prefixIcon: Icons.save_rounded,
             isLoading: state.status == BarcodeSettingsStatus.saving,
             onPressed: () => bloc.add(const SaveBarcodeSettings()),
@@ -148,14 +148,14 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
         children: [
           const SectionHeader(
             icon: Icons.auto_awesome_rounded,
-            title: AppStrings.generationAlgorithm,
+            title: InventoryStrings.generationAlgorithm,
           ),
           SizedBox(height: AppSpacing.md.h),
           Row(
             children: [
               Expanded(
                 child: ReusableInput(
-                  label: AppStrings.barcodePrefixLabel,
+                  label: InventoryStrings.barcodePrefixLabel,
                   hint: 'PH',
                   controller: _prefixCtrl,
                   onChanged: (v) => bloc.add(UpdatePrefix(v)),
@@ -165,7 +165,7 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
               SizedBox(width: AppSpacing.md.w),
               Expanded(
                 child: ReusableInput(
-                  label: AppStrings.serialLengthLabel,
+                  label: InventoryStrings.serialLengthLabel,
                   hint: '8',
                   keyboardType: TextInputType.number,
                   controller: _serialLengthCtrl,
@@ -178,13 +178,13 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
           ),
           SizedBox(height: AppSpacing.md.h),
           ReusableDropdown<String>(
-            labelText: AppStrings.encodingFormatLabel,
-            hintText: AppStrings.encodingFormatHint,
+            labelText: InventoryStrings.encodingFormatLabel,
+            hintText: InventoryStrings.encodingFormatHint,
             items: BarcodeSettingsState.formatOptions,
             value: BarcodeSettingsState.formatOptions[state.formatIndex],
             itemAsString: (f) => f == 'shortCode128'
-                ? AppStrings.code128Desc
-                : AppStrings.ean13Desc,
+                ? InventoryStrings.code128Desc
+                : InventoryStrings.ean13Desc,
             onChanged: (v) {
               if (v != null) {
                 bloc.add(
@@ -200,16 +200,16 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
           _buildSwitchTile(
             context,
             icon: Icons.verified_user_rounded,
-            title: AppStrings.pharmacySignatureTitle,
-            subtitle: AppStrings.pharmacySignatureSubtitle,
+            title: InventoryStrings.pharmacySignatureTitle,
+            subtitle: InventoryStrings.pharmacySignatureSubtitle,
             value: state.usePharmacySignature,
             onChanged: (v) => bloc.add(const ToggleUsePharmacySignature()),
           ),
           if (state.usePharmacySignature) ...[
             SizedBox(height: AppSpacing.sm.h),
             ReusableInput(
-              label: AppStrings.pharmacyNameSignature,
-              hint: AppStrings.pharmacyNameSignatureHint,
+              label: InventoryStrings.pharmacyNameSignature,
+              hint: InventoryStrings.pharmacyNameSignatureHint,
               controller: _pharmacyNameCtrl,
               onChanged: (v) => bloc.add(UpdatePharmacyName(v)),
               prefixIcon: const Icon(Icons.store_rounded, size: 18),
@@ -231,14 +231,14 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
         children: [
           const SectionHeader(
             icon: Icons.design_services_rounded,
-            title: AppStrings.visualLabelDesign,
+            title: InventoryStrings.visualLabelDesign,
           ),
           SizedBox(height: AppSpacing.md.h),
           Row(
             children: [
               Expanded(
                 child: ReusableInput(
-                  label: AppStrings.labelWidthMm,
+                  label: InventoryStrings.labelWidthMm,
                   controller: _widthCtrl,
                   keyboardType: TextInputType.number,
                   onChanged: (v) =>
@@ -249,7 +249,7 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
               SizedBox(width: AppSpacing.md.w),
               Expanded(
                 child: ReusableInput(
-                  label: AppStrings.labelHeightMm,
+                  label: InventoryStrings.labelHeightMm,
                   controller: _heightCtrl,
                   keyboardType: TextInputType.number,
                   onChanged: (v) =>
@@ -261,7 +261,7 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
           ),
           SizedBox(height: AppSpacing.lg.h),
           ReusableText(
-            AppStrings.labelContents,
+            InventoryStrings.labelContents,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13.sp),
           ),
           SizedBox(height: AppSpacing.sm.h),
@@ -274,17 +274,17 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
             childAspectRatio: 4,
             children: [
               _buildModernCheckbox(
-                label: AppStrings.showSellPrice,
+                label: InventoryStrings.showSellPrice,
                 value: state.showPrice,
                 onChanged: (_) => bloc.add(const ToggleShowPrice()),
               ),
               _buildModernCheckbox(
-                label: AppStrings.showItemName,
+                label: InventoryStrings.showItemName,
                 value: state.showName,
                 onChanged: (_) => bloc.add(const ToggleShowName()),
               ),
               _buildModernCheckbox(
-                label: AppStrings.showBarcodeCode,
+                label: InventoryStrings.showBarcodeCode,
                 value: state.showBarcode,
                 onChanged: (_) => bloc.add(const ToggleShowBarcode()),
               ),
@@ -306,16 +306,16 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
         children: [
           const SectionHeader(
             icon: Icons.print_rounded,
-            title: AppStrings.printLayoutTitle,
+            title: InventoryStrings.printLayoutTitle,
           ),
           SizedBox(height: AppSpacing.md.h),
           ReusableDropdown<String>(
-            labelText: AppStrings.pageLayoutLabel,
+            labelText: InventoryStrings.pageLayoutLabel,
             items: BarcodeSettingsState.layoutOptions,
             value: BarcodeSettingsState.layoutOptions[state.printLayoutIndex],
             itemAsString: (l) => l == 'labelPrinter'
-                ? AppStrings.thermalPrinterDesc
-                : AppStrings.a4PaperDesc,
+                ? InventoryStrings.thermalPrinterDesc
+                : InventoryStrings.a4PaperDesc,
             onChanged: (v) {
               if (v != null) {
                 bloc.add(
@@ -326,11 +326,11 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
               }
             },
             prefixIcon: Icons.layers_rounded,
-            hintText: AppStrings.pageLayoutLabel,
+            hintText: InventoryStrings.pageLayoutLabel,
           ),
           SizedBox(height: AppSpacing.md.h),
           ReusableInput(
-            label: AppStrings.defaultCopiesPerItem,
+            label: InventoryStrings.defaultCopiesPerItem,
             controller: _copiesCtrl,
             keyboardType: TextInputType.number,
             onChanged: (v) =>
@@ -353,7 +353,7 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
             children: [
               const SectionHeader(
                 icon: Icons.remove_red_eye_rounded,
-                title: AppStrings.barcodePreviewTitle,
+                title: InventoryStrings.barcodePreviewTitle,
               ),
               SizedBox(height: AppSpacing.lg.h),
               Container(
@@ -444,7 +444,7 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
               ),
               SizedBox(height: AppSpacing.md.h),
               _buildInfoNote(
-                AppStrings.barcodePreviewNote.replaceFirst('%s', state.labelWidth.toString()).replaceFirst('%s', state.labelHeight.toString()),
+                InventoryStrings.barcodePreviewNote.replaceFirst('%s', state.labelWidth.toString()).replaceFirst('%s', state.labelHeight.toString()),
               ),
             ],
           ),
@@ -576,3 +576,7 @@ class _BarcodeSettingsViewState extends State<BarcodeSettingsView> {
     );
   }
 }
+
+
+
+

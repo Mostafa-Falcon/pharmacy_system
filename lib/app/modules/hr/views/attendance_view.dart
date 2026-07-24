@@ -1,13 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/tables/shared_table_cells.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../bloc/hr_bloc.dart';
 import 'package:pharmacy_system/app/modules/hr/models/attendance_model.dart';
 import 'package:pharmacy_system/app/modules/hr/models/employee_model.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 
 class AttendanceView extends StatelessWidget {
   const AttendanceView({super.key});
@@ -257,5 +257,8 @@ class _AttendanceHistoryCard extends StatelessWidget {
         _ => Icons.help_rounded,
       };
 }
+
+
+
 
 

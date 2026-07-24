@@ -83,3 +83,5 @@ final settingsTabs = [
     keywords: ['invoice', 'receipt', 'print', 'layout', 'فاتورة', 'طباعة', 'تنسيق'],
   ),
 ];
+
+

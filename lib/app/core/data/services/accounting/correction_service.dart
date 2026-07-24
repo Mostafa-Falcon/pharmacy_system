@@ -6,9 +6,9 @@ import 'package:uuid/uuid.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/audit_logs_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
-import 'package:pharmacy_system/app/core/domain/models/base/correction_model.dart';
+import 'package:pharmacy_system/app/core/models/base/correction_model.dart';
 import '../auth/auth_service.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 
 class CorrectionService {
   static final _uuid = const Uuid();
@@ -108,3 +108,6 @@ class CorrectionService {
     return entries;
   }
 }
+
+
+

@@ -1,5 +1,5 @@
-﻿import 'package:equatable/equatable.dart';
-import 'package:pharmacy_system/app/modules/sales/models/quote_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:pharmacy_system/app/core/models/sales/quote_model.dart';
 
 enum QuotesStatus { initial, loading, loaded, error }
 
@@ -30,4 +30,7 @@ class QuotesState extends Equatable {
   @override
   List<Object?> get props => [status, quotes, error];
 }
+
+
+
 

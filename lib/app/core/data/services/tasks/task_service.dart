@@ -1,4 +1,4 @@
-﻿import 'package:drift/drift.dart';
+import 'package:drift/drift.dart';
 import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 import 'package:pharmacy_system/app/modules/tasks/models/task_models.dart';
@@ -23,7 +23,7 @@ class TaskService {
 
   String get _branchId => AuthService.currentBranchId ?? '';
 
-  // ─── Helpers ───
+  // --- Helpers ---
 
   static TaskModel _toTask(TasksTableData d) => TaskModel(
     id: d.id,
@@ -141,7 +141,7 @@ class TaskService {
     isDeleted: const Value(false),
   );
 
-  // ─── Tasks ───
+  // --- Tasks ---
 
   Future<List<TaskModel>> getTasks({
     String? status,
@@ -218,7 +218,7 @@ class TaskService {
   Future<void> reopenTask(String id) async =>
       updateTask(id, status: 'pending', completedAt: null);
 
-  // ─── Notes ───
+  // --- Notes ---
 
   Future<List<NoteModel>> getNotes() async {
     final items = await _notesDao.getByBranch(_branchId);
@@ -281,7 +281,7 @@ class TaskService {
     await _notesDao.upsert(_toNoteCompanion(note));
   }
 
-  // ─── Reminders ───
+  // --- Reminders ---
 
   Future<List<ReminderModel>> getReminders({bool? dismissed}) async {
     final items = await _remindersDao.getByBranch(_branchId);
@@ -324,7 +324,7 @@ class TaskService {
     await _remindersDao.softDelete(id);
   }
 
-  // ─── Messages ───
+  // --- Messages ---
 
   Future<List<MessageModel>> getMessages({String? userId}) async {
     final items = await _messagesDao.getByBranch(_branchId);
@@ -379,4 +379,6 @@ class TaskService {
     return items.where((m) => m.readAt == null).length;
   }
 }
+
+
 

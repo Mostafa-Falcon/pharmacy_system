@@ -1,13 +1,13 @@
-﻿import 'package:drift/drift.dart' hide Column;
+import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:collection/collection.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import 'package:pharmacy_system/app/modules/auth/models/user_model.dart';
 import 'package:pharmacy_system/app/core/data/services/sound_service.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/injection.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/branches_dao.dart';
@@ -27,17 +27,17 @@ class EmployeesManagementView extends StatelessWidget {
       builder: (context, state) {
         if (state.status == EmployeesStatus.loading && state.employees.isEmpty) {
           return const HomeShell(
-            title: AppStrings.empManagementTitle,
+            title: AdminStrings.empManagement,
             child: Center(child: LoadingIndicator()),
           );
         }
 
         return StandardModuleLayout(
-          title: AppStrings.empManagementTitle,
-          subtitle: AppStrings.empManagementSubtitle,
+          title: AdminStrings.empManagement,
+          subtitle: AdminStrings.empManagementSubtitle,
           actions: [
             ReusableButton(
-              text: AppStrings.empAddAction,
+              text: AdminStrings.empAdd,
               prefixIcon: Icons.person_add_alt_1_rounded,
               type: ButtonType.primary,
               onPressed: () => _showAddEmployeeDialog(context),
@@ -45,7 +45,7 @@ class EmployeesManagementView extends StatelessWidget {
           ],
           stats: [
             SummaryCard(
-              label: 'إجمالي الموظفين',
+              label: '?????? ????????',
               value: '${state.employees.length}',
               icon: Icons.people_outline_rounded,
             ),
@@ -60,8 +60,8 @@ class EmployeesManagementView extends StatelessWidget {
     if (state.employees.isEmpty) {
       return const EmptyState(
         icon: Icons.people_outline_rounded,
-        title: AppStrings.empNoAccounts,
-        subtitle: AppStrings.empAddStartHint,
+        title: AdminStrings.empNoAccounts,
+        subtitle: AdminStrings.empAddStartHint,
       );
     }
 
@@ -101,30 +101,30 @@ class EmployeesManagementView extends StatelessWidget {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => ReusableDialog(
-          title: AppStrings.empAddDialogTitle,
+          title: AdminStrings.empAddDialog,
           headerIcon: Icon(Icons.person_add_rounded, color: scheme.primary),
           children: [
             ReusableInput(
               controller: nameController,
-              label: AppStrings.empNameLabel,
+              label: AdminStrings.empFullName,
               prefixIcon: const Icon(Icons.person_outline_rounded),
             ),
             SizedBox(height: AppSpacing.md.h),
             ReusableInput.email(
               controller: emailController,
-              label: AppStrings.empEmailLabel,
+              label: AdminStrings.empEmailLabel,
               prefixIcon: const Icon(Icons.email_outlined),
             ),
             SizedBox(height: AppSpacing.md.h),
             ReusableInput.password(
               controller: passwordController,
-              label: AppStrings.empDefaultPasswordLabel,
+              label: AdminStrings.empDefaultPassword,
               prefixIcon: const Icon(Icons.lock_outline_rounded),
             ),
             SizedBox(height: AppSpacing.md.h),
             ReusableDropdown<String>(
-              labelText: AppStrings.empRoleTasksLabel,
-              hintText: AppStrings.empSelectRoleHint,
+              labelText: AdminStrings.empRole,
+              hintText: AdminStrings.empRoleHint,
               prefixIcon: Icons.work_outline_rounded,
               value: selectedRole,
               items: const [
@@ -136,13 +136,13 @@ class EmployeesManagementView extends StatelessWidget {
               itemAsString: (val) {
                 switch (val) {
                   case 'pharmacist':
-                    return AppStrings.empRolePharmacistLabel;
+                    return AdminStrings.empRolePharmacist;
                   case 'cashier':
-                    return AppStrings.empRoleCashierLabel;
+                    return AdminStrings.empRoleCashier;
                   case 'inventory_manager':
-                    return AppStrings.empRoleInventoryLabel;
+                    return AdminStrings.empRoleInventoryManager;
                   default:
-                    return AppStrings.empRoleGeneralLabel;
+                    return AdminStrings.empRoleGeneral;
                 }
               },
               onChanged: (value) {
@@ -151,15 +151,15 @@ class EmployeesManagementView extends StatelessWidget {
             ),
             SizedBox(height: AppSpacing.md.h),
             ReusableDropdown<String?>(
-              labelText: AppStrings.empBranchLabel,
-              hintText: AppStrings.empSelectBranchHint,
+              labelText: AdminStrings.empBranch,
+              hintText: AdminStrings.empBranchHint,
               prefixIcon: Icons.storefront_rounded,
               value: selectedBranchId,
               items: [null, ...branches.map((b) => b.id)],
               itemAsString: (val) {
-                if (val == null) return AppStrings.empNoBranchAssigned;
+                if (val == null) return AdminStrings.empNoBranch;
                 final target = branches.firstWhereOrNull((b) => b.id == val);
-                return target?.name ?? AppStrings.empUnknownBranch;
+                return target?.name ?? AdminStrings.empUnknownBranch;
               },
               onChanged: (value) {
                 setDialogState(() => selectedBranchId = value);
@@ -167,16 +167,16 @@ class EmployeesManagementView extends StatelessWidget {
             ),
             SizedBox(height: 16.h),
             DialogActions(
-              cancelText: AppStrings.empCancelAction,
-              confirmText: AppStrings.empConfirmAction,
+              cancelText: AdminStrings.empCancel,
+              confirmText: AdminStrings.empConfirm,
               onCancel: () => Navigator.pop(context),
               onConfirm: () async {
                 if (nameController.text.isEmpty ||
                     emailController.text.isEmpty ||
                     passwordController.text.isEmpty) {
                   AppSnackbar.error(
-                    AppStrings.empFieldsRequiredError,
-                    title: AppStrings.empSecurityAlertTitle,
+                    AdminStrings.empFieldsRequired,
+                    title: AdminStrings.empSecurityAlert,
                   );
                   return;
                 }
@@ -217,24 +217,24 @@ class EmployeesManagementView extends StatelessWidget {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => ReusableDialog(
-          title: AppStrings.empEditDialogTitle,
+          title: AdminStrings.empEdit,
           headerIcon: Icon(Icons.edit_note_rounded, color: scheme.primary),
           children: [
             ReusableInput(
               controller: nameController,
-              label: AppStrings.empEditNameLabel,
+              label: AdminStrings.empEditName,
               prefixIcon: const Icon(Icons.person_outline_rounded),
             ),
             SizedBox(height: AppSpacing.md.h),
             ReusableInput.email(
               controller: emailController,
-              label: AppStrings.empEditEmailLabel,
+              label: AdminStrings.empEditEmail,
               prefixIcon: const Icon(Icons.email_outlined),
             ),
             SizedBox(height: AppSpacing.md.h),
             ReusableDropdown<String>(
-              labelText: AppStrings.empEditRoleLabel,
-              hintText: AppStrings.empEditRoleHint,
+              labelText: AdminStrings.empEditRole,
+              hintText: AdminStrings.empEditRoleHint,
               prefixIcon: Icons.work_outline_rounded,
               value: selectedRole,
               items: const [
@@ -246,13 +246,13 @@ class EmployeesManagementView extends StatelessWidget {
               itemAsString: (val) {
                 switch (val) {
                   case 'pharmacist':
-                    return AppStrings.empRolePharmacistLabel;
+                    return AdminStrings.empRolePharmacist;
                   case 'cashier':
-                    return AppStrings.empRoleCashierLabel;
+                    return AdminStrings.empRoleCashier;
                   case 'inventory_manager':
-                    return AppStrings.empRoleInventoryLabel;
+                    return AdminStrings.empRoleInventoryManager;
                   default:
-                    return AppStrings.empRoleGeneralLabel;
+                    return AdminStrings.empRoleGeneral;
                 }
               },
               onChanged: (value) {
@@ -261,15 +261,15 @@ class EmployeesManagementView extends StatelessWidget {
             ),
             SizedBox(height: AppSpacing.md.h),
             ReusableDropdown<String?>(
-              labelText: AppStrings.empBranchLabel,
-              hintText: AppStrings.empEditBranchHint,
+              labelText: AdminStrings.empBranch,
+              hintText: AdminStrings.empEditBranchHint,
               prefixIcon: Icons.storefront_rounded,
               value: selectedBranchId,
               items: [null, ...branches.map((b) => b.id)],
               itemAsString: (val) {
-                if (val == null) return AppStrings.empNoBranchAssigned;
+                if (val == null) return AdminStrings.empNoBranch;
                 final target = branches.where((b) => b.id == val).firstOrNull;
-                return target?.name ?? AppStrings.empUnknownBranch;
+                return target?.name ?? AdminStrings.empUnknownBranch;
               },
               onChanged: (value) {
                 setDialogState(() => selectedBranchId = value);
@@ -277,14 +277,14 @@ class EmployeesManagementView extends StatelessWidget {
             ),
             SizedBox(height: 16.h),
             DialogActions(
-              cancelText: AppStrings.empCancelAction,
-              confirmText: AppStrings.empSaveChangesAction,
+              cancelText: AdminStrings.empCancel,
+              confirmText: AdminStrings.empSaveChanges,
               onCancel: () => Navigator.pop(context),
               onConfirm: () async {
                 if (nameController.text.isEmpty || emailController.text.isEmpty) {
                   AppSnackbar.error(
-                    AppStrings.empRequiredFieldsError,
-                    title: AppStrings.empSecurityAlertTitle,
+                    AdminStrings.empFieldsError,
+                    title: AdminStrings.empSecurityAlert,
                   );
                   return;
                 }
@@ -308,9 +308,9 @@ class EmployeesManagementView extends StatelessWidget {
     final bloc = context.read<EmployeesBloc>();
     ConfirmDeleteDialog.show(
       context,
-      title: AppStrings.empDeleteConfirmTitle,
-      message: AppStrings.empDeleteConfirmMessageFormat.replaceFirst('%s', emp.name),
-      confirmText: AppStrings.empDeleteActionLabel,
+      title: AdminStrings.empDeactivateTitle,
+      message: AdminStrings.empDeactivateConfirmFormat.replaceFirst('%s', emp.name),
+      confirmText: AdminStrings.empDeactivateYes,
       onConfirm: () {
         bloc.add(DeleteEmployee(id: emp.id));
         SoundService.instance.play(SoundEffect.error);
@@ -342,9 +342,9 @@ class EmployeesManagementView extends StatelessWidget {
     context.read<EmployeesBloc>().add(const LoadEmployees());
 
     if (isActive) {
-      AppSnackbar.success(AppStrings.empActivatedSuccessFormat.replaceFirst('%s', emp.name), title: AppStrings.empStatusUpdateTitle);
+      AppSnackbar.success(AdminStrings.empActivatedFormat.replaceFirst('%s', emp.name), title: AdminStrings.empStatusUpdate);
     } else {
-      AppSnackbar.warning(AppStrings.empDeactivatedWarningFormat.replaceFirst('%s', emp.name), title: AppStrings.empStatusUpdateTitle);
+      AppSnackbar.warning(AdminStrings.empDeactivatedFormat.replaceFirst('%s', emp.name), title: AdminStrings.empStatusUpdate);
     }
   }
 }
@@ -398,9 +398,9 @@ class _EmployeeCard extends StatelessWidget {
                 SizedBox(height: 6.h),
                 Row(
                   children: [
-                    StatusBadge(label: employee.role == UserRole.owner ? AppStrings.empBadgeOwnerLabel : AppStrings.empRoleGeneralLabel, color: scheme.primary),
+                    StatusBadge(label: employee.role == UserRole.owner ? AdminStrings.empBadgeOwner : AdminStrings.empRoleGeneral, color: scheme.primary),
                     SizedBox(width: AppSpacing.xs.w),
-                    StatusBadge(label: employee.isActive ? AppStrings.empBadgeActiveLabel : AppStrings.empBadgeFrozenLabel, color: employee.isActive ? AppColors.success : AppColors.error),
+                    StatusBadge(label: employee.isActive ? AdminStrings.empBadgeActive : AdminStrings.empBadgeFrozen, color: employee.isActive ? AppColors.success : AppColors.error),
                   ],
                 ),
               ],
@@ -420,18 +420,18 @@ class _EmployeeCard extends StatelessWidget {
               ReusableActionMenuItem(
                 value: 'edit',
                 icon: Icons.edit_note_rounded,
-                label: AppStrings.editData,
+                label: AdminStrings.editData,
               ),
               ReusableActionMenuItem(
                 value: 'toggle',
                 icon: employee.isActive ? Icons.lock_person_rounded : Icons.lock_open_rounded,
-                label: employee.isActive ? AppStrings.empFreezeAction : AppStrings.empActivateAction,
+                label: employee.isActive ? AdminStrings.empFreeze : AdminStrings.empActivate,
                 color: employee.isActive ? AppColors.warning : AppColors.success,
               ),
               ReusableActionMenuItem(
                 value: 'delete',
                 icon: Icons.person_remove_alt_1_rounded,
-                label: AppStrings.deleteEmployee,
+                label: AdminStrings.deleteEmployee,
                 color: AppColors.error,
               ),
             ],
@@ -441,4 +441,8 @@ class _EmployeeCard extends StatelessWidget {
     );
   }
 }
+
+
+
+
 

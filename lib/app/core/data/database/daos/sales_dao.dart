@@ -1,89 +1,84 @@
 import 'package:drift/drift.dart';
 import '../database.dart';
+import '../tables/sales_tables.dart';
 
-class SalesDao {
-  final AppDatabase db;
-  SalesDao(this.db);
+part 'sales_dao.g.dart';
 
-  Future<List<SalesTableData>> getAll() => db.select(db.salesTable).get();
+/// 🧾 كائن الاستعلامات والتنفيذ المالي والمبيعات الموحد
+@DriftAccessor(tables: [
+  SaleInvoicesTable,
+  InvoiceReturnsTable,
+  FreeReturnsTable,
+  CashierShiftsTable,
+  ShippingOrdersTable,
+  QuotationsTable,
+  SuspendedSalesTable,
+  PromotionsTable,
+])
+class SalesDao extends DatabaseAccessor<AppDatabase> with _$SalesDaoMixin {
+  SalesDao(super.db);
 
-  Future<List<SalesTableData>> getByBranch(String branchId) =>
-      (db.select(db.salesTable)
+  // ─── 1. فواتير المبيعات ───
+  Future<List<SaleInvoicesTableData>> getInvoicesByBranch(String branchId) =>
+      (select(saleInvoicesTable)
             ..where((t) => t.branchId.equals(branchId) & t.isDeleted.not())
             ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
           .get();
 
-  Stream<List<SalesTableData>> watchByBranch(String branchId) =>
-      (db.select(db.salesTable)
+  Stream<List<SaleInvoicesTableData>> watchInvoicesByBranch(String branchId) =>
+      (select(saleInvoicesTable)
             ..where((t) => t.branchId.equals(branchId) & t.isDeleted.not())
             ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
           .watch();
 
-  Future<SalesTableData?> getById(String id) =>
-      (db.select(db.salesTable)..where((t) => t.id.equals(id)))
+  Future<SaleInvoicesTableData?> getInvoiceById(String id) =>
+      (select(saleInvoicesTable)..where((t) => t.id.equals(id)))
           .getSingleOrNull();
 
-  Future<List<SalesTableData>> getByDateRange(
-      String branchId, DateTime from, DateTime to) =>
-      (db.select(db.salesTable)
-            ..where((t) =>
-                t.branchId.equals(branchId) &
-                t.isDeleted.not() &
-                t.createdAt.isBetween(Variable(from), Variable(to))))
-          .get();
-
-  Future<List<SalesTableData>> getByRepAndDateRange(
-    String repId,
-    DateTime from,
-    DateTime to,
-  ) =>
-      (db.select(db.salesTable)
-            ..where((t) =>
-                t.salesRepId.equals(repId) &
-                t.isDeleted.not() &
-                t.createdAt.isBetween(Variable(from), Variable(to))))
-          .get();
-
-  Future<List<SalesTableData>> getByRepAndBranchAndDateRange(
-    String repId,
-    String branchId,
-    DateTime from,
-    DateTime to,
-  ) =>
-      (db.select(db.salesTable)
-            ..where((t) =>
-                t.salesRepId.equals(repId) &
-                t.branchId.equals(branchId) &
-                t.isDeleted.not() &
-                t.createdAt.isBetween(Variable(from), Variable(to))))
-          .get();
-
-  Future<void> upsert(SalesTableCompanion entry) async {
-    await db.into(db.salesTable).insertOnConflictUpdate(entry);
+  Future<void> upsertInvoice(SaleInvoicesTableCompanion invoice) async {
+    await into(saleInvoicesTable).insertOnConflictUpdate(invoice);
   }
 
-  Future<void> upsertBatch(List<SalesTableCompanion> entries) async {
-    await db.batch((batch) {
-      for (final entry in entries) {
-        batch.insert(db.salesTable, entry, mode: InsertMode.insertOrReplace);
-      }
-    });
+  // ─── 2. المرتجع المربوط والمرتجع الحر ───
+  Future<List<InvoiceReturnsTableData>> getInvoiceReturns(String branchId) =>
+      (select(invoiceReturnsTable)
+            ..where((t) => t.branchId.equals(branchId) & t.isDeleted.not())
+            ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
+          .get();
+
+  Future<List<FreeReturnsTableData>> getFreeReturns(String branchId) =>
+      (select(freeReturnsTable)
+            ..where((t) => t.branchId.equals(branchId) & t.isDeleted.not())
+            ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
+          .get();
+
+  Future<void> upsertInvoiceReturn(InvoiceReturnsTableCompanion entry) async {
+    await into(invoiceReturnsTable).insertOnConflictUpdate(entry);
   }
 
-  Future<void> softDelete(String id) async {
-    await (db.update(db.salesTable)..where((t) => t.id.equals(id))).write(
-      SalesTableCompanion(
-        isDeleted: const Value(true),
-        lastModified: Value(DateTime.now()),
-      ),
-    );
+  Future<void> upsertFreeReturn(FreeReturnsTableCompanion entry) async {
+    await into(freeReturnsTable).insertOnConflictUpdate(entry);
   }
 
-  Future<int> count() => db.select(db.salesTable).get().then((r) => r.length);
+  // ─── 3. ورديات الكاشير وإذونات الشحن ───
+  Future<CashierShiftsTableData?> getActiveShift(String cashierId) =>
+      (select(cashierShiftsTable)
+            ..where((t) => t.cashierId.equals(cashierId) & t.status.equals('open') & t.isDeleted.not()))
+          .getSingleOrNull();
 
-  Future<int> countByRep(String repId) =>
-      (db.select(db.salesTable)
-            ..where((t) => t.salesRepId.equals(repId) & t.isDeleted.not()))
-          .get()
-          .then((rows) => rows.length);
+  Future<void> upsertShift(CashierShiftsTableCompanion shift) async {
+    await into(cashierShiftsTable).insertOnConflictUpdate(shift);
+  }
+
+  Future<List<ShippingOrdersTableData>> getShippingOrders(String branchId) =>
+      (select(shippingOrdersTable)
+            ..where((t) => t.branchId.equals(branchId) & t.isDeleted.not())
+            ..orderBy([(t) => OrderingTerm.desc(t.shippingDate)]))
+          .get();
+
+  Future<void> upsertShippingOrder(ShippingOrdersTableCompanion order) async {
+    await into(shippingOrdersTable).insertOnConflictUpdate(order);
+  }
 }
+
+

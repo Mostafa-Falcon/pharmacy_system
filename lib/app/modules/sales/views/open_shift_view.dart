@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,8 +6,8 @@ import 'dart:ui';
 
 import 'package:pharmacy_system/app/core/data/services/sales/cashier_shift_service.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../../../core/constants/app_strings.dart';
 import '../bloc/pos_bloc.dart';
 
@@ -47,13 +47,13 @@ class OpenShiftView extends StatelessWidget {
               ),
               SizedBox(height: 16.h),
               ReusableText(
-                AppStrings.startNewShift,
+                SalesStrings.startNewShift,
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
               ),
               SizedBox(height: 8.h),
               ReusableText(
-                AppStrings.enterInitialCashHint,
+                SalesStrings.enterInitialCashHint,
                 fontSize: 13,
                 color: Colors.grey,
                 textAlign: TextAlign.center,
@@ -79,7 +79,7 @@ class OpenShiftView extends StatelessWidget {
     return Scaffold(
       backgroundColor: bgColor,
       appBar: AppBar(
-        title: ReusableText(AppStrings.openShiftAction, style: const TextStyle(color: Colors.white)),
+        title: ReusableText(SalesStrings.openShiftAction, style: const TextStyle(color: Colors.white)),
         backgroundColor: AppColors.surfaceTintDarkAlt,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -106,7 +106,7 @@ class _OpenShiftFormState extends State<_OpenShiftForm> {
   @override
   void initState() {
     super.initState();
-    // فحص إضافي: لو فيه وردية مفتوحة أصلاً، نقفل الشاشة دي
+    // ??? ?????: ?? ??? ????? ?????? ?????? ???? ?????? ??
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final shift = CashierShiftService.findOpenShift(
         cashierId: AuthService.currentUser?.id ?? '',
@@ -131,7 +131,7 @@ class _OpenShiftFormState extends State<_OpenShiftForm> {
   Future<void> _openShift() async {
     final cash = double.tryParse(_cashCtrl.text) ?? 0;
     if (cash < 0) {
-      AppSnackbar.warning(AppStrings.invalidAmount);
+      AppSnackbar.warning(CustomersStrings.invalidAmount);
       return;
     }
 
@@ -144,21 +144,21 @@ class _OpenShiftFormState extends State<_OpenShiftForm> {
       
       if (mounted) {
         if (widget.isOverlay) {
-          // تحديث الـ Bloc مباشرة إذا كان موجوداً في الـ Context
+          // ????? ??? Bloc ?????? ??? ??? ??????? ?? ??? Context
           try {
             context.read<PosBloc>().add(const PosRefreshShift());
           } catch (_) {
-            // إذا لم يكن الـ Bloc موجوداً (حالة نادرة هنا) نعود للخلف
+            // ??? ?? ??? ??? Bloc ??????? (???? ????? ???) ???? ?????
             context.pop(true);
           }
         } else {
           context.pop(true);
         }
-        AppSnackbar.success(AppStrings.shiftOpenedSuccess);
+        AppSnackbar.success(SalesStrings.shiftOpenedSuccess);
       }
     } catch (e) {
       if (mounted) {
-        AppSnackbar.error(AppStrings.shiftOpenFailedFormat.replaceFirst('%s', e.toString()));
+        AppSnackbar.error(SalesStrings.shiftOpenFailedFormat.replaceFirst('%s', e.toString()));
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -172,7 +172,7 @@ class _OpenShiftFormState extends State<_OpenShiftForm> {
         ReusableInput(
           controller: _cashCtrl,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          hint: AppStrings.enterOpeningBalanceHint,
+          hint: SalesStrings.enterOpeningBalanceHint,
           prefixIcon: const Icon(Icons.monetization_on_outlined),
         ),
         SizedBox(height: 24.h),
@@ -180,7 +180,7 @@ class _OpenShiftFormState extends State<_OpenShiftForm> {
           width: double.infinity,
           height: 48.h,
           child: ReusableButton(
-            text: AppStrings.openShiftAction,
+            text: SalesStrings.openShiftAction,
             isLoading: _isLoading,
             onPressed: _isLoading ? null : _openShift,
           ),
@@ -189,3 +189,7 @@ class _OpenShiftFormState extends State<_OpenShiftForm> {
     );
   }
 }
+
+
+
+

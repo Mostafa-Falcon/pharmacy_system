@@ -5,18 +5,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:collection/collection.dart';
 
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_unit_model.dart';
-import 'package:pharmacy_system/app/core/domain/models/base/lookup_model.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_unit_model.dart';
+import 'package:pharmacy_system/app/core/models/base/lookup_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/lookup_service.dart';
 import 'package:pharmacy_system/app/core/data/services/inventory/barcode_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_service.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_model.dart';
 import 'package:pharmacy_system/app/modules/inventory/bloc/medicines_bloc.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
 import '../add_medicine_form_data.dart';
 import '../add_medicine_unit_card.dart';
 
@@ -254,14 +254,14 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => ReusableDialog(
-        title: AppStrings.cancel,
+        title: GeneralStrings.cancel,
         headerIcon: const Icon(Icons.warning_amber_rounded),
         children: [
-          const ReusableText(AppStrings.unsavedChangesSimple),
+          const ReusableText(InventoryStrings.unsavedChangesSimple),
           SizedBox(height: 16.h),
           DialogActions(
-            cancelText: AppStrings.continueEditing,
-            confirmText: AppStrings.exit,
+            cancelText: InventoryStrings.continueEditing,
+            confirmText: GeneralStrings.exit,
             onCancel: () => Navigator.pop(context, false),
             onConfirm: () => Navigator.pop(context, true),
           ),
@@ -604,7 +604,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
       child: Column(
         children: [
           const SectionHeader(
-            title: AppStrings.basicInfo,
+            title: InventoryStrings.basicInfo,
             icon: Icons.assignment_outlined,
           ),
           SizedBox(height: 24.h),
@@ -616,7 +616,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
                 width: 450.w,
                 child: ReusableInput(
                   controller: _nameController,
-                  label: AppStrings.medicineNameAr,
+                  label: InventoryStrings.medicineNameAr,
                   prefixIcon: Icon(
                     Icons.medication_rounded,
                     size: 18.sp,
@@ -631,7 +631,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
                 width: 450.w,
                 child: ReusableInput(
                   controller: _nameEnController,
-                  label: AppStrings.medicineNameEn,
+                  label: InventoryStrings.medicineNameEn,
                   prefixIcon: Icon(Icons.font_download_outlined, size: 18.sp),
                 ),
               ),
@@ -650,9 +650,9 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
               Expanded(
                 child: ReusableInput(
                   controller: _imageUrlController,
-                  label: AppStrings.imageUrlLabel,
+                  label: InventoryStrings.imageUrlLabel,
                   prefixIcon: Icon(Icons.link_rounded, size: 18.sp),
-                  hint: AppStrings.imageUrlHint,
+                  hint: InventoryStrings.imageUrlHint,
                   onChanged: _onImageUrlChanged,
                   suffixIcon: _imageUrl != null
                       ? IconButton(
@@ -670,7 +670,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
           ),
           SizedBox(height: 12.h),
           buildToggleCardTile(
-            label: AppStrings.extraOptionsToggle,
+            label: InventoryStrings.extraOptionsToggle,
             value: _appearanceSpecsEnabled,
             icon: Icons.auto_awesome,
             onChanged: (v) => setState(() => _appearanceSpecsEnabled = v),
@@ -682,7 +682,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
                 Expanded(
                   child: ReusableInput(
                     controller: _strengthController,
-                    label: AppStrings.strength,
+                    label: InventoryStrings.strength,
                     prefixIcon: const Icon(Icons.biotech_rounded),
                   ),
                 ),
@@ -690,7 +690,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
                 Expanded(
                   child: ReusableInput(
                     controller: _packageSizeController,
-                    label: AppStrings.packageSize,
+                    label: InventoryStrings.packageSize,
                     prefixIcon: const Icon(Icons.inventory_2_outlined),
                   ),
                 ),
@@ -701,8 +701,8 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
               children: [
                 Expanded(
                   child: ReusableDropdown<String>(
-                    hintText: AppStrings.dosageFormHint,
-                    labelText: AppStrings.dosageFormLabel,
+                    hintText: InventoryStrings.dosageFormHint,
+                    labelText: InventoryStrings.dosageFormLabel,
                     items: _dosageForms,
                     value: _selectedDosageForm,
                     itemAsString: (v) => v,
@@ -712,8 +712,8 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
                 SizedBox(width: 16.w),
                 Expanded(
                   child: ReusableDropdown<String>(
-                    hintText: AppStrings.containerShapeHint,
-                    labelText: AppStrings.containerShapeLabel,
+                    hintText: InventoryStrings.containerShapeHint,
+                    labelText: InventoryStrings.containerShapeLabel,
                     items: _containerShapes,
                     value: _selectedContainerShape,
                     itemAsString: (v) => v,
@@ -726,7 +726,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
             SizedBox(height: 16.h),
             ReusableInput(
               controller: _locationController,
-              label: AppStrings.storageLocation,
+              label: InventoryStrings.storageLocation,
               prefixIcon: Icon(
                 Icons.location_on_outlined,
                 size: 18.sp,
@@ -749,7 +749,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SectionHeader(
-            title: AppStrings.classificationAndBarcode,
+            title: InventoryStrings.classificationAndBarcode,
             icon: Icons.qr_code_scanner_rounded,
           ),
           SizedBox(height: 24.h),
@@ -765,8 +765,8 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
                   children: [
                     Expanded(
                       child: ReusableDropdown<LookupModel>(
-                        labelText: AppStrings.itemTypeLabel,
-                        hintText: AppStrings.searchHint,
+                        labelText: InventoryStrings.itemTypeLabel,
+                        hintText: GeneralStrings.searchHint,
                         items: itemTypes,
                         value: _selectedItemTypeId != null
                             ? itemTypes.firstWhereOrNull(
@@ -800,8 +800,8 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
                   children: [
                     Expanded(
                       child: ReusableDropdown<LookupModel>(
-                        labelText: AppStrings.groupLabel,
-                        hintText: AppStrings.searchHint,
+                        labelText: InventoryStrings.groupLabel,
+                        hintText: GeneralStrings.searchHint,
                         items: groups,
                         value: _selectedGroupId != null
                             ? groups.firstWhereOrNull(
@@ -835,14 +835,14 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
           SizedBox(height: 16.h),
           ReusableInput(
             controller: _barcodeController,
-            label: AppStrings.barcodeMainLabel,
+            label: InventoryStrings.barcodeMainLabel,
             prefixIcon: Icon(
               Icons.qr_code_2_rounded,
               size: 20.sp,
               color: scheme.primary,
             ),
             suffixIcon: IconButton(
-              tooltip: AppStrings.generateBarcodeTooltip,
+              tooltip: InventoryStrings.generateBarcodeTooltip,
               icon: Icon(
                 Icons.autorenew_rounded,
                 color: scheme.primary,
@@ -853,8 +853,8 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
                 _barcodeController.text = generated;
                 _markDirty();
                 AppSnackbar.success(
-                  '${AppStrings.barcodeGeneratedSuccess}$generated',
-                  title: AppStrings.generateBarcode,
+                  '${InventoryStrings.barcodeGeneratedSuccess}$generated',
+                  title: InventoryStrings.generateBarcode,
                 );
               },
             ),
@@ -865,7 +865,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
               padding: EdgeInsets.only(top: 8.h),
               child: ReusableInput(
                 controller: _additionalBarcodeControllers[i],
-                label: '${AppStrings.extraBarcodePrefix}${i + 2}',
+                label: '${InventoryStrings.extraBarcodePrefix}${i + 2}',
                 prefixIcon: Icon(
                   Icons.view_week_rounded,
                   size: 20.sp,
@@ -887,7 +887,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
             onPressed: _addBarcodeField,
             icon: const Icon(Icons.add_circle_outline_rounded),
             label: ReusableText(
-              '${AppStrings.addExtraBarcodePrefix}${_additionalBarcodeControllers.length + 2}',
+              '${InventoryStrings.addExtraBarcodePrefix}${_additionalBarcodeControllers.length + 2}',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
@@ -903,8 +903,8 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
       children: [
         Expanded(
           child: ReusableDropdown<SupplierModel>(
-            labelText: AppStrings.supplierLabel,
-            hintText: AppStrings.supplierHint,
+            labelText: InventoryStrings.supplierLabel,
+            hintText: InventoryStrings.supplierHint,
             items: suppliers,
             value: _selectedSupplierId != null
                 ? suppliers.firstWhereOrNull((s) => s.id == _selectedSupplierId)
@@ -934,12 +934,12 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SectionHeader(
-            title: AppStrings.pricingAndUnitsAdd,
+            title: InventoryStrings.pricingAndUnitsAdd,
             icon: Icons.monetization_on_outlined,
           ),
           SizedBox(height: 24.h),
           buildToggleCardTile(
-            label: AppStrings.dualPricingToggle,
+            label: InventoryStrings.dualPricingToggle,
             value: _showOldPrice,
             icon: Icons.swap_horizontal_circle_outlined,
             onChanged: (v) => setState(() => _showOldPrice = v),
@@ -962,8 +962,8 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
               if (_units.isNotEmpty)
                 ReusableButton(
                   text: _units.length == 1
-                      ? AppStrings.addSubUnitSimple
-                      : AppStrings.addSubSubUnit,
+                      ? InventoryStrings.addSubUnitSimple
+                      : InventoryStrings.addSubSubUnit,
                   prefixIcon: Icons.playlist_add_rounded,
                   type: ButtonType.outlined,
                   onPressed: _addUnit,
@@ -985,7 +985,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SectionHeader(
-            title: AppStrings.taxAndAdvancedSimple,
+            title: InventoryStrings.taxAndAdvancedSimple,
             icon: Icons.tune_rounded,
           ),
           SizedBox(height: 24.h),
@@ -996,7 +996,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
               SizedBox(
                 width: 450.w,
                 child: buildToggleTile(
-                  label: AppStrings.isTaxableSimple,
+                  label: InventoryStrings.isTaxableSimple,
                   value: _isTaxable,
                   icon: Icons.receipt_long_rounded,
                   onChanged: (v) => setState(() {
@@ -1013,7 +1013,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
               SizedBox(
                 width: 450.w,
                 child: buildToggleTile(
-                  label: AppStrings.allowNegativeStockSimple,
+                  label: InventoryStrings.allowNegativeStockSimple,
                   value: _allowNegativeStock,
                   icon: Icons.unpublished_rounded,
                   onChanged: (v) => setState(() {
@@ -1030,8 +1030,8 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
               children: [
                 Expanded(
                   child: ReusableDropdown<String>(
-                    hintText: AppStrings.taxType,
-                    labelText: AppStrings.taxType,
+                    hintText: InventoryStrings.taxType,
+                    labelText: InventoryStrings.taxType,
                     items: const ['percentage', 'fixed'],
                     value: _selectedTaxType,
                     itemAsString: (v) =>
@@ -1048,8 +1048,8 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
                   child: ReusableInput(
                     controller: _taxValueController,
                     label: _selectedTaxType == 'percentage'
-                        ? AppStrings.taxPercentage
-                        : AppStrings.fixedTax,
+                        ? InventoryStrings.taxPercentage
+                        : InventoryStrings.fixedTax,
                     prefixIcon: const Icon(Icons.monetization_on_outlined),
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
@@ -1061,7 +1061,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
             ),
             SizedBox(height: 12.h),
             buildToggleTile(
-              label: AppStrings.pricesIncludeTaxSimple,
+              label: InventoryStrings.pricesIncludeTaxSimple,
               value: _pricesIncludeTax,
               icon: Icons.price_check_rounded,
               onChanged: (v) => setState(() {
@@ -1072,7 +1072,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
           ],
           SizedBox(height: 12.h),
           buildToggleTile(
-            label: AppStrings.isActiveLabel,
+            label: InventoryStrings.isActiveLabel,
             value: _isActive,
             icon: Icons.toggle_on_rounded,
             onChanged: (v) => setState(() {
@@ -1104,7 +1104,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
       child: Column(
         children: [
           const SectionHeader(
-            title: AppStrings.inventorySecurityAdd,
+            title: InventoryStrings.inventorySecurityAdd,
             icon: Icons.shield_outlined,
           ),
           SizedBox(height: 24.h),
@@ -1118,7 +1118,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
                 child: Column(
                   children: [
                     buildToggleCardTile(
-                      label: AppStrings.lowStockAlertOptional,
+                      label: InventoryStrings.lowStockAlertOptional,
                       value: _alertEnabled,
                       icon: Icons.notifications_none_rounded,
                       onChanged: (v) => setState(() => _alertEnabled = v),
@@ -1127,7 +1127,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
                       SizedBox(height: 16.h),
                       ReusableInput(
                         controller: _units.first.minStockController,
-                        label: AppStrings.minStockLimitSimple,
+                        label: InventoryStrings.minStockLimitSimple,
                         prefixIcon:
                             const Icon(Icons.report_problem_outlined),
                         keyboardType: TextInputType.number,
@@ -1141,7 +1141,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
                 child: Column(
                   children: [
                     buildToggleCardTile(
-                      label: AppStrings.expiryTrackingOptional,
+                      label: InventoryStrings.expiryTrackingOptional,
                       value: _expiryTrackingEnabled,
                       icon: Icons.calendar_today_outlined,
                       onChanged: (v) =>
@@ -1180,7 +1180,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
           SizedBox(height: 16.h),
           ReusableInput(
             controller: _descriptionController,
-            label: AppStrings.notesAndFormulasAdd,
+            label: InventoryStrings.notesAndFormulasAdd,
             prefixIcon: const Icon(Icons.edit_note_rounded),
             maxLines: 2,
           ),
@@ -1198,7 +1198,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         ReusableButton(
-          text: AppStrings.cancelAndBack,
+          text: AuthStrings.cancelAndBack,
           onPressed: () => Navigator.of(context).pop(),
           type: ButtonType.outlined,
         ),
@@ -1217,8 +1217,8 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
             ),
             child: ReusableButton(
               text: _isSubmitting
-                  ? AppStrings.submittingMedicine
-                  : AppStrings.saveMedicineFull,
+                  ? InventoryStrings.submittingMedicine
+                  : InventoryStrings.saveMedicineFull,
               onPressed: _isSubmitting ? null : _submit,
               prefixIcon: Icons.check_circle_rounded,
             ),
@@ -1248,7 +1248,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
     final color = _profitMargin >= 0 ? AppColors.success : AppColors.error;
     return StatusBadge(
       label:
-          '${AppStrings.profitMarginSimplePrefix}${_profitMargin.toStringAsFixed(1)}%',
+          '${InventoryStrings.profitMarginSimplePrefix}${_profitMargin.toStringAsFixed(1)}%',
       color: color,
       icon: _profitMargin >= 0
           ? Icons.trending_up_rounded
@@ -1259,7 +1259,7 @@ class _MedicineFormContentState extends State<MedicineFormContent> {
   @override
   Widget build(BuildContext context) {
     return HomeShell(
-      title: widget.isEditMode ? AppStrings.editMedicine : AppStrings.addMedicine,
+      title: widget.isEditMode ? InventoryStrings.editMedicine : InventoryStrings.addMedicine,
       child: PopScope(
         canPop: !_isDirty || _allowPop,
         onPopInvokedWithResult: (didPop, result) async {
@@ -1394,3 +1394,9 @@ class _ExpiryDateRow extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+

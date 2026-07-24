@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../../../routes/app_routes.dart';
 
 class AuthCallbackView extends StatefulWidget {
@@ -34,8 +34,12 @@ class _AuthCallbackViewState extends State<AuthCallbackView> {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: LoadingIndicator(
-        message: AppStrings.emailConfirmationCheck,
+        message: AuthStrings.emailConfirmationCheck,
       ),
     );
   }
 }
+
+
+
+

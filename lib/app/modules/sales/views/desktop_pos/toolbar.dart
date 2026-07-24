@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
 
 import '../../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/design_system/design_system.dart';
+import 'package:pharmacy_system/app/shared/presentation/design_system/design_system.dart';
 import '../../../../routes/app_routes.dart';
 import '../../bloc/pos_bloc.dart';
 import 'dialogs.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
 class DesktopToolbar extends StatelessWidget {
   final PosBloc controller;
@@ -39,20 +39,20 @@ class DesktopToolbar extends StatelessWidget {
               children: [
                 _toolBtn(
                   context,
-                  AppStrings.posAddExpenses,
+                  SalesStrings.posAddExpenses,
                   Icons.add_card_rounded,
                   AppColors.posCategoryColor(0),
                   () => DesktopDialogs.showExpenseDialog(context, controller),
                 ),
                 _toolBtn(
                   context,
-                  AppStrings.posItemInquiry,
+                  SalesStrings.posItemInquiry,
                   Icons.search_rounded,
                   AppColors.posCategoryColor(1),
                   () => showDialog(
                     context: context,
                     builder: (context) => ReusableDialog(
-                      title: AppStrings.posItemInquiry,
+                      title: SalesStrings.posItemInquiry,
                       children: [
                         MedicineSearchField(
                           onSelected: (m) {
@@ -66,35 +66,35 @@ class DesktopToolbar extends StatelessWidget {
                 ),
                 _toolBtn(
                   context,
-                  AppStrings.posQuickItems,
+                  SalesStrings.posQuickItems,
                   Icons.bolt_rounded,
                   AppColors.posCategoryColor(2),
                   () => DesktopDialogs.showQuickItemsDialog(context, controller),
                 ),
                 _toolBtn(
                   context,
-                  AppStrings.promotionsTitle,
+                  SalesStrings.promotionsTitle,
                   Icons.local_offer_rounded,
                   AppColors.posCategoryColor(14),
                   () => DesktopDialogs.showPromotionsDialog(context, controller),
                 ),
                 _toolBtn(
                   context,
-                  AppStrings.damagedStockTitle,
+                  SalesStrings.damagedStockTitle,
                   Icons.warning_amber_rounded,
                   AppColors.posCategoryColor(15),
                   () => DesktopDialogs.showDamagedStockDialog(context, controller),
                 ),
                 _toolBtn(
                   context,
-                  AppStrings.openingStockTitle,
+                  SalesStrings.openingStockTitle,
                   Icons.playlist_add_check_rounded,
                   AppColors.posCategoryColor(16),
                   () => DesktopDialogs.showOpeningStockDialog(context, controller),
                 ),
                 _toolBtn(
                   context,
-                  AppStrings.posSuspendedSales,
+                  SalesStrings.posSuspendedSales,
                   Icons.pause_circle_outline,
                   AppColors.posCategoryColor(3),
                   () => DesktopDialogs.showSuspendedSalesDialog(
@@ -104,21 +104,21 @@ class DesktopToolbar extends StatelessWidget {
                 ),
                 _toolBtn(
                   context,
-                  AppStrings.posRecentTransactions,
+                  SalesStrings.posRecentTransactions,
                   Icons.history_rounded,
                   AppColors.posCategoryColor(4),
                   () => DesktopDialogs.showRecentSalesDialog(context, controller),
                 ),
                 _toolBtn(
                   context,
-                  AppStrings.posLoadFromCustomer,
+                  SalesStrings.posLoadFromCustomer,
                   Icons.download_rounded,
                   AppColors.posCategoryColor(5),
                   () => DesktopDialogs.showLoadFromCustomerDialog(context, controller),
                 ),
                 _toolBtn(
                   context,
-                  AppStrings.posCustomerPayment,
+                  SalesStrings.posCustomerPayment,
                   Icons.payments_rounded,
                   AppColors.posCategoryColor(6),
                   () => DesktopDialogs.showPaymentDialog(
@@ -129,7 +129,7 @@ class DesktopToolbar extends StatelessWidget {
                 ),
                 _toolBtn(
                   context,
-                  AppStrings.posSupplierPayment,
+                  SalesStrings.posSupplierPayment,
                   Icons.account_balance_wallet_rounded,
                   AppColors.posCategoryColor(7),
                   () => DesktopDialogs.showPaymentDialog(
@@ -140,35 +140,35 @@ class DesktopToolbar extends StatelessWidget {
                 ),
                 _toolBtn(
                   context,
-                  AppStrings.posSalesReturn,
+                  SalesStrings.posSalesReturn,
                   Icons.assignment_return_outlined,
                   AppColors.posCategoryColor(8),
                   () => context.push(Routes.SALES_RETURN),
                 ),
                 _toolBtn(
                   context,
-                  AppStrings.posCalculator,
+                  SalesStrings.posCalculator,
                   Icons.calculate_outlined,
                   AppColors.posCategoryColor(9),
                   () => ReusableCalculator.show(context),
                 ),
                 _toolBtn(
                   context,
-                  showProductsVal ? AppStrings.posHideProducts : AppStrings.posShowProducts,
+                  showProductsVal ? SalesStrings.posHideProducts : SalesStrings.posShowProducts,
                   Icons.grid_view_rounded,
                   AppColors.posCategoryColor(10),
                   () => controller.add(const PosToggleCatalog()),
                 ),
                 _toolBtn(
                   context,
-                  isFSVal ? AppStrings.posExitFullScreen : AppStrings.posFullScreen,
+                  isFSVal ? SalesStrings.posExitFullScreen : SalesStrings.posFullScreen,
                   Icons.fullscreen_rounded,
                   AppColors.posCategoryColor(11),
                   () => controller.add(const PosToggleFullScreen()),
                 ),
                 _toolBtn(
                   context,
-                  AppStrings.posSessionDetails,
+                  SalesStrings.posSessionDetails,
                   Icons.info_outline_rounded,
                   AppColors.posCategoryColor(12),
                   () => DesktopDialogs.showSessionDetailsDialog(
@@ -178,14 +178,14 @@ class DesktopToolbar extends StatelessWidget {
                 ),
                 _toolBtn(
                   context,
-                  AppStrings.posCloseShift,
+                  SalesStrings.posCloseShift,
                   Icons.exit_to_app_rounded,
                   AppColors.posCategoryColor(13),
                   () => DesktopDialogs.showCloseShiftDialog(context, controller),
                 ),
                 _toolBtn(
                   context,
-                  state.isPrintEnabled ? AppStrings.printEnabled : AppStrings.printDisabled,
+                  state.isPrintEnabled ? SalesStrings.printEnabled : SalesStrings.printDisabled,
                   state.isPrintEnabled ? Icons.print_rounded : Icons.print_disabled_rounded,
                   state.isPrintEnabled ? AppColors.success : AppColors.error,
                   () => controller.add(const PosTogglePrint()),
@@ -219,3 +219,8 @@ class DesktopToolbar extends StatelessWidget {
     );
   }
 }
+
+
+
+
+

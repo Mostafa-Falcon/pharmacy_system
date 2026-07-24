@@ -1,14 +1,14 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/bloc/base_paginated_bloc.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_brand_model.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_brand_model.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/extensions/string_ext.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../bloc/brands_bloc.dart';
 
 class BrandsView extends StatelessWidget {
@@ -19,7 +19,7 @@ class BrandsView extends StatelessWidget {
     return BlocBuilder<BrandsBloc, PaginatedState<MedicineBrandModel>>(
       builder: (context, state) {
         return HomeShell(
-          title: 'Ã˜Â§Ã™â€žÃ˜Â¹Ã™â€žÃ˜Â§Ã™â€¦Ã˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â¬Ã˜Â§Ã˜Â±Ã™Å Ã˜Â©',
+          title: 'Ø§Ù„Ø¹Ù„Ø§Ù…Ø§Øª Ø§Ù„ØªØ¬Ø§Ø±ÙŠØ©',
           child: Container(
             color: Theme.of(context)
                 .colorScheme
@@ -45,13 +45,13 @@ class BrandsView extends StatelessWidget {
     return Row(
       children: [
         ReusableButton(
-          text: 'Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â© Ã˜Â¹Ã™â€žÃ˜Â§Ã™â€¦Ã˜Â© Ã˜ÂªÃ˜Â¬Ã˜Â§Ã˜Â±Ã™Å Ã˜Â©',
+          text: 'Ø¥Ø¶Ø§ÙØ© Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ©',
           prefixIcon: Icons.add_rounded,
           onPressed: () => _showBrandDialog(context),
         ),
         const Spacer(),
         ReusableText(
-          '${state.items.length} Ã˜Â¹Ã™â€žÃ˜Â§Ã™â€¦Ã˜Â© Ã˜ÂªÃ˜Â¬Ã˜Â§Ã˜Â±Ã™Å Ã˜Â©',
+          '${state.items.length} Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ©',
           style: TextStyle(
             fontSize: 12.sp,
             color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -65,7 +65,7 @@ class BrandsView extends StatelessWidget {
     final bloc = context.read<BrandsBloc>();
     if (state.searchQuery != '' || state.items.length > 5) {
       return SearchField(
-        hint: 'Ã˜Â¨Ã˜Â­Ã˜Â« Ã˜Â¹Ã™â€  Ã˜Â¹Ã™â€žÃ˜Â§Ã™â€¦Ã˜Â© Ã˜ÂªÃ˜Â¬Ã˜Â§Ã˜Â±Ã™Å Ã˜Â©...',
+        hint: 'Ø¨Ø­Ø« Ø¹Ù† Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ©...',
         onChanged: (v) => bloc.add(SearchItems(v)),
         onClear: () => bloc.add(const SearchItems('')),
       );
@@ -81,7 +81,7 @@ class BrandsView extends StatelessWidget {
     if (items.isEmpty) {
       return const EmptyState(
         icon: Icons.branding_watermark_outlined,
-        title: 'Ã™â€žÃ˜Â§ Ã™Å Ã™Ë†Ã˜Â¬Ã˜Â¯ Ã˜Â¹Ã™â€žÃ˜Â§Ã™â€¦Ã˜Â§Ã˜Âª Ã˜ÂªÃ˜Â¬Ã˜Â§Ã˜Â±Ã™Å Ã˜Â©',
+        title: 'Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ø¹Ù„Ø§Ù…Ø§Øª ØªØ¬Ø§Ø±ÙŠØ©',
       );
     }
     return ListView.separated(
@@ -97,12 +97,12 @@ class BrandsView extends StatelessWidget {
       ReusableActionMenuItem(
         value: 'edit',
         icon: Icons.edit_outlined,
-        label: AppStrings.edit,
+        label: GeneralStrings.edit,
       ),
       ReusableActionMenuItem(
         value: 'delete',
         icon: Icons.delete_outline_rounded,
-        label: AppStrings.delete,
+        label: GeneralStrings.delete,
         color: AppColors.error,
       ),
     ];
@@ -121,8 +121,8 @@ class BrandsView extends StatelessWidget {
           case 'delete':
             ConfirmDeleteDialog.show(
               context,
-              title: 'Ã˜Â­Ã˜Â°Ã™Â Ã˜Â¹Ã™â€žÃ˜Â§Ã™â€¦Ã˜Â© Ã˜ÂªÃ˜Â¬Ã˜Â§Ã˜Â±Ã™Å Ã˜Â©',
-              message: 'Ã™â€¡Ã™â€ž Ã˜Â£Ã™â€ Ã˜Âª Ã™â€¦Ã˜ÂªÃ˜Â£Ã™Æ’Ã˜Â¯ Ã™â€¦Ã™â€  Ã˜Â­Ã˜Â°Ã™Â "${brand.name}"Ã˜Å¸',
+              title: 'Ø­Ø°Ù Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ©',
+              message: 'Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯ Ù…Ù† Ø­Ø°Ù "${brand.name}"ØŸ',
               onConfirm: () => bloc.add(DeleteBrand(brand.id)),
             );
             break;
@@ -141,23 +141,23 @@ class BrandsView extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => ReusableDialog(
-        title: isEditing ? 'Ã˜ÂªÃ˜Â¹Ã˜Â¯Ã™Å Ã™â€ž Ã˜Â¹Ã™â€žÃ˜Â§Ã™â€¦Ã˜Â© Ã˜ÂªÃ˜Â¬Ã˜Â§Ã˜Â±Ã™Å Ã˜Â©' : 'Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â© Ã˜Â¹Ã™â€žÃ˜Â§Ã™â€¦Ã˜Â© Ã˜ÂªÃ˜Â¬Ã˜Â§Ã˜Â±Ã™Å Ã˜Â© Ã˜Â¬Ã˜Â¯Ã™Å Ã˜Â¯Ã˜Â©',
+        title: isEditing ? 'ØªØ¹Ø¯ÙŠÙ„ Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ©' : 'Ø¥Ø¶Ø§ÙØ© Ø¹Ù„Ø§Ù…Ø© ØªØ¬Ø§Ø±ÙŠØ© Ø¬Ø¯ÙŠØ¯Ø©',
         children: [
           ReusableInput.text(
             controller: nameCtrl,
-            label: 'Ã˜Â§Ã™â€žÃ˜Â§Ã˜Â³Ã™â€¦ *',
+            label: 'Ø§Ù„Ø§Ø³Ù… *',
             textDirection: TextDirection.rtl,
           ),
           SizedBox(height: AppSpacing.sm.h),
           ReusableInput.text(
             controller: descCtrl,
-            label: 'Ã˜Â§Ã™â€žÃ™Ë†Ã˜ÂµÃ™Â',
+            label: 'Ø§Ù„ÙˆØµÙ',
             maxLines: 2,
             textDirection: TextDirection.rtl,
           ),
           SizedBox(height: AppSpacing.md.h),
           DialogActions(
-            confirmText: isEditing ? 'Ã˜Â­Ã™ÂÃ˜Â¸' : 'Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â©',
+            confirmText: isEditing ? 'Ø­ÙØ¸' : 'Ø¥Ø¶Ø§ÙØ©',
             onConfirm: () {
               if (nameCtrl.text.trim().isEmpty) return;
               if (isEditing) {
@@ -181,5 +181,10 @@ class BrandsView extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
 
 

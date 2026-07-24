@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 import '../bloc/reports_bloc.dart';
 import '../services/report_projection_service.dart';
@@ -40,7 +40,7 @@ class ProfitReportView extends StatelessWidget {
                   final report = state.bundle;
                   if (report == null) {
                     return const EmptyState(
-                      title: AppStrings.noData,
+                      title: GeneralStrings.noData,
                       icon: Icons.bar_chart_outlined,
                     );
                   }
@@ -297,8 +297,12 @@ class ProfitReportView extends StatelessWidget {
   }
 
   String _formatMoney(double value) {
-    return '${value.toStringAsFixed(2)} ${AppStrings.currency}';
+    return '${value.toStringAsFixed(2)} ${GeneralStrings.currency}';
   }
 }
+
+
+
+
 
 

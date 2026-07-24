@@ -83,7 +83,7 @@ class ImportMedicinesBloc extends Bloc<ImportMedicinesEvent, ImportMedicinesStat
           status: ImportMedicinesStatus.success,
           progress: 1.0,
           currentStep: 'done',
-          resultMessage: '${AppStrings.importSuccessPrefix}$count${AppStrings.importSuccessSuffix}',
+          resultMessage: '${InventoryStrings.importSuccessPrefix}$count${InventoryStrings.importSuccessSuffix}',
           hasError: false,
           itemsFound: count,
         ));
@@ -91,7 +91,7 @@ class ImportMedicinesBloc extends Bloc<ImportMedicinesEvent, ImportMedicinesStat
         emit(state.copyWith(
           status: ImportMedicinesStatus.error,
           progress: 1.0,
-          resultMessage: AppStrings.importNoData,
+          resultMessage: InventoryStrings.importNoData,
           hasError: true,
           currentStep: null,
         ));
@@ -100,7 +100,7 @@ class ImportMedicinesBloc extends Bloc<ImportMedicinesEvent, ImportMedicinesStat
       emit(state.copyWith(
         status: ImportMedicinesStatus.error,
         progress: 1.0,
-        resultMessage: '${AppStrings.importFailPrefix}$e',
+        resultMessage: '${InventoryStrings.importFailPrefix}$e',
         hasError: true,
         currentStep: null,
       ));
@@ -111,3 +111,7 @@ class ImportMedicinesBloc extends Bloc<ImportMedicinesEvent, ImportMedicinesStat
     emit(const ImportMedicinesState());
   }
 }
+
+
+
+

@@ -64,3 +64,5 @@ final class LoadEmployeePermissions extends EmployeesEvent {
   @override
   List<Object?> get props => [userId];
 }
+
+

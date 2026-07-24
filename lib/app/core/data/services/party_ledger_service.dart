@@ -1,9 +1,9 @@
-﻿import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
+import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/utils/app_utils.dart';
 import 'package:pharmacy_system/app/core/data/services/customer/customer_ledger_service.dart';
 import 'package:pharmacy_system/app/core/data/services/ledger_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_ledger_service.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_ledger_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_ledger_model.dart';
 
 class PartyLedgerService {
   static String get _currentBranchId => AuthService.currentBranchId ?? '';
@@ -53,7 +53,7 @@ class PartyLedgerService {
         balanceAfter: newBalance,
         referenceId: returnId,
         referenceNumber: returnNumber,
-        notes: 'مرتجع مبيعات للعميل',
+        notes: '????? ?????? ??????',
         createdBy: createdBy,
         entryDate: DateTime.now(),
       );
@@ -110,7 +110,7 @@ class PartyLedgerService {
         balanceAfter: newBalance,
         referenceId: returnId,
         referenceNumber: returnNumber,
-        notes: 'مرتجع مشتريات من المورد',
+        notes: '????? ??????? ?? ??????',
         createdBy: createdBy,
         entryDate: DateTime.now(),
       );
@@ -352,9 +352,12 @@ class PartyLedgerService {
     }
   }
 
-  /// الحصول على كافة الأرصدة الموحدة بكفاءة
+  /// ?????? ??? ???? ??????? ??????? ??????
   static Future<Map<String, double>> getAllCombinedBalances() async {
     return LedgerService.getAllCombinedBalances();
   }
 }
+
+
+
 

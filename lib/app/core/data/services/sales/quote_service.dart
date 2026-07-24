@@ -1,11 +1,11 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/quotes_dao.dart';
-import 'package:pharmacy_system/app/modules/sales/models/quote_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/quote_model.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
 import '../auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/utils/app_utils.dart';
@@ -57,7 +57,7 @@ class QuoteService {
       number: Value(m.number),
       customerName: Value(m.customerName),
       notes: Value(m.notes),
-      items: Value(jsonEncode(m.items)), // تحويل القائمة لنص JSON
+      items: Value(jsonEncode(m.items)), // ????? ??????? ??? JSON
       subtotal: Value(m.subtotal),
       discount: Value(m.discount),
       total: Value(m.total),
@@ -127,7 +127,7 @@ class QuoteService {
   static Future<QuoteModel> updateStatus(String id, QuoteStatus status) async {
     try {
       final quote = _cached().firstWhereOrNull((q) => q.id == id);
-      if (quote == null) throw Exception('عرض السعر غير موجود');
+      if (quote == null) throw Exception('??? ????? ??? ?????');
       final updated = quote.copyWith(status: status);
       await _dao.upsert(_toCompanion(updated));
       return updated;
@@ -148,4 +148,7 @@ class QuoteService {
     }
   }
 }
+
+
+
 

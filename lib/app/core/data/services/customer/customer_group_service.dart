@@ -1,10 +1,10 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:uuid/uuid.dart';
 import 'package:drift/drift.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/customer_groups_dao.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/customer_group_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_group_model.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
 import 'package:pharmacy_system/app/modules/archive/services/archive_service.dart';
 import '../auth/auth_service.dart';
@@ -164,4 +164,7 @@ class CustomerGroupService {
     }
   }
 }
+
+
+
 

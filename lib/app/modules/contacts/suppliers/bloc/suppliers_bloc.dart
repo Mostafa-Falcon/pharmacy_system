@@ -1,12 +1,12 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_ledger_service.dart';
 import 'package:pharmacy_system/app/core/data/services/operations/export_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
 import 'package:pharmacy_system/app/core/data/repositories/suppliers_repository.dart';
 import '../../../../core/injection.dart';
 import 'suppliers_event.dart';
@@ -42,7 +42,7 @@ class SuppliersBloc extends Bloc<SuppliersEvent, SuppliersState> {
     on<BulkDeleteSuppliers>(_onBulkDelete);
     on<BulkToggleSuppliersActive>(_onBulkToggleActive);
 
-    // اشتراك لحظي في تحديثات الموردين عبر الـ Repository الموحد
+    // ?????? ???? ?? ??????? ???????? ??? ??? Repository ??????
     _subscription = sl<SuppliersRepository>().watchSuppliers().listen((_) {
       if (!isClosed) add(const LoadSuppliers());
     });
@@ -85,8 +85,8 @@ class SuppliersBloc extends Bloc<SuppliersEvent, SuppliersState> {
       }
       emit(state.copyWith(selectedIds: {}));
       add(const LoadSuppliers());
-      AppSnackbar.success('تم حذف العناصر المحددة');
-    } catch (e) { AppSnackbar.error('فشل في الحذف الجماعي: $e'); }
+      AppSnackbar.success('?? ??? ??????? ???????');
+    } catch (e) { AppSnackbar.error('??? ?? ????? ???????: $e'); }
   }
 
   Future<void> _onBulkToggleActive(BulkToggleSuppliersActive event, Emitter<SuppliersState> emit) async {
@@ -103,8 +103,8 @@ class SuppliersBloc extends Bloc<SuppliersEvent, SuppliersState> {
       }
       emit(state.copyWith(selectedIds: {}));
       add(const LoadSuppliers());
-      AppSnackbar.success('تم تحديث حالة العناصر المحددة');
-    } catch (e) { AppSnackbar.error('فشل في التحديث الجماعي: $e'); }
+      AppSnackbar.success('?? ????? ???? ??????? ???????');
+    } catch (e) { AppSnackbar.error('??? ?? ??????? ???????: $e'); }
   }
 
   String get _branchId => AuthService.currentBranchId ?? '';
@@ -167,10 +167,10 @@ class SuppliersBloc extends Bloc<SuppliersEvent, SuppliersState> {
       }
       add(const LoadSuppliers());
       emit(state.copyWith(status: SuppliersStatus.success));
-      AppSnackbar.success('تم إضافة المورد بنجاح');
+      AppSnackbar.success('?? ????? ?????? ?????');
     } catch (e) {
       emit(state.copyWith(status: SuppliersStatus.error, error: e.toString()));
-      AppSnackbar.error('فشل في إضافة المورد: $e');
+      AppSnackbar.error('??? ?? ????? ??????: $e');
     }
   }
 
@@ -179,10 +179,10 @@ class SuppliersBloc extends Bloc<SuppliersEvent, SuppliersState> {
       await SupplierService.update(event.supplier);
       add(const LoadSuppliers());
       emit(state.copyWith(status: SuppliersStatus.success));
-      AppSnackbar.success('تم تحديث بيانات المورد');
+      AppSnackbar.success('?? ????? ?????? ??????');
     } catch (e) {
       emit(state.copyWith(status: SuppliersStatus.error, error: e.toString()));
-      AppSnackbar.error('فشل في التحديث: $e');
+      AppSnackbar.error('??? ?? ???????: $e');
     }
   }
 
@@ -217,9 +217,9 @@ class SuppliersBloc extends Bloc<SuppliersEvent, SuppliersState> {
       if (s != null) {
         await SupplierService.update(s.copyWith(isDeleted: true));
         add(const LoadSuppliers());
-        AppSnackbar.success('تم حذف المورد');
+        AppSnackbar.success('?? ??? ??????');
       }
-    } catch (e) { AppSnackbar.error('فشل في الحذف: $e'); }
+    } catch (e) { AppSnackbar.error('??? ?? ?????: $e'); }
   }
 
   void _onSelect(SelectSupplier event, Emitter<SuppliersState> emit) {
@@ -238,40 +238,40 @@ class SuppliersBloc extends Bloc<SuppliersEvent, SuppliersState> {
     try {
       await SupplierLedgerService.recordSupplierPayment(supplierId: event.supplierId, branchId: _branchId, amount: event.amount, createdBy: AuthService.currentUser?.id ?? '', notes: event.notes);
       add(LoadSupplierLedger(event.supplierId));
-      AppSnackbar.success('تم تسجيل سند الصرف');
-    } catch (e) { AppSnackbar.error('فشل في التسجيل: $e'); }
+      AppSnackbar.success('?? ????? ??? ?????');
+    } catch (e) { AppSnackbar.error('??? ?? ???????: $e'); }
   }
 
   Future<void> _onAddition(RecordSupplierAdditionNotice event, Emitter<SuppliersState> emit) async {
     try {
       await SupplierLedgerService.recordAdditionNotice(supplierId: event.supplierId, branchId: _branchId, amount: event.amount, createdBy: AuthService.currentUser?.id ?? '', notes: event.notes);
       add(LoadSupplierLedger(event.supplierId));
-      AppSnackbar.success('تم تسجيل إشعار الإضافة');
-    } catch (e) { AppSnackbar.error('فشل في التسجيل: $e'); }
+      AppSnackbar.success('?? ????? ????? ???????');
+    } catch (e) { AppSnackbar.error('??? ?? ???????: $e'); }
   }
 
   Future<void> _onDiscount(RecordSupplierDiscountNotice event, Emitter<SuppliersState> emit) async {
     try {
       await SupplierLedgerService.recordDiscountNotice(supplierId: event.supplierId, branchId: _branchId, amount: event.amount, createdBy: AuthService.currentUser?.id ?? '', notes: event.notes);
       add(LoadSupplierLedger(event.supplierId));
-      AppSnackbar.success('تم تسجيل إشعار الخصم');
-    } catch (e) { AppSnackbar.error('فشل في التسجيل: $e'); }
+      AppSnackbar.success('?? ????? ????? ?????');
+    } catch (e) { AppSnackbar.error('??? ?? ???????: $e'); }
   }
 
   Future<void> _onCheckPayment(RecordSupplierCheckPayment event, Emitter<SuppliersState> emit) async {
     try {
       await SupplierLedgerService.recordCheckPayment(supplierId: event.supplierId, branchId: _branchId, amount: event.amount, createdBy: AuthService.currentUser?.id ?? '', checkNumber: event.checkNumber, bankName: event.bankName, dueDate: event.dueDate, notes: event.notes);
       add(LoadSupplierLedger(event.supplierId));
-      AppSnackbar.success('تم تسجيل دفع الشيك');
-    } catch (e) { AppSnackbar.error('فشل في التسجيل: $e'); }
+      AppSnackbar.success('?? ????? ??? ?????');
+    } catch (e) { AppSnackbar.error('??? ?? ???????: $e'); }
   }
 
   Future<void> _onCheckReceipt(RecordSupplierCheckReceipt event, Emitter<SuppliersState> emit) async {
     try {
       await SupplierLedgerService.recordCheckReceipt(supplierId: event.supplierId, branchId: _branchId, amount: event.amount, createdBy: AuthService.currentUser?.id ?? '', checkNumber: event.checkNumber, bankName: event.bankName, dueDate: event.dueDate, notes: event.notes);
       add(LoadSupplierLedger(event.supplierId));
-      AppSnackbar.success('تم تسجيل استلام الشيك');
-    } catch (e) { AppSnackbar.error('فشل في التسجيل: $e'); }
+      AppSnackbar.success('?? ????? ?????? ?????');
+    } catch (e) { AppSnackbar.error('??? ?? ???????: $e'); }
   }
 
   void _onNextPage(NextSupplierPage event, Emitter<SuppliersState> emit) {
@@ -296,8 +296,8 @@ class SuppliersBloc extends Bloc<SuppliersEvent, SuppliersState> {
   Future<void> _onExport(ExportSuppliers event, Emitter<SuppliersState> emit) async {
     try {
       await ExportService.exportSuppliersToXlsx(suppliers: state.allSuppliers);
-      AppSnackbar.success('تم تصدير الموردين بنجاح');
-    } catch (e) { AppSnackbar.error('فشل في التصدير: $e'); }
+      AppSnackbar.success('?? ????? ???????? ?????');
+    } catch (e) { AppSnackbar.error('??? ?? ???????: $e'); }
   }
 
   void _onClearLedger(ClearSupplierLedger event, Emitter<SuppliersState> emit) {
@@ -344,4 +344,8 @@ class SuppliersBloc extends Bloc<SuppliersEvent, SuppliersState> {
 
   int _pages(List<SupplierModel> items) => (items.length / SuppliersState.pageSize).ceil().clamp(1, double.maxFinite.toInt());
 }
+
+
+
+
 

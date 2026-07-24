@@ -5,10 +5,10 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import 'package:pharmacy_system/app/modules/notifications/models/app_notification_model.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../bloc/notifications_bloc.dart';
 import '../bloc/notifications_event.dart';
 import '../bloc/notifications_state.dart';
@@ -40,8 +40,8 @@ class _NotificationsCenterViewState extends State<NotificationsCenterView> with 
     final scheme = Theme.of(context).colorScheme;
 
     return HomeShell(
-      title: AppStrings.notificationsCenterTitle,
-      subtitle: AppStrings.notificationsCenterSubtitle,
+      title: NotificationsStrings.notificationsCenterTitle,
+      subtitle: NotificationsStrings.notificationsCenterSubtitle,
       child: BlocBuilder<NotificationsBloc, NotificationsState>(
         builder: (context, state) {
           return Container(
@@ -84,19 +84,19 @@ class _NotificationsCenterViewState extends State<NotificationsCenterView> with 
       children: [
         Expanded(
           child: ReusableText(
-            AppStrings.unreadNotificationsFormat.replaceFirst('%s', state.unreadCount.toString()),
+            NotificationsStrings.unreadNotificationsFormat.replaceFirst('%s', state.unreadCount.toString()),
             style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.textPrimaryOf(context)),
           ),
         ),
         ReusableButton(
-          text: AppStrings.markAllAsRead,
+          text: NotificationsStrings.markAllAsRead,
           type: ButtonType.text,
           prefixIcon: Icons.done_all_rounded,
           onPressed: () => context.read<NotificationsBloc>().add(const MarkAllAsRead()),
         ),
         SizedBox(width: AppSpacing.md.w),
         ReusableButton(
-          text: AppStrings.clearAllNotificationsCenter,
+          text: NotificationsStrings.clearAll,
           type: ButtonType.outlined,
           color: AppColors.error,
           prefixIcon: Icons.delete_sweep_rounded,
@@ -118,10 +118,10 @@ class _NotificationsCenterViewState extends State<NotificationsCenterView> with 
         dividerColor: Colors.transparent,
         labelStyle: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold),
         tabs: const [
-          Tab(text: AppStrings.notificationAll, icon: Icon(Icons.all_inbox_rounded, size: 18)),
-          Tab(text: AppStrings.notificationExpiry, icon: Icon(Icons.event_busy_rounded, size: 18)),
-          Tab(text: AppStrings.notificationStock, icon: Icon(Icons.inventory_2_rounded, size: 18)),
-          Tab(text: AppStrings.notificationSystem, icon: Icon(Icons.settings_suggest_rounded, size: 18)),
+          Tab(text: NotificationsStrings.all, icon: Icon(Icons.all_inbox_rounded, size: 18)),
+          Tab(text: NotificationsStrings.expiry, icon: Icon(Icons.event_busy_rounded, size: 18)),
+          Tab(text: NotificationsStrings.stock, icon: Icon(Icons.inventory_2_rounded, size: 18)),
+          Tab(text: NotificationsStrings.system, icon: Icon(Icons.settings_suggest_rounded, size: 18)),
         ],
       ),
     );
@@ -133,15 +133,15 @@ class _NotificationsCenterViewState extends State<NotificationsCenterView> with 
       builder: (ctx) => AlertDialog(
         icon: Icon(Icons.warning_rounded, color: AppColors.error, size: 32.sp),
         title: const ReusableText(AdminStrings.deleteAllNotifications, style: TextStyle(fontWeight: FontWeight.bold)),
-        content: const ReusableText(AppStrings.clearAllNotificationsConfirm),
+        content: const ReusableText(NotificationsStrings.clearAllConfirm),
         actions: [
           ReusableButton(
-            text: AppStrings.cancel,
+            text: GeneralStrings.cancel,
             type: ButtonType.text,
             onPressed: () => ctx.pop(),
           ),
           ReusableButton(
-            text: AppStrings.deleteAll,
+            text: AdminStrings.deleteAll,
             type: ButtonType.error,
             onPressed: () {
               context.read<NotificationsBloc>().add(const ClearAllNotifications());
@@ -164,8 +164,8 @@ class _NotificationList extends StatelessWidget {
     if (notifications.isEmpty) {
       return const EmptyState(
         icon: Icons.notifications_none_rounded,
-        title: AppStrings.noNotifications,
-        subtitle: AppStrings.noNotificationsSubtitle,
+        title: NotificationsStrings.noNotifications,
+        subtitle: NotificationsStrings.noNotificationsSubtitle,
       );
     }
 
@@ -263,7 +263,7 @@ class _NotificationCard extends StatelessWidget {
                         const Spacer(),
                         if (notification.actionRoute != null)
                           ReusableButton(
-                            text: AppStrings.viewNotificationDetails,
+                            text: NotificationsStrings.viewDetails,
                             type: ButtonType.text,
                             size: ButtonSize.small,
                             onPressed: () {
@@ -275,7 +275,7 @@ class _NotificationCard extends StatelessWidget {
                         IconButton(
                           icon: const Icon(Icons.delete_outline_rounded, color: AppColors.error),
                           onPressed: () => context.read<NotificationsBloc>().add(DeleteNotification(notification.id)),
-                          tooltip: AppStrings.deleteNotification,
+                          tooltip: NotificationsStrings.deleteNotification,
                           visualDensity: VisualDensity.compact,
                         ),
                       ],
@@ -320,5 +320,9 @@ class _NotificationCard extends StatelessWidget {
     }
   }
 }
+
+
+
+
 
 

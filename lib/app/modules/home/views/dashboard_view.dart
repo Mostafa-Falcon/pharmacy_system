@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../bloc/monitoring_dashboard_bloc.dart';
 import '../bloc/monitoring_dashboard_state.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
@@ -113,49 +113,49 @@ class DashboardView extends StatelessWidget {
   Widget _buildStatCards(BuildContext context, MonitoringDashboardState state, bool isWide, bool isMid, double hp) {
     final cards = [
       _MonitoringStatCard(
-        title: AppStrings.totalSales,
+        title: HomeStrings.totalSales,
         value: _fmt(state.totalSales),
         icon: Icons.shopping_cart_rounded,
         tone: StatCardTone.sky,
       ),
       _MonitoringStatCard(
-        title: AppStrings.netIncome,
+        title: HomeStrings.netIncome,
         value: _fmt(state.netIncome),
         icon: Icons.account_balance_wallet_rounded,
         tone: StatCardTone.green,
       ),
       _MonitoringStatCard(
-        title: AppStrings.salesDue,
+        title: HomeStrings.salesDue,
         value: _fmt(state.salesDue),
         icon: Icons.receipt_long_rounded,
         tone: StatCardTone.amber,
       ),
       _MonitoringStatCard(
-        title: AppStrings.salesReturns,
+        title: HomeStrings.salesReturns,
         value: _fmt(state.salesReturnsTotal),
         icon: Icons.refresh_rounded,
         tone: StatCardTone.red,
       ),
       _MonitoringStatCard(
-        title: AppStrings.totalPurchases,
+        title: HomeStrings.totalPurchases,
         value: _fmt(state.totalPurchases),
         icon: Icons.inventory_rounded,
         tone: StatCardTone.sky,
       ),
       _MonitoringStatCard(
-        title: AppStrings.purchasesDue,
+        title: HomeStrings.purchasesDue,
         value: _fmt(state.purchasesDue),
         icon: Icons.warning_amber_rounded,
         tone: StatCardTone.amber,
       ),
       _MonitoringStatCard(
-        title: AppStrings.purchaseReturns,
+        title: HomeStrings.purchaseReturns,
         value: _fmt(state.purchaseReturnsTotal),
         icon: Icons.undo_rounded,
         tone: StatCardTone.red,
       ),
       _MonitoringStatCard(
-        title: AppStrings.totalExpenses,
+        title: HomeStrings.totalExpenses,
         value: _fmt(state.expenses),
         icon: Icons.money_off_rounded,
         tone: StatCardTone.red,
@@ -181,13 +181,13 @@ class DashboardView extends StatelessWidget {
     
     final content = [
       _MonitoringChartCard(
-        title: AppStrings.salesMovement30Days,
+        title: HomeStrings.salesMovement30Days,
         icon: Icons.show_chart_rounded,
         data: state.last30DaysSales,
         lineColor: AppColors.chartBlue,
       ),
       _MonitoringChartCard(
-        title: AppStrings.annualPerformance,
+        title: HomeStrings.annualPerformance,
         icon: Icons.trending_up_rounded,
         data: state.fiscalYearSales,
         lineColor: AppColors.chartGreen,
@@ -211,22 +211,22 @@ class DashboardView extends StatelessWidget {
     
     final content = [
       _MonitoringTableCard(
-        title: AppStrings.customerDebts,
+        title: HomeStrings.customerDebts,
         icon: Icons.people_outline_rounded,
         iconColor: AppColors.chartAmber,
         columns: const [
-          TableColumnDef(key: 'name', label: AppStrings.customer),
-          TableColumnDef(key: 'debt', label: AppStrings.salesDue),
+          TableColumnDef(key: 'name', label: HomeStrings.customer),
+          TableColumnDef(key: 'debt', label: HomeStrings.salesDue),
         ],
         rows: state.customerDebtRows,
       ),
       _MonitoringTableCard(
-        title: AppStrings.supplierDebts,
+        title: HomeStrings.supplierDebts,
         icon: Icons.business_outlined,
         iconColor: AppColors.chartAmber,
         columns: const [
-          TableColumnDef(key: 'name', label: AppStrings.supplier),
-          TableColumnDef(key: 'debt', label: AppStrings.salesDue),
+          TableColumnDef(key: 'name', label: HomeStrings.supplier),
+          TableColumnDef(key: 'debt', label: HomeStrings.salesDue),
         ],
         rows: state.supplierDebtRows,
       ),
@@ -444,3 +444,7 @@ class _MonitoringChartCard extends StatelessWidget {
     );
   }
 }
+
+
+
+

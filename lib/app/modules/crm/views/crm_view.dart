@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
 import 'package:pharmacy_system/app/modules/crm/models/crm_model.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/extensions/string_ext.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/tables/shared_table_cells.dart';
 import '../bloc/crm_bloc.dart';
 import '../bloc/crm_event.dart';
 import '../bloc/crm_state.dart';
@@ -44,7 +44,7 @@ class _CrmBody extends StatelessWidget {
               return ReusableStateView(
                 message: state.error ?? CrmStrings.crmError,
                 action: ReusableButton(
-                  text: AppStrings.refresh,
+                  text: GeneralStrings.refresh,
                   onPressed: () => context.read<CrmBloc>().add(const LoadCrmLeads()),
                 ),
               );
@@ -169,7 +169,7 @@ class _CrmBody extends StatelessWidget {
         menuItems: [
           for (final s in CrmLeadStatus.values.where((s) => s != l.status))
             PopupMenuItem<String>(value: 'status:${s.name}', child: ReusableText('نقل إلى: ${_statusLabel(s)}')),
-          const PopupMenuItem(value: 'edit', child: ReusableText(AppStrings.editData)),
+          const PopupMenuItem(value: 'edit', child: ReusableText(AdminStrings.editData)),
           const PopupMenuItem(value: 'followup', child: ReusableText(CrmStrings.crmAddFollowUp)),
         ],
       ),
@@ -222,7 +222,7 @@ class _CrmBody extends StatelessWidget {
             textDirection: TextDirection.rtl,
           ),
           SizedBox(height: AppSpacing.sm.h),
-          ReusableInput.email(controller: emailCtrl, label: AppStrings.emailLabel),
+          ReusableInput.email(controller: emailCtrl, label: AuthStrings.emailLabel),
           SizedBox(height: AppSpacing.sm.h),
           ReusableInput(
             controller: sourceCtrl,
@@ -321,4 +321,8 @@ class _CrmBody extends StatelessWidget {
     });
   }
 }
+
+
+
+
 

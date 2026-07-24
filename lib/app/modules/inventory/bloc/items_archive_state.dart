@@ -1,5 +1,5 @@
-﻿import 'package:equatable/equatable.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
 
 enum ItemsArchiveStatus { initial, loading, loaded, error }
 
@@ -38,4 +38,7 @@ class ItemsArchiveState extends Equatable {
   @override
   List<Object?> get props => [status, items, selectedIds, isWorking, error];
 }
+
+
+
 

@@ -1,14 +1,14 @@
-﻿import 'package:collection/collection.dart';
+import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/expenses_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import '../../../core/injection.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
-import 'package:pharmacy_system/app/modules/accounting/models/expense_model.dart';
-import 'package:pharmacy_system/app/modules/accounting/models/journal_entry_model.dart';
-import 'package:pharmacy_system/app/modules/accounting/models/account_enums.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
+import 'package:pharmacy_system/app/core/models/accounting/expense_model.dart';
+import 'package:pharmacy_system/app/core/models/accounting/journal_entry_model.dart';
+import 'package:pharmacy_system/app/core/models/accounting/account_enums.dart';
 import 'journal_entry_service.dart';
 
 class ExpensePostResult {
@@ -193,31 +193,31 @@ class ExpenseService {
 
   static String _paymentAccountName(String? method) {
     switch (method) {
-      case 'card': return 'تسويات البطاقات';
-      case 'bank_transfer': return 'البنك';
-      case 'mobile_wallet': return 'المحفظة الإلكترونية';
-      default: return 'الخزينة';
+      case 'card': return '?????? ????????';
+      case 'bank_transfer': return '?????';
+      case 'mobile_wallet': return '??????? ???????????';
+      default: return '???????';
     }
   }
 
   static void _validate(ExpenseModel value, {required String actorId}) {
     if (value.id.trim().isEmpty) {
-      throw const FormatException('معرف المصروف مطلوب');
+      throw const FormatException('???? ??????? ?????');
     }
     if (value.branchId.trim().isEmpty) {
-      throw const FormatException('الفرع مطلوب');
+      throw const FormatException('????? ?????');
     }
     if (value.category.trim().isEmpty) {
-      throw const FormatException('تصنيف المصروف مطلوب');
+      throw const FormatException('????? ??????? ?????');
     }
     if (value.amount <= 0) {
-      throw StateError('قيمة المصروف يجب أن تكون موجبة');
+      throw StateError('???? ??????? ??? ?? ???? ?????');
     }
     if (value.paymentMethod == 'credit') {
-      throw StateError('المصروفات لا يمكن أن تكون آجلة');
+      throw StateError('????????? ?? ???? ?? ???? ????');
     }
     if (actorId.trim().isEmpty) {
-      throw const FormatException('المستخدم مطلوب');
+      throw const FormatException('???????? ?????');
     }
   }
 
@@ -302,3 +302,7 @@ class ExpenseService {
     updatedAt: d.updatedAt,
   );
 }
+
+
+
+

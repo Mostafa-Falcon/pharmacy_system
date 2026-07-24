@@ -1,7 +1,7 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/repositories/medicines_repository.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
@@ -144,4 +144,7 @@ class CatalogCubit extends Cubit<CatalogState> {
     return super.close();
   }
 }
+
+
+
 

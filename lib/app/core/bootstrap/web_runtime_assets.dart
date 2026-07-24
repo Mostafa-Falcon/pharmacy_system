@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart' show kReleaseMode, kIsWeb;
 import 'package:http/http.dart' as http;
-
-import 'package:pharmacy_system/app/core/utils/app_utils.dart';
+import 'package:pharmacy_system/app/shared/ui_core.dart';
 
 Future<void> validateWebRuntimeAssets() async {
   if (!kIsWeb || kReleaseMode) return;
@@ -14,13 +13,14 @@ Future<void> validateWebRuntimeAssets() async {
   for (final entry in requiredAssets.entries) {
     final uri = Uri.base.resolve(entry.key);
     try {
-      final response = await http.get(
-        uri,
-        headers: const {'Cache-Control': 'no-cache'},
-      ).timeout(const Duration(seconds: 5));
+      final response = await http
+          .get(uri, headers: const {'Cache-Control': 'no-cache'})
+          .timeout(const Duration(seconds: 5));
 
       if (response.statusCode < 200 || response.statusCode >= 300) {
-        safeDebugPrint('Web runtime asset missing: ${entry.key} (status ${response.statusCode})');
+        safeDebugPrint(
+          'Web runtime asset missing: ${entry.key} (status ${response.statusCode})',
+        );
         continue;
       }
 

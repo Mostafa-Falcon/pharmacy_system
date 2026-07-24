@@ -1,4 +1,4 @@
-﻿import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
 
 import 'package:pharmacy_system/app/modules/tasks/models/task_models.dart';
 
@@ -85,4 +85,6 @@ class TasksState extends Equatable {
     messages,
   ];
 }
+
+
 

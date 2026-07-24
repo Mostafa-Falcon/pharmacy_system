@@ -3,13 +3,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:pharmacy_system/app/modules/sales/models/cashier_shift_model.dart';
-import 'package:pharmacy_system/app/modules/sales/models/sale_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/cashier_shift_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/sale_invoice_model.dart';
 import 'package:pharmacy_system/app/core/data/services/sales/cashier_shift_service.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../../../core/utils/format_utils.dart';
 import '../../../routes/app_routes.dart';
 import 'package:pharmacy_system/app/core/bloc/base_state.dart';
@@ -38,7 +38,7 @@ class _CashierShiftViewState extends State<CashierShiftView> {
   @override
   Widget build(BuildContext context) {
     return HomeShell(
-      title: AppStrings.cashierShiftsTitle,
+      title: SalesStrings.cashierShiftsTitle,
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest.withValues(alpha: 0.5),
         body: BlocBuilder<CashierShiftBloc, BaseState<List<CashierShiftModel>>>(
@@ -107,13 +107,13 @@ class _CashierShiftViewState extends State<CashierShiftView> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ReusableText(AppStrings.cashierShiftsTitle, style: AppTextStyles.title(context)),
-              ReusableText(AppStrings.cashierShiftsSubtitle, style: AppTextStyles.caption(context)),
+              ReusableText(SalesStrings.cashierShiftsTitle, style: AppTextStyles.title(context)),
+              ReusableText(SalesStrings.cashierShiftsSubtitle, style: AppTextStyles.caption(context)),
             ],
           ),
           const Spacer(),
           ReusableButton(
-            text: AppStrings.startNewSession,
+            text: SalesStrings.startNewSession,
             prefixIcon: Icons.add_rounded,
             onPressed: () => context.push(Routes.SALES_OPEN_SHIFT),
           ),
@@ -134,10 +134,10 @@ class _CashierShiftViewState extends State<CashierShiftView> {
           mainAxisSpacing: 14.h,
           childAspectRatio: isMobile ? 2.2 : 2.5,
           children: [
-            _MetricCard(title: AppStrings.openShiftsLabel, value: '$activeShifts', icon: Icons.play_circle_fill_rounded, color: AppColors.success),
-            _MetricCard(title: AppStrings.openingLabelShifts, value: FormatUtils.currency(totalOpeningCash), icon: Icons.account_balance_wallet_rounded, color: AppColors.primary),
-            _MetricCard(title: AppStrings.closedShiftsLabel, value: '$closedShifts', icon: Icons.check_circle_rounded, color: AppColors.info),
-            _MetricCard(title: AppStrings.totalRecordsLabel, value: '$totalShifts', icon: Icons.receipt_long_rounded, color: Colors.purple),
+            _MetricCard(title: SalesStrings.openShiftsLabel, value: '$activeShifts', icon: Icons.play_circle_fill_rounded, color: AppColors.success),
+            _MetricCard(title: SalesStrings.openingLabelShifts, value: FormatUtils.currency(totalOpeningCash), icon: Icons.account_balance_wallet_rounded, color: AppColors.primary),
+            _MetricCard(title: SalesStrings.closedShiftsLabel, value: '$closedShifts', icon: Icons.check_circle_rounded, color: AppColors.info),
+            _MetricCard(title: SalesStrings.totalRecordsLabel, value: '$totalShifts', icon: Icons.receipt_long_rounded, color: Colors.purple),
           ],
         );
       },
@@ -164,10 +164,10 @@ class _CashierShiftViewState extends State<CashierShiftView> {
   Widget _buildEmptyState(BuildContext context) {
     return EmptyState(
       icon: Icons.history_toggle_off_rounded,
-      title: AppStrings.noShiftsYet,
-      subtitle: AppStrings.noShiftsMessage,
+      title: SalesStrings.noShiftsYet,
+      subtitle: SalesStrings.noShiftsMessage,
       action: ReusableButton(
-        text: AppStrings.startFirstShift,
+        text: SalesStrings.startFirstShift,
         onPressed: () => context.push(Routes.SALES_OPEN_SHIFT),
       ),
     );
@@ -238,7 +238,7 @@ class _ShiftCard extends StatelessWidget {
                 children: [
                   Icon(isOpen ? Icons.play_arrow_rounded : Icons.lock_clock_rounded, size: AppIconSize.sm.value.sp, color: isOpen ? AppColors.success : scheme.onSurfaceVariant),
                   SizedBox(width: 4.w),
-                  ReusableText('${AppStrings.shiftLabel} #${shift.shiftNumber}', style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold, color: isOpen ? AppColors.success : null)),
+                  ReusableText('${SalesStrings.shiftLabel} #${shift.shiftNumber}', style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold, color: isOpen ? AppColors.success : null)),
                 ],
               ),
             ),
@@ -246,7 +246,7 @@ class _ShiftCard extends StatelessWidget {
               children: [
                 Icon(Icons.access_time_rounded, size: AppIconSize.sm.value.sp, color: Colors.grey),
                 SizedBox(width: 6.w),
-                ReusableText('${AppStrings.openedAtLabel} ${FormatUtils.dateTime(shift.openedAt)}', style: AppTextStyles.caption(context)),
+                ReusableText('${SalesStrings.openedAtLabel} ${FormatUtils.dateTime(shift.openedAt)}', style: AppTextStyles.caption(context)),
               ],
             ),
             trailing: FutureBuilder<Map<String, dynamic>>(
@@ -256,9 +256,9 @@ class _ShiftCard extends StatelessWidget {
                 return Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _MiniChip(label: AppStrings.openingLabelShifts, value: FormatUtils.currency(shift.openingCash), color: scheme.primary),
+                    _MiniChip(label: SalesStrings.openingLabelShifts, value: FormatUtils.currency(shift.openingCash), color: scheme.primary),
                     SizedBox(width: 8.w),
-                    _MiniChip(label: AppStrings.sectionSales, value: FormatUtils.currency(total), color: AppColors.success),
+                    _MiniChip(label: HomeStrings.sectionSales, value: FormatUtils.currency(total), color: AppColors.success),
                     SizedBox(width: 12.w),
                     Icon(isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded),
                   ],
@@ -305,7 +305,7 @@ class _ExpandedShiftDetails extends StatelessWidget {
       builder: (context, snapshot) {
         if (!snapshot.hasData) return const Padding(padding: EdgeInsets.all(20), child: LoadingIndicator());
         final transactions = snapshot.data!;
-        if (transactions.isEmpty) return Padding(padding: const EdgeInsets.all(20), child: ReusableText(AppStrings.noData));
+        if (transactions.isEmpty) return Padding(padding: const EdgeInsets.all(20), child: ReusableText(GeneralStrings.noData));
 
         return Container(
           padding: EdgeInsets.all(16.w),
@@ -316,7 +316,7 @@ class _ExpandedShiftDetails extends StatelessWidget {
                 dense: true,
                 title: ReusableText('#${t.id.substring(0, 8).toUpperCase()}', style: AppTextStyles.bodyBold(context)),
                 subtitle: ReusableText(FormatUtils.dateTime(t.createdAt), style: AppTextStyles.caption(context)),
-                trailing: ReusableText(FormatUtils.currency(t is SaleModel ? t.finalAmount : t.totalAmount), style: AppTextStyles.bodyBold(context).copyWith(color: t is SaleModel ? AppColors.success : AppColors.error)),
+                trailing: ReusableText(FormatUtils.currency(t is SaleInvoiceModel ? t.finalAmount : t.totalAmount), style: AppTextStyles.bodyBold(context).copyWith(color: t is SaleInvoiceModel ? AppColors.success : AppColors.error)),
               )),
             ],
           ),
@@ -325,5 +325,11 @@ class _ExpandedShiftDetails extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
 
 

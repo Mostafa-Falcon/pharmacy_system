@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'package:get_it/get_it.dart';
 import 'package:pharmacy_system/app/modules/admin/models/settings_model.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/app_settings_dao.dart';
@@ -205,5 +205,7 @@ class SettingsService {
     await save();
   }
 }
+
+
 
 

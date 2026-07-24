@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/index.dart';
 
 void main() {
   group('ReusableCalculator', () {
@@ -25,8 +25,9 @@ void main() {
       await tester.tap(find.text('Open Calculator'));
       await tester.pumpAndSettle();
 
-      expect(find.text('آلة حاسبة احترافية'), findsOneWidget);
+      expect(find.text('Ø¢Ù„Ø© Ø­Ø§Ø³Ø¨Ø© Ø§Ø­ØªØ±Ø§ÙÙŠØ©'), findsOneWidget);
       expect(find.byType(Dialog), findsOneWidget);
     });
   });
 }
+

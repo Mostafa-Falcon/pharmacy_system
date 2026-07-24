@@ -1,22 +1,22 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/sales_dao.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
-import 'package:pharmacy_system/app/modules/sales/models/sale_model.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
+import 'package:pharmacy_system/app/core/models/sales/sale_invoice_model.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 
 class SalesRepository {
   SalesDao get _dao => sl<SalesDao>();
   SalesRepository();
 
-  static final Map<String, List<SaleModel>> _cache = {};
+  static final Map<String, List<SaleInvoiceModel>> _cache = {};
   static final Map<String, Timer> _cacheTimers = {};
 
-  List<SaleModel> _cached(String branchId) => List<SaleModel>.from(_cache[branchId] ?? []);
+  List<SaleInvoiceModel> _cached(String branchId) => List<SaleInvoiceModel>.from(_cache[branchId] ?? []);
 
-  void _updateCache(String branchId, List<SaleModel> items) {
+  void _updateCache(String branchId, List<SaleInvoiceModel> items) {
     _cache[branchId] = items;
     _cacheTimers[branchId]?.cancel();
     _cacheTimers[branchId] = Timer(const Duration(seconds: 5), () {
@@ -24,107 +24,107 @@ class SalesRepository {
     });
   }
 
-  SaleModel _toModel(SalesTableData d) {
-    return SaleModel(
-      id: d.id,
-      branchId: d.branchId,
-      customerId: d.customerId,
-      customerName: d.customerName,
-      items: (jsonDecode(d.items) as List)
-          .map((e) => SaleItemModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      totalAmount: d.totalAmount,
-      discount: d.discount,
-      finalAmount: d.finalAmount,
-      taxAmount: d.taxAmount,
-      paymentMethod: d.paymentMethod,
-      notes: d.notes,
-      createdBy: d.createdBy,
-      createdAt: d.createdAt,
-      syncVersion: d.syncVersion,
-      lastModified: d.lastModified,
-      isDeleted: d.isDeleted,
-      paidAmount: d.paidAmount,
-      receiptNumber: d.receiptNumber,
-      salesRepId: d.salesRepId,
-    );
+  SaleInvoiceModel _toModel(SaleInvoicesTableData d) {
+    return SaleInvoiceModel.fromJson({
+      'id': d.id,
+      'invoice_number': d.invoiceNumber,
+      'customer_name': d.customerName,
+      'customer_id': d.customerId,
+      'cash_register_id': d.cashRegisterId,
+      'items': jsonDecode(d.items),
+      'subtotal_amount': d.subtotalAmount,
+      'discount_amount': d.discountAmount,
+      'final_amount': d.finalAmount,
+      'paid_amount': d.paidAmount,
+      'remaining_amount': d.remainingAmount,
+      'payment_method': d.paymentMethod,
+      'created_by': d.createdBy,
+      'branch_id': d.branchId,
+      'account_id': d.accountId,
+      'notes': d.notes,
+      'created_at': d.createdAt.toIso8601String(),
+      'last_modified': d.lastModified.toIso8601String(),
+      'is_deleted': d.isDeleted,
+      'sync_version': d.syncVersion,
+    });
   }
 
-  SalesTableCompanion _toCompanion(SaleModel m) {
-    return SalesTableCompanion(
+  SaleInvoicesTableCompanion _toCompanion(SaleInvoiceModel m) {
+    return SaleInvoicesTableCompanion(
       id: Value(m.id),
-      branchId: Value(m.branchId),
-      customerId: Value(m.customerId),
+      invoiceNumber: Value(m.invoiceNumber),
       customerName: Value(m.customerName),
+      customerId: Value(m.customerId),
+      cashRegisterId: Value(m.cashRegisterId),
       items: Value(jsonEncode(m.items.map((i) => i.toJson()).toList())),
-      totalAmount: Value(m.totalAmount),
-      discount: Value(m.discount),
+      subtotalAmount: Value(m.subtotalAmount),
+      discountAmount: Value(m.discountAmount),
       finalAmount: Value(m.finalAmount),
-      taxAmount: Value(m.taxAmount),
+      paidAmount: Value(m.paidAmount),
+      remainingAmount: Value(m.remainingAmount),
       paymentMethod: Value(m.paymentMethod),
-      notes: Value(m.notes),
       createdBy: Value(m.createdBy),
+      branchId: Value(m.branchId),
+      accountId: Value(m.accountId),
+      notes: Value(m.notes),
       createdAt: Value(m.createdAt),
-      syncVersion: Value(m.syncVersion),
       lastModified: Value(m.lastModified),
       isDeleted: Value(m.isDeleted),
-      paidAmount: Value(m.paidAmount),
-      receiptNumber: Value(m.receiptNumber),
-      salesRepId: Value(m.salesRepId),
+      syncVersion: Value(m.syncVersion),
     );
   }
 
-  Future<List<SaleModel>> getSales({
+  Future<List<SaleInvoiceModel>> getSales({
     required String branchId,
     String? searchQuery,
     String? filter,
     bool includeDeleted = false,
   }) async {
-    var items = await _dao.getByBranch(branchId);
+    var items = await _dao.getInvoicesByBranch(branchId);
     var data = items.map(_toModel).toList();
     _updateCache(branchId, data);
 
     if (filter == 'today') {
       final now = DateTime.now();
-      data.removeWhere((s) =>
-          s.createdAt.day != now.day ||
-          s.createdAt.month != now.month ||
-          s.createdAt.year != now.year);
+      data = data.where((s) =>
+          s.createdAt.day == now.day &&
+          s.createdAt.month == now.month &&
+          s.createdAt.year == now.year).toList();
     } else if (filter == 'this_month') {
       final now = DateTime.now();
-      data.removeWhere((s) =>
-          s.createdAt.month != now.month || s.createdAt.year != now.year);
+      data = data.where((s) =>
+          s.createdAt.month == now.month && s.createdAt.year == now.year).toList();
     } else if (filter == 'credit') {
-      data.removeWhere((s) => s.paymentMethod != 'credit');
+      data = data.where((s) => s.paymentMethod == 'credit').toList();
     }
 
     if (searchQuery != null && searchQuery.isNotEmpty) {
       final q = searchQuery.trim().toLowerCase();
-      data.removeWhere((s) => !_matchesSearch(s, q));
+      data = data.where((s) => _matchesSearch(s, q)).toList();
     }
 
     data.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return data;
   }
 
-  List<SaleModel> getSalesSync({required String branchId}) {
+  List<SaleInvoiceModel> getSalesSync({required String branchId}) {
     return _cached(branchId);
   }
 
-  Stream<List<SaleModel>> watchSales(String branchId) {
-    return _dao.watchByBranch(branchId).map((rows) {
+  Stream<List<SaleInvoiceModel>> watchSales(String branchId) {
+    return _dao.watchInvoicesByBranch(branchId).map((rows) {
       final result = rows.map(_toModel).toList();
       _updateCache(branchId, result);
       return result;
     });
   }
 
-  Future<SaleModel?> getByIdAsync(String id) async {
-    final data = await _dao.getById(id);
+  Future<SaleInvoiceModel?> getByIdAsync(String id) async {
+    final data = await _dao.getInvoiceById(id);
     return data != null ? _toModel(data) : null;
   }
 
-  SaleModel? getById(String id) {
+  SaleInvoiceModel? getById(String id) {
     for (final entry in _cache.entries) {
       final match = entry.value.where((s) => s.id == id);
       if (match.isNotEmpty) return match.first;
@@ -132,35 +132,35 @@ class SalesRepository {
     return null;
   }
 
-  Future<void> create(SaleModel sale) async {
-    await _dao.upsert(_toCompanion(sale));
-    SyncService.onTableUpdated?.call('sales', sale.branchId);
+  Future<void> create(SaleInvoiceModel sale) async {
+    await _dao.upsertInvoice(_toCompanion(sale));
+    SyncService.notifyTableUpdated('sale_invoices', sale.branchId);
     unawaited(
       SyncService.queueOperation(
         type: SyncOperationType.create,
-        table: 'sales',
+        table: 'sale_invoices',
         data: sale.toJson(),
         branchId: sale.branchId,
       ),
     );
   }
 
-  Future<void> update(SaleModel sale) async {
-    await _dao.upsert(_toCompanion(sale));
-    SyncService.onTableUpdated?.call('sales', sale.branchId);
+  Future<void> update(SaleInvoiceModel sale) async {
+    await _dao.upsertInvoice(_toCompanion(sale));
+    SyncService.notifyTableUpdated('sale_invoices', sale.branchId);
     unawaited(
       SyncService.queueOperation(
         type: SyncOperationType.update,
-        table: 'sales',
+        table: 'sale_invoices',
         data: sale.toJson(),
         branchId: sale.branchId,
       ),
     );
   }
 
-  bool _matchesSearch(SaleModel sale, String query) {
-    return sale.id.toLowerCase().contains(query) ||
-        (sale.customerName?.toLowerCase().contains(query) ?? false) ||
+  bool _matchesSearch(SaleInvoiceModel sale, String query) {
+    return sale.invoiceNumber.toLowerCase().contains(query) ||
+        sale.customerName.toLowerCase().contains(query) ||
         sale.items.any((i) => i.medicineName.toLowerCase().contains(query));
   }
 
@@ -172,4 +172,3 @@ class SalesRepository {
     _cacheTimers.clear();
   }
 }
-

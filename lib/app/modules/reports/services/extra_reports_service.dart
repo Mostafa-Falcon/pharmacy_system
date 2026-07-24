@@ -257,7 +257,7 @@ class ExtraReportsService {
         movements.add(MovementRow(
           item: line.medicineName,
           sku: line.medicineId,
-          type: AppStrings.movementTypeSale,
+          type: ReportsStrings.movementTypeSale,
           date: _formatDateTime(sale.createdAt),
           reference: sale.id,
           party: sale.customerName ?? '—',
@@ -274,7 +274,7 @@ class ExtraReportsService {
         movements.add(MovementRow(
           item: line.medicineName,
           sku: line.medicineId,
-          type: AppStrings.movementTypePurchase,
+          type: ReportsStrings.movementTypePurchase,
           date: _formatDateTime(purchase.createdAt),
           reference: purchase.id,
           party: purchase.supplierName,
@@ -292,7 +292,7 @@ class ExtraReportsService {
         movements.add(MovementRow(
           item: line.medicineName,
           sku: line.medicineId,
-          type: isSaleReturn ? AppStrings.movementTypeSaleReturn : AppStrings.movementTypePurchaseReturn,
+          type: isSaleReturn ? ReportsStrings.movementTypeSaleReturn : ReportsStrings.movementTypePurchaseReturn,
           date: _formatDateTime(ret.createdAt),
           reference: ret.id,
           party: '—',
@@ -323,7 +323,7 @@ class ExtraReportsService {
       final taxAmount = _money(sale.finalAmount - (baseAmount - discount));
       rows.add(TaxSummaryRow(
         date: _formatDate(sale.createdAt),
-        type: AppStrings.taxTypeVatSales,
+        type: ReportsStrings.taxTypeVatSales,
         reference: sale.id,
         contact: sale.customerName ?? '—',
         taxNumber: '—',
@@ -340,7 +340,7 @@ class ExtraReportsService {
       final taxAmount = (purchase.tax ?? 0) + (purchase.invoiceTaxAmount ?? 0);
       rows.add(TaxSummaryRow(
         date: _formatDate(purchase.createdAt),
-        type: AppStrings.taxTypeIncomePurchase,
+        type: ReportsStrings.taxTypeIncomePurchase,
         reference: purchase.id,
         contact: purchase.supplierName,
         taxNumber: '—',
@@ -357,7 +357,7 @@ class ExtraReportsService {
       if (!_inside(row.expenseDate, fromDate, toDate)) continue;
       rows.add(TaxSummaryRow(
         date: _formatDate(row.expenseDate),
-        type: AppStrings.taxTypeExpense,
+        type: ReportsStrings.taxTypeExpense,
         reference: row.expenseNumber.toString(),
         contact: row.category,
         taxNumber: '—',
@@ -384,13 +384,13 @@ class ExtraReportsService {
     final shiftRows = await shiftsDao.getByBranch(branchId);
     for (final data in shiftRows) {
       if (!_inside(data.openedAt, fromDate, toDate)) continue;
-      final statusLabel = data.status == 'open' ? AppStrings.activityShiftOpen : AppStrings.activityShiftClose;
+      final statusLabel = data.status == 'open' ? ReportsStrings.activityShiftOpen : ReportsStrings.activityShiftClose;
       rows.add(EmployeeActivityRow(
         date: _formatDateTime(data.openedAt),
-        subjectType: AppStrings.activitySubjectShift,
+        subjectType: ReportsStrings.activitySubjectShift,
         action: statusLabel,
         by: data.cashierName,
-        notes: AppStrings.activityNotesShiftFormat.replaceFirst('%s', data.shiftNumber.toString()),
+        notes: ReportsStrings.activityNotesShiftFormat.replaceFirst('%s', data.shiftNumber.toString()),
       ));
     }
 
@@ -399,11 +399,11 @@ class ExtraReportsService {
     for (final data in userRows) {
       if (data.isDeleted) continue;
       if (!_inside(data.createdAt, fromDate, toDate)) continue;
-      final roleLabel = data.role == 'owner' ? AppStrings.activityRoleOwner : AppStrings.activityRoleEmployee;
+      final roleLabel = data.role == 'owner' ? ReportsStrings.activityRoleOwner : ReportsStrings.activityRoleEmployee;
       rows.add(EmployeeActivityRow(
         date: _formatDateTime(data.createdAt),
-        subjectType: AppStrings.activitySubjectEmployee,
-        action: AppStrings.activityActionAddUser,
+        subjectType: ReportsStrings.activitySubjectEmployee,
+        action: ReportsStrings.activityActionAddUser,
         by: data.name,
         notes: '$roleLabel — ${data.email}',
       ));
@@ -420,7 +420,7 @@ class ExtraReportsService {
     final returns = BranchDataService.getReturns(branchId: branchId).where((r) => !r.isDeleted).toList();
 
     for (final customer in customers) {
-      final groupName = customer.companyName?.isNotEmpty == true ? customer.companyName! : AppStrings.defaultNoGroup;
+      final groupName = customer.companyName?.isNotEmpty == true ? customer.companyName! : ReportsStrings.defaultNoGroup;
       final customerSales = sales.where((s) => s.customerId == customer.id).toList();
       final customerReturns = returns.where((r) => r.saleId != null && customer.id == (r.notes ?? '')).toList();
       final totalPurchases = customerSales.fold<double>(0, (s, sale) => s + sale.finalAmount);
@@ -452,9 +452,9 @@ class ExtraReportsService {
     for (final sale in sales) {
       rows.add(ReceiptRow(
         date: _formatDateTime(sale.createdAt),
-        type: AppStrings.receiptTypeSaleInvoice,
+        type: ReportsStrings.receiptTypeSaleInvoice,
         reference: sale.id,
-        contact: sale.customerName ?? AppStrings.defaultCashCustomer,
+        contact: sale.customerName ?? GeneralStrings.defaultCashCustomer,
         amount: _money(sale.finalAmount),
         paymentMethod: _paymentLabel(sale.paymentMethod),
         notes: sale.notes ?? '',
@@ -466,7 +466,7 @@ class ExtraReportsService {
     for (final purchase in purchases) {
       rows.add(ReceiptRow(
         date: _formatDateTime(purchase.createdAt),
-        type: AppStrings.receiptTypePurchaseInvoice,
+        type: ReportsStrings.receiptTypePurchaseInvoice,
         reference: purchase.id,
         contact: purchase.supplierName,
         amount: _money(purchase.finalAmount),
@@ -480,7 +480,7 @@ class ExtraReportsService {
     for (final ret in returns) {
       rows.add(ReceiptRow(
         date: _formatDateTime(ret.createdAt),
-        type: ret.saleId != null ? AppStrings.movementTypeSaleReturn : AppStrings.movementTypePurchaseReturn,
+        type: ret.saleId != null ? ReportsStrings.movementTypeSaleReturn : ReportsStrings.movementTypePurchaseReturn,
         reference: ret.id,
         contact: '—',
         amount: _money(ret.totalAmount),
@@ -525,11 +525,11 @@ class ExtraReportsService {
 
   static String _paymentLabel(String method) {
     switch (method) {
-      case 'cash': return AppStrings.paymentCash;
-      case 'card': return AppStrings.paymentCard;
-      case 'credit': return AppStrings.paymentCredit;
-      case 'wallet': return AppStrings.paymentWallet;
-      case 'bank-transfer': return AppStrings.paymentBankTransfer;
+      case 'cash': return ReportsStrings.paymentCash;
+      case 'card': return ReportsStrings.paymentCard;
+      case 'credit': return ReportsStrings.paymentCredit;
+      case 'wallet': return ReportsStrings.paymentWallet;
+      case 'bank-transfer': return ReportsStrings.paymentBankTransfer;
       default: return method;
     }
   }
@@ -561,3 +561,6 @@ class _PopularAccumulator {
   double total = 0;
   int invoices = 0;
 }
+
+
+

@@ -1,5 +1,5 @@
-﻿import 'package:pharmacy_system/app/modules/accounting/models/journal_entry_model.dart';
-import 'package:pharmacy_system/app/modules/accounting/models/account_enums.dart';
+import 'package:pharmacy_system/app/core/models/accounting/journal_entry_model.dart';
+import 'package:pharmacy_system/app/core/models/accounting/account_enums.dart';
 import '../services/journal_entry_service.dart';
 
 enum FinancialStatementType {
@@ -235,10 +235,10 @@ class FinancialStatementsService {
 
     return [
       ...revenues,
-      ProfitAndLossRow(accountId: 'total_revenue', accountName: 'Ã˜Â¥Ã˜Â¬Ã™â€¦Ã˜Â§Ã™â€žÃ™Å  Ã˜Â§Ã™â€žÃ˜Â¥Ã™Å Ã˜Â±Ã˜Â§Ã˜Â¯Ã˜Â§Ã˜Âª', accountCode: '', amount: totalRevenue),
+      ProfitAndLossRow(accountId: 'total_revenue', accountName: 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ø¥ÙŠØ±Ø§Ø¯Ø§Øª', accountCode: '', amount: totalRevenue),
       ...expenses,
-      ProfitAndLossRow(accountId: 'total_expenses', accountName: 'Ã˜Â¥Ã˜Â¬Ã™â€¦Ã˜Â§Ã™â€žÃ™Å  Ã˜Â§Ã™â€žÃ™â€¦Ã˜ÂµÃ˜Â±Ã™Ë†Ã™ÂÃ˜Â§Ã˜Âª', accountCode: '', amount: totalExpenses),
-      ProfitAndLossRow(accountId: 'net_profit', accountName: 'Ã˜ÂµÃ˜Â§Ã™ÂÃ™Å  Ã˜Â§Ã™â€žÃ˜Â±Ã˜Â¨Ã˜Â­', accountCode: '', amount: totalRevenue - totalExpenses),
+      ProfitAndLossRow(accountId: 'total_expenses', accountName: 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ù…ØµØ±ÙˆÙØ§Øª', accountCode: '', amount: totalExpenses),
+      ProfitAndLossRow(accountId: 'net_profit', accountName: 'ØµØ§ÙÙŠ Ø§Ù„Ø±Ø¨Ø­', accountCode: '', amount: totalRevenue - totalExpenses),
     ];
   }
 
@@ -293,4 +293,7 @@ class _AccountBalance {
     required this.accountCode,
   });
 }
+
+
+
 

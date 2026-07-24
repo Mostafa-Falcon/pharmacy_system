@@ -82,3 +82,5 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     emit(state.copyWith(isLoggingOut: false));
   }
 }
+
+

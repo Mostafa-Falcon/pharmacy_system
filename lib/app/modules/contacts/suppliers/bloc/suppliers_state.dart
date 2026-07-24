@@ -1,6 +1,6 @@
-﻿import 'package:equatable/equatable.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_model.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_ledger_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_ledger_model.dart';
 
 enum SuppliersStatus { initial, loading, loaded, success, error }
 
@@ -84,4 +84,7 @@ class SuppliersState extends Equatable {
   @override
   List<Object?> get props => [status, allSuppliers, filteredSuppliers, pagedSuppliers, selectedSupplier, ledgerEntries, balances, isLoadingLedger, showArchived, currentPage, totalPages, searchQuery, sortColumnId, isSortAscending, error, selectedIds];
 }
+
+
+
 

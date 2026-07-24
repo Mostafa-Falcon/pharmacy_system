@@ -4,13 +4,16 @@ export 'bloc/pos_bloc.dart';
 export 'bloc/pos_event.dart';
 export 'bloc/pos_state.dart';
 export 'bloc/sales_bloc.dart';
-export 'models/cashier_shift_model.dart';
-export 'models/pos_cart_line.dart';
-export 'models/pos_focus_nodes.dart';
-export 'models/purchase_model.dart';
-export 'models/quote_model.dart';
-export 'models/return_model.dart';
-export 'models/sale_model.dart';
+
+// Models moved to core
+export '../../core/models/sales/cashier_shift_model.dart';
+export '../../core/models/sales/free_return_model.dart';
+export '../../core/models/sales/invoice_return_model.dart';
+export '../../core/models/sales/promotion_model.dart';
+export '../../core/models/sales/quotation_model.dart';
+export '../../core/models/sales/sale_invoice_model.dart';
+export '../../core/models/sales/shipping_order_model.dart';
+
 export 'views/cashier_shift_view.dart';
 export 'views/open_shift_view.dart';
 export 'views/pos_view.dart';

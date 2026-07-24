@@ -1,7 +1,7 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/barcode_settings_model.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/core/models/inventory/barcode_settings_model.dart';
 import '../services/barcode_code_service.dart';
 import '../services/barcode_settings_service.dart';
 import 'barcode_settings_event.dart';
@@ -116,11 +116,11 @@ class BarcodeSettingsBloc extends Bloc<BarcodeSettingsEvent, BarcodeSettingsStat
 
   Future<void> _onSave(SaveBarcodeSettings event, Emitter<BarcodeSettingsState> emit) async {
     if (state.prefix.trim().isEmpty) {
-      AppSnackbar.error('الرجاء إدخال بادئة الباركود');
+      AppSnackbar.error('?????? ????? ????? ????????');
       return;
     }
     if (state.serialLength < 3 || state.serialLength > 10) {
-      AppSnackbar.error('طول السيريال يجب أن يكون بين 3 و 10 أرقام');
+      AppSnackbar.error('??? ???????? ??? ?? ???? ??? 3 ? 10 ?????');
       return;
     }
 
@@ -146,11 +146,15 @@ class BarcodeSettingsBloc extends Bloc<BarcodeSettingsEvent, BarcodeSettingsStat
       emit(BarcodeSettingsState.refreshPreview(state.copyWith(
         status: BarcodeSettingsStatus.loaded,
       )));
-      AppSnackbar.success('تم حفظ إعدادات الباركود بنجاح', title: 'تم الحفظ');
+      AppSnackbar.success('?? ??? ??????? ???????? ?????', title: '?? ?????');
     } catch (e) {
-      AppSnackbar.error('حدث خطأ أثناء الحفظ: $e');
+      AppSnackbar.error('??? ??? ????? ?????: $e');
       emit(state.copyWith(status: BarcodeSettingsStatus.error, error: e.toString()));
     }
   }
 }
+
+
+
+
 

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../bloc/barcode_label_bloc.dart';
 
@@ -29,8 +29,8 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return HomeShell(
-      title: AppStrings.barcodePrintTitle,
-      subtitle: AppStrings.barcodePrintSubtitle,
+      title: InventoryStrings.barcodePrintTitle,
+      subtitle: InventoryStrings.barcodePrintSubtitle,
       child: Container(
         color: scheme.surfaceContainerLow.withValues(alpha: 0.15),
         padding: EdgeInsets.all(AppSpacing.lg.w),
@@ -55,11 +55,11 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
         shape: const Border(),
         leading: const Icon(Icons.settings_rounded, color: AppColors.primary),
         title: ReusableText(
-          AppStrings.labelSettingsAndSizes,
+          InventoryStrings.labelSettingsAndSizes,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13.sp),
         ),
         subtitle: ReusableText(
-          AppStrings.labelSizeCopiesFormat
+          InventoryStrings.labelSizeCopiesFormat
               .replaceFirst('%s', labelWidth.toString())
               .replaceFirst('%s', labelHeight.toString())
               .replaceFirst('%s', defaultCopies.toString()),
@@ -82,7 +82,7 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
                     SizedBox(
                       width: 250.w,
                       child: ReusableInput(
-                        label: AppStrings.labelWidthMm,
+                        label: InventoryStrings.labelWidthMm,
                         keyboardType: TextInputType.number,
                         prefixIcon: const Icon(
                           Icons.width_normal_rounded,
@@ -99,7 +99,7 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
                     SizedBox(
                       width: 250.w,
                       child: ReusableInput(
-                        label: AppStrings.labelHeightMm,
+                        label: InventoryStrings.labelHeightMm,
                         keyboardType: TextInputType.number,
                         prefixIcon: const Icon(Icons.height_rounded, size: 18),
                         onChanged: (v) => setState(
@@ -114,7 +114,7 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
                 ),
                 SizedBox(height: AppSpacing.md.h),
                 ReusableInput(
-                  label: AppStrings.copiesPerItemLabel,
+                  label: InventoryStrings.copiesPerItemLabel,
                   keyboardType: TextInputType.number,
                   prefixIcon: const Icon(Icons.copy_all_rounded, size: 18),
                   onChanged: (v) =>
@@ -129,22 +129,22 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
                   runSpacing: AppSpacing.sm.h,
                   children: [
                     QuickFilterChip(
-                      label: AppStrings.showNameLabel,
+                      label: InventoryStrings.showNameLabel,
                       isSelected: showName,
                       onTap: () => setState(() => showName = !showName),
                     ),
                     QuickFilterChip(
-                      label: AppStrings.showPriceLabel,
+                      label: InventoryStrings.showPriceLabel,
                       isSelected: showPrice,
                       onTap: () => setState(() => showPrice = !showPrice),
                     ),
                     QuickFilterChip(
-                      label: AppStrings.showUnitLabel,
+                      label: InventoryStrings.showUnitLabel,
                       isSelected: showUnit,
                       onTap: () => setState(() => showUnit = !showUnit),
                     ),
                     QuickFilterChip(
-                      label: AppStrings.showBarcodeLabel,
+                      label: InventoryStrings.showBarcodeLabel,
                       isSelected: showBarcode,
                       onTap: () => setState(() => showBarcode = !showBarcode),
                     ),
@@ -169,7 +169,7 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ReusableInput(
-                hint: AppStrings.searchMedicineToPrintHint,
+                hint: InventoryStrings.searchMedicineToPrintHint,
                 prefixIcon: const Icon(Icons.search_rounded),
                 textDirection: TextDirection.rtl,
                 onChanged: (v) => bloc.add(SearchLabelMedicines(v)),
@@ -200,7 +200,7 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
                         subtitle: ReusableText(
                           m.barcodes.isNotEmpty
                               ? m.barcodes.first
-                              : AppStrings.noBarcode,
+                              : InventoryStrings.noBarcode,
                           variant: ReusableTextVariant.caption,
                         ),
                         trailing: Icon(
@@ -227,8 +227,8 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
         if (state.selectedMedicines.isEmpty) {
           return const EmptyState(
             icon: Icons.local_print_shop_outlined,
-            title: AppStrings.emptyPrintListTitle,
-            subtitle: AppStrings.emptyPrintListSubtitle,
+            title: InventoryStrings.emptyPrintListTitle,
+            subtitle: InventoryStrings.emptyPrintListSubtitle,
           );
         }
 
@@ -269,7 +269,7 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         ReusableText(
-                          '${m.barcodes.firstOrNull ?? '---'} | ${AppStrings.stockBalanceFormat.replaceFirst('%s', m.quantity.toString())}',
+                          '${m.barcodes.firstOrNull ?? '---'} | ${InventoryStrings.stockBalanceFormat.replaceFirst('%s', m.quantity.toString())}',
                           variant: ReusableTextVariant.caption,
                         ),
                       ],
@@ -290,7 +290,7 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
                       color: AppColors.error,
                     ),
                     onPressed: () => bloc.add(RemoveLabelMedicine(i)),
-                    tooltip: AppStrings.deleteLineTooltip,
+                    tooltip: SalesStrings.deleteLineTooltip,
                   ),
                 ],
               ),
@@ -343,14 +343,14 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ReusableButton(
-                    text: AppStrings.view,
+                    text: GeneralStrings.view,
                     prefixIcon: Icons.preview_rounded,
                     type: ButtonType.outlined,
                     onPressed: () => _showPreviewDialog(context),
                   ),
                   SizedBox(width: AppSpacing.md.w),
                   ReusableButton(
-                    text: AppStrings.startPrinting,
+                    text: InventoryStrings.startPrinting,
                     prefixIcon: Icons.print_rounded,
                     onPressed: () => bloc.add(const PrintLabels()),
                   ),
@@ -369,11 +369,11 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
     showDialog(
       context: context,
       builder: (_) => ReusableDialog(
-        title: AppStrings.labelPreviewDialogTitle,
+        title: InventoryStrings.labelPreviewDialogTitle,
         headerIcon: const Icon(Icons.preview_rounded),
         footerActions: [
           ReusableButton(
-            text: AppStrings.closePreview,
+            text: InventoryStrings.closePreview,
             type: ButtonType.text,
             onPressed: () => Navigator.pop(context),
           ),
@@ -387,7 +387,7 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
                 if (firstSelected == null) {
                   return const EmptyState(
                     icon: Icons.error_outline,
-                    title: AppStrings.noData,
+                    title: GeneralStrings.noData,
                   );
                 }
 
@@ -421,7 +421,7 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
                         ),
                       if (showPrice)
                         ReusableText(
-                          '${firstSelected.medicine.sellPrice.toStringAsFixed(2)} ${AppStrings.currency}',
+                          '${firstSelected.medicine.sellPrice.toStringAsFixed(2)} ${GeneralStrings.currency}',
                           style: TextStyle(
                             fontSize: 9.sp,
                             fontWeight: FontWeight.w800,
@@ -461,7 +461,7 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
           SizedBox(height: 12.h),
           const Center(
             child: ReusableText(
-              AppStrings.previewMagnifiedNote,
+              InventoryStrings.previewMagnifiedNote,
               variant: ReusableTextVariant.caption,
             ),
           ),
@@ -470,3 +470,7 @@ class _BarcodeLabelViewState extends State<BarcodeLabelView> {
     );
   }
 }
+
+
+
+

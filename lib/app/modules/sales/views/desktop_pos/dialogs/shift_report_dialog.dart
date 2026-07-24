@@ -4,18 +4,18 @@ import 'package:go_router/go_router.dart';
 import 'package:collection/collection.dart';
 
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
 import 'package:pharmacy_system/app/core/data/services/sales/cashier_shift_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
 import 'package:pharmacy_system/app/core/data/services/print_service.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/customer_ledger_model.dart';
-import 'package:pharmacy_system/app/core/data/repositories/customer_ledger_repository.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_ledger_model.dart';
+import 'package:pharmacy_system/app/core/data/repositories/contact_ledger_repository.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
 import 'package:pharmacy_system/app/routes/app_routes.dart';
 import 'package:pharmacy_system/app/modules/sales/bloc/pos_bloc.dart';
 
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 
 class ShiftReportDialog {
   static Future<void> showSessionDetails(
@@ -24,7 +24,7 @@ class ShiftReportDialog {
   ) async {
     final shift = state.currentShift;
     if (shift == null) {
-      AppSnackbar.warning(AppStrings.noOpenShiftWarning);
+      AppSnackbar.warning(SalesStrings.noOpenShiftWarning);
       return;
     }
 
@@ -35,11 +35,11 @@ class ShiftReportDialog {
       context: context,
       builder: (context) => ReusableDialog(
         headerIcon: const Icon(Icons.info_outline_rounded),
-        title: AppStrings.sessionDetailsTitle,
+        title: SalesStrings.sessionDetailsTitle,
         maxWidth: 800,
         footerActions: [
           ReusableButton(
-            text: AppStrings.printReportLabel,
+            text: SalesStrings.printReportLabel,
             prefixIcon: Icons.print_rounded,
             type: ButtonType.outlined,
             onPressed: () {
@@ -57,7 +57,7 @@ class ShiftReportDialog {
             },
           ),
           ReusableButton(
-            text: AppStrings.close,
+            text: GeneralStrings.close,
             onPressed: () => Navigator.pop(context),
           ),
         ],
@@ -77,7 +77,7 @@ class ShiftReportDialog {
   static Future<void> showCloseShift(BuildContext context, PosBloc bloc) async {
     final shift = bloc.state.currentShift;
     if (shift == null) {
-      AppSnackbar.warning(AppStrings.noOpenShiftEndWarning);
+      AppSnackbar.warning(SalesStrings.noOpenShiftEndWarning);
       return;
     }
     final data = await _calculateShiftData(bloc.state);
@@ -93,21 +93,21 @@ class ShiftReportDialog {
       builder: (context) => ReusableDialog(
         headerIcon: const Icon(Icons.exit_to_app_rounded),
         headerIconColor: AppColors.error,
-        title: AppStrings.endSessionTitle,
+        title: SalesStrings.endSessionTitle,
         maxWidth: 800,
         footerActions: [
           ReusableButton(
-            text: AppStrings.cancel,
+            text: GeneralStrings.cancel,
             type: ButtonType.text,
             onPressed: () => Navigator.pop(context),
           ),
           ReusableButton(
-            text: AppStrings.endSessionNowLabel,
+            text: SalesStrings.endSessionNowLabel,
             color: AppColors.error,
             onPressed: () async {
               final amt = double.tryParse(countedCashController.text);
               if (amt == null || amt < 0) {
-                AppSnackbar.error(AppStrings.enterValidAmountMsg);
+                AppSnackbar.error(SalesStrings.enterValidAmountMsg);
                 return;
               }
 
@@ -121,7 +121,7 @@ class ShiftReportDialog {
                 if (!context.mounted) return;
                 Navigator.pop(context);
                 context.go(Routes.LOGIN);
-                AppSnackbar.success(AppStrings.sessionClosedSuccessMsg);
+                AppSnackbar.success(SalesStrings.sessionClosedSuccessMsg);
               } catch (e) {
                 AppSnackbar.error(e.toString());
               }
@@ -145,7 +145,7 @@ class ShiftReportDialog {
                         Expanded(
                           child: ReusableInput(
                             controller: countedCashController,
-                            label: AppStrings.actualCashFieldLabel,
+                            label: SalesStrings.actualCashFieldLabel,
                             prefixIcon: const Icon(Icons.payments_rounded),
                             keyboardType: const TextInputType.numberWithOptions(decimal: true),
                           ),
@@ -154,7 +154,7 @@ class ShiftReportDialog {
                         Expanded(
                           child: ReusableInput(
                             controller: notesController,
-                            label: AppStrings.closingNoteFieldLabel,
+                            label: SalesStrings.closingNoteFieldLabel,
                             maxLines: 2,
                           ),
                         ),
@@ -180,37 +180,37 @@ class ShiftReportDialog {
       children: [
         Row(
           children: [
-            _cardStat(context, AppStrings.invoiceCount, '${data.salesCount}', Colors.blue),
+            _cardStat(context, SalesStrings.invoiceCount, '${data.salesCount}', Colors.blue),
             SizedBox(width: 8.w),
-            _cardStat(context, AppStrings.shiftTotalSales, '${data.totalSales.toStringAsFixed(2)} ${AppStrings.currency}', Colors.green),
+            _cardStat(context, SalesStrings.shiftTotalSales, '${data.totalSales.toStringAsFixed(2)} ${GeneralStrings.currency}', Colors.green),
             SizedBox(width: 8.w),
-            _cardStat(context, AppStrings.returnsLabel, '-${data.totalReturns.toStringAsFixed(2)} ${AppStrings.currency}', Colors.red),
+            _cardStat(context, SalesStrings.returnsLabel, '-${data.totalReturns.toStringAsFixed(2)} ${GeneralStrings.currency}', Colors.red),
             SizedBox(width: 8.w),
-            _cardStat(context, AppStrings.netAmount, '${data.netSales.toStringAsFixed(2)} ${AppStrings.currency}', Colors.amber),
+            _cardStat(context, SalesStrings.netAmount, '${data.netSales.toStringAsFixed(2)} ${GeneralStrings.currency}', Colors.amber),
           ],
         ),
         SizedBox(height: 20.h),
 
-        const SectionHeader(title: AppStrings.paymentSummaryTitle, icon: Icons.payments_outlined),
+        const SectionHeader(title: SalesStrings.paymentSummaryTitle, icon: Icons.payments_outlined),
         SizedBox(height: 8.h),
         AppCard(
           padding: EdgeInsets.zero,
           child: Table(
             border: TableBorder.symmetric(inside: BorderSide(color: Colors.grey.shade100)),
             children: [
-              _tableHeaderRow(context, [AppStrings.paymentMethodLabel, AppStrings.salesColumnHeader, AppStrings.expenseColumnHeader]),
-              _tableDataRow(context, AppStrings.openingStockTitle, '${data.openingCash.toStringAsFixed(2)} ${AppStrings.currency}', '--'),
-              _tableDataRow(context, AppStrings.paymentCashRow, '${data.cashSales.toStringAsFixed(2)} ${AppStrings.currency}', '0.00 ${AppStrings.currency}'),
-              _tableDataRow(context, AppStrings.paymentCardRow, '${data.cardSales.toStringAsFixed(2)} ${AppStrings.currency}', '0.00 ${AppStrings.currency}'),
-              _tableDataRow(context, AppStrings.creditSaleRow, '${data.creditSales.toStringAsFixed(2)} ${AppStrings.currency}', '0.00 ${AppStrings.currency}'),
-              _tableDataRow(context, AppStrings.mixedPaymentRow, '${data.mixedSales.toStringAsFixed(2)} ${AppStrings.currency}', '0.00 ${AppStrings.currency}'),
-              _tableTotalRow(context, AppStrings.expectedDrawerTotalRow, '${data.expectedCashInDrawer.toStringAsFixed(2)} ${AppStrings.currency}', bg: Colors.green.withValues(alpha: 0.05), textColor: Colors.green.shade900),
+              _tableHeaderRow(context, [SalesStrings.paymentMethodLabel, SalesStrings.salesColumnHeader, SalesStrings.expenseColumnHeader]),
+              _tableDataRow(context, SalesStrings.openingStockTitle, '${data.openingCash.toStringAsFixed(2)} ${GeneralStrings.currency}', '--'),
+              _tableDataRow(context, SalesStrings.paymentCashRow, '${data.cashSales.toStringAsFixed(2)} ${GeneralStrings.currency}', '0.00 ${GeneralStrings.currency}'),
+              _tableDataRow(context, SalesStrings.paymentCardRow, '${data.cardSales.toStringAsFixed(2)} ${GeneralStrings.currency}', '0.00 ${GeneralStrings.currency}'),
+              _tableDataRow(context, SalesStrings.creditSaleRow, '${data.creditSales.toStringAsFixed(2)} ${GeneralStrings.currency}', '0.00 ${GeneralStrings.currency}'),
+              _tableDataRow(context, SalesStrings.mixedPaymentRow, '${data.mixedSales.toStringAsFixed(2)} ${GeneralStrings.currency}', '0.00 ${GeneralStrings.currency}'),
+              _tableTotalRow(context, SalesStrings.expectedDrawerTotalRow, '${data.expectedCashInDrawer.toStringAsFixed(2)} ${GeneralStrings.currency}', bg: Colors.green.withValues(alpha: 0.05), textColor: Colors.green.shade900),
             ],
           ),
         ),
         SizedBox(height: 24.h),
 
-        const SectionHeader(title: AppStrings.soldItemsSectionTitle, icon: Icons.medication_rounded),
+        const SectionHeader(title: SalesStrings.soldItemsSectionTitle, icon: Icons.medication_rounded),
         SizedBox(height: 8.h),
         AppCard(
           padding: EdgeInsets.zero,
@@ -223,9 +223,9 @@ class ShiftReportDialog {
               3: FlexColumnWidth(2),
             },
             children: [
-              _tableHeaderRow(context, ['#', AppStrings.itemNameLabel, AppStrings.cartQuantity, AppStrings.amount]),
+              _tableHeaderRow(context, ['#', SalesStrings.itemNameLabel, SalesStrings.cartQuantity, GeneralStrings.amount]),
               if (data.soldItems.isEmpty)
-                _tableEmptyRow(4, AppStrings.noSalesInShiftMsg)
+                _tableEmptyRow(4, SalesStrings.noSalesInShiftMsg)
               else
                 ...data.soldItems.asMap().entries.map((e) {
                   final idx = e.key;
@@ -235,7 +235,7 @@ class ShiftReportDialog {
                     '${idx + 1}',
                     item['name'],
                     '${item['quantity']}',
-                    '${(item['total'] as double).toStringAsFixed(2)} ${AppStrings.currency}',
+                    '${(item['total'] as double).toStringAsFixed(2)} ${GeneralStrings.currency}',
                   );
                 }),
             ],
@@ -243,16 +243,16 @@ class ShiftReportDialog {
         ),
         SizedBox(height: 24.h),
 
-        const SectionHeader(title: AppStrings.drawerDetailsSectionTitle, icon: Icons.account_balance_wallet_outlined),
+        const SectionHeader(title: SalesStrings.drawerDetailsSectionTitle, icon: Icons.account_balance_wallet_outlined),
         SizedBox(height: 8.h),
         AppCard(
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              _tableLedgerRow(context, AppStrings.openingBalanceRow, '${data.openingCash.toStringAsFixed(2)} ${AppStrings.currency}', Colors.green.shade700),
-              _tableLedgerRow(context, AppStrings.cashSalesRow, '${data.cashSales.toStringAsFixed(2)} ${AppStrings.currency}', Colors.green.shade700),
-              _tableLedgerRow(context, AppStrings.customerCollectionsRow, '${data.customerPayments.toStringAsFixed(2)} ${AppStrings.currency}', Colors.green.shade700),
-              _tableLedgerRow(context, AppStrings.cashExpensesRow, '0.00 ${AppStrings.currency}', Colors.red.shade700),
+              _tableLedgerRow(context, SalesStrings.openingBalanceRow, '${data.openingCash.toStringAsFixed(2)} ${GeneralStrings.currency}', Colors.green.shade700),
+              _tableLedgerRow(context, SalesStrings.cashSalesRow, '${data.cashSales.toStringAsFixed(2)} ${GeneralStrings.currency}', Colors.green.shade700),
+              _tableLedgerRow(context, SalesStrings.customerCollectionsRow, '${data.customerPayments.toStringAsFixed(2)} ${GeneralStrings.currency}', Colors.green.shade700),
+              _tableLedgerRow(context, SalesStrings.cashExpensesRow, '0.00 ${GeneralStrings.currency}', Colors.red.shade700),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
                 decoration: BoxDecoration(
@@ -262,8 +262,8 @@ class ShiftReportDialog {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ReusableText(AppStrings.finalExpectedTotalRow, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold, color: Colors.blue.shade900)),
-                    ReusableText('${data.expectedCashInDrawer.toStringAsFixed(2)} ${AppStrings.currency}', style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.w900, color: Colors.blue.shade900)),
+                    ReusableText(SalesStrings.finalExpectedTotalRow, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold, color: Colors.blue.shade900)),
+                    ReusableText('${data.expectedCashInDrawer.toStringAsFixed(2)} ${GeneralStrings.currency}', style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.w900, color: Colors.blue.shade900)),
                   ],
                 ),
               ),
@@ -446,3 +446,8 @@ class _ShiftData {
     required this.customerPayments, required this.soldItems, required this.totalQuantity,
   });
 }
+
+
+
+
+

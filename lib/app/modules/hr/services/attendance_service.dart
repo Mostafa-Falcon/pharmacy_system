@@ -1,10 +1,10 @@
-﻿import 'package:drift/drift.dart';
+import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/attendance_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import '../../../core/injection.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'package:pharmacy_system/app/modules/hr/models/attendance_model.dart';
 
 class AttendanceService {
@@ -253,4 +253,7 @@ class AttendanceService {
     updatedAt: d.date,
   );
 }
+
+
+
 

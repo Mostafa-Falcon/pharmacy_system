@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
@@ -6,10 +6,10 @@ import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/stocktaking_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/stocktaking_items_dao.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/stocktaking_period_model.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/stocktaking_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/stocktaking_period_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/stocktaking_model.dart';
 import '../auth/auth_service.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'stock_mutation_service.dart';
 
 class StocktakingService {
@@ -25,7 +25,7 @@ class StocktakingService {
   String get _branchId => AuthService.currentBranchId ?? '';
   String get _userId => AuthService.currentUser?.id ?? '';
 
-  // ─── Periods ───
+  // --- Periods ---
   Future<List<StocktakingPeriodModel>> getPeriods() async {
     final rows = await _periodDao.getByBranch(_branchId);
     return rows.map(_periodFromData).toList();
@@ -123,7 +123,7 @@ class StocktakingService {
     }
   }
 
-  // ─── Close Period ───
+  // --- Close Period ---
   Future<void> closePeriod(String periodId, {String? notes}) async {
     final existing = await _periodDao.getById(periodId);
     if (existing == null) throw Exception('Period not found');
@@ -211,7 +211,7 @@ class StocktakingService {
     );
   }
 
-  // ─── Counts ───
+  // --- Counts ---
   Future<List<StocktakingCountModel>> getCounts(String periodId) async {
     final rows = await _itemsDao.getByStocktaking(periodId);
     return rows.map(_itemFromData).toList();
@@ -227,7 +227,7 @@ class StocktakingService {
     required String itemId,
     required String itemName,
     String? sku,
-    String unit = 'وحدة',
+    String unit = '????',
     required int systemQuantity,
     required int actualQuantity,
     double buyPrice = 0,
@@ -382,12 +382,12 @@ class StocktakingService {
     await deleteCount(id);
   }
 
-  // ─── Migration ───
+  // --- Migration ---
   Future<void> migrateFromOldModel(StocktakingModel old) async {
     final period = StocktakingPeriodModel(
       id: old.id,
       branchId: old.branchId,
-      name: 'جرد ${old.startDate.toString().substring(0, 10)}',
+      name: '??? ${old.startDate.toString().substring(0, 10)}',
       status: old.status == StocktakingStatus.confirmed ? 'closed' : 'open',
       startedAt: old.startDate,
       closedAt: old.endDate,
@@ -396,7 +396,7 @@ class StocktakingService {
     await _periodDao.upsert(_toPeriodCompanion(period));
   }
 
-  // ─── Converters ───
+  // --- Converters ---
 
   StocktakingPeriodModel _periodFromData(StocktakingTableData d) {
     final decoded = _decodePeriodNotes(d.notes);
@@ -449,7 +449,7 @@ class StocktakingService {
       itemId: d.medicineId,
       itemName: d.medicineName,
       sku: extra['s'] as String?,
-      unit: extra['u'] as String? ?? 'وحدة',
+      unit: extra['u'] as String? ?? '????',
       systemQuantity: d.systemQuantity,
       actualQuantity: d.countedQuantity,
       difference: d.difference,
@@ -483,4 +483,8 @@ class StocktakingService {
     return {};
   }
 }
+
+
+
+
 

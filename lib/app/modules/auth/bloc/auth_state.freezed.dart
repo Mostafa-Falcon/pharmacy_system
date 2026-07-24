@@ -25,12 +25,12 @@ $AuthStateCopyWith<AuthState> get copyWith => _$AuthStateCopyWithImpl<AuthState>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState&&(identical(other.status, status) || other.status == status)&&(identical(other.user, user) || other.user == user)&&(identical(other.error, error) || other.error == error)&&(identical(other.isPasswordVisible, isPasswordVisible) || other.isPasswordVisible == isPasswordVisible)&&(identical(other.isResetSent, isResetSent) || other.isResetSent == isResetSent)&&(identical(other.emailError, emailError) || other.emailError == emailError)&&(identical(other.passwordError, passwordError) || other.passwordError == passwordError)&&(identical(other.confirmPasswordError, confirmPasswordError) || other.confirmPasswordError == confirmPasswordError)&&(identical(other.nameError, nameError) || other.nameError == nameError)&&(identical(other.emailAttempt, emailAttempt) || other.emailAttempt == emailAttempt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.user, user)&&(identical(other.error, error) || other.error == error)&&(identical(other.isPasswordVisible, isPasswordVisible) || other.isPasswordVisible == isPasswordVisible)&&(identical(other.isResetSent, isResetSent) || other.isResetSent == isResetSent)&&(identical(other.emailError, emailError) || other.emailError == emailError)&&(identical(other.passwordError, passwordError) || other.passwordError == passwordError)&&(identical(other.confirmPasswordError, confirmPasswordError) || other.confirmPasswordError == confirmPasswordError)&&(identical(other.nameError, nameError) || other.nameError == nameError)&&(identical(other.emailAttempt, emailAttempt) || other.emailAttempt == emailAttempt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,user,error,isPasswordVisible,isResetSent,emailError,passwordError,confirmPasswordError,nameError,emailAttempt);
+int get hashCode => Object.hash(runtimeType,status,const DeepCollectionEquality().hash(user),error,isPasswordVisible,isResetSent,emailError,passwordError,confirmPasswordError,nameError,emailAttempt);
 
 @override
 String toString() {
@@ -239,12 +239,12 @@ _$AuthStateCopyWith<_AuthState> get copyWith => __$AuthStateCopyWithImpl<_AuthSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthState&&(identical(other.status, status) || other.status == status)&&(identical(other.user, user) || other.user == user)&&(identical(other.error, error) || other.error == error)&&(identical(other.isPasswordVisible, isPasswordVisible) || other.isPasswordVisible == isPasswordVisible)&&(identical(other.isResetSent, isResetSent) || other.isResetSent == isResetSent)&&(identical(other.emailError, emailError) || other.emailError == emailError)&&(identical(other.passwordError, passwordError) || other.passwordError == passwordError)&&(identical(other.confirmPasswordError, confirmPasswordError) || other.confirmPasswordError == confirmPasswordError)&&(identical(other.nameError, nameError) || other.nameError == nameError)&&(identical(other.emailAttempt, emailAttempt) || other.emailAttempt == emailAttempt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthState&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.user, user)&&(identical(other.error, error) || other.error == error)&&(identical(other.isPasswordVisible, isPasswordVisible) || other.isPasswordVisible == isPasswordVisible)&&(identical(other.isResetSent, isResetSent) || other.isResetSent == isResetSent)&&(identical(other.emailError, emailError) || other.emailError == emailError)&&(identical(other.passwordError, passwordError) || other.passwordError == passwordError)&&(identical(other.confirmPasswordError, confirmPasswordError) || other.confirmPasswordError == confirmPasswordError)&&(identical(other.nameError, nameError) || other.nameError == nameError)&&(identical(other.emailAttempt, emailAttempt) || other.emailAttempt == emailAttempt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,user,error,isPasswordVisible,isResetSent,emailError,passwordError,confirmPasswordError,nameError,emailAttempt);
+int get hashCode => Object.hash(runtimeType,status,const DeepCollectionEquality().hash(user),error,isPasswordVisible,isResetSent,emailError,passwordError,confirmPasswordError,nameError,emailAttempt);
 
 @override
 String toString() {

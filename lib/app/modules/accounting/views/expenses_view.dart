@@ -4,11 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import '../bloc/accounting_bloc.dart';
-import 'package:pharmacy_system/app/modules/accounting/models/expense_model.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/models/accounting/expense_model.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/tables/shared_table_cells.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../../app/routes/app_routes.dart';
 import '../../../core/constants/app_strings.dart';
 
@@ -177,7 +177,7 @@ class _ExpensesViewState extends State<ExpensesView> {
         isSortable: true,
         cellBuilder: (e) => TableMoneyCell(
           amount: e.amount,
-          currency: AppStrings.currency,
+          currency: GeneralStrings.currency,
           isNegative: true,
         ),
       ),
@@ -284,7 +284,7 @@ class _ExpensesViewState extends State<ExpensesView> {
             ),
             SizedBox(height: AppSpacing.sm.h),
             ReusableInput(
-              label: 'القيمة المالية (${AppStrings.currency})',
+              label: 'القيمة المالية (${GeneralStrings.currency})',
               hint: '0.00',
               controller: amountCtrl,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -411,7 +411,7 @@ class _ExpensesViewState extends State<ExpensesView> {
             ),
             SizedBox(height: AppSpacing.sm.h),
             ReusableInput(
-              label: 'القيمة المالية (${AppStrings.currency})',
+              label: 'القيمة المالية (${GeneralStrings.currency})',
               hint: '0.00',
               controller: amountCtrl,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -540,4 +540,9 @@ class _DateFilterChip extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
 

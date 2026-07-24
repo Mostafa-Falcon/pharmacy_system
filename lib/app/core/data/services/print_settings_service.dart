@@ -26,3 +26,5 @@ class PrintSettingsService {
     isPrintEnabled = !isPrintEnabled;
   }
 }
+
+

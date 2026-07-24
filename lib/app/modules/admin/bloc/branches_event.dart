@@ -35,3 +35,5 @@ class DeleteBranch extends BranchesEvent {
   @override
   List<Object?> get props => [id];
 }
+
+

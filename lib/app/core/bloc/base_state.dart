@@ -70,3 +70,5 @@ class BaseState<T> extends Equatable {
     );
   }
 }
+
+

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import 'package:pharmacy_system/app/modules/sales/bloc/pos_bloc.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/modules/sales/widgets/pos_cart_panel.dart';
@@ -28,14 +28,14 @@ class MobileCartTab extends StatelessWidget {
                 children: [
                   ReusableIconTextButton(
                     icon: Icons.cancel_outlined,
-                    label: AppStrings.cancel,
+                    label: GeneralStrings.cancel,
                     color: AppColors.error,
                     onPressed: () => controller.add(const PosClearCart()),
                     isEnabled: isEnabled,
                   ),
                   ReusableIconTextButton(
                     icon: Icons.monetization_on_outlined,
-                    label: AppStrings.enumCustomerCash,
+                    label: GeneralStrings.enumCustomerCash,
                     color: AppColors.posCategoryColor(6),
                     onPressed: () => controller.add(const PosCompleteSaleCash()),
                     isEnabled: isEnabled,
@@ -47,14 +47,14 @@ class MobileCartTab extends StatelessWidget {
                 children: [
                   ReusableIconTextButton(
                     icon: Icons.credit_card_outlined,
-                    label: AppStrings.cartPaymentCard,
+                    label: SalesStrings.cartPaymentCard,
                     color: AppColors.posCategoryColor(11),
                     onPressed: () => controller.add(const PosCompleteSaleCard()),
                     isEnabled: isEnabled,
                   ),
                   ReusableIconTextButton(
                     icon: Icons.account_balance_wallet_rounded,
-                    label: AppStrings.cartPaymentMixed,
+                    label: SalesStrings.cartPaymentMixed,
                     color: AppColors.surfaceTintDark,
                     onPressed: () => controller.add(const PosCompleteSaleMixed()),
                     isEnabled: isEnabled,
@@ -66,14 +66,14 @@ class MobileCartTab extends StatelessWidget {
                 children: [
                   ReusableIconTextButton(
                     icon: Icons.handshake_outlined,
-                    label: AppStrings.cartPaymentCredit,
+                    label: SalesStrings.cartPaymentCredit,
                     color: AppColors.posCategoryColor(1),
                     onPressed: () => controller.add(const PosCompleteSaleCredit()),
                     isEnabled: isEnabled,
                   ),
                   ReusableIconTextButton(
                     icon: Icons.pause_circle_outlined,
-                    label: AppStrings.cartSuspend,
+                    label: SalesStrings.cartSuspend,
                     color: AppColors.posCategoryColor(7),
                     onPressed: () => controller.add(const PosSuspendSale()),
                     isEnabled: isEnabled,
@@ -86,7 +86,7 @@ class MobileCartTab extends StatelessWidget {
                   Expanded(
                     child: ReusableIconTextButton(
                       icon: Icons.description_outlined,
-                      label: AppStrings.printQuote,
+                      label: ExportStrings.printQuote,
                       color: AppColors.posCategoryColor(9),
                       onPressed: () => controller.add(const PosCreateQuoteFromCart()),
                       isEnabled: isEnabled,
@@ -102,3 +102,7 @@ class MobileCartTab extends StatelessWidget {
     );
   }
 }
+
+
+
+

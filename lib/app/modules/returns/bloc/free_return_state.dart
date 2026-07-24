@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:pharmacy_system/app/modules/sales/models/return_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/return_model.dart';
 
 enum FreeReturnStatus { initial, loading, success, error }
 
@@ -80,3 +80,6 @@ class FreeReturnState extends Equatable {
         reason,
       ];
 }
+
+
+

@@ -143,3 +143,5 @@ abstract class BasePaginatedBloc<T> extends Bloc<PaginatedEvent, PaginatedState<
     ));
   }
 }
+
+

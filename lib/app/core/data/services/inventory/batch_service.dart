@@ -1,10 +1,10 @@
-﻿import 'package:get_it/get_it.dart';
+import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 import 'package:drift/drift.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/item_batches_dao.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/item_batch_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/item_batch_model.dart';
 import 'package:pharmacy_system/app/core/utils/app_utils.dart';
 
 class BatchService {
@@ -168,7 +168,7 @@ class BatchService {
     final batch = await findById(batchId);
     if (batch == null) return;
     if (damagedQty > batch.remainingQuantity) {
-      throw StateError('الكمية التالفة أكبر من الكمية المتبقية في التشغيلة');
+      throw StateError('?????? ??????? ???? ?? ?????? ???????? ?? ????????');
     }
     batch.damagedQuantity += damagedQty;
     await _dao.upsert(_toCompanion(batch));
@@ -273,4 +273,7 @@ class ExpiryTrackingResult {
 
   bool get hasChanges => batchesMarkedAsDamaged > 0;
 }
+
+
+
 

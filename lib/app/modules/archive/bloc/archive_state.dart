@@ -1,4 +1,4 @@
-﻿import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
 import 'package:pharmacy_system/app/modules/archive/models/archive_record_model.dart';
 
 enum ArchiveStatus { initial, loading, loaded, error, working }
@@ -68,4 +68,6 @@ class ArchiveState extends Equatable {
     isWorking,
   ];
 }
+
+
 

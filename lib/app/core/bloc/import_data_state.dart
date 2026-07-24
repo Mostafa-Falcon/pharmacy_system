@@ -62,3 +62,5 @@ class ImportDataState extends Equatable {
     currentStep, itemsFound, itemsSaved, itemsUpdated, itemsSkipped,
   ];
 }
+
+

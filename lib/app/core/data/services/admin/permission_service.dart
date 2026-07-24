@@ -1,4 +1,4 @@
-﻿import 'package:drift/drift.dart';
+import 'package:drift/drift.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/permissions_dao.dart';
 import 'package:pharmacy_system/app/core/injection.dart';
@@ -186,4 +186,6 @@ class PermissionService {
     );
   }
 }
+
+
 

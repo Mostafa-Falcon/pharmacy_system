@@ -5,11 +5,11 @@ import 'package:intl/intl.dart' hide TextDirection;
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 
 import '../bloc/items_archive_bloc.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/tables/shared_table_cells.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 
 class ItemsArchiveView extends StatelessWidget {
   const ItemsArchiveView({super.key});
@@ -19,11 +19,11 @@ class ItemsArchiveView extends StatelessWidget {
     final bloc = context.read<ItemsArchiveBloc>();
     if (!bloc.canManage) {
       return const HomeShell(
-        title: AppStrings.medicinesArchive,
+        title: ArchiveStrings.medicinesArchive,
         child: ReusableStateView.permissionDenied(
-          title: AppStrings.permissionDenied,
+          title: GeneralStrings.permissionDenied,
           message:
-              'أرشيف الأصناف المحذوفة متاح فقط لمدير النظام أو صاحب الصيدلية.',
+              '????? ??????? ???????? ???? ??? ????? ?????? ?? ???? ????????.',
         ),
       );
     }
@@ -31,8 +31,8 @@ class ItemsArchiveView extends StatelessWidget {
     return BlocBuilder<ItemsArchiveBloc, ItemsArchiveState>(
       builder: (context, state) {
         return StandardModuleLayout(
-          title: AppStrings.medicinesArchive,
-          subtitle: AppStrings.archiveSubtitle,
+          title: ArchiveStrings.medicinesArchive,
+          subtitle: ArchiveStrings.archiveSubtitle,
           actions: _buildHeaderActions(context, state),
           filters: _buildFilters(context, state),
           content: _buildContent(context, state),
@@ -50,18 +50,18 @@ class ItemsArchiveView extends StatelessWidget {
 
     return [
       ReusableText(
-        'تم تحديد ${state.selectedIds.length} صنف',
+        '?? ????? ${state.selectedIds.length} ???',
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
       ReusableButton(
-        text: AppStrings.restoreSelected,
+        text: ArchiveStrings.restoreSelected,
         prefixIcon: Icons.restore_rounded,
         onPressed:
             state.isWorking ? null : () => bloc.add(const RestoreSelected()),
         type: ButtonType.text,
       ),
       ReusableButton(
-        text: AppStrings.archivePermanentDelete,
+        text: ArchiveStrings.archivePermanentDelete,
         prefixIcon: Icons.delete_forever_rounded,
         onPressed:
             state.isWorking ? null : () => bloc.add(const DeleteSelected()),
@@ -76,7 +76,7 @@ class ItemsArchiveView extends StatelessWidget {
     return AppCard(
       padding: EdgeInsets.all(AppSpacing.md),
       child: ReusableInput(
-        hint: 'ابحث في الأرشيف بالاسم أو الباركود...',
+        hint: '???? ?? ??????? ?????? ?? ????????...',
         prefixIcon: const Icon(Icons.search_rounded),
         showClearButton: true,
         textDirection: TextDirection.rtl,
@@ -91,54 +91,54 @@ class ItemsArchiveView extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
 
     if (state.status == ItemsArchiveStatus.loading) {
-      return const Center(child: LoadingIndicator(message: 'جاري تحميل الأرشيف...'));
+      return const Center(child: LoadingIndicator(message: '???? ????? ???????...'));
     }
 
     final items = state.items;
     if (items.isEmpty) {
       return const EmptyState(
         icon: Icons.inventory_2_outlined,
-        title: AppStrings.archiveEmpty,
-        subtitle: 'لا توجد أصناف مؤرشفة مطابقة لبحثك.',
+        title: ArchiveStrings.archiveEmpty,
+        subtitle: '?? ???? ????? ?????? ?????? ?????.',
       );
     }
 
     final columns = [
       ReusableTableColumn<MedicineModel>(
         id: 'name',
-        title: 'الصنف والباركود',
+        title: '????? ?????????',
         flex: 2,
         isSortable: true,
         cellBuilder: (m) => TableContactNameCell(
           name: m.name,
-          subtitle: m.barcodes.firstOrNull ?? 'بدون باركود',
+          subtitle: m.barcodes.firstOrNull ?? '???? ??????',
           icon: Icons.inventory_2_rounded,
           iconColor: scheme.primary,
         ),
       ),
       ReusableTableColumn<MedicineModel>(
         id: 'category',
-        title: 'التصنيف',
+        title: '???????',
         width: 150.w,
         textBuilder: (m) => m.category ?? '—',
       ),
       ReusableTableColumn<MedicineModel>(
         id: 'sellPrice',
-        title: 'سعر البيع',
+        title: '??? ?????',
         width: 120.w,
         isNumeric: true,
-        cellBuilder: (m) => TableMoneyCell(amount: m.sellPrice, currency: AppStrings.currency, isHighlight: true),
+        cellBuilder: (m) => TableMoneyCell(amount: m.sellPrice, currency: GeneralStrings.currency, isHighlight: true),
       ),
       ReusableTableColumn<MedicineModel>(
         id: 'quantity',
-        title: 'المخزون',
+        title: '???????',
         width: 100.w,
         isNumeric: true,
         textBuilder: (m) => '${m.quantity}',
       ),
       ReusableTableColumn<MedicineModel>(
         id: 'archivedAt',
-        title: 'تاريخ الأرشفة',
+        title: '????? ???????',
         width: 160.w,
         textBuilder: (m) => DateFormat('yyyy/MM/dd HH:mm').format(m.lastModified),
       ),
@@ -153,18 +153,23 @@ class ItemsArchiveView extends StatelessWidget {
       rowIdGetter: (m) => m.id,
       onSelectRow: (id) => bloc.add(ToggleItemSelection(id)),
       onToggleAll: (v) => bloc.add(const ToggleAllSelection()),
-      itemLabel: 'صنف مؤرشف',
+      itemLabel: '??? ?????',
       rowActions: (m) => TableOptionsButton(
         onSelected: (v) {
           if (v == 'restore') bloc.add(RestoreItem(m.id));
           if (v == 'delete') bloc.add(DeleteItem(m.id));
         },
         menuItems: [
-          const PopupMenuItem(value: 'restore', child: ReusableText('استعادة الصنف', color: AppColors.success)),
-          const PopupMenuItem(value: 'delete', child: ReusableText('حذف نهائي', color: AppColors.error)),
+          const PopupMenuItem(value: 'restore', child: ReusableText('??????? ?????', color: AppColors.success)),
+          const PopupMenuItem(value: 'delete', child: ReusableText('??? ?????', color: AppColors.error)),
         ],
       ),
     );
   }
 }
+
+
+
+
+
 

@@ -1,5 +1,5 @@
-﻿import 'package:equatable/equatable.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_model.dart';
 
 abstract class SuppliersEvent extends Equatable {
   const SuppliersEvent();
@@ -166,4 +166,7 @@ class BulkToggleSuppliersActive extends SuppliersEvent {
   @override
   List<Object?> get props => [active];
 }
+
+
+
 

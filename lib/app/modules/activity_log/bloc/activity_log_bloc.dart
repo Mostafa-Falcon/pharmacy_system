@@ -44,3 +44,5 @@ class ActivityLogBloc extends Bloc<ActivityLogEvent, ActivityLogState> {
     }
   }
 }
+
+

@@ -14,3 +14,5 @@ class LoadMonitoringDashboard extends MonitoringDashboardEvent {
 class RefreshMonitoringDashboard extends MonitoringDashboardEvent {
   const RefreshMonitoringDashboard();
 }
+
+

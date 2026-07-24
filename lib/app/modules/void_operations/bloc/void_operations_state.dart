@@ -1,12 +1,12 @@
-﻿import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
 
-import 'package:pharmacy_system/app/modules/sales/models/purchase_model.dart';
-import 'package:pharmacy_system/app/modules/sales/models/sale_model.dart';
+import 'package:pharmacy_system/app/core/models/purchases/purchase_invoice_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/sale_invoice_model.dart';
 
 class VoidOperationsState extends Equatable {
   final bool isLoading;
-  final List<SaleModel> voidableSales;
-  final List<PurchaseModel> voidablePurchases;
+  final List<SaleInvoiceModel> voidableSales;
+  final List<PurchaseInvoiceModel> voidablePurchases;
 
   const VoidOperationsState({
     this.isLoading = false,
@@ -16,8 +16,8 @@ class VoidOperationsState extends Equatable {
 
   VoidOperationsState copyWith({
     bool? isLoading,
-    List<SaleModel>? voidableSales,
-    List<PurchaseModel>? voidablePurchases,
+    List<SaleInvoiceModel>? voidableSales,
+    List<PurchaseInvoiceModel>? voidablePurchases,
   }) {
     return VoidOperationsState(
       isLoading: isLoading ?? this.isLoading,
@@ -29,3 +29,7 @@ class VoidOperationsState extends Equatable {
   @override
   List<Object?> get props => [isLoading, voidableSales, voidablePurchases];
 }
+
+
+
+

@@ -1,5 +1,5 @@
-﻿import 'package:equatable/equatable.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/barcode_settings_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:pharmacy_system/app/core/models/inventory/barcode_settings_model.dart';
 import '../services/barcode_code_service.dart';
 
 enum BarcodeSettingsStatus { initial, loading, loaded, saving, error }
@@ -133,4 +133,7 @@ class BarcodeSettingsState extends Equatable {
         previewCode,
       ];
 }
+
+
+
 

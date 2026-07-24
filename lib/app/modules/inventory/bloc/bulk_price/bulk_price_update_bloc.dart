@@ -1,8 +1,8 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
 import 'bulk_price_update_event.dart';
 import 'bulk_price_update_state.dart';
 
@@ -20,13 +20,13 @@ class BulkPriceUpdateBloc extends Bloc<BulkPriceUpdateEvent, BulkPriceUpdateStat
   }
 
   Future<void> _ensureLoaded() async {
-    // ذكاء مهندسة: نستخدم الـ Repository لضمان جلب بيانات الفرع الحالي فقط
+    // ???? ??????: ?????? ??? Repository ????? ??? ?????? ????? ?????? ???
     _cache = await BranchDataService.getMedicinesAsync(branchId: _branchId);
   }
 
   List<String> _getCategories() {
     final cats = _cache
-        .map((m) => m.category ?? 'عام')
+        .map((m) => m.category ?? '???')
         .where((c) => c.isNotEmpty)
         .toSet()
         .toList();
@@ -41,7 +41,7 @@ class BulkPriceUpdateBloc extends Bloc<BulkPriceUpdateEvent, BulkPriceUpdateStat
 
   void _onApply(BulkPriceUpdateApply event, Emitter<BulkPriceUpdateState> emit) {
     final filtered = event.category != null
-        ? _cache.where((m) => (m.category ?? 'عام') == event.category).toList()
+        ? _cache.where((m) => (m.category ?? '???') == event.category).toList()
         : _cache;
 
     double newValue(double original) {
@@ -93,7 +93,7 @@ class BulkPriceUpdateBloc extends Bloc<BulkPriceUpdateEvent, BulkPriceUpdateStat
     emit(state.copyWith(isLoading: true));
     try {
       final filtered = state.selectedCategory != null
-          ? _cache.where((m) => (m.category ?? 'عام') == state.selectedCategory).toList()
+          ? _cache.where((m) => (m.category ?? '???') == state.selectedCategory).toList()
           : _cache;
 
       final List<MedicineModel> updatedItems = [];
@@ -135,15 +135,18 @@ class BulkPriceUpdateBloc extends Bloc<BulkPriceUpdateEvent, BulkPriceUpdateStat
         isLoading: false,
         isSuccess: true,
         affectedCount: updatedItems.length,
-        message: 'تم تحديث أسعار ${updatedItems.length} صنف بنجاح وترحيلها للسحابة',
+        message: '?? ????? ????? ${updatedItems.length} ??? ????? ???????? ???????',
       ));
     } catch (e) {
       emit(state.copyWith(
         isLoading: false,
         isSuccess: false,
-        message: 'فشل التحديث: $e',
+        message: '??? ???????: $e',
       ));
     }
   }
 }
+
+
+
 

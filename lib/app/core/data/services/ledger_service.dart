@@ -1,44 +1,42 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:pharmacy_system/app/core/injection.dart';
 import 'package:pharmacy_system/app/core/utils/app_utils.dart';
-import 'package:pharmacy_system/app/core/data/database/daos/customer_ledgers_dao.dart';
-import 'package:pharmacy_system/app/core/data/database/daos/supplier_ledgers_dao.dart';
+import 'package:pharmacy_system/app/core/data/database/daos/contacts_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/customer_ledger_model.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_ledger_model.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_ledger_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_ledger_model.dart';
 
 class LedgerService {
   static const _uuid = Uuid();
 
-  static final CustomerLedgersDao _customerDao = sl<CustomerLedgersDao>();
-  static final SupplierLedgersDao _supplierDao = sl<SupplierLedgersDao>();
+  static final ContactsDao _contactsDao = sl<ContactsDao>();
 
-  static List<CustomerLedgersTableData> _customerCache = [];
-  static List<SupplierLedgersTableData> _supplierCache = [];
+  static List<ContactLedgersTableData> _customerCache = [];
+  static List<ContactLedgersTableData> _supplierCache = [];
   static bool _customerReady = false;
   static bool _supplierReady = false;
 
   static Future<void> _ensureCustomerReady() async {
     if (!_customerReady) {
-      _customerCache = await _customerDao.getAll();
+      _customerCache = await _contactsDao.getAllContactLedgers();
       _customerReady = true;
     }
   }
 
   static Future<void> _ensureSupplierReady() async {
     if (!_supplierReady) {
-      _supplierCache = await _supplierDao.getAll();
+      _supplierCache = await _contactsDao.getAllContactLedgers();
       _supplierReady = true;
     }
   }
 
   // ==================== Customer Ledger Methods ====================
-  static Future<void> insertCustomerEntry(CustomerLedgerModel entry) async {
+  static Future<void> insertCustomerEntry(ContactLedgerModel entry) async {
     await _ensureCustomerReady();
     await _customerDao.upsert(CustomerLedgersTableCompanion(
       id: Value(entry.id),
@@ -71,7 +69,7 @@ class LedgerService {
     );
   }
 
-  static Future<void> updateCustomerEntry(CustomerLedgerModel entry) async {
+  static Future<void> updateCustomerEntry(ContactLedgerModel entry) async {
     await _ensureCustomerReady();
     await _customerDao.upsert(CustomerLedgersTableCompanion(
       id: Value(entry.id),
@@ -116,7 +114,7 @@ class LedgerService {
     );
   }
 
-  static Future<List<CustomerLedgerModel>> getCustomerEntries(
+  static Future<List<ContactLedgerModel>> getCustomerEntries(
     String customerId,
     String branchId,
   ) async {
@@ -448,8 +446,8 @@ class LedgerService {
     }
   }
 
-  static CustomerLedgerModel _toCustomerModel(CustomerLedgersTableData d) =>
-      CustomerLedgerModel(
+  static ContactLedgerModel _toCustomerModel(CustomerLedgersTableData d) =>
+      ContactLedgerModel(
         id: d.id,
         customerId: d.customerId,
         branchId: d.branchId,
@@ -492,4 +490,9 @@ class LedgerService {
         isDeleted: d.isDeleted,
       );
 }
+
+
+
+
+
 

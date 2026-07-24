@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../../bloc/pos_bloc.dart';
 
 class DesktopBottomActions extends StatelessWidget {
@@ -18,43 +18,43 @@ class DesktopBottomActions extends StatelessWidget {
       child: Row(
         children: [
           _bottomActionBtn(
-            AppStrings.drafts,
+            SalesStrings.drafts,
             'Ctrl+D',
             AppColors.info,
             () => controller.add(const PosSuspendSale()),
           ),
           _bottomActionBtn(
-            AppStrings.priceQuotes,
+            SalesStrings.priceQuotes,
             'Ctrl+P',
             AppColors.warning,
             () => controller.add(const PosCreateQuoteFromCart()),
           ),
           _bottomActionBtn(
-            AppStrings.cartPaymentCredit,
+            SalesStrings.cartPaymentCredit,
             'Ctrl+A',
             AppColors.posCategoryColor(1),
             () => controller.add(const PosCompleteSaleCredit()),
           ),
           _bottomActionBtn(
-            AppStrings.cartPaymentCard,
+            SalesStrings.cartPaymentCard,
             'Ctrl+B',
             AppColors.posCategoryColor(11),
             () => controller.add(const PosCompleteSaleCard()),
           ),
           _bottomActionBtn(
-            AppStrings.cartPaymentMixed,
+            SalesStrings.cartPaymentMixed,
             'Ctrl+M',
             AppColors.surfaceTintDarkAlt,
             () => controller.add(const PosCompleteSaleMixed()),
           ),
           _bottomActionBtn(
-            AppStrings.cartPaymentCash,
+            SalesStrings.cartPaymentCash,
             'Ctrl+S',
             AppColors.success,
             () => controller.add(const PosCompleteSaleCash()),
           ),
           _bottomActionBtn(
-            AppStrings.cancel,
+            GeneralStrings.cancel,
             'Esc',
             AppColors.error,
             () => controller.add(const PosClearCart()),
@@ -78,3 +78,7 @@ class DesktopBottomActions extends StatelessWidget {
     );
   }
 }
+
+
+
+

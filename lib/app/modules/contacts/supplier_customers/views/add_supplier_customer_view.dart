@@ -3,10 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/string_ext.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../bloc/supplier_customers_bloc.dart';
 import '../bloc/supplier_customers_event.dart';
 import '../bloc/supplier_customers_state.dart';
@@ -102,7 +102,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
         }
       },
       child: HomeShell(
-        title: AppStrings.addNewPartyTitle,
+        title: CrmStrings.addNewPartyTitle,
         child: SingleChildScrollView(
           padding: EdgeInsets.all(AppSpacing.xl.w),
           child: Form(
@@ -113,24 +113,24 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SectionHeader(icon: Icons.person_add_alt_1_outlined, title: AppStrings.personalAndBasicInfo),
+                    const SectionHeader(icon: Icons.person_add_alt_1_outlined, title: CrmStrings.personalAndBasicInfo),
                     SizedBox(height: AppSpacing.md.h),
                     _buildPersonalSection(),
                     SizedBox(height: AppSpacing.lg.h),
-                    const SectionHeader(icon: Icons.business_center_outlined, title: AppStrings.businessAndActivityDetails),
+                    const SectionHeader(icon: Icons.business_center_outlined, title: CrmStrings.businessAndActivityDetails),
                     SizedBox(height: AppSpacing.md.h),
                     _buildBusinessSection(),
                     SizedBox(height: AppSpacing.lg.h),
-                    const SectionHeader(icon: Icons.payments_outlined, title: AppStrings.financialAndCreditPolicies),
+                    const SectionHeader(icon: Icons.payments_outlined, title: CrmStrings.financialAndCreditPolicies),
                     SizedBox(height: AppSpacing.md.h),
                     _buildFinancialSection(),
                     SizedBox(height: AppSpacing.lg.h),
-                    const SectionHeader(icon: Icons.account_balance_outlined, title: AppStrings.openingBalanceAtStart),
+                    const SectionHeader(icon: Icons.account_balance_outlined, title: CrmStrings.openingBalanceAtStart),
                     SizedBox(height: AppSpacing.md.h),
                     _buildOpeningBalanceSection(),
                     SizedBox(height: AppSpacing.lg.h),
                     ReusableInput(
-                      label: AppStrings.additionalNotes,
+                      label: CustomersStrings.additionalNotes,
                       controller: notesCtrl,
                       maxLines: 3,
                       textDirection: TextDirection.rtl,
@@ -152,18 +152,18 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
     return Column(
       children: [
         ReusableInput(
-          label: AppStrings.partyFullNameLabel,
+          label: CrmStrings.partyFullNameLabel,
           controller: nameCtrl,
           textDirection: TextDirection.rtl,
           prefixIcon: const Icon(Icons.person_outline),
-          validator: (v) => v?.trim().isEmpty == true ? AppStrings.partyNameRequiredWarning : null,
+          validator: (v) => v?.trim().isEmpty == true ? CrmStrings.partyNameRequiredWarning : null,
         ),
         SizedBox(height: AppSpacing.md.h),
         Row(
           children: [
             Expanded(
               child: ReusableInput(
-                label: AppStrings.phone,
+                label: GeneralStrings.phone,
                 controller: phoneCtrl,
                 keyboardType: TextInputType.phone,
                 textDirection: TextDirection.rtl,
@@ -173,7 +173,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
             SizedBox(width: AppSpacing.md.w),
             Expanded(
               child: ReusableInput(
-                label: AppStrings.emailLabel,
+                label: AuthStrings.emailLabel,
                 controller: emailCtrl,
                 keyboardType: TextInputType.emailAddress,
                 prefixIcon: const Icon(Icons.email_outlined),
@@ -183,7 +183,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
         ),
         SizedBox(height: AppSpacing.md.h),
         ReusableInput(
-          label: AppStrings.detailedAddressLabel,
+          label: CrmStrings.detailedAddressLabel,
           controller: addressCtrl,
           textDirection: TextDirection.rtl,
           prefixIcon: const Icon(Icons.location_on_outlined),
@@ -199,7 +199,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
           children: [
             Expanded(
               child: ReusableInput(
-                label: AppStrings.companyNameOptional,
+                label: CrmStrings.companyNameOptional,
                 controller: companyNameCtrl,
                 textDirection: TextDirection.rtl,
                 prefixIcon: const Icon(Icons.corporate_fare_outlined),
@@ -208,7 +208,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
             SizedBox(width: AppSpacing.md.w),
             Expanded(
               child: ReusableInput(
-                label: AppStrings.taxIdLabel,
+                label: CustomersStrings.taxIdLabel,
                 controller: taxIdCtrl,
                 textDirection: TextDirection.rtl,
                 prefixIcon: const Icon(Icons.receipt_outlined),
@@ -218,11 +218,11 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
         ),
         SizedBox(height: AppSpacing.md.h),
         ReusableDropdown<int>(
-          labelText: AppStrings.legalEntityType,
-          hintText: AppStrings.selectEntityTypeHint,
+          labelText: CrmStrings.legalEntityType,
+          hintText: CrmStrings.selectEntityTypeHint,
           items: const [0, 1],
           value: _supplierPartyTypeIndex,
-          itemAsString: (i) => i == 0 ? AppStrings.companyOrInstitutionLabel : AppStrings.individualOrMerchantLabel,
+          itemAsString: (i) => i == 0 ? CrmStrings.companyOrInstitutionLabel : CrmStrings.individualOrMerchantLabel,
           onChanged: (v) => setState(() => _supplierPartyTypeIndex = v!),
         ),
       ],
@@ -236,18 +236,18 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
           children: [
             Expanded(
               child: ReusableDropdown<int>(
-                labelText: AppStrings.defaultInteractionMethod,
-                hintText: AppStrings.selectInteractionMethodHint,
+                labelText: CrmStrings.defaultInteractionMethod,
+                hintText: CrmStrings.selectInteractionMethodHint,
                 items: const [0, 1],
                 value: _customerKindIndex,
-                itemAsString: (i) => i == 0 ? AppStrings.regularCreditLabel : AppStrings.cashOnlyLabel,
+                itemAsString: (i) => i == 0 ? CrmStrings.regularCreditLabel : CrmStrings.cashOnlyLabel,
                 onChanged: (v) => setState(() => _customerKindIndex = v!),
               ),
             ),
             SizedBox(width: AppSpacing.md.w),
             Expanded(
               child: ReusableInput(
-                label: AppStrings.agreedDiscountPercent,
+                label: CrmStrings.agreedDiscountPercent,
                 controller: discountPercentCtrl,
                 keyboardType: TextInputType.number,
                 prefixIcon: const Icon(Icons.percent_rounded),
@@ -260,7 +260,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
           children: [
             Expanded(
               child: ReusableInput(
-                label: AppStrings.maximumCreditLimit,
+                label: CrmStrings.maximumCreditLimit,
                 controller: creditLimitCtrl,
                 keyboardType: TextInputType.number,
                 prefixIcon: const Icon(Icons.money_off_csred_outlined),
@@ -269,7 +269,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
             SizedBox(width: AppSpacing.md.w),
             Expanded(
               child: ReusableInput(
-                label: AppStrings.grantedPaymentTermDays,
+                label: CrmStrings.grantedPaymentTermDays,
                 controller: paymentTermDaysCtrl,
                 keyboardType: TextInputType.number,
                 prefixIcon: const Icon(Icons.date_range_outlined),
@@ -294,7 +294,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
           Expanded(
             flex: 2,
             child: ReusableInput(
-              label: AppStrings.balanceValue,
+              label: CrmStrings.balanceValue,
               controller: openingBalanceCtrl,
               keyboardType: TextInputType.number,
               hint: '0.00',
@@ -305,11 +305,11 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
           Expanded(
             flex: 1,
             child: ReusableDropdown<bool>(
-              labelText: AppStrings.balanceStatusLabel,
-              hintText: AppStrings.balanceStatusHint,
+              labelText: CustomersStrings.balanceStatusLabel,
+              hintText: CrmStrings.balanceStatusHint,
               items: const [true, false],
               value: _openingBalanceDirection,
-              itemAsString: (v) => v ? AppStrings.debitOurDues : AppStrings.creditTheirDues,
+              itemAsString: (v) => v ? CrmStrings.debitOurDues : CrmStrings.creditTheirDues,
               onChanged: (v) => setState(() => _openingBalanceDirection = v!),
             ),
           ),
@@ -323,7 +323,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
       builder: (context, state) {
         final isSaving = state.status == SupplierCustomersStatus.loading;
         return ReusableButton(
-          text: AppStrings.savePartyData,
+          text: CrmStrings.savePartyData,
           prefixIcon: Icons.save_rounded,
           isLoading: isSaving,
           onPressed: () => _onSave(context),
@@ -332,3 +332,7 @@ class _AddSupplierCustomerViewState extends State<AddSupplierCustomerView> {
     );
   }
 }
+
+
+
+

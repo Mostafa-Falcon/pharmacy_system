@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -137,8 +137,8 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     for (final m in expired) {
       systemNotifications.add(AppNotification(
         id: 'expired_${m.id}',
-        title: AppStrings.expiryTitle,
-        message: AppStrings.expiryMessageFormat
+        title: NotificationsStrings.expiryTitle,
+        message: NotificationsStrings.expiryMessageFormat
             .replaceFirst('%s', m.name)
             .replaceFirst('%s', m.expiryDate!.toString().split(' ')[0]),
         timestamp: m.expiryDate!,
@@ -157,8 +157,8 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
       final days = m.expiryDate!.difference(now).inDays;
       systemNotifications.add(AppNotification(
         id: 'near_expiry_${m.id}',
-        title: AppStrings.nearExpiryTitle,
-        message: AppStrings.nearExpiryMessageFormat
+        title: NotificationsStrings.nearExpiryTitle,
+        message: NotificationsStrings.nearExpiryMessageFormat
             .replaceFirst('%s', m.name)
             .replaceFirst('%s', days.toString()),
         timestamp: now,
@@ -174,8 +174,8 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     for (final m in lowStock) {
       systemNotifications.add(AppNotification(
         id: 'low_stock_${m.id}',
-        title: AppStrings.lowStockTitle,
-        message: AppStrings.lowStockMessageFormat
+        title: NotificationsStrings.lowStockTitle,
+        message: NotificationsStrings.lowStockMessageFormat
             .replaceFirst('%s', m.name)
             .replaceFirst('%s', m.quantity.toString())
             .replaceFirst('%s', m.minStock.toString()),
@@ -203,4 +203,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     }
   }
 }
+
+
+
 

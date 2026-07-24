@@ -1,11 +1,11 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:pharmacy_system/app/core/data/database/daos/medicine_variants_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_variant_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_variant_model.dart';
 
 class VariantService {
   static MedicineVariantsDao get _dao =>
@@ -129,4 +129,7 @@ class VariantService {
     }
   }
 }
+
+
+
 

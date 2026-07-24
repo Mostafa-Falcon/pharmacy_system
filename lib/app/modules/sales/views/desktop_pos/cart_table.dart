@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 
 import '../../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import 'package:pharmacy_system/app/modules/sales/bloc/pos_bloc.dart';
-import '../../models/pos_focus_nodes.dart';
+import 'package:pharmacy_system/app/modules/sales/models/pos_focus_nodes.dart';
 import 'dialogs.dart';
 
 class DesktopCartTable extends StatefulWidget {
@@ -103,7 +103,7 @@ class _DesktopCartTableState extends State<DesktopCartTable> {
         if (items.isEmpty) {
           return const EmptyState(
             icon: Icons.shopping_cart_outlined,
-            title: AppStrings.cartEmptyTitle,
+            title: SalesStrings.cartEmptyTitle,
           );
         }
 
@@ -120,12 +120,12 @@ class _DesktopCartTableState extends State<DesktopCartTable> {
                 padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 8.w),
                 child: Row(
                   children: [
-                    Expanded(flex: 3, child: ReusableText(AppStrings.cartTableProduct, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.right)),
-                    Expanded(flex: 2, child: ReusableText(AppStrings.barcodeLabel, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
-                    Expanded(flex: 2, child: ReusableText(AppStrings.cartTableUnit, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
-                    Expanded(flex: 2, child: ReusableText(AppStrings.cartPrice, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
-                    Expanded(flex: 2, child: ReusableText(AppStrings.cartQuantity, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
-                    Expanded(flex: 2, child: ReusableText(AppStrings.cartTotal, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
+                    Expanded(flex: 3, child: ReusableText(SalesStrings.cartTableProduct, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.right)),
+                    Expanded(flex: 2, child: ReusableText(InventoryStrings.barcodeLabel, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
+                    Expanded(flex: 2, child: ReusableText(SalesStrings.cartTableUnit, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
+                    Expanded(flex: 2, child: ReusableText(SalesStrings.cartPrice, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
+                    Expanded(flex: 2, child: ReusableText(SalesStrings.cartQuantity, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
+                    Expanded(flex: 2, child: ReusableText(SalesStrings.cartTotal, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
                     SizedBox(width: 40.w),
                   ],
                 ),
@@ -137,7 +137,7 @@ class _DesktopCartTableState extends State<DesktopCartTable> {
                   separatorBuilder: (context, index) => Divider(height: 1, color: scheme.outlineVariant.withValues(alpha: 0.3)),
                   itemBuilder: (context, i) {
                     final line = items[i];
-                    final unitNameVal = line.unitName ?? AppStrings.defaultUnitBox;
+                    final unitNameVal = line.unitName ?? InventoryStrings.defaultUnitBox;
                     final nodes = getRowFocusNodes(line.medicine.id, line.quantity);
 
                     String expiryWarning = '';
@@ -228,10 +228,10 @@ class _DesktopCartTableState extends State<DesktopCartTable> {
                                       borderRadius: BorderRadius.circular(4.r),
                                     ),
                                     child: ReusableDropdown<String>(
-                                      hintText: AppStrings.cartTableUnit,
+                                      hintText: SalesStrings.cartTableUnit,
                                       value: unitNameVal,
                                       items: line.medicine.units.isEmpty
-                                          ? const [AppStrings.defaultUnitBox]
+                                          ? const [InventoryStrings.defaultUnitBox]
                                           : line.medicine.units.map((u) => u.name).toList(),
                                       itemAsString: (v) => v,
                                     onChanged: (v) {
@@ -452,3 +452,8 @@ class _DesktopCartTableState extends State<DesktopCartTable> {
     );
   }
 }
+
+
+
+
+

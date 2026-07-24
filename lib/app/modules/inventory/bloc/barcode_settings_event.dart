@@ -94,3 +94,5 @@ class ToggleUsePharmacySignature extends BarcodeSettingsEvent {
 class SaveBarcodeSettings extends BarcodeSettingsEvent {
   const SaveBarcodeSettings();
 }
+
+

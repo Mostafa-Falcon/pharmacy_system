@@ -2,12 +2,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import 'package:pharmacy_system/app/modules/auth/models/user_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import 'package:pharmacy_system/app/core/presentation/design_system/screen_tier.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/design_system/screen_tier.dart';
 
 class UserProfileView extends StatelessWidget {
   const UserProfileView({super.key});
@@ -20,8 +20,8 @@ class UserProfileView extends StatelessWidget {
     final isWeb = ScreenTierResolver.isDesktop(context);
 
     return HomeShell(
-      title: AppStrings.profileTitle,
-      subtitle: AppStrings.profileSubtitle,
+      title: AdminStrings.profileTitle,
+      subtitle: AdminStrings.profileSubtitle,
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.all(AppSpacing.lg.w),
@@ -72,7 +72,7 @@ class UserProfileView extends StatelessWidget {
           ),
           SizedBox(height: AppSpacing.md.h),
           ReusableText(
-            user?.name ?? AppStrings.mainPageActiveUser,
+            user?.name ?? HomeStrings.mainPageActiveUser,
             style: AppTextStyles.title(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.textPrimaryOf(context)),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -85,7 +85,7 @@ class UserProfileView extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppRadius.pill.r),
             ),
             child: ReusableText(
-              user?.role == UserRole.owner ? AppStrings.roleSupervisor : AppStrings.roleShiftPharmacist,
+              user?.role == UserRole.owner ? AdminStrings.roleSupervisor : AdminStrings.roleShiftPharmacist,
               style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold, color: scheme.primary),
             ),
           ),
@@ -100,18 +100,18 @@ class UserProfileView extends StatelessWidget {
       children: [
         _buildSectionContainer(
           context,
-          title: AppStrings.profilePersonalInfo,
+          title: AdminStrings.profilePersonalInfo,
           children: [
-            _ProfileField(label: AppStrings.profileFullName, value: user?.name ?? '', icon: Icons.person_outline_rounded),
-            _ProfileField(label: AppStrings.profileEmail, value: user?.email ?? '', icon: Icons.email_outlined),
-            _ProfileField(label: AppStrings.profileRole, value: user?.role == UserRole.owner ? AppStrings.roleSupervisor : AppStrings.roleShiftPharmacist, icon: Icons.shield_outlined),
-            _ProfileField(label: AppStrings.profileBranch, value: user?.assignedBranchId ?? AppStrings.profileDefaultBranch, icon: Icons.storefront_rounded),
+            _ProfileField(label: AdminStrings.profileFullName, value: user?.name ?? '', icon: Icons.person_outline_rounded),
+            _ProfileField(label: AdminStrings.profileEmail, value: user?.email ?? '', icon: Icons.email_outlined),
+            _ProfileField(label: AdminStrings.profileRole, value: user?.role == UserRole.owner ? AdminStrings.roleSupervisor : AdminStrings.roleShiftPharmacist, icon: Icons.shield_outlined),
+            _ProfileField(label: AdminStrings.profileBranch, value: user?.assignedBranchId ?? AdminStrings.profileDefaultBranch, icon: Icons.storefront_rounded),
           ],
         ),
         SizedBox(height: AppSpacing.md.h),
         _buildSectionContainer(
           context,
-          title: AppStrings.profileDeviceManagement,
+          title: AdminStrings.profileDeviceManagement,
           children: [
             _DeviceStatusTile(currentDeviceId: AuthService.currentDeviceId, lockedDeviceId: user?.activeDeviceId),
             const _MultiDeviceInfoTile(),
@@ -120,10 +120,10 @@ class UserProfileView extends StatelessWidget {
         SizedBox(height: AppSpacing.md.h),
         _buildSectionContainer(
           context,
-          title: AppStrings.profileSecurity,
+          title: AdminStrings.profileSecurity,
           children: [
-            _ActionTile(icon: Icons.edit_note_rounded, title: AppStrings.profileEditData, onTap: () => _showEditProfileDialog(context)),
-            _ActionTile(icon: Icons.lock_open_rounded, title: AppStrings.profileChangePassword, onTap: () => _showChangePasswordDialog(context)),
+            _ActionTile(icon: Icons.edit_note_rounded, title: AdminStrings.profileEditData, onTap: () => _showEditProfileDialog(context)),
+            _ActionTile(icon: Icons.lock_open_rounded, title: AdminStrings.profileChangePassword, onTap: () => _showChangePasswordDialog(context)),
           ],
         ),
       ],
@@ -151,32 +151,32 @@ class UserProfileView extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => ReusableDialog(
-        title: AppStrings.profileEditDialog,
+        title: AdminStrings.profileEditDialog,
         headerIcon: Icon(Icons.edit_rounded, color: scheme.primary),
         children: [
           ConstrainedBox(
             constraints: BoxConstraints(maxWidth: 340.w),
             child: ReusableInput(
-              label: AppStrings.profileEditName,
+              label: AdminStrings.profileEditName,
               controller: nameController,
               prefixIcon: const Icon(Icons.person_outline_rounded),
             ),
           ),
           SizedBox(height: 16.h),
           DialogActions(
-            cancelText: AppStrings.empCancelAction,
-            confirmText: AppStrings.profileSaveEdit,
+            cancelText: AdminStrings.empCancel,
+            confirmText: AdminStrings.profileSaveEdit,
             onCancel: () => Navigator.pop(context),
             onConfirm: () {
               if (nameController.text.trim().isEmpty) {
                 AppSnackbar.info(
-                  AppStrings.profileNameRequired,
-                  title: AppStrings.profileSecurityAlert,
+                  AdminStrings.profileNameRequired,
+                  title: AdminStrings.profileSecurityAlert,
                 );
                 return;
               }
               Navigator.pop(context);
-              AppSnackbar.success(AppStrings.profileEditSuccess);
+              AppSnackbar.success(AdminStrings.profileEditSuccess);
             },
           ),
         ],
@@ -193,7 +193,7 @@ class UserProfileView extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => ReusableDialog(
-        title: AppStrings.profileChangePasswordDialog,
+        title: AdminStrings.profileChangePasswordDialog,
         headerIcon: Icon(Icons.security_rounded, color: scheme.primary),
         children: [
           ConstrainedBox(
@@ -202,19 +202,19 @@ class UserProfileView extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 ReusableInput.password(
-                  label: AppStrings.profileCurrentPassword,
+                  label: AdminStrings.profileCurrentPassword,
                   controller: currentPasswordController,
                   prefixIcon: const Icon(Icons.lock_outline_rounded),
                 ),
                 SizedBox(height: AppSpacing.md.h),
                 ReusableInput.password(
-                  label: AppStrings.profileNewPassword,
+                  label: AdminStrings.profileNewPassword,
                   controller: newPasswordController,
                   prefixIcon: const Icon(Icons.add_moderator_rounded),
                 ),
                 SizedBox(height: AppSpacing.md.h),
                 ReusableInput.password(
-                  label: AppStrings.profileConfirmPassword,
+                  label: AdminStrings.profileConfirmPassword,
                   controller: confirmPasswordController,
                   prefixIcon: const Icon(Icons.gpp_good_outlined),
                 ),
@@ -223,17 +223,17 @@ class UserProfileView extends StatelessWidget {
           ),
           SizedBox(height: 16.h),
           DialogActions(
-            cancelText: AppStrings.empCancelAction,
-            confirmText: AppStrings.profileUpdateAccount,
+            cancelText: AdminStrings.empCancel,
+            confirmText: AdminStrings.profileUpdateAccount,
             onCancel: () => Navigator.pop(context),
             onConfirm: () {
               if (newPasswordController.text.isEmpty ||
                   confirmPasswordController.text.isEmpty) {
-                AppSnackbar.warning(AppStrings.profilePasswordFieldsRequired);
+                AppSnackbar.warning(AdminStrings.profilePasswordFieldsRequired);
                 return;
               }
               Navigator.pop(context);
-              AppSnackbar.success(AppStrings.profilePasswordChanged);
+              AppSnackbar.success(AdminStrings.profilePasswordChanged);
             },
           ),
         ],
@@ -304,12 +304,12 @@ class _DeviceStatusTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ReusableText(
-                  AppStrings.deviceAccountOpen,
+                  AdminStrings.deviceAccountOpen,
                   style: AppTextStyles.caption(context).copyWith(color: AppColors.textSecondaryOf(context)),
                 ),
                 SizedBox(height: 2.h),
                 ReusableText(
-                  'الجهاز الحالي: ${currentDeviceId != null ? currentDeviceId!.substring(0, 8) : 'غير معروف'}…',
+                  '?????? ??????: ${currentDeviceId != null ? currentDeviceId!.substring(0, 8) : '??? ?????'}…',
                   style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.textPrimaryOf(context)),
                 ),
               ],
@@ -342,7 +342,7 @@ class _MultiDeviceInfoTile extends StatelessWidget {
           SizedBox(width: AppSpacing.md.w),
           Expanded(
             child: ReusableText(
-              AppStrings.multiDeviceInfo,
+              AdminStrings.multiDeviceInfo,
               style: AppTextStyles.body(context).copyWith(color: AppColors.textSecondaryOf(context)),
             ),
           ),
@@ -385,5 +385,10 @@ class _ActionTile extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
 
 

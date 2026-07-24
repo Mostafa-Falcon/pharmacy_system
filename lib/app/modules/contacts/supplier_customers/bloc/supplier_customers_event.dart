@@ -1,5 +1,5 @@
-﻿import 'package:equatable/equatable.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_customer_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_customer_model.dart';
 
 abstract class SupplierCustomersEvent extends Equatable {
   const SupplierCustomersEvent();
@@ -182,4 +182,7 @@ class ExportSupplierCustomerLedger extends SupplierCustomersEvent {
   @override
   List<Object?> get props => [format];
 }
+
+
+
 

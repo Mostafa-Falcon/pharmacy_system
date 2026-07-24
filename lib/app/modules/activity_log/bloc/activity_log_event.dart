@@ -14,3 +14,5 @@ class LoadActivityLog extends ActivityLogEvent {
 class RefreshActivityLog extends ActivityLogEvent {
   const RefreshActivityLog();
 }
+
+

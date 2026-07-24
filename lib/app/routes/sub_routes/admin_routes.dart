@@ -95,3 +95,4 @@ final List<RouteBase> adminRoutes = [
     pageBuilder: (context, state) => fadePage(state, const ActivityLogView()),
   ),
 ];
+

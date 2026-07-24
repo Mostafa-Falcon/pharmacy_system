@@ -1,12 +1,12 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../bloc/hr_bloc.dart';
 import 'package:pharmacy_system/app/modules/hr/models/payroll_model.dart';
 import '../services/payroll_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/strings/hr_strings.dart';
 
 class PayrollView extends StatelessWidget {
@@ -51,25 +51,25 @@ class PayrollView extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => ReusableDialog(
-        title: 'Ã˜Â¥Ã™â€ Ã˜Â´Ã˜Â§Ã˜Â¡ Ã™Æ’Ã˜Â´Ã™Â Ã˜Â±Ã˜Â§Ã˜ÂªÃ˜Â¨ Ã˜Â¬Ã˜Â¯Ã™Å Ã˜Â¯',
+        title: 'Ø¥Ù†Ø´Ø§Ø¡ ÙƒØ´Ù Ø±Ø§ØªØ¨ Ø¬Ø¯ÙŠØ¯',
         headerIcon: const Icon(Icons.add_chart_rounded),
         children: [
           ReusableInput(
-            label: 'Ã˜Â§Ã™â€žÃ˜Â´Ã™â€¡Ã˜Â± (Ã˜Â±Ã™â€šÃ™â€¦)',
-            hint: 'Ã™â€¦Ã˜Â«Ã˜Â§Ã™â€ž: 1-12',
+            label: 'Ø§Ù„Ø´Ù‡Ø± (Ø±Ù‚Ù…)',
+            hint: 'Ù…Ø«Ø§Ù„: 1-12',
             controller: monthCtrl,
             keyboardType: TextInputType.number,
           ),
           SizedBox(height: AppSpacing.md.h),
           ReusableInput(
-            label: 'Ã˜Â§Ã™â€žÃ˜Â³Ã™â€ Ã˜Â©',
-            hint: 'Ã™â€¦Ã˜Â«Ã˜Â§Ã™â€ž: 2026',
+            label: 'Ø§Ù„Ø³Ù†Ø©',
+            hint: 'Ù…Ø«Ø§Ù„: 2026',
             controller: yearCtrl,
             keyboardType: TextInputType.number,
           ),
           SizedBox(height: AppSpacing.lg.h),
           DialogActions(
-            confirmText: 'Ã˜Â¥Ã™â€ Ã˜Â´Ã˜Â§Ã˜Â¡ Ã˜Â§Ã™â€žÃ™Æ’Ã˜Â´Ã™Â',
+            confirmText: 'Ø¥Ù†Ø´Ø§Ø¡ Ø§Ù„ÙƒØ´Ù',
             onConfirm: () async {
               final month = int.tryParse(monthCtrl.text);
               final year = int.tryParse(yearCtrl.text);
@@ -105,13 +105,13 @@ class _PayrollSummaryCard extends StatelessWidget {
           ),
           SizedBox(height: AppSpacing.sm.h),
           const ReusableText(
-            'Ã˜Â¥Ã˜Â¬Ã™â€¦Ã˜Â§Ã™â€žÃ™Å  Ã™â€¦Ã˜Â®Ã˜ÂµÃ˜ÂµÃ˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ˜Â±Ã™Ë†Ã˜Â§Ã˜ÂªÃ˜Â¨ Ã™â€žÃ™â€žÃ˜Â´Ã™â€¡Ã˜Â± Ã˜Â§Ã™â€žÃ˜Â­Ã˜Â§Ã™â€žÃ™Å ',
+            'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ù…Ø®ØµØµØ§Øª Ø§Ù„Ø±ÙˆØ§ØªØ¨ Ù„Ù„Ø´Ù‡Ø± Ø§Ù„Ø­Ø§Ù„ÙŠ',
             variant: ReusableTextVariant.caption,
             textAlign: TextAlign.center,
           ),
           SizedBox(height: AppSpacing.xs.h),
           ReusableText(
-            '${totalSalaries.toStringAsFixed(0)} Ã˜Â¬.Ã™â€¦',
+            '${totalSalaries.toStringAsFixed(0)} Ø¬.Ù…',
             style: TextStyle(
               fontSize: 26.sp,
               fontWeight: FontWeight.bold,
@@ -139,10 +139,10 @@ class _PayrollSummaryCard extends StatelessWidget {
   };
 
   String _statusText(String status) => switch (status) {
-    'draft' => 'Ã™â€¦Ã˜Â³Ã™Ë†Ã˜Â¯Ã˜Â©',
-    'processing' => 'Ã™â€šÃ™Å Ã˜Â¯ Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â¬Ã™â€¡Ã™Å Ã˜Â²',
-    'approved' => 'Ã™â€¦Ã˜Â¹Ã˜ÂªÃ™â€¦Ã˜Â¯',
-    'paid' => 'Ã™â€¦Ã˜Â¯Ã™ÂÃ™Ë†Ã˜Â¹',
+    'draft' => 'Ù…Ø³ÙˆØ¯Ø©',
+    'processing' => 'Ù‚ÙŠØ¯ Ø§Ù„ØªØ¬Ù‡ÙŠØ²',
+    'approved' => 'Ù…Ø¹ØªÙ…Ø¯',
+    'paid' => 'Ù…Ø¯ÙÙˆØ¹',
     _ => status,
   };
 }
@@ -160,14 +160,14 @@ class _PayrollListCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SectionHeader(icon: Icons.list_alt_rounded, title: 'Ã™Æ’Ã˜Â´Ã™Ë†Ã™Â Ã˜Â§Ã™â€žÃ˜Â±Ã™Ë†Ã˜Â§Ã˜ÂªÃ˜Â¨ Ã˜Â§Ã™â€žÃ˜Â³Ã˜Â§Ã˜Â¨Ã™â€šÃ˜Â©'),
+          const SectionHeader(icon: Icons.list_alt_rounded, title: 'ÙƒØ´ÙˆÙ Ø§Ù„Ø±ÙˆØ§ØªØ¨ Ø§Ù„Ø³Ø§Ø¨Ù‚Ø©'),
           SizedBox(height: AppSpacing.sm.h),
           if (records.isEmpty)
             Padding(
               padding: EdgeInsets.symmetric(vertical: 24.h),
               child: const Center(
                 child: ReusableText(
-                  'Ã™â€žÃ˜Â§ Ã˜ÂªÃ™Ë†Ã˜Â¬Ã˜Â¯ Ã™Æ’Ã˜Â´Ã™Ë†Ã™Â Ã˜Â±Ã™Ë†Ã˜Â§Ã˜ÂªÃ˜Â¨ Ã™â€¦Ã˜Â³Ã˜Â¬Ã™â€žÃ˜Â© Ã˜Â­Ã˜ÂªÃ™â€° Ã˜Â§Ã™â€žÃ˜Â¢Ã™â€ .',
+                  'Ù„Ø§ ØªÙˆØ¬Ø¯ ÙƒØ´ÙˆÙ Ø±ÙˆØ§ØªØ¨ Ù…Ø³Ø¬Ù„Ø© Ø­ØªÙ‰ Ø§Ù„Ø¢Ù†.',
                   style: TextStyle(color: Colors.grey),
                 ),
               ),
@@ -188,21 +188,21 @@ class _PayrollListCard extends StatelessWidget {
                   _ => AppColors.textSecondaryOf(context),
                 };
                 final statusText = switch (p.status) {
-                  'draft' => 'Ã™â€¦Ã˜Â³Ã™Ë†Ã˜Â¯Ã˜Â©',
-                  'processing' => 'Ã™â€šÃ™Å Ã˜Â¯ Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â¬Ã™â€¡Ã™Å Ã˜Â²',
-                  'approved' => 'Ã™â€¦Ã˜Â¹Ã˜ÂªÃ™â€¦Ã˜Â¯',
-                  'paid' => 'Ã™â€¦Ã˜Â¯Ã™ÂÃ™Ë†Ã˜Â¹',
+                  'draft' => 'Ù…Ø³ÙˆØ¯Ø©',
+                  'processing' => 'Ù‚ÙŠØ¯ Ø§Ù„ØªØ¬Ù‡ÙŠØ²',
+                  'approved' => 'Ù…Ø¹ØªÙ…Ø¯',
+                  'paid' => 'Ù…Ø¯ÙÙˆØ¹',
                   _ => p.status,
                 };
 
                 return ListTile(
                   contentPadding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 4.w),
                   title: ReusableText(
-                    'Ã™Æ’Ã˜Â´Ã™Â Ã˜Â´Ã™â€¡Ã˜Â± ${p.month} - Ã™â€žÃ˜Â³Ã™â€ Ã˜Â© ${p.year}',
+                    'ÙƒØ´Ù Ø´Ù‡Ø± ${p.month} - Ù„Ø³Ù†Ø© ${p.year}',
                     style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold),
                   ),
                   subtitle: ReusableText(
-                    'Ã˜Â¹Ã˜Â¯Ã˜Â¯ Ã˜Â§Ã™â€žÃ™â€¦Ã™Ë†Ã˜Â¸Ã™ÂÃ™Å Ã™â€ : ${p.employeeCount} | Ã˜Â§Ã™â€žÃ˜ÂµÃ˜Â§Ã™ÂÃ™Å : ${p.netTotal.toStringAsFixed(0)} Ã˜Â¬.Ã™â€¦',
+                    'Ø¹Ø¯Ø¯ Ø§Ù„Ù…ÙˆØ¸ÙÙŠÙ†: ${p.employeeCount} | Ø§Ù„ØµØ§ÙÙŠ: ${p.netTotal.toStringAsFixed(0)} Ø¬.Ù…',
                     style: TextStyle(fontSize: 11.sp, color: AppColors.textSecondaryOf(context)),
                   ),
                   trailing: Row(
@@ -261,12 +261,12 @@ class _PayrollListCard extends StatelessWidget {
 
     ReusableDialog.show(
       context,
-      title: 'Ã˜ÂªÃ™ÂÃ˜Â§Ã˜ÂµÃ™Å Ã™â€ž Ã™Æ’Ã˜Â´Ã™Â Ã˜Â§Ã™â€žÃ˜Â±Ã™Ë†Ã˜Â§Ã˜ÂªÃ˜Â¨',
+      title: 'ØªÙØ§ØµÙŠÙ„ ÙƒØ´Ù Ø§Ù„Ø±ÙˆØ§ØªØ¨',
       headerIcon: const Icon(Icons.info_outline_rounded),
       maxWidth: 600,
       children: [
         if (lines.isEmpty)
-          const ReusableStateView.empty(message: 'Ã™â€žÃ˜Â§ Ã˜ÂªÃ™Ë†Ã˜Â¬Ã˜Â¯ Ã˜ÂªÃ™ÂÃ˜Â§Ã˜ÂµÃ™Å Ã™â€ž Ã™â€¦Ã˜ÂªÃ˜Â§Ã˜Â­Ã˜Â© Ã™â€žÃ™â€¡Ã˜Â°Ã˜Â§ Ã˜Â§Ã™â€žÃ™Æ’Ã˜Â´Ã™Â.', compact: true)
+          const ReusableStateView.empty(message: 'Ù„Ø§ ØªÙˆØ¬Ø¯ ØªÙØ§ØµÙŠÙ„ Ù…ØªØ§Ø­Ø© Ù„Ù‡Ø°Ø§ Ø§Ù„ÙƒØ´Ù.', compact: true)
         else
           SizedBox(
             height: 400.h,
@@ -279,11 +279,11 @@ class _PayrollListCard extends StatelessWidget {
                   contentPadding: EdgeInsets.symmetric(horizontal: 4.w),
                   title: ReusableText(line.employeeName, style: const TextStyle(fontWeight: FontWeight.bold)),
                   subtitle: ReusableText(
-                    'Ã˜Â§Ã™â€žÃ˜Â£Ã˜Â³Ã˜Â§Ã˜Â³Ã™Å : ${line.baseSalary.toStringAsFixed(0)} | Ã˜Â®Ã˜ÂµÃ™Ë†Ã™â€¦Ã˜Â§Ã˜Âª: ${line.deductions.toStringAsFixed(0)} | Ã˜Â­Ã™Ë†Ã˜Â§Ã™ÂÃ˜Â²: ${line.bonuses.toStringAsFixed(0)}',
+                    'Ø§Ù„Ø£Ø³Ø§Ø³ÙŠ: ${line.baseSalary.toStringAsFixed(0)} | Ø®ØµÙˆÙ…Ø§Øª: ${line.deductions.toStringAsFixed(0)} | Ø­ÙˆØ§ÙØ²: ${line.bonuses.toStringAsFixed(0)}',
                     style: TextStyle(fontSize: 10.5.sp, color: AppColors.textSecondaryOf(context)),
                   ),
                   trailing: ReusableText(
-                    '${line.netSalary.toStringAsFixed(0)} Ã˜Â¬.Ã™â€¦',
+                    '${line.netSalary.toStringAsFixed(0)} Ø¬.Ù…',
                     style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: scheme.primary),
                   ),
                 );
@@ -294,4 +294,7 @@ class _PayrollListCard extends StatelessWidget {
     );
   }
 }
+
+
+
 

@@ -1,15 +1,15 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/tables/shared_table_cells.dart';
 
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_customer_model.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_customer_model.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../../core/injection.dart';
 import '../bloc/supplier_customers_bloc.dart';
@@ -26,8 +26,8 @@ class SupplierCustomersListView extends StatelessWidget {
       child: BlocBuilder<SupplierCustomersBloc, SupplierCustomersState>(
         builder: (context, state) {
           return StandardModuleLayout(
-            title: AppStrings.supplierCustomersTitle,
-            subtitle: AppStrings.supplierCustomersSubtitle,
+            title: CrmStrings.supplierCustomersTitle,
+            subtitle: CrmStrings.supplierCustomersSubtitle,
             actions: _buildHeaderActions(context),
             stats: _buildStats(state),
             filters: _buildFilters(context),
@@ -41,12 +41,12 @@ class SupplierCustomersListView extends StatelessWidget {
   List<Widget> _buildHeaderActions(BuildContext context) {
     return [
       ReusableButton(
-        text: AppStrings.addAction,
+        text: CrmStrings.addAction,
         prefixIcon: Icons.add_rounded,
         onPressed: () => context.push(Routes.SUPPLIER_CUSTOMER_ADD),
       ),
       ReusableButton(
-        text: AppStrings.export,
+        text: GeneralStrings.export,
         prefixIcon: Icons.download_rounded,
         type: ButtonType.outlined,
         onPressed: () => context.read<SupplierCustomersBloc>().add(const ExportSupplierCustomerLedger('xlsx')),
@@ -58,20 +58,20 @@ class SupplierCustomersListView extends StatelessWidget {
     return [
       SummaryCard(
         icon: Icons.swap_horiz_rounded,
-        label: AppStrings.totalParties,
+        label: CrmStrings.totalParties,
         value: '${state.totalCount}',
         color: AppColors.primary,
       ),
       SummaryCard(
         icon: Icons.check_circle_outline,
-        label: AppStrings.activeParties,
+        label: CrmStrings.activeParties,
         value: '${state.activeCount}',
         color: AppColors.success,
       ),
       SummaryCard(
         icon: Icons.account_balance_rounded,
-        label: AppStrings.totalBalancesParties,
-        value: '${state.totalBalance.toStringAsFixed(0)} ${AppStrings.currency}',
+        label: CrmStrings.totalBalancesParties,
+        value: '${state.totalBalance.toStringAsFixed(0)} ${GeneralStrings.currency}',
         color: AppColors.warning,
       ),
     ];
@@ -84,7 +84,7 @@ class SupplierCustomersListView extends StatelessWidget {
       child: Column(
         children: [
           SearchField(
-            hint: AppStrings.searchHint,
+            hint: GeneralStrings.searchHint,
             onChanged: (v) => bloc.add(SearchSupplierCustomers(v)),
             onClear: () => bloc.add(const SearchSupplierCustomers('')),
           ),
@@ -121,7 +121,7 @@ class SupplierCustomersListView extends StatelessWidget {
     final columns = [
       ReusableTableColumn<SupplierCustomerModel>(
         id: 'name',
-        title: AppStrings.partyNameLabel,
+        title: CrmStrings.partyNameLabel,
         flex: 1,
         isSortable: true,
         cellBuilder: (c) => TableContactNameCell(
@@ -133,36 +133,36 @@ class SupplierCustomersListView extends StatelessWidget {
       ),
       ReusableTableColumn<SupplierCustomerModel>(
         id: 'phone',
-        title: AppStrings.phone,
+        title: GeneralStrings.phone,
         width: 130.w,
         textBuilder: (c) => c.phone ?? '-',
       ),
       ReusableTableColumn<SupplierCustomerModel>(
         id: 'company',
-        title: AppStrings.company,
+        title: GeneralStrings.company,
         width: 150.w,
         textBuilder: (c) => c.companyName ?? '-',
       ),
       ReusableTableColumn<SupplierCustomerModel>(
         id: 'balance',
-        title: AppStrings.balance,
+        title: GeneralStrings.balance,
         width: 120.w,
         isNumeric: true,
         cellBuilder: (c) {
           final balance = state.currentBalances[c.id] ?? 0;
           return TableMoneyCell(
             amount: balance,
-            currency: AppStrings.currency,
+            currency: GeneralStrings.currency,
             isNegative: balance > 0,
           );
         },
       ),
       ReusableTableColumn<SupplierCustomerModel>(
         id: 'status',
-        title: AppStrings.status,
+        title: GeneralStrings.status,
         width: 90.w,
         cellBuilder: (c) => StatusBadge(
-          label: c.isActive ? AppStrings.active : AppStrings.inactiveLabel,
+          label: c.isActive ? GeneralStrings.active : CustomersStrings.inactiveLabel,
           color: c.isActive ? AppColors.success : AppColors.error,
         ),
       ),
@@ -174,7 +174,7 @@ class SupplierCustomersListView extends StatelessWidget {
       isLoading: state.status == SupplierCustomersStatus.loading,
       onTapRow: (c) => _showLedgerDialog(context, c),
       rowIdGetter: (c) => c.id,
-      itemLabel: 'جهة تعامل',
+      itemLabel: '??? ?????',
       rowActions: (c) => TableOptionsButton(
         onSelected: (v) {
           switch (v) {
@@ -183,17 +183,17 @@ class SupplierCustomersListView extends StatelessWidget {
             case 'delete':
               ConfirmDeleteDialog.show(
                 context,
-                title: AppStrings.delete,
-                message: AppStrings.deleteConfirmMessageFormat.replaceFirst('%s', c.name),
+                title: GeneralStrings.delete,
+                message: CrmStrings.deleteConfirmMessageFormat.replaceFirst('%s', c.name),
                 onConfirm: () => bloc.add(DeleteSupplierCustomer(c.id)),
               );
               break;
           }
         },
         menuItems: [
-          const PopupMenuItem(value: 'ledger', child: ReusableText(AppStrings.ledgerTitle)),
-          const PopupMenuItem(value: 'edit', child: ReusableText(AppStrings.edit)),
-          PopupMenuItem(value: 'delete', child: ReusableText(AppStrings.delete, color: AppColors.error)),
+          const PopupMenuItem(value: 'ledger', child: ReusableText(CustomersStrings.ledgerTitle)),
+          const PopupMenuItem(value: 'edit', child: ReusableText(GeneralStrings.edit)),
+          PopupMenuItem(value: 'delete', child: ReusableText(GeneralStrings.delete, color: AppColors.error)),
         ],
       ),
     );
@@ -232,7 +232,7 @@ class _LedgerDialogContent extends StatelessWidget {
         final scheme = Theme.of(context).colorScheme;
 
         return ReusableDialog(
-          title: '${AppStrings.ledgerTitle}: ${party.name}',
+          title: '${CustomersStrings.ledgerTitle}: ${party.name}',
           headerIcon: const Icon(Icons.receipt_long_rounded),
           maxWidth: 900,
           children: [
@@ -257,10 +257,10 @@ class _LedgerDialogContent extends StatelessWidget {
     return Wrap(
       spacing: 12.w, runSpacing: 8.h,
       children: [
-        StatChip(label: AppStrings.totalSalesLabelStat, count: (summary['totalSales'] ?? 0).toStringAsFixed(0), color: AppColors.primary, icon: Icons.trending_up_rounded),
-        StatChip(label: AppStrings.totalPurchasesLabelStat, count: (summary['totalPurchases'] ?? 0).toStringAsFixed(0), color: AppColors.info, icon: Icons.shopping_cart_rounded),
-        StatChip(label: AppStrings.totalReceiptsLabelStat, count: (summary['totalReceipts'] ?? 0).toStringAsFixed(0), color: AppColors.success, icon: Icons.payments_rounded),
-        StatChip(label: AppStrings.totalPaymentsLabelStat, count: (summary['totalPayments'] ?? 0).toStringAsFixed(0), color: AppColors.warning, icon: Icons.money_off_rounded),
+        StatChip(label: CrmStrings.totalSalesLabel, count: (summary['totalSales'] ?? 0).toStringAsFixed(0), color: AppColors.primary, icon: Icons.trending_up_rounded),
+        StatChip(label: CrmStrings.totalPurchasesLabel, count: (summary['totalPurchases'] ?? 0).toStringAsFixed(0), color: AppColors.info, icon: Icons.shopping_cart_rounded),
+        StatChip(label: CrmStrings.totalReceiptsLabel, count: (summary['totalReceipts'] ?? 0).toStringAsFixed(0), color: AppColors.success, icon: Icons.payments_rounded),
+        StatChip(label: CrmStrings.totalPaymentsLabel, count: (summary['totalPayments'] ?? 0).toStringAsFixed(0), color: AppColors.warning, icon: Icons.money_off_rounded),
       ],
     );
   }
@@ -269,17 +269,17 @@ class _LedgerDialogContent extends StatelessWidget {
     return Wrap(
       spacing: 8.w, runSpacing: 8.h,
       children: [
-        ReusableButton(text: AppStrings.cashReceipt, prefixIcon: Icons.payments_rounded, onPressed: () => PaymentDialog.show(
+        ReusableButton(text: CustomersStrings.cashReceipt, prefixIcon: Icons.payments_rounded, onPressed: () => PaymentDialog.show(
           context,
-          title: AppStrings.cashReceiptTitleFormat.replaceFirst('%s', party.name),
+          title: CrmStrings.cashReceiptTitle.replaceFirst('%s', party.name),
           onSubmit: (amount, notes) async => bloc.add(RecordCashReceipt(partyId: party.id, amount: amount, notes: notes)),
         )),
-        ReusableButton(text: AppStrings.cashPayment, prefixIcon: Icons.payments_rounded, onPressed: () => PaymentDialog.show(
+        ReusableButton(text: SuppliersStrings.cashPayment, prefixIcon: Icons.payments_rounded, onPressed: () => PaymentDialog.show(
           context,
-          title: AppStrings.cashPaymentTitleFormat.replaceFirst('%s', party.name),
+          title: CrmStrings.cashPaymentTitle.replaceFirst('%s', party.name),
           onSubmit: (amount, notes) async => bloc.add(RecordCashPayment(partyId: party.id, amount: amount, notes: notes)),
         )),
-        ReusableButton(text: AppStrings.refresh, prefixIcon: Icons.refresh_rounded, onPressed: () => bloc.add(LoadSupplierCustomerLedger(party.id)), type: ButtonType.outlined),
+        ReusableButton(text: GeneralStrings.refresh, prefixIcon: Icons.refresh_rounded, onPressed: () => bloc.add(LoadSupplierCustomerLedger(party.id)), type: ButtonType.outlined),
       ],
     );
   }
@@ -287,7 +287,7 @@ class _LedgerDialogContent extends StatelessWidget {
   Widget _buildLedgerTable(ColorScheme scheme, SupplierCustomersState state) {
     if (state.isLoadingLedger) return const LoadingIndicator();
     final entries = state.combinedLedger;
-    if (entries.isEmpty) return const EmptyState(icon: Icons.account_balance_wallet_outlined, title: AppStrings.noFinancialMovements);
+    if (entries.isEmpty) return const EmptyState(icon: Icons.account_balance_wallet_outlined, title: CustomersStrings.noFinancialMovements);
 
     return ListView.separated(
       itemCount: entries.length,
@@ -308,7 +308,7 @@ class _LedgerDialogContent extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              ReusableText('${runningBalance.toStringAsFixed(2)} ${AppStrings.currency}', style: TextStyle(fontWeight: FontWeight.bold, color: runningBalance > 0 ? AppColors.warning : AppColors.success)),
+              ReusableText('${runningBalance.toStringAsFixed(2)} ${GeneralStrings.currency}', style: TextStyle(fontWeight: FontWeight.bold, color: runningBalance > 0 ? AppColors.warning : AppColors.success)),
               Text(debit > 0 ? '+${debit.toStringAsFixed(2)}' : '-${credit.toStringAsFixed(2)}', style: TextStyle(fontSize: 10.sp, color: debit > 0 ? AppColors.success : AppColors.error)),
             ],
           ),
@@ -317,3 +317,8 @@ class _LedgerDialogContent extends StatelessWidget {
     );
   }
 }
+
+
+
+
+

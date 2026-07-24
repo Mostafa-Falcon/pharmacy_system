@@ -84,15 +84,15 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   String getSelectedPeriodLabel() {
     switch (state.selectedPeriod) {
       case ReportPeriod.today:
-        return AppStrings.todayLabel;
+        return ReportsStrings.todayLabel;
       case ReportPeriod.thisWeek:
-        return AppStrings.reportsThisWeek;
+        return ReportsStrings.reportsThisWeek;
       case ReportPeriod.thisMonth:
-        return AppStrings.reportsThisMonth;
+        return ReportsStrings.reportsThisMonth;
       case ReportPeriod.thisYear:
-        return AppStrings.reportsThisYear;
+        return ReportsStrings.reportsThisYear;
       case ReportPeriod.custom:
-        return AppStrings.reportsCustom;
+        return ReportsStrings.reportsCustom;
     }
   }
 
@@ -125,3 +125,6 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     };
   }
 }
+
+
+

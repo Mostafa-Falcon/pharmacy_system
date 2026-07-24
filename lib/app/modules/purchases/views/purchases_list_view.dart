@@ -4,15 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import 'package:go_router/go_router.dart';
 
-import 'package:pharmacy_system/app/modules/sales/models/purchase_model.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
+import 'package:pharmacy_system/app/core/models/purchases/purchase_invoice_model.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
 import '../../../core/utils/format_utils.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/extensions/string_ext.dart';
 import '../../../routes/app_routes.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/tables/shared_table_cells.dart';
 import '../../../core/injection.dart';
 import '../bloc/purchases_bloc.dart';
 import '../bloc/purchases_event.dart';
@@ -28,7 +28,7 @@ class PurchasesListView extends StatelessWidget {
       child: BlocBuilder<PurchasesBloc, PurchasesState>(
         builder: (context, state) {
           return StandardModuleLayout(
-            title: AppStrings.allPurchases,
+            title: PurchasesStrings.allPurchases,
             actions: _buildHeaderActions(context, state),
             stats: _buildStats(context, state),
             filters: _buildDateFilter(context, state),
@@ -42,14 +42,14 @@ class PurchasesListView extends StatelessWidget {
   List<Widget> _buildHeaderActions(BuildContext context, PurchasesState state) {
     return [
       ReusableButton(
-        text: AppStrings.add,
+        text: GeneralStrings.add,
         prefixIcon: Icons.add_rounded,
         color: AppColors.homePurchases,
         onPressed: () => context.push(Routes.PURCHASE_ADD),
       ),
       SizedBox(width: 8.w),
       ReusableButton(
-        text: AppStrings.back,
+        text: GeneralStrings.back,
         type: ButtonType.outlined,
         prefixIcon: Icons.arrow_back_rounded,
         onPressed: () => context.pop(),
@@ -98,14 +98,14 @@ class PurchasesListView extends StatelessWidget {
     final totalRemaining = items.fold(0.0, (sum, p) => sum + p.remainingAmount);
 
     final columns = [
-      ReusableTableColumn<PurchaseModel>(
+      ReusableTableColumn<PurchaseInvoiceModel>(
         id: 'id',
         title: 'رقم الفاتورة',
         width: 120.w,
         isSortable: true,
         textBuilder: (p) => '#${p.id.substring(0, 8).toUpperCase()}',
       ),
-      ReusableTableColumn<PurchaseModel>(
+      ReusableTableColumn<PurchaseInvoiceModel>(
         id: 'supplier',
         title: 'المورد والبيان',
         flex: 2,
@@ -117,41 +117,41 @@ class PurchasesListView extends StatelessWidget {
           iconColor: scheme.primary,
         ),
       ),
-      ReusableTableColumn<PurchaseModel>(
+      ReusableTableColumn<PurchaseInvoiceModel>(
         id: 'status',
         title: 'الحالة',
         width: 110.w,
         cellBuilder: (p) => StatusBadge(label: 'استلم', color: AppColors.success),
       ),
-      ReusableTableColumn<PurchaseModel>(
+      ReusableTableColumn<PurchaseInvoiceModel>(
         id: 'payment_status',
-        title: AppStrings.paymentStatus,
+        title: SalesStrings.paymentStatus,
         width: 110.w,
         cellBuilder: (p) {
           final isPaid = p.remainingAmount <= 0;
           return StatusBadge(
-            label: isPaid ? AppStrings.paymentPaid : AppStrings.paymentPartial,
+            label: isPaid ? SalesStrings.paymentPaid : SalesStrings.paymentPartial,
             color: isPaid ? AppColors.success : AppColors.warning,
           );
         },
       ),
-      ReusableTableColumn<PurchaseModel>(
+      ReusableTableColumn<PurchaseInvoiceModel>(
         id: 'amount',
         title: 'المبلغ الإجمالي',
         width: 130.w,
         isNumeric: true,
-        cellBuilder: (p) => TableMoneyCell(amount: p.finalAmount, currency: AppStrings.currency, isHighlight: true),
+        cellBuilder: (p) => TableMoneyCell(amount: p.finalAmount, currency: GeneralStrings.currency, isHighlight: true),
       ),
-      ReusableTableColumn<PurchaseModel>(
+      ReusableTableColumn<PurchaseInvoiceModel>(
         id: 'due',
-        title: AppStrings.dueAmount,
+        title: SalesStrings.dueAmount,
         width: 130.w,
         isNumeric: true,
-        cellBuilder: (p) => TableMoneyCell(amount: p.remainingAmount, currency: AppStrings.currency, isNegative: p.remainingAmount > 0),
+        cellBuilder: (p) => TableMoneyCell(amount: p.remainingAmount, currency: GeneralStrings.currency, isNegative: p.remainingAmount > 0),
       ),
-      ReusableTableColumn<PurchaseModel>(
+      ReusableTableColumn<PurchaseInvoiceModel>(
         id: 'date',
-        title: AppStrings.date,
+        title: GeneralStrings.date,
         width: 160.w,
         isSortable: true,
         textBuilder: (p) => DateFormat('yyyy/MM/dd HH:mm').format(p.createdAt),
@@ -160,7 +160,7 @@ class PurchasesListView extends StatelessWidget {
 
     final bloc = context.read<PurchasesBloc>();
 
-    return ReusableTable<PurchaseModel>(
+    return ReusableTable<PurchaseInvoiceModel>(
       columns: columns,
       items: items,
       itemLabel: 'فاتورة مشتريات',
@@ -184,10 +184,10 @@ class PurchasesListView extends StatelessWidget {
           }
         },
         menuItems: [
-          const PopupMenuItem(value: 'view', child: ReusableText(AppStrings.inspect)),
-          const PopupMenuItem(value: 'edit', child: ReusableText(AppStrings.edit)),
-          const PopupMenuItem(value: 'print', child: ReusableText(AppStrings.print)),
-          const PopupMenuItem(value: 'delete', child: ReusableText(AppStrings.delete, color: AppColors.error)),
+          const PopupMenuItem(value: 'view', child: ReusableText(SalesStrings.inspect)),
+          const PopupMenuItem(value: 'edit', child: ReusableText(GeneralStrings.edit)),
+          const PopupMenuItem(value: 'print', child: ReusableText(GeneralStrings.print)),
+          const PopupMenuItem(value: 'delete', child: ReusableText(GeneralStrings.delete, color: AppColors.error)),
         ],
       ),
       summaryRow: Row(
@@ -243,5 +243,11 @@ class PurchasesListView extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
 
 

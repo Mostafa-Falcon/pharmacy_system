@@ -1,8 +1,8 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pharmacy_system/app/modules/crm/models/crm_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/crm/crm_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
 import 'crm_event.dart';
 import 'crm_state.dart';
 
@@ -53,9 +53,9 @@ class CrmBloc extends Bloc<CrmEvent, CrmState> {
       );
       await CrmService.addLead(lead);
       add(const LoadCrmLeads());
-      AppSnackbar.success('تم إضافة العميل المحتمل');
+      AppSnackbar.success('?? ????? ?????? ???????');
     } catch (e) {
-      AppSnackbar.error('فشل في الإضافة: $e');
+      AppSnackbar.error('??? ?? ???????: $e');
     }
   }
 
@@ -63,9 +63,9 @@ class CrmBloc extends Bloc<CrmEvent, CrmState> {
     try {
       await CrmService.updateLead(event.lead);
       add(const LoadCrmLeads());
-      AppSnackbar.success('تم تحديث البيانات');
+      AppSnackbar.success('?? ????? ????????');
     } catch (e) {
-      AppSnackbar.error('فشل في التحديث: $e');
+      AppSnackbar.error('??? ?? ???????: $e');
     }
   }
 
@@ -75,7 +75,7 @@ class CrmBloc extends Bloc<CrmEvent, CrmState> {
       await CrmService.updateLead(updated);
       add(const LoadCrmLeads());
     } catch (e) {
-      AppSnackbar.error('فشل في تحديث الحالة: $e');
+      AppSnackbar.error('??? ?? ????? ??????: $e');
     }
   }
 
@@ -89,9 +89,9 @@ class CrmBloc extends Bloc<CrmEvent, CrmState> {
       );
       await CrmService.updateLead(updated);
       add(const LoadCrmLeads());
-      AppSnackbar.success('تم إضافة المتابعة');
+      AppSnackbar.success('?? ????? ????????');
     } catch (e) {
-      AppSnackbar.error('فشل في إضافة المتابعة: $e');
+      AppSnackbar.error('??? ?? ????? ????????: $e');
     }
   }
 
@@ -100,4 +100,7 @@ class CrmBloc extends Bloc<CrmEvent, CrmState> {
     emit(state.copyWith(searchQuery: event.query, filteredLeads: filtered));
   }
 }
+
+
+
 

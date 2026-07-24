@@ -1,6 +1,6 @@
-﻿import 'package:equatable/equatable.dart';
-import 'package:pharmacy_system/app/modules/sales/models/purchase_model.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_unit_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:pharmacy_system/app/core/models/purchases/purchase_invoice_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_unit_model.dart';
 
 enum PurchasesStatus { initial, loading, loaded, error, submitting }
 
@@ -62,8 +62,8 @@ class PurchaseLine {
 class PurchasesState extends Equatable {
   final PurchasesStatus status;
   final String? error;
-  final List<PurchaseModel> allPurchases;
-  final List<PurchaseModel> filteredPurchases;
+  final List<PurchaseInvoiceModel> allPurchases;
+  final List<PurchaseInvoiceModel> filteredPurchases;
   final String searchQuery;
   final String selectedFilter;
   final DateTime? dateFrom;
@@ -106,14 +106,14 @@ class PurchasesState extends Equatable {
     this.dateTo,
     this.receiptLines = const [],
     this.referenceNumber,
-    this.purchaseStatus = 'استلم',
+    this.purchaseStatus = '?????',
     DateTime? purchaseDate,
     this.paymentTerm,
-    this.paymentTermUnit = 'أيام',
+    this.paymentTermUnit = '????',
     this.selectedSupplierId,
     this.selectedSupplierName,
     this.supplierBalance = 0,
-    this.sourceType = 'مباشرة',
+    this.sourceType = '??????',
     this.paymentMethod = 'cash',
     DateTime? paymentDate,
     this.invoiceDiscountType = 'fixed',
@@ -142,14 +142,14 @@ class PurchasesState extends Equatable {
     this.dateTo,
     this.receiptLines = const [],
     this.referenceNumber,
-    this.purchaseStatus = 'استلم',
+    this.purchaseStatus = '?????',
     DateTime? purchaseDate,
     this.paymentTerm,
-    this.paymentTermUnit = 'أيام',
+    this.paymentTermUnit = '????',
     this.selectedSupplierId,
     this.selectedSupplierName,
     this.supplierBalance = 0,
-    this.sourceType = 'مباشرة',
+    this.sourceType = '??????',
     this.paymentMethod = 'cash',
     DateTime? paymentDate,
     this.invoiceDiscountType = 'fixed',
@@ -170,8 +170,8 @@ class PurchasesState extends Equatable {
   PurchasesState copyWith({
     PurchasesStatus? status,
     String? error,
-    List<PurchaseModel>? allPurchases,
-    List<PurchaseModel>? filteredPurchases,
+    List<PurchaseInvoiceModel>? allPurchases,
+    List<PurchaseInvoiceModel>? filteredPurchases,
     String? searchQuery,
     String? selectedFilter,
     DateTime? dateFrom,
@@ -289,10 +289,10 @@ class PurchasesState extends Equatable {
   double get creditTotal => allPurchases.where((p) => p.paymentMethod == 'credit')
       .fold(0.0, (sum, p) => sum + p.remainingAmount);
 
-  List<PurchaseModel> get recentPurchases => allPurchases.take(5).toList();
+  List<PurchaseInvoiceModel> get recentPurchases => allPurchases.take(5).toList();
 
   String getPaymentLabel(String method) => switch (method) {
-    'cash' => 'نقداً', 'credit' => 'آجل', 'card' => 'بطاقة', _ => method,
+    'cash' => '?????', 'credit' => '???', 'card' => '?????', _ => method,
   };
 
   @override
@@ -305,4 +305,8 @@ class PurchasesState extends Equatable {
     deliveryAmount, paidAmount, paymentAccountId, paymentAccountName, editingPurchaseId, notes,
   ];
 }
+
+
+
+
 

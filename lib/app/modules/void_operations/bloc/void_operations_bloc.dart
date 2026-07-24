@@ -57,3 +57,4 @@ class VoidOperationsBloc
     if (!isClosed) add(LoadVoidOperations());
   }
 }
+

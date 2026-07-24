@@ -16,3 +16,5 @@ class PickAndImportMedicines extends ImportMedicinesEvent {
 class ResetImport extends ImportMedicinesEvent {
   const ResetImport();
 }
+
+

@@ -1,10 +1,10 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/bloc/base_paginated_bloc.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/customer_group_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_group_model.dart';
 import 'package:pharmacy_system/app/core/data/services/customer/customer_group_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
 
-// ─── Custom Events ───
+// --- Custom Events ---
 
 class AddCustomerGroup extends PaginatedEvent {
   final String name;
@@ -34,7 +34,7 @@ class ToggleActiveCustomerGroup extends PaginatedEvent {
   const ToggleActiveCustomerGroup(this.id);
 }
 
-// ─── Bloc ───
+// --- Bloc ---
 
 class CustomerGroupsBloc extends BasePaginatedBloc<CustomerGroupModel> {
   CustomerGroupsBloc() {
@@ -79,9 +79,9 @@ class CustomerGroupsBloc extends BasePaginatedBloc<CustomerGroupModel> {
         description: event.description,
       );
       add(const LoadItems(refresh: true));
-      AppSnackbar.success('تم إضافة المجموعة بنجاح');
+      AppSnackbar.success('?? ????? ???????? ?????');
     } catch (e) {
-      AppSnackbar.error('فشل في إضافة المجموعة: $e');
+      AppSnackbar.error('??? ?? ????? ????????: $e');
     }
   }
 
@@ -89,9 +89,9 @@ class CustomerGroupsBloc extends BasePaginatedBloc<CustomerGroupModel> {
     try {
       await CustomerGroupService.update(event.group);
       add(const LoadItems(refresh: true));
-      AppSnackbar.success('تم تحديث المجموعة');
+      AppSnackbar.success('?? ????? ????????');
     } catch (e) {
-      AppSnackbar.error('فشل في تحديث المجموعة: $e');
+      AppSnackbar.error('??? ?? ????? ????????: $e');
     }
   }
 
@@ -99,9 +99,9 @@ class CustomerGroupsBloc extends BasePaginatedBloc<CustomerGroupModel> {
     try {
       await CustomerGroupService.delete(event.id);
       add(const LoadItems(refresh: true));
-      AppSnackbar.success('تم حذف المجموعة');
+      AppSnackbar.success('?? ??? ????????');
     } catch (e) {
-      AppSnackbar.error('فشل في حذف المجموعة: $e');
+      AppSnackbar.error('??? ?? ??? ????????: $e');
     }
   }
 
@@ -117,4 +117,8 @@ class CustomerGroupsBloc extends BasePaginatedBloc<CustomerGroupModel> {
     }
   }
 }
+
+
+
+
 

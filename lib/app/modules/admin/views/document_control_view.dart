@@ -1,10 +1,10 @@
 // views/document_control_view.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/core/domain/models/base/correction_model.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/models/base/correction_model.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/strings/admin_strings.dart';
 import 'package:pharmacy_system/app/core/data/services/accounting/correction_service.dart';
 
@@ -140,3 +140,6 @@ class DocumentControlView extends StatelessWidget {
     CorrectionAction.paymentUpdated => AdminStrings.docActionPaymentModified,
   };
 }
+
+
+

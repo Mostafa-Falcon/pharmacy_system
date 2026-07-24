@@ -80,12 +80,12 @@ class AuthDeviceLock {
   static Future<Map<String, dynamic>> forceReleaseLock() async {
     final userId = AuthService._currentUser?.id;
     if (userId == null) {
-      return {'success': false, 'message': AppStrings.mustLoginFirst};
+      return {'success': false, 'message': AuthStrings.mustLoginFirst};
     }
     if (!await AuthService._isOnline()) {
       return {
         'success': false,
-        'message': AppStrings.forceLogoutInternetRequired,
+        'message': AuthStrings.forceLogoutInternetRequired,
       };
     }
     try {
@@ -100,10 +100,10 @@ class AuthDeviceLock {
         final updated = AuthService._userFromTable(existing).copyWith(activeDeviceId: null);
         await usersDao.upsert(AuthService._userToCompanion(updated));
       }
-      return {'success': true, 'message': AppStrings.remoteLogoutSuccess};
+      return {'success': true, 'message': AuthStrings.remoteLogoutSuccess};
     } catch (e) {
       safeDebugPrint('AuthService.forceReleaseLock failed: $e');
-      return {'success': false, 'message': AppStrings.remoteLogoutFailed};
+      return {'success': false, 'message': AuthStrings.remoteLogoutFailed};
     }
   }
 
@@ -123,3 +123,6 @@ class AuthDeviceLock {
     return null;
   }
 }
+
+
+

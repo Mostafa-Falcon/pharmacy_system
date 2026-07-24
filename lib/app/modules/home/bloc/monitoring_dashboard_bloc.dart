@@ -195,3 +195,5 @@ class MonitoringDashboardBloc
 
   String _fmtDate(DateTime d) => DateFormat('yyyy/MM/dd').format(d);
 }
+
+

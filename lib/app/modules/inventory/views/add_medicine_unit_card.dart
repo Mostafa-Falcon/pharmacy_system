@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import 'add_medicine_form_data.dart';
 
 class AddUnitCard extends StatefulWidget {
@@ -79,8 +79,8 @@ class _AddUnitCardState extends State<AddUnitCard> {
                   children: [
                     ReusableText(
                       isMain
-                          ? AppStrings.mainUnitTitleSimple
-                          : AppStrings.subUnitTitleSimple,
+                          ? InventoryStrings.mainUnitTitleSimple
+                          : InventoryStrings.subUnitTitleSimple,
                       style: TextStyle(
                         fontSize: 13.sp,
                         fontWeight: FontWeight.bold,
@@ -90,7 +90,7 @@ class _AddUnitCardState extends State<AddUnitCard> {
                       Padding(
                         padding: EdgeInsets.only(top: 2.h),
                         child: ReusableText(
-                          '${AppStrings.conversionFactorInfoSimplePrefix}${data.factorController.text}${AppStrings.fromThisSubUnit}',
+                          '${InventoryStrings.conversionFactorInfoSimplePrefix}${data.factorController.text}${InventoryStrings.fromThisSubUnit}',
                           style: TextStyle(
                             fontSize: 11.sp,
                             color: scheme.primary,
@@ -119,8 +119,8 @@ class _AddUnitCardState extends State<AddUnitCard> {
                 child: ReusableInput(
                   controller: data.nameController,
                   label: isMain
-                      ? AppStrings.mainUnitNameLabelSimple
-                      : AppStrings.subUnitNameLabelSimple,
+                      ? InventoryStrings.mainUnitNameLabelSimple
+                      : InventoryStrings.subUnitNameLabelSimple,
                   prefixIcon: const Icon(Icons.straighten_rounded),
                 ),
               ),
@@ -129,7 +129,7 @@ class _AddUnitCardState extends State<AddUnitCard> {
                 Expanded(
                   child: ReusableInput(
                     controller: data.factorController,
-                    label: AppStrings.factorLabelSimple,
+                    label: InventoryStrings.factorLabelSimple,
                     prefixIcon: const Icon(Icons.pin_outlined),
                     keyboardType: TextInputType.number,
                   ),
@@ -143,7 +143,7 @@ class _AddUnitCardState extends State<AddUnitCard> {
               Expanded(
                 child: ReusableInput(
                   controller: data.buyPriceController,
-                  label: AppStrings.buyPriceLabelSimple,
+                  label: InventoryStrings.buyPriceLabelSimple,
                   prefixIcon: Icon(
                     Icons.price_change_outlined,
                     color: Colors.green[600],
@@ -158,7 +158,7 @@ class _AddUnitCardState extends State<AddUnitCard> {
               Expanded(
                 child: ReusableInput(
                   controller: data.sellPriceController,
-                  label: AppStrings.sellPriceLabelSimple,
+                  label: InventoryStrings.sellPriceLabelSimple,
                   prefixIcon: Icon(
                     Icons.sell_outlined,
                     color: scheme.primary,
@@ -178,7 +178,7 @@ class _AddUnitCardState extends State<AddUnitCard> {
                 Expanded(
                   child: ReusableInput(
                     controller: data.oldPriceController,
-                    label: AppStrings.oldSellPriceLabelSimple,
+                    label: InventoryStrings.oldSellPriceLabelSimple,
                     prefixIcon: const Icon(Icons.money_off_rounded),
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
@@ -190,7 +190,7 @@ class _AddUnitCardState extends State<AddUnitCard> {
               Expanded(
                 child: ReusableInput(
                   controller: data.quantityController,
-                  label: AppStrings.currentStockLabelSimple,
+                  label: InventoryStrings.currentStockLabelSimple,
                   prefixIcon: const Icon(Icons.store_rounded),
                   keyboardType: TextInputType.number,
                 ),
@@ -203,7 +203,7 @@ class _AddUnitCardState extends State<AddUnitCard> {
               Expanded(
                 child: ReusableInput(
                   controller: data.discountController,
-                  label: AppStrings.discountLabelSimple,
+                  label: InventoryStrings.discountLabelSimple,
                   prefixIcon: const Icon(Icons.percent_rounded),
                   keyboardType: TextInputType.number,
                 ),
@@ -248,8 +248,8 @@ class _AddUnitCardState extends State<AddUnitCard> {
                               SizedBox(width: AppSpacing.xs.w),
                               ReusableText(
                                 data.allowSale
-                                    ? AppStrings.allowSaleLabel
-                                    : AppStrings.blockSaleLabelSimple,
+                                    ? InventoryStrings.allowSaleLabel
+                                    : InventoryStrings.blockSaleLabelSimple,
                                 style: TextStyle(
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.bold,
@@ -273,3 +273,8 @@ class _AddUnitCardState extends State<AddUnitCard> {
     );
   }
 }
+
+
+
+
+

@@ -1,13 +1,13 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import 'package:pharmacy_system/app/core/domain/models/base/correction_model.dart';
-import 'package:pharmacy_system/app/modules/sales/models/sale_model.dart';
+import 'package:pharmacy_system/app/core/models/base/correction_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/sale_invoice_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
 import 'package:pharmacy_system/app/core/data/services/accounting/correction_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/core/bloc/base_state.dart';
 import 'package:pharmacy_system/app/core/data/repositories/sales_repository.dart';
@@ -39,15 +39,15 @@ class FilterSalesByStatus extends SalesEvent {
 }
 
 class VoidSale extends SalesEvent {
-  final SaleModel sale;
+  final SaleInvoiceModel sale;
   const VoidSale(this.sale);
   @override
   List<Object?> get props => [sale];
 }
 
 // --- State ---
-class SalesState extends BaseState<List<SaleModel>> {
-  final List<SaleModel> filteredSales;
+class SalesState extends BaseState<List<SaleInvoiceModel>> {
+  final List<SaleInvoiceModel> filteredSales;
   final String searchQuery;
   final String selectedFilter;
   final double todayTotal;
@@ -72,19 +72,19 @@ class SalesState extends BaseState<List<SaleModel>> {
     this.creditTotal = 0,
   });
 
-  List<SaleModel> get sales => data ?? [];
-  BaseState<List<SaleModel>> get dataState => this;
+  List<SaleInvoiceModel> get sales => data ?? [];
+  BaseState<List<SaleInvoiceModel>> get dataState => this;
 
   @override
   SalesState copyWith({
-    List<SaleModel>? data,
+    List<SaleInvoiceModel>? data,
     bool? isLoading,
     String? errorMessage,
     bool? isInitial,
     bool? isEmpty,
     DateTime? fromDate,
     DateTime? toDate,
-    List<SaleModel>? filteredSales,
+    List<SaleInvoiceModel>? filteredSales,
     String? searchQuery,
     String? selectedFilter,
     double? todayTotal,
@@ -137,7 +137,7 @@ class SalesBloc extends Bloc<SalesEvent, SalesState> {
     on<FilterSalesByStatus>(_onFilterStatus);
     on<VoidSale>(_onVoid);
 
-    // اشتراك لحظي في تحديثات المبيعات
+    // ?????? ???? ?? ??????? ????????
     _subscription = sl<SalesRepository>().watchSales(_branchId).listen((_) {
       if (!isClosed) add(const LoadSales());
     });
@@ -153,7 +153,7 @@ class SalesBloc extends Bloc<SalesEvent, SalesState> {
 
   String get _branchId => AuthService.currentBranchId ?? '';
 
-  void _updateTotals(List<SaleModel> sales, Emitter<SalesState> emit) {
+  void _updateTotals(List<SaleInvoiceModel> sales, Emitter<SalesState> emit) {
     final now = DateTime.now();
     final todayTotal = sales
         .where((s) =>
@@ -175,7 +175,7 @@ class SalesBloc extends Bloc<SalesEvent, SalesState> {
     ));
   }
 
-  List<SaleModel> _applyFilter(List<SaleModel> list) {
+  List<SaleInvoiceModel> _applyFilter(List<SaleInvoiceModel> list) {
     var result = list.toList();
     final q = state.searchQuery.trim().toLowerCase();
     if (q.isNotEmpty) {
@@ -232,17 +232,23 @@ class SalesBloc extends Bloc<SalesEvent, SalesState> {
       referenceType: CorrectionReferenceType.sale,
       referenceId: event.sale.id,
       action: CorrectionAction.voided,
-      details: AppStrings.voidInvoice,
+      details: SalesStrings.voidInvoice,
     );
     add(const LoadSales());
-    AppSnackbar.success(AppStrings.msgUpdatedSuccess);
+    AppSnackbar.success(CrmStrings.msgUpdatedSuccess);
   }
 
   String getPaymentLabel(String method) => switch (method) {
-        'cash' => AppStrings.enumCustomerCash,
-        'credit' => AppStrings.enumCustomerRegular,
-        'card' => AppStrings.paymentMethodCardPurchase,
+        'cash' => GeneralStrings.enumCustomerCash,
+        'credit' => GeneralStrings.enumCustomerRegular,
+        'card' => PurchasesStrings.paymentMethodCard,
         _ => method,
       };
 }
+
+
+
+
+
+
 

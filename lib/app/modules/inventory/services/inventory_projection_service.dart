@@ -1,6 +1,6 @@
-﻿import 'package:get_it/get_it.dart';
+import 'package:get_it/get_it.dart';
 
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
 
 class InventoryProjectionService {
@@ -55,4 +55,7 @@ class InventoryProjectionService {
       ..sort((a, b) => a.expiryDate!.compareTo(b.expiryDate!));
   }
 }
+
+
+
 

@@ -1,12 +1,12 @@
-﻿import 'package:drift/drift.dart';
+import 'package:drift/drift.dart';
 import 'package:get_it/get_it.dart';
 
 import 'package:pharmacy_system/app/core/data/database/daos/inventory_transactions_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/inventory_enums.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/stock_adjustment_model.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/stock_movement_model.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/stock_transfer_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/inventory_enums.dart';
+import 'package:pharmacy_system/app/core/models/inventory/stock_adjustment_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/stock_movement_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/stock_transfer_model.dart';
 
 class InventoryTransactionService {
   static final InventoryTransactionService _instance =
@@ -177,4 +177,7 @@ class InventoryTransactionService {
     }
   }
 }
+
+
+
 

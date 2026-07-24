@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
-import 'package:pharmacy_system/app/modules/sales/models/return_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/return_model.dart';
 import '../services/free_return_service.dart';
 import 'free_return_event.dart';
 import 'free_return_state.dart';
@@ -105,3 +105,6 @@ class FreeReturnBloc extends Bloc<FreeReturnEvent, FreeReturnState> {
     }
   }
 }
+
+
+

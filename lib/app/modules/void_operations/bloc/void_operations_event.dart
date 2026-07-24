@@ -20,3 +20,5 @@ class VoidPurchase extends VoidOperationsEvent {
   final String reason;
   const VoidPurchase({required this.purchaseId, required this.reason});
 }
+
+

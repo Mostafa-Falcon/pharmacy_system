@@ -54,6 +54,7 @@ class ReturnModel implements SyncableEntity {
   final ReturnReason reason;
   final String? notes;
   final String createdBy;
+  final String accountId;
   final DateTime createdAt;
   final int syncVersion;
   @override
@@ -74,6 +75,7 @@ class ReturnModel implements SyncableEntity {
     required this.reason,
     this.notes,
     required this.createdBy,
+    this.accountId = '',
     required this.createdAt,
     this.syncVersion = 1,
     DateTime? lastModified,
@@ -90,6 +92,7 @@ class ReturnModel implements SyncableEntity {
     'reason': reason.name,
     'notes': notes,
     'created_by': createdBy,
+    'account_id': accountId,
     'created_at': createdAt.toIso8601String(),
     'sync_version': syncVersion,
     'last_modified': lastModified.toIso8601String(),
@@ -111,6 +114,7 @@ class ReturnModel implements SyncableEntity {
     ),
     notes: json['notes'] as String?,
     createdBy: json['created_by'] as String? ?? '',
+    accountId: json['account_id'] as String? ?? '',
     createdAt: DateTime.tryParse(json['created_at'] as String? ?? '') ?? DateTime.now(),
     syncVersion: (json['sync_version'] as num?)?.toInt() ?? 1,
     lastModified: json['last_modified'] != null

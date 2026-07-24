@@ -1,23 +1,23 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:pharmacy_system/app/core/domain/models/base/correction_model.dart';
-import 'package:pharmacy_system/app/modules/sales/models/purchase_model.dart';
+import 'package:pharmacy_system/app/core/models/base/correction_model.dart';
+import 'package:pharmacy_system/app/core/models/purchases/purchase_invoice_model.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
 import 'package:pharmacy_system/app/core/data/services/print_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/correction_chain_widget.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/correction_chain_widget.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
 import '../../../core/utils/format_utils.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../../../core/injection.dart';
 import '../bloc/purchases_bloc.dart';
 import '../bloc/purchases_event.dart';
 
 class PurchaseDetailsView extends StatelessWidget {
-  final PurchaseModel purchase;
+  final PurchaseInvoiceModel purchase;
   const PurchaseDetailsView({super.key, required this.purchase});
 
   @override
@@ -28,7 +28,7 @@ class PurchaseDetailsView extends StatelessWidget {
     return BlocProvider.value(
       value: sl<PurchasesBloc>(),
       child: HomeShell(
-        title: 'فاتورة مشتريات',
+        title: '?????? ???????',
         child: Container(
           color: scheme.surfaceContainerLow.withValues(alpha: 0.3),
           padding: EdgeInsets.all(AppSpacing.xl.w),
@@ -62,7 +62,7 @@ class PurchaseDetailsView extends StatelessWidget {
     );
   }
 
-  Widget _buildInvoiceHeader(BuildContext context, ColorScheme scheme, PurchaseModel purchase) {
+  Widget _buildInvoiceHeader(BuildContext context, ColorScheme scheme, PurchaseInvoiceModel purchase) {
     return AppCard(
       padding: EdgeInsets.all(AppSpacing.xl.w),
       child: Column(children: [
@@ -70,9 +70,9 @@ class PurchaseDetailsView extends StatelessWidget {
           Icon(Icons.receipt_long_rounded, size: AppIconSize.xl.value, color: scheme.primary),
           SizedBox(width: AppSpacing.sm.w),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            ReusableText('فاتورة مشتريات', style: AppTextStyles.title(context).copyWith(fontWeight: FontWeight.bold)),
+            ReusableText('?????? ???????', style: AppTextStyles.title(context).copyWith(fontWeight: FontWeight.bold)),
             if (purchase.receiptNumber != null)
-              ReusableText('رقم الإيصال: ${purchase.receiptNumber}', style: AppTextStyles.caption(context).copyWith(color: scheme.onSurfaceVariant)),
+              ReusableText('??? ???????: ${purchase.receiptNumber}', style: AppTextStyles.caption(context).copyWith(color: scheme.onSurfaceVariant)),
           ]),
           const Spacer(),
           _buildStatusBadge(purchase.status),
@@ -81,17 +81,17 @@ class PurchaseDetailsView extends StatelessWidget {
         Divider(color: scheme.outlineVariant.withValues(alpha: 0.3)),
         SizedBox(height: AppSpacing.md.h),
         Row(children: [
-          InfoChip(icon: Icons.calendar_today_rounded, label: 'التاريخ', value: FormatUtils.date(purchase.createdAt), color: scheme.primary),
+          InfoChip(icon: Icons.calendar_today_rounded, label: '???????', value: FormatUtils.date(purchase.createdAt), color: scheme.primary),
           SizedBox(width: AppSpacing.md.w),
-          InfoChip(icon: Icons.tag_rounded, label: 'رقم الفاتورة', value: '#${purchase.id.substring(0, 8)}', color: scheme.primary),
+          InfoChip(icon: Icons.tag_rounded, label: '??? ????????', value: '#${purchase.id.substring(0, 8)}', color: scheme.primary),
           SizedBox(width: AppSpacing.md.w),
-          InfoChip(icon: Icons.person_rounded, label: 'بواسطة', value: purchase.createdBy, color: scheme.primary),
+          InfoChip(icon: Icons.person_rounded, label: '??????', value: purchase.createdBy, color: scheme.primary),
         ]),
       ]),
     );
   }
 
-  Widget _buildSupplierCard(BuildContext context, ColorScheme scheme, PurchaseModel purchase, dynamic supplier) {
+  Widget _buildSupplierCard(BuildContext context, ColorScheme scheme, PurchaseInvoiceModel purchase, dynamic supplier) {
     return AppCard(
       child: Row(children: [
         Container(
@@ -111,7 +111,7 @@ class PurchaseDetailsView extends StatelessWidget {
                   color: scheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(4),
                 ),
-                  child: ReusableText(AppStrings.supplierType, style: AppTextStyles.caption(context).copyWith(color: scheme.primary)),
+                  child: ReusableText(SuppliersStrings.supplierType, style: AppTextStyles.caption(context).copyWith(color: scheme.primary)),
               ),
               if (purchase.supplierPhone != null) ...[
                 SizedBox(width: AppSpacing.md.w),
@@ -123,14 +123,14 @@ class PurchaseDetailsView extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
             decoration: BoxDecoration(color: AppColors.info.withValues(alpha: 0.08), borderRadius: BorderRadius.circular(AppRadius.md)),
-            child: ReusableText('المصدر: ${purchase.sourceType}', style: AppTextStyles.caption(context).copyWith(color: AppColors.info, fontWeight: FontWeight.bold)),
+            child: ReusableText('??????: ${purchase.sourceType}', style: AppTextStyles.caption(context).copyWith(color: AppColors.info, fontWeight: FontWeight.bold)),
           ),
       ]),
     );
   }
 
-  Widget _buildItemsTable(BuildContext context, ColorScheme scheme, PurchaseModel purchase) {
-    final columns = ['#', 'الصنف', 'الوحدة', 'الكمية', 'سعر الوحدة', 'الخصم', 'الضريبة', 'الإجمالي', 'الصلاحية', 'الباتش'];
+  Widget _buildItemsTable(BuildContext context, ColorScheme scheme, PurchaseInvoiceModel purchase) {
+    final columns = ['#', '?????', '??????', '??????', '??? ??????', '?????', '???????', '????????', '????????', '??????'];
     final widths = [0.03, 0.25, 0.06, 0.07, 0.10, 0.07, 0.07, 0.10, 0.09, 0.09];
 
     return Container(
@@ -140,7 +140,7 @@ class PurchaseDetailsView extends StatelessWidget {
         Row(children: [
           Icon(Icons.inventory_2_outlined, size: AppIconSize.md.value, color: scheme.primary),
           SizedBox(width: AppSpacing.sm.w),
-          ReusableText('الأصناف (${purchase.items.length})', style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)),
+          ReusableText('??????? (${purchase.items.length})', style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)),
         ]),
         SizedBox(height: AppSpacing.md.h),
         _buildTableHeader(context, scheme, columns, widths),
@@ -179,7 +179,7 @@ class PurchaseDetailsView extends StatelessWidget {
     );
   }
 
-  Widget _buildFinancialSection(BuildContext context, ColorScheme scheme, PurchaseModel purchase) {
+  Widget _buildFinancialSection(BuildContext context, ColorScheme scheme, PurchaseInvoiceModel purchase) {
     return AppCard(
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Expanded(flex: 3, child: _buildPaymentInfo(context, scheme, purchase)),
@@ -191,31 +191,31 @@ class PurchaseDetailsView extends StatelessWidget {
     );
   }
 
-  Widget _buildPaymentInfo(BuildContext context, ColorScheme scheme, PurchaseModel purchase) {
+  Widget _buildPaymentInfo(BuildContext context, ColorScheme scheme, PurchaseInvoiceModel purchase) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Row(children: [Icon(Icons.payment_rounded, size: AppIconSize.md.value, color: scheme.primary), SizedBox(width: AppSpacing.xs.w), ReusableText('معلومات الدفع', style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold))]),
+      Row(children: [Icon(Icons.payment_rounded, size: AppIconSize.md.value, color: scheme.primary), SizedBox(width: AppSpacing.xs.w), ReusableText('??????? ?????', style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold))]),
       SizedBox(height: AppSpacing.md.h),
-      _financeRow('طريقة الدفع', _getPaymentLabel(purchase.paymentMethod)),
-      if (purchase.paidAmount != null) _financeRow('المدفوع', FormatUtils.currency(purchase.paidAmount!)),
-      if (purchase.remainingAmount > 0) _financeRow('المتبقي', FormatUtils.currency(purchase.remainingAmount), valueColor: AppColors.error),
-      if (purchase.paymentAccountName != null) _financeRow('حساب الدفع', purchase.paymentAccountName!),
-      _financeRow('الحالة', purchase.status == 'completed' ? 'مكتملة' : purchase.status == 'cancelled' ? 'ملغاة' : 'مسودة'),
+      _financeRow('????? ?????', _getPaymentLabel(purchase.paymentMethod)),
+      if (purchase.paidAmount != null) _financeRow('???????', FormatUtils.currency(purchase.paidAmount!)),
+      if (purchase.remainingAmount > 0) _financeRow('???????', FormatUtils.currency(purchase.remainingAmount), valueColor: AppColors.error),
+      if (purchase.paymentAccountName != null) _financeRow('???? ?????', purchase.paymentAccountName!),
+      _financeRow('??????', purchase.status == 'completed' ? '??????' : purchase.status == 'cancelled' ? '?????' : '?????'),
     ]);
   }
 
-  Widget _buildTotalsBreakdown(BuildContext context, ColorScheme scheme, PurchaseModel purchase) {
+  Widget _buildTotalsBreakdown(BuildContext context, ColorScheme scheme, PurchaseInvoiceModel purchase) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Row(children: [Icon(Icons.calculate_rounded, size: AppIconSize.md.value, color: scheme.primary), SizedBox(width: AppSpacing.xs.w), ReusableText('إجماليات الفاتورة', style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold))]),
+      Row(children: [Icon(Icons.calculate_rounded, size: AppIconSize.md.value, color: scheme.primary), SizedBox(width: AppSpacing.xs.w), ReusableText('???????? ????????', style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold))]),
       SizedBox(height: AppSpacing.md.h),
-      _financeRow('المجموع الفرعي', FormatUtils.currency(purchase.totalAmount)),
+      _financeRow('??????? ??????', FormatUtils.currency(purchase.totalAmount)),
       if (purchase.invoiceDiscountAmount != null && purchase.invoiceDiscountAmount! > 0)
-        _financeRow('خصم الفاتورة (${purchase.invoiceDiscountType == '%' ? '${purchase.invoiceDiscountValue?.toStringAsFixed(1) ?? ''}%' : FormatUtils.currency(purchase.invoiceDiscountValue ?? 0)})', '-${FormatUtils.currency(purchase.invoiceDiscountAmount!)}', valueColor: AppColors.warning),
+        _financeRow('??? ???????? (${purchase.invoiceDiscountType == '%' ? '${purchase.invoiceDiscountValue?.toStringAsFixed(1) ?? ''}%' : FormatUtils.currency(purchase.invoiceDiscountValue ?? 0)})', '-${FormatUtils.currency(purchase.invoiceDiscountAmount!)}', valueColor: AppColors.warning),
       if (purchase.invoiceTaxAmount != null && purchase.invoiceTaxAmount! > 0)
-        _financeRow('ضريبة الفاتورة (${purchase.invoiceTaxType == '%' ? '${purchase.invoiceTaxValue?.toStringAsFixed(1) ?? ''}%' : FormatUtils.currency(purchase.invoiceTaxValue ?? 0)})', FormatUtils.currency(purchase.invoiceTaxAmount!), valueColor: AppColors.info),
-      if ((purchase.shippingAmount ?? 0) > 0) _financeRow('الشحن', FormatUtils.currency(purchase.shippingAmount!)),
-      if ((purchase.deliveryAmount ?? 0) > 0) _financeRow('التوصيل', FormatUtils.currency(purchase.deliveryAmount!)),
+        _financeRow('????? ???????? (${purchase.invoiceTaxType == '%' ? '${purchase.invoiceTaxValue?.toStringAsFixed(1) ?? ''}%' : FormatUtils.currency(purchase.invoiceTaxValue ?? 0)})', FormatUtils.currency(purchase.invoiceTaxAmount!), valueColor: AppColors.info),
+      if ((purchase.shippingAmount ?? 0) > 0) _financeRow('?????', FormatUtils.currency(purchase.shippingAmount!)),
+      if ((purchase.deliveryAmount ?? 0) > 0) _financeRow('???????', FormatUtils.currency(purchase.deliveryAmount!)),
       Divider(color: scheme.outlineVariant.withValues(alpha: 0.3)),
-      _financeRow('الإجمالي النهائي', FormatUtils.currency(purchase.finalAmount), valueColor: scheme.primary, bold: true, fontSize: 14),
+      _financeRow('???????? ???????', FormatUtils.currency(purchase.finalAmount), valueColor: scheme.primary, bold: true, fontSize: 14),
     ]);
   }
 
@@ -223,33 +223,33 @@ class PurchaseDetailsView extends StatelessWidget {
     return TotalsRow(label: label, value: value, color: valueColor, bold: bold, fontSize: fontSize);
   }
 
-  Widget _buildNotesSection(BuildContext context, ColorScheme scheme, PurchaseModel purchase) {
+  Widget _buildNotesSection(BuildContext context, ColorScheme scheme, PurchaseInvoiceModel purchase) {
     return AppCard(child: Row(children: [
       Icon(Icons.notes_rounded, size: AppIconSize.md.value, color: AppColors.warning), SizedBox(width: AppSpacing.sm.w),
-      ReusableText('ملاحظات:', style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)), SizedBox(width: AppSpacing.sm.w),
+      ReusableText('???????:', style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold)), SizedBox(width: AppSpacing.sm.w),
       Expanded(child: ReusableText(purchase.notes!, style: AppTextStyles.body(context))),
     ]));
   }
 
-  Widget _buildCorrectionChain(PurchaseModel purchase) {
+  Widget _buildCorrectionChain(PurchaseInvoiceModel purchase) {
     return CorrectionChainWidget(referenceType: CorrectionReferenceType.purchase, referenceId: purchase.id);
   }
 
-  Widget _buildActionButtons(BuildContext context, PurchaseModel purchase) {
+  Widget _buildActionButtons(BuildContext context, PurchaseInvoiceModel purchase) {
     return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-      ReusableButton(text: 'عودة', onPressed: () => Navigator.pop(context), type: ButtonType.outlined),
+      ReusableButton(text: '????', onPressed: () => Navigator.pop(context), type: ButtonType.outlined),
       SizedBox(width: AppSpacing.md.w),
-      ReusableButton(text: 'طباعة', prefixIcon: Icons.print_rounded, onPressed: () async {
+      ReusableButton(text: '?????', prefixIcon: Icons.print_rounded, onPressed: () async {
         final shouldPrint = await showDialog<bool>(
           context: context,
           builder: (context) => ReusableDialog(
-          title: 'طباعة الفاتورة', headerIcon: const Icon(Icons.print_rounded),
+          title: '????? ????????', headerIcon: const Icon(Icons.print_rounded),
           children: [
-            ReusableText('هل تريد طباعة فاتورة المشتريات؟', style: AppTextStyles.body(context)),
+            ReusableText('?? ???? ????? ?????? ??????????', style: AppTextStyles.body(context)),
             SizedBox(height: 16.h),
             DialogActions(
-              cancelText: 'لا',
-              confirmText: 'طباعة',
+              cancelText: '??',
+              confirmText: '?????',
               onCancel: () => Navigator.pop(context, false),
               onConfirm: () => Navigator.pop(context, true),
             ),
@@ -258,11 +258,11 @@ class PurchaseDetailsView extends StatelessWidget {
         if (shouldPrint == true) PrintService.printPurchaseInvoice(purchase);
       }, type: ButtonType.outlined),
       SizedBox(width: AppSpacing.md.w),
-      ReusableButton(text: 'إلغاء الفاتورة', prefixIcon: Icons.cancel_outlined, onPressed: () {
+      ReusableButton(text: '????? ????????', prefixIcon: Icons.cancel_outlined, onPressed: () {
         ConfirmDeleteDialog.show(
           context,
-          title: 'تأكيد الإلغاء', message: 'هل أنت متأكد من إلغاء فاتورة المشتريات هذه؟',
-          confirmText: 'تأكيد الإلغاء',
+          title: '????? ???????', message: '?? ??? ????? ?? ????? ?????? ????????? ????',
+          confirmText: '????? ???????',
           onConfirm: () => context.read<PurchasesBloc>().add(VoidPurchase(purchase.id)),
         );
       }),
@@ -270,18 +270,24 @@ class PurchaseDetailsView extends StatelessWidget {
   }
 
   String _getPaymentLabel(String method) => switch (method) {
-    'cash' => 'نقداً', 'credit' => 'آجل', 'card' => 'بطاقة', _ => method,
+    'cash' => '?????', 'credit' => '???', 'card' => '?????', _ => method,
   };
 
   Widget _buildStatusBadge(String status) {
     final (color, label) = switch (status) {
-      'completed' => (AppColors.success, 'مكتملة'),
-      'cancelled' => (AppColors.error, 'ملغاة'),
-      _ => (AppColors.warning, 'مسودة'),
+      'completed' => (AppColors.success, '??????'),
+      'cancelled' => (AppColors.error, '?????'),
+      _ => (AppColors.warning, '?????'),
     };
     return StatusBadge(label: label, color: color, icon: status == 'completed' ? Icons.check_circle_rounded : Icons.cancel_rounded);
   }
 }
+
+
+
+
+
+
 
 
 

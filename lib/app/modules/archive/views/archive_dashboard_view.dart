@@ -7,9 +7,9 @@ import '../bloc/archive_bloc.dart';
 import 'package:pharmacy_system/app/modules/archive/models/archive_record_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import '../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 class ArchiveDashboardView extends StatelessWidget {
   const ArchiveDashboardView({super.key});
 
@@ -18,17 +18,17 @@ class ArchiveDashboardView extends StatelessWidget {
     final user = AuthService.currentUser;
     if (user == null || !user.isOwner) {
       return const HomeShell(
-        title: 'الأرشيف المتقدم',
+        title: '??????? ???????',
         child: ReusableStateView.permissionDenied(
-          title: 'دخول غير مصرح',
-          message: 'هذه الصفحة متاحة فقط لصاحب الصيدلية.',
+          title: '???? ??? ????',
+          message: '??? ?????? ????? ??? ????? ????????.',
         ),
       );
     }
 
     return HomeShell(
-      title: AppStrings.archiveDashboard,
-      subtitle: AppStrings.archiveSubtitle,
+      title: ArchiveStrings.archiveDashboard,
+      subtitle: ArchiveStrings.archiveSubtitle,
       child: BlocProvider(
         create: (_) => ArchiveBloc()..add(const LoadArchive()),
         child: const _ArchiveBody(),
@@ -74,14 +74,14 @@ class _ArchiveToolbar extends StatelessWidget {
                   key: ValueKey(state.selectedType),
                   initialValue: state.selectedType,
                   decoration: InputDecoration(
-                    labelText: AppStrings.filterByType,
+                    labelText: ArchiveStrings.filterByType,
                     contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
                   ),
                   items: [
                     DropdownMenuItem(
                       value: null,
-                      child: ReusableText(AppStrings.allTypes),
+                      child: ReusableText(ArchiveStrings.allTypes),
                     ),
                     for (final type in ArchiveEntityType.values)
                       DropdownMenuItem(
@@ -95,7 +95,7 @@ class _ArchiveToolbar extends StatelessWidget {
               SizedBox(width: AppSpacing.md),
               Expanded(
                 child: ReusableInput(
-                  hint: AppStrings.archiveSearchHint,
+                  hint: ArchiveStrings.archiveSearchHint,
                   prefixIcon: const Icon(Icons.search_rounded),
                   showClearButton: true,
                   textDirection: TextDirection.rtl,
@@ -117,14 +117,14 @@ class _ArchiveContent extends StatelessWidget {
     return BlocBuilder<ArchiveBloc, ArchiveState>(
       builder: (context, state) {
         if (state.status == ArchiveStatus.initial || state.status == ArchiveStatus.loading) {
-          return const LoadingIndicator(message: 'جاري تحميل الأرشيف...');
+          return const LoadingIndicator(message: '???? ????? ???????...');
         }
 
         if (state.status == ArchiveStatus.error) {
           return Center(
             child: ReusableStateView(
-              title: 'خطأ في التحميل',
-              message: state.error ?? 'حدث خطأ غير متوقع',
+              title: '??? ?? ???????',
+              message: state.error ?? '??? ??? ??? ?????',
               icon: Icons.error_outline_rounded,
             ),
           );
@@ -134,8 +134,8 @@ class _ArchiveContent extends StatelessWidget {
         if (records.isEmpty) {
           return const EmptyState(
             icon: Icons.archive_outlined,
-            title: AppStrings.archiveEmpty,
-            subtitle: AppStrings.archiveEmptySubtitle,
+            title: ArchiveStrings.archiveEmpty,
+            subtitle: ArchiveStrings.archiveEmptySubtitle,
           );
         }
 
@@ -180,12 +180,12 @@ class _ArchiveTable extends StatelessWidget {
               showCheckboxColumn: false,
               headingRowColor: WidgetStatePropertyAll(scheme.surfaceContainerLow.withValues(alpha: 0.5)),
               columns: [
-                DataColumn(label: ReusableText(AppStrings.colEntityType, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold))),
-                DataColumn(label: ReusableText(AppStrings.colEntityName, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold))),
-                DataColumn(label: ReusableText(AppStrings.colDeletedBy, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold))),
-                DataColumn(label: ReusableText(AppStrings.colDeletedAt, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold))),
-                DataColumn(label: ReusableText(AppStrings.colStatus, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold))),
-                DataColumn(label: ReusableText(AppStrings.colActions, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold))),
+                DataColumn(label: ReusableText(ArchiveStrings.colEntityType, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold))),
+                DataColumn(label: ReusableText(ArchiveStrings.colEntityName, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold))),
+                DataColumn(label: ReusableText(ArchiveStrings.colDeletedBy, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold))),
+                DataColumn(label: ReusableText(ArchiveStrings.colDeletedAt, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold))),
+                DataColumn(label: ReusableText(ArchiveStrings.colStatus, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold))),
+                DataColumn(label: ReusableText(ArchiveStrings.colActions, style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold))),
               ],
               rows: [
                 for (final record in records)
@@ -206,26 +206,26 @@ class _ArchiveTable extends StatelessWidget {
                         children: [
                           if (record.isActive) ...[
                             IconButton(
-                              tooltip: AppStrings.viewArchiveDetails,
+                              tooltip: ArchiveStrings.viewArchiveDetails,
                               onPressed: () => _showDetailsDialog(context, record),
                               icon: const Icon(Icons.info_outline_rounded, size: 20),
                             ),
                             IconButton(
-                              tooltip: AppStrings.restoreItem,
+                              tooltip: ArchiveStrings.restoreItem,
                               onPressed: isDisabled
                                   ? null
                                   : () => _confirmRestore(context, record, bloc),
                               icon: Icon(Icons.restore_rounded, color: AppColors.success, size: 20),
                             ),
                             IconButton(
-                              tooltip: AppStrings.editBeforeRestore,
+                              tooltip: ArchiveStrings.editBeforeRestore,
                               onPressed: isDisabled
                                   ? null
                                   : () => _showEditBeforeRestoreDialog(context, record, bloc),
                               icon: const Icon(Icons.edit_rounded, size: 20),
                             ),
                             IconButton(
-                              tooltip: AppStrings.permanentDeleteItem,
+                              tooltip: ArchiveStrings.permanentDeleteItem,
                               onPressed: isDisabled
                                   ? null
                                   : () => _confirmPermanentDelete(context, record, bloc),
@@ -248,14 +248,14 @@ class _ArchiveTable extends StatelessWidget {
     final data = record.entityData;
     ReusableDialog.show(
       context,
-      title: 'تفاصيل العنصر',
+      title: '?????? ??????',
       headerIcon: Icon(Icons.info_outline_rounded, color: AppColors.info),
       maxWidth: 500,
       children: [
-        _DetailRow(label: 'الاسم', value: record.entityName),
-        _DetailRow(label: 'النوع', value: record.entityType.displayName),
-        _DetailRow(label: 'المسح بواسطة', value: record.deletedByName),
-        _DetailRow(label: 'تاريخ المسح', value: DateFormat('yyyy/MM/dd HH:mm:ss').format(record.deletedAt.toLocal())),
+        _DetailRow(label: '?????', value: record.entityName),
+        _DetailRow(label: '?????', value: record.entityType.displayName),
+        _DetailRow(label: '????? ??????', value: record.deletedByName),
+        _DetailRow(label: '????? ?????', value: DateFormat('yyyy/MM/dd HH:mm:ss').format(record.deletedAt.toLocal())),
         if (data.isNotEmpty)
           ...data.entries.take(15).map((e) => _DetailRow(
             label: e.key,
@@ -266,7 +266,7 @@ class _ArchiveTable extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             ReusableButton(
-              text: 'إغلاق',
+              text: '?????',
               onPressed: () => Navigator.of(context).pop(),
               type: ButtonType.text,
             ),
@@ -279,21 +279,21 @@ class _ArchiveTable extends StatelessWidget {
   void _confirmRestore(BuildContext context, ArchiveRecordModel record, ArchiveBloc bloc) {
     ReusableDialog.show(
       context,
-      title: AppStrings.restoreConfirmTitle,
+      title: ArchiveStrings.restoreConfirmTitle,
       headerIcon: const Icon(Icons.restore_rounded, color: AppColors.success),
       maxWidth: 400,
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 4.w),
           child: ReusableText(
-            '${AppStrings.restoreConfirmMessage}\n\n"${record.entityName}"',
+            '${ArchiveStrings.restoreConfirmMessage}\n\n"${record.entityName}"',
             style: AppTextStyles.body(context).copyWith(color: AppColors.textSecondaryOf(context)),
           ),
         ),
         SizedBox(height: 24),
         DialogActions(
-          cancelText: 'إلغاء',
-          confirmText: AppStrings.restore,
+          cancelText: '?????',
+          confirmText: ArchiveStrings.restore,
           confirmType: ButtonType.success,
           onCancel: () => Navigator.of(context).pop(),
           onConfirm: () {
@@ -308,21 +308,21 @@ class _ArchiveTable extends StatelessWidget {
   void _confirmPermanentDelete(BuildContext context, ArchiveRecordModel record, ArchiveBloc bloc) {
     ReusableDialog.show(
       context,
-      title: AppStrings.permanentDeleteConfirmTitle,
+      title: ArchiveStrings.permanentDeleteConfirmTitle,
       headerIcon: const Icon(Icons.delete_forever_rounded, color: AppColors.error),
       maxWidth: 400,
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 4.w),
           child: ReusableText(
-            '${AppStrings.permanentDeleteConfirmMessage}\n\n"${record.entityName}"',
+            '${ArchiveStrings.permanentDeleteConfirmMessage}\n\n"${record.entityName}"',
             style: AppTextStyles.body(context).copyWith(color: AppColors.textSecondaryOf(context)),
           ),
         ),
         SizedBox(height: 24),
         DialogActions(
-          cancelText: 'إلغاء',
-          confirmText: AppStrings.archivePermanentDelete,
+          cancelText: '?????',
+          confirmText: ArchiveStrings.archivePermanentDelete,
           confirmType: ButtonType.error,
           onCancel: () => Navigator.of(context).pop(),
           onConfirm: () {
@@ -338,12 +338,12 @@ class _ArchiveTable extends StatelessWidget {
     final data = record.entityData;
     ReusableDialog.show(
       context,
-      title: AppStrings.editBeforeRestoreTitle,
+      title: ArchiveStrings.editBeforeRestoreTitle,
       headerIcon: const Icon(Icons.edit_rounded, color: AppColors.warning),
       maxWidth: 500,
       children: [
         ReusableText(
-          'بيانات "${record.entityName}" قبل الحذف:',
+          '?????? "${record.entityName}" ??? ?????:',
           style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold, color: AppColors.textPrimaryOf(context)),
         ),
         SizedBox(height: 12),
@@ -354,13 +354,13 @@ class _ArchiveTable extends StatelessWidget {
           )),
         SizedBox(height: 16),
         ReusableText(
-          'سيتم استعادة العنصر ببياناته الأصلية. يمكنك تعديلها بعد الاستعادة من صفحة الإدارة.',
+          '???? ??????? ?????? ???????? ???????. ????? ??????? ??? ????????? ?? ???? ???????.',
           style: AppTextStyles.caption(context).copyWith(color: AppColors.textSecondaryOf(context)),
         ),
         SizedBox(height: 24),
         DialogActions(
-          cancelText: 'إلغاء',
-          confirmText: AppStrings.restore,
+          cancelText: '?????',
+          confirmText: ArchiveStrings.restore,
           confirmType: ButtonType.success,
           onCancel: () => Navigator.of(context).pop(),
           onConfirm: () {
@@ -447,7 +447,7 @@ class _ArchivePagination extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ReusableButton(
-              text: 'السابق',
+              text: '??????',
               prefixIcon: Icons.arrow_back_rounded,
               onPressed: state.hasPreviousPage ? () => context.read<ArchiveBloc>().add(const PreviousArchivePage()) : null,
               type: ButtonType.outlined,
@@ -461,13 +461,13 @@ class _ArchivePagination extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppRadius.md),
               ),
               child: ReusableText(
-                '${AppStrings.showingRecords} ${state.currentPage} ${AppStrings.ofRecords} ${state.totalPages} (${state.totalRecords})',
+                '${ArchiveStrings.showingRecords} ${state.currentPage} ${ArchiveStrings.ofRecords} ${state.totalPages} (${state.totalRecords})',
                 style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.w600),
               ),
             ),
             SizedBox(width: AppSpacing.md),
             ReusableButton(
-              text: 'التالي',
+              text: '??????',
               prefixIcon: Icons.arrow_forward_rounded,
               onPressed: state.hasNextPage ? () => context.read<ArchiveBloc>().add(const NextArchivePage()) : null,
               type: ButtonType.outlined,
@@ -547,15 +547,15 @@ class _StatusBadge extends StatelessWidget {
     IconData icon;
 
     if (record.isPermanentlyDeleted) {
-      text = AppStrings.statusPermanentlyDeleted;
+      text = ArchiveStrings.statusPermanentlyDeleted;
       color = AppColors.error;
       icon = Icons.delete_forever_rounded;
     } else if (record.isRestored) {
-      text = AppStrings.statusRestored;
+      text = ArchiveStrings.statusRestored;
       color = AppColors.success;
       icon = Icons.restore_rounded;
     } else {
-      text = AppStrings.statusActive;
+      text = ArchiveStrings.statusActive;
       color = AppColors.warning;
       icon = Icons.archive_rounded;
     }
@@ -611,5 +611,9 @@ class _DetailRow extends StatelessWidget {
     );
   }
 }
+
+
+
+
 
 

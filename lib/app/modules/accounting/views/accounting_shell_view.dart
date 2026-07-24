@@ -8,8 +8,8 @@ import 'expenses_view.dart';
 import 'journal_view.dart';
 import 'party_payments_view.dart';
 import 'financial_statements_view.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/shareds/home_shell.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/shareds/home_shell.dart';
 
 class AccountingShellView extends StatefulWidget {
   const AccountingShellView({super.key});
@@ -73,3 +73,6 @@ class _AccountingShellViewState extends State<AccountingShellView> {
     );
   }
 }
+
+
+

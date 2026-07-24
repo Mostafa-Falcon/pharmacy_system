@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:pharmacy_system/app/core/domain/models/base/correction_model.dart';
+import 'package:pharmacy_system/app/core/models/base/correction_model.dart';
 
 class ActivityLogState extends Equatable {
   final bool isLoading;
@@ -32,3 +32,5 @@ class ActivityLogState extends Equatable {
   @override
   List<Object?> get props => [isLoading, isRefreshing, entries, error];
 }
+
+

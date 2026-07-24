@@ -1,17 +1,17 @@
-﻿import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/customer_model.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_model.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import 'package:pharmacy_system/app/core/data/services/customer/customer_service.dart';
 import 'package:pharmacy_system/app/core/data/services/supplier/supplier_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
-import 'package:pharmacy_system/app/modules/accounting/models/party_payment_enums.dart';
-import 'package:pharmacy_system/app/modules/accounting/models/party_payment_model.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/core/models/accounting/party_payment_enums.dart';
+import 'package:pharmacy_system/app/core/models/accounting/party_payment_model.dart';
 import '../services/party_payment_service.dart';
 
-// ── أحداث سندات القبض والصرف ──
+// -- ????? ????? ????? ?????? --
 abstract class PartyPaymentsEvent extends Equatable {
   const PartyPaymentsEvent();
   @override
@@ -63,7 +63,7 @@ class DeletePayment extends PartyPaymentsEvent {
   List<Object?> get props => [id];
 }
 
-// ── حالة سندات القبض والصرف ──
+// -- ???? ????? ????? ?????? --
 enum PartyPaymentsStatus { initial, loading, loaded, error }
 
 class PartyPaymentsState extends Equatable {
@@ -111,7 +111,7 @@ class PartyPaymentsState extends Equatable {
   List<Object?> get props => [status, payments, customers, suppliers, isPosting, errorMessage];
 }
 
-// ── Bloc سندات القبض والصرف ──
+// -- Bloc ????? ????? ?????? --
 class PartyPaymentsBloc extends Bloc<PartyPaymentsEvent, PartyPaymentsState> {
   PartyPaymentsBloc() : super(const PartyPaymentsState()) {
     on<LoadPayments>(_onLoadPayments);
@@ -171,7 +171,7 @@ class PartyPaymentsBloc extends Bloc<PartyPaymentsEvent, PartyPaymentsState> {
         createdAt: now,
         updatedAt: now,
       ));
-      AppSnackbar.success('تم تسجيل سند القبض بنجاح');
+      AppSnackbar.success('?? ????? ??? ????? ?????');
       add(const LoadPayments());
     } catch (e) {
       AppSnackbar.error(e.toString());
@@ -204,7 +204,7 @@ class PartyPaymentsBloc extends Bloc<PartyPaymentsEvent, PartyPaymentsState> {
         createdAt: now,
         updatedAt: now,
       ));
-      AppSnackbar.success('تم تسجيل سند الصرف بنجاح');
+      AppSnackbar.success('?? ????? ??? ????? ?????');
       add(const LoadPayments());
     } catch (e) {
       AppSnackbar.error(e.toString());
@@ -219,11 +219,15 @@ class PartyPaymentsBloc extends Bloc<PartyPaymentsEvent, PartyPaymentsState> {
   ) async {
     try {
       await PartyPaymentService.delete(event.id);
-      AppSnackbar.success('تم حذف السند');
+      AppSnackbar.success('?? ??? ?????');
       add(const LoadPayments());
     } catch (e) {
-      AppSnackbar.error('فشل الحذف: $e');
+      AppSnackbar.error('??? ?????: $e');
     }
   }
 }
+
+
+
+
 

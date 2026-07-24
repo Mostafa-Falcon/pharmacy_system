@@ -38,3 +38,5 @@ class SelectMovementMedicine extends ExtraReportsEvent {
   @override
   List<Object?> get props => [medicineId];
 }
+
+

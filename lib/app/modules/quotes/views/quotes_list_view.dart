@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:pharmacy_system/app/modules/sales/models/quote_model.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/models/sales/quote_model.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/utils/format_utils.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../bloc/quotes_bloc.dart';
 import '../bloc/quotes_event.dart';
 import '../bloc/quotes_state.dart';
@@ -26,17 +26,17 @@ class _QuotesBody extends StatelessWidget {
   const _QuotesBody();
 
   static const _statusLabels = {
-    QuoteStatus.draft: AppStrings.quoteStatusDraft,
-    QuoteStatus.sent: AppStrings.quoteStatusSent,
-    QuoteStatus.accepted: AppStrings.quoteStatusAccepted,
-    QuoteStatus.rejected: AppStrings.quoteStatusRejected,
+    QuoteStatus.draft: SalesStrings.statusDraft,
+    QuoteStatus.sent: SalesStrings.statusSent,
+    QuoteStatus.accepted: SalesStrings.statusAccepted,
+    QuoteStatus.rejected: SalesStrings.statusRejected,
   };
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return HomeShell(
-      title: AppStrings.quotesTitle,
+      title: SalesStrings.quotesTitle,
       child: Container(
         color: scheme.surfaceContainerLow.withValues(alpha: 0.3),
         padding: EdgeInsets.all(AppSpacing.xl.w),
@@ -50,10 +50,10 @@ class _QuotesBody extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    ReusableText(state.error ?? AppStrings.errorLoadingQuotes),
+                    ReusableText(state.error ?? SalesStrings.errorLoadingQuotes),
                     SizedBox(height: 16.h),
                     ReusableButton(
-                      text: AppStrings.refresh,
+                      text: GeneralStrings.refresh,
                       onPressed: () => context.read<QuotesBloc>().add(const LoadQuotes()),
                     ),
                   ],
@@ -77,7 +77,7 @@ class _QuotesBody extends StatelessWidget {
     return Row(
       children: [
         ReusableButton(
-          text: AppStrings.createQuoteAction,
+          text: SalesStrings.createQuoteAction,
           prefixIcon: Icons.add_rounded,
           onPressed: () => _showCreateQuoteDialog(context),
         ),
@@ -90,7 +90,7 @@ class _QuotesBody extends StatelessWidget {
     if (state.quotes.isEmpty) {
       return const EmptyState(
         icon: Icons.sell_outlined,
-        title: AppStrings.noPriceQuotes,
+        title: SalesStrings.noPriceQuotes,
       );
     }
     return ListView.separated(
@@ -107,7 +107,7 @@ class _QuotesBody extends StatelessWidget {
         return TransactionCard(
           icon: Icons.sell_outlined,
           iconColor: AppColors.primary,
-          title: AppStrings.quoteNumberTitleFormat.replaceFirst('%s', q.number.toString()).replaceFirst('%s', q.customerName),
+          title: SalesStrings.quoteNumberTitleFormat.replaceFirst('%s', q.number.toString()).replaceFirst('%s', q.customerName),
           tags: [
             Tag(
               label: _statusLabels[q.status] ?? '',
@@ -120,7 +120,7 @@ class _QuotesBody extends StatelessWidget {
             ReusableActionMenuItem(
               value: 'delete',
               icon: Icons.delete_outline_rounded,
-              label: AppStrings.delete,
+              label: GeneralStrings.delete,
               color: AppColors.error,
             ),
           ],
@@ -138,8 +138,8 @@ class _QuotesBody extends StatelessWidget {
     final bloc = context.read<QuotesBloc>();
     ConfirmDeleteDialog.show(
       context,
-      title: AppStrings.deleteQuoteTitle,
-      message: AppStrings.deleteQuoteConfirmFormat.replaceFirst('%s', quote.number.toString()),
+      title: SalesStrings.deleteQuoteTitle,
+      message: SalesStrings.deleteQuoteConfirmFormat.replaceFirst('%s', quote.number.toString()),
       onConfirm: () => bloc.add(DeleteQuote(quote.id)),
     );
   }
@@ -215,6 +215,11 @@ class _CreateQuoteDialogState extends State<_CreateQuoteDialog> {
     );
   }
 }
+
+
+
+
+
 
 
 

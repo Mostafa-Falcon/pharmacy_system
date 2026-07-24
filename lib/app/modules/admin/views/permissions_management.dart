@@ -1,13 +1,13 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/injection.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import 'package:pharmacy_system/app/modules/auth/models/user_model.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/permission_service.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../bloc/employees_bloc.dart';
 
 class PermissionsManagementView extends StatelessWidget {
@@ -32,8 +32,8 @@ class _PermissionsManagementBody extends StatelessWidget {
       child: BlocBuilder<EmployeesBloc, EmployeesState>(
         builder: (context, state) {
           return StandardModuleLayout(
-            title: 'إدارة صلاحيات الوصول',
-            subtitle: 'تحديد وإعطاء صلاحيات العمل للموظفين على أقسام السيستم',
+            title: '????? ??????? ??????',
+            subtitle: '????? ?????? ??????? ????? ???????? ??? ????? ???????',
             content: Column(
               children: [
                 _buildEmployeeSelector(context, state),
@@ -64,7 +64,7 @@ class _PermissionsManagementBody extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary, size: 20.sp),
           SizedBox(width: AppSpacing.sm),
           ReusableText(
-            'اختر موظف الصيدلية:',
+            '???? ???? ????????:',
             style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.bold,
@@ -73,12 +73,12 @@ class _PermissionsManagementBody extends StatelessWidget {
           SizedBox(width: AppSpacing.md),
           Expanded(
             child: ReusableDropdown<String?>(
-              hintText: 'اضغط هنا لاختيار اسم الموظف',
+              hintText: '???? ??? ??????? ??? ??????',
               value: selected?.id,
               items: employees.map((emp) => emp.id).toList(),
               itemAsString: (id) {
                 final target = employeeMap[id];
-                return target?.name ?? 'اسم مجهول';
+                return target?.name ?? '??? ?????';
               },
               onChanged: (id) {
                 if (id != null) {
@@ -108,7 +108,7 @@ class _PermissionsManagementBody extends StatelessWidget {
                 color: AppColors.textMutedOf(context).withValues(alpha: 0.4)),
             SizedBox(height: AppSpacing.sm),
             ReusableText(
-              'برجاء اختيار موظف أولاً لعرض وتعديل صلاحياته',
+              '????? ?????? ???? ????? ???? ?????? ????????',
               style: TextStyle(
                   fontSize: 15.sp,
                   fontWeight: FontWeight.bold,
@@ -133,7 +133,7 @@ class _PermissionsManagementBody extends StatelessWidget {
                 Icon(Icons.shield_rounded, color: scheme.primary, size: 20.sp),
                 SizedBox(width: AppSpacing.xs),
                 ReusableText(
-                  'لوحة صلاحيات: ${selected.name}',
+                  '???? ???????: ${selected.name}',
                   style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
@@ -205,7 +205,7 @@ class _PermissionsManagementBody extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         ReusableButton(
-          text: 'إعطاء الكل',
+          text: '????? ????',
           prefixIcon: Icons.done_all_rounded,
           type: ButtonType.text,
           onPressed: () async {
@@ -217,7 +217,7 @@ class _PermissionsManagementBody extends StatelessWidget {
         ),
         SizedBox(width: AppSpacing.xs.w),
         ReusableButton(
-          text: 'سحب الكل',
+          text: '??? ????',
           prefixIcon: Icons.block_rounded,
           type: ButtonType.text,
           onPressed: () async {
@@ -233,16 +233,19 @@ class _PermissionsManagementBody extends StatelessWidget {
 
   String _getPermissionLabel(String key) {
     const labels = {
-      'dashboard': 'لوحة التحكم العامة', 'pos': 'نقطة البيع (الكاشير)', 'inventory': 'إدارة المخازن',
-      'medicines': 'إضافة وتعديل الأدوية', 'categories': 'تصنيفات الأدوية', 'stock': 'جرد الكميات والمخزون',
-      'customers': 'سجلات العملاء', 'suppliers': 'سجلات الموردين', 'reports': 'التقارير الحسابية',
-      'settings': 'إعدادات النظام العامة', 'admin_panel': 'لوحة الإدارة والملاك', 'employees': 'بيانات الموظفين',
-      'branches': 'إدارة فروع الصيدليات', 'permissions': 'تعديل الصلاحيات والأدوار', 'create_invoice': 'إنشاء وطباعة الفواتير',
-      'cancel_invoice': 'إلغاء وحذف الفواتير', 'refund': 'إجراء مرتجعات المبيعات', 'adjust_stock': 'تعديل وتصفير الكميات بالخطأ',
-      'delete_medicine': 'حذف علبة دواء نهائياً', 'manage_users': 'إدارة صلاحيات الطاقم', 'manage_branches': 'إضافة وحذف الفروع',
-      'view_reports': 'عرض تقارير الأرباح والخسائر', 'export_data': 'تصدير جرد المخزون إكسيل', 'manage_permissions': 'إدارة رتب الموظفين',
+      'dashboard': '???? ?????? ??????', 'pos': '???? ????? (???????)', 'inventory': '????? ???????',
+      'medicines': '????? ?????? ???????', 'categories': '??????? ???????', 'stock': '??? ??????? ????????',
+      'customers': '????? ???????', 'suppliers': '????? ????????', 'reports': '???????? ????????',
+      'settings': '??????? ?????? ??????', 'admin_panel': '???? ??????? ???????', 'employees': '?????? ????????',
+      'branches': '????? ???? ?????????', 'permissions': '????? ????????? ????????', 'create_invoice': '????? ?????? ????????',
+      'cancel_invoice': '????? ???? ????????', 'refund': '????? ??????? ????????', 'adjust_stock': '????? ?????? ??????? ??????',
+      'delete_medicine': '??? ???? ???? ???????', 'manage_users': '????? ??????? ??????', 'manage_branches': '????? ???? ??????',
+      'view_reports': '??? ?????? ??????? ????????', 'export_data': '????? ??? ??????? ?????', 'manage_permissions': '????? ??? ????????',
     };
     return labels[key] ?? key;
   }
 }
+
+
+
 

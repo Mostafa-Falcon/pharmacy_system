@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/format_utils.dart';
 import '../../bloc/pos_bloc.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/modules/sales/models/cashier_shift_model.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/models/sales/cashier_shift_model.dart';
 
 class MobileAppBar extends StatelessWidget implements PreferredSizeWidget {
   final PosBloc controller;
@@ -25,7 +25,7 @@ class MobileAppBar extends StatelessWidget implements PreferredSizeWidget {
         children: [
           IconButton(
             icon: const Icon(Icons.menu_rounded, color: Colors.white),
-            tooltip: AppStrings.quickNavTooltip,
+            tooltip: SalesStrings.quickNavTooltip,
             onPressed: () => Scaffold.of(context).openDrawer(),
           ),
           IconButton(
@@ -101,7 +101,7 @@ class MobileAppBar extends StatelessWidget implements PreferredSizeWidget {
             if (shift == null) return const SizedBox.shrink();
             return IconButton(
               icon: const Icon(Icons.lock_rounded, color: Colors.white70),
-              tooltip: AppStrings.closeShiftTitle,
+              tooltip: SalesStrings.closeShiftTitle,
               onPressed: () => _showCloseShiftDialog(context, shift),
             );
           },
@@ -123,13 +123,13 @@ class MobileAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: Colors.white,
         ),
         headerIconColor: AppColors.warning,
-        title: AppStrings.notificationsCenterTitle,
+        title: NotificationsStrings.notificationsCenterTitle,
         maxWidth: 500,
         children: [
           if (nearExpiry.isEmpty && lowStock.isEmpty)
             const EmptyState(
               icon: Icons.check_circle_outline_rounded,
-              title: AppStrings.noNotificationsCurrent,
+              title: NotificationsStrings.noNotificationsCurrent,
             )
           else
             SizedBox(
@@ -140,7 +140,7 @@ class MobileAppBar extends StatelessWidget implements PreferredSizeWidget {
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 4.h),
                       child: Text(
-                        '${AppStrings.nearExpiryTitle} (${nearExpiry.length})',
+                        '${NotificationsStrings.nearExpiryTitle} (${nearExpiry.length})',
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 11.sp,
@@ -158,7 +158,7 @@ class MobileAppBar extends StatelessWidget implements PreferredSizeWidget {
                         ),
                         title: Text(m.name, style: TextStyle(fontSize: 11.sp)),
                         trailing: Text(
-                          '${m.expiryDate!.difference(DateTime.now()).inDays} ${AppStrings.days}',
+                          '${m.expiryDate!.difference(DateTime.now()).inDays} ${PurchasesStrings.days}',
                           style: TextStyle(
                             fontSize: 10.sp,
                             color: AppColors.warning,
@@ -172,7 +172,7 @@ class MobileAppBar extends StatelessWidget implements PreferredSizeWidget {
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 4.h),
                       child: Text(
-                        '${AppStrings.lowStockTitle} (${lowStock.length})',
+                        '${NotificationsStrings.lowStockTitle} (${lowStock.length})',
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 11.sp,
@@ -219,29 +219,29 @@ class MobileAppBar extends StatelessWidget implements PreferredSizeWidget {
     showDialog(
       context: context,
       builder: (ctx) => ReusableDialog(
-        title: AppStrings.closeShiftTitle,
+        title: SalesStrings.closeShiftTitle,
         children: [
-          ReusableText('${AppStrings.shiftLabel} #${shift.shiftNumber}', style: const TextStyle(fontWeight: FontWeight.bold)),
+          ReusableText('${SalesStrings.shiftLabel} #${shift.shiftNumber}', style: const TextStyle(fontWeight: FontWeight.bold)),
           SizedBox(height: AppSpacing.sm),
-          TotalsRow(label: AppStrings.cashSalesLabel, value: FormatUtils.currency(cashSales)),
+          TotalsRow(label: SalesStrings.cashSalesLabel, value: FormatUtils.currency(cashSales)),
           Divider(height: AppSpacing.md),
-          TotalsRow(label: AppStrings.expectedCashLabel, value: FormatUtils.currency(expectedCash), color: AppColors.primary, bold: true),
+          TotalsRow(label: SalesStrings.expectedCashLabel, value: FormatUtils.currency(expectedCash), color: AppColors.primary, bold: true),
           SizedBox(height: AppSpacing.md),
           ReusableInput(
             controller: cashController,
-            label: AppStrings.actualCashLabel,
+            label: SalesStrings.actualCashLabel,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
           ),
           SizedBox(height: AppSpacing.sm),
           ReusableInput(
             controller: notesController,
-            label: AppStrings.optionalNotesLabel,
+            label: SalesStrings.optionalNotesLabel,
             maxLines: 2,
           ),
           SizedBox(height: 16.h),
           DialogActions(
-            cancelText: AppStrings.cancel,
-            confirmText: AppStrings.closeShiftTitle,
+            cancelText: GeneralStrings.cancel,
+            confirmText: SalesStrings.closeShiftTitle,
             onCancel: () => Navigator.of(ctx).pop(),
             onConfirm: () {
               final countedCash = double.tryParse(cashController.text) ?? 0;
@@ -254,3 +254,8 @@ class MobileAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 }
+
+
+
+
+

@@ -1,16 +1,16 @@
-﻿import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 import 'package:pharmacy_system/app/core/bloc/table_observer_mixin.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
-import 'package:pharmacy_system/app/modules/accounting/models/expense_model.dart';
-import 'package:pharmacy_system/app/modules/accounting/models/journal_entry_model.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:pharmacy_system/app/core/models/accounting/expense_model.dart';
+import 'package:pharmacy_system/app/core/models/accounting/journal_entry_model.dart';
 import '../services/accounting_projection_service.dart';
 import '../services/expense_service.dart';
 import '../services/journal_entry_service.dart';
 
-// ── أحداث المحاسبة ──
+// -- ????? ???????? --
 abstract class AccountingEvent extends Equatable {
   const AccountingEvent();
   @override
@@ -99,7 +99,7 @@ class FilterExpenses extends AccountingEvent {
   List<Object?> get props => [query, fromDate, toDate];
 }
 
-// ── حالة المحاسبة ──
+// -- ???? ???????? --
 enum AccountingStatus { initial, loading, loaded, error }
 
 class AccountingState extends Equatable {
@@ -156,7 +156,7 @@ class AccountingState extends Equatable {
   ];
 }
 
-// ── Bloc المحاسبة ──
+// -- Bloc ???????? --
 class AccountingBloc extends Bloc<AccountingEvent, AccountingState> with TableObserverMixin<AccountingEvent, AccountingState> {
   AccountingBloc() : super(const AccountingState()) {
     on<LoadAccounting>(_onLoadAccounting);
@@ -175,7 +175,7 @@ class AccountingBloc extends Bloc<AccountingEvent, AccountingState> with TableOb
     LoadAccounting event,
     Emitter<AccountingState> emit,
   ) async {
-    // تفعيل المراقبة التفاعلية
+    // ????? ???????? ?????????
     observeTables(
       ['expenses', 'journal_entries', 'sales', 'purchases'],
       () => add(const LoadAccounting()),
@@ -228,10 +228,10 @@ class AccountingBloc extends Bloc<AccountingEvent, AccountingState> with TableOb
         draft: expense,
         actorId: AuthService.currentUser?.id ?? '',
       );
-      AppSnackbar.success('تم تسجيل المصروف بنجاح');
+      AppSnackbar.success('?? ????? ??????? ?????');
       add(const LoadAccounting());
     } catch (e) {
-      AppSnackbar.error('فشل تسجيل المصروف: $e');
+      AppSnackbar.error('??? ????? ???????: $e');
     }
   }
 
@@ -242,7 +242,7 @@ class AccountingBloc extends Bloc<AccountingEvent, AccountingState> with TableOb
     try {
       final existing = await ExpenseService.getById(event.id);
       if (existing == null) {
-        AppSnackbar.error('المصروف غير موجود');
+        AppSnackbar.error('??????? ??? ?????');
         return;
       }
       final updated = ExpenseModel(
@@ -283,10 +283,10 @@ class AccountingBloc extends Bloc<AccountingEvent, AccountingState> with TableOb
         );
         await JournalEntryService.create(updatedJournal);
       }
-      AppSnackbar.success('تم تعديل المصروف بنجاح');
+      AppSnackbar.success('?? ????? ??????? ?????');
       add(const LoadAccounting());
     } catch (e) {
-      AppSnackbar.error('فشل تعديل المصروف: $e');
+      AppSnackbar.error('??? ????? ???????: $e');
     }
   }
 
@@ -296,10 +296,10 @@ class AccountingBloc extends Bloc<AccountingEvent, AccountingState> with TableOb
   ) async {
     try {
       await ExpenseService.deleteExpense(event.id);
-      AppSnackbar.success('تم حذف المصروف والقيد المحاسبي');
+      AppSnackbar.success('?? ??? ??????? ?????? ????????');
       add(const LoadAccounting());
     } catch (e) {
-      AppSnackbar.error('فشل الحذف: $e');
+      AppSnackbar.error('??? ?????: $e');
     }
   }
 
@@ -309,10 +309,10 @@ class AccountingBloc extends Bloc<AccountingEvent, AccountingState> with TableOb
   ) async {
     try {
       await JournalEntryService.delete(event.id);
-      AppSnackbar.success('تم حذف القيد');
+      AppSnackbar.success('?? ??? ?????');
       add(const LoadAccounting());
     } catch (e) {
-      AppSnackbar.error('فشل الحذف: $e');
+      AppSnackbar.error('??? ?????: $e');
     }
   }
 
@@ -370,4 +370,8 @@ class AccountingBloc extends Bloc<AccountingEvent, AccountingState> with TableOb
     emit(state.copyWith(filteredExpenses: filtered));
   }
 }
+
+
+
+
 

@@ -44,3 +44,4 @@ final List<RouteBase> authRoutes = [
     pageBuilder: (context, state) => fadePage(state, const AuthCallbackView()),
   ),
 ];
+

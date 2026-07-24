@@ -1,12 +1,12 @@
-﻿import '../../../../core/bloc/base_state.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/customer_model.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/customer_ledger_model.dart';
+import '../../../../core/bloc/base_state.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_ledger_model.dart';
 
 class CustomersState extends BaseState<List<CustomerModel>> {
   final List<CustomerModel> filteredCustomers;
   final List<CustomerModel> pagedCustomers;
   final CustomerModel? selectedCustomer;
-  final List<CustomerLedgerModel> ledgerEntries;
+  final List<ContactLedgerModel> ledgerEntries;
   final Map<String, double> balances;
   final bool isLoadingLedger;
   final bool isSuccess;
@@ -60,7 +60,7 @@ class CustomersState extends BaseState<List<CustomerModel>> {
     List<CustomerModel>? pagedCustomers,
     CustomerModel? selectedCustomer,
     bool clearSelected = false,
-    List<CustomerLedgerModel>? ledgerEntries,
+    List<ContactLedgerModel>? ledgerEntries,
     Map<String, double>? balances,
     bool? isLoadingLedger,
     bool? isSuccess,
@@ -120,4 +120,8 @@ class CustomersState extends BaseState<List<CustomerModel>> {
         selectedIds,
       ];
 }
+
+
+
+
 

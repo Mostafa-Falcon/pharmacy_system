@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../bloc/accounting_bloc.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/tables/shared_table_cells.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/tables/shared_table_cells.dart';
 import 'package:intl/intl.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/modules/accounting/models/journal_entry_model.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/models/accounting/journal_entry_model.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 
 class AccountsView extends StatelessWidget {
   const AccountsView({super.key});
@@ -39,7 +39,7 @@ class AccountsView extends StatelessWidget {
         title: 'القيمة',
         width: 120.w,
         isNumeric: true,
-        cellBuilder: (j) => TableMoneyCell(amount: j.totalDebit, currency: AppStrings.currency, isHighlight: true),
+        cellBuilder: (j) => TableMoneyCell(amount: j.totalDebit, currency: GeneralStrings.currency, isHighlight: true),
       ),
       ReusableTableColumn<JournalEntryModel>(
         id: 'date',
@@ -138,3 +138,8 @@ class AccountsView extends StatelessWidget {
     _ => type,
   };
 }
+
+
+
+
+

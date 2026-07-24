@@ -10,3 +10,5 @@ Future<QueryExecutor> createDriftExecutor() async {
 
   return result.resolvedExecutor;
 }
+
+

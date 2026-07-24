@@ -1,5 +1,5 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/reusables/feedback/app_snackbar.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/reusables/feedback/app_snackbar.dart';
 import '../services/admin_service.dart';
 import '../services/access_control_service.dart';
 import 'branches_event.dart';
@@ -37,10 +37,10 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
       );
       // Re-use current strings or migrate if needed. 
       // I'll leave snackbars as they are for now or use AppStrings if already migrated.
-      AppSnackbar.success('تم إضافة الفرع بنجاح');
+      AppSnackbar.success('?? ????? ????? ?????');
       add(const LoadBranches());
     } catch (e) {
-      AppSnackbar.error('فشل في إضافة الفرع: $e');
+      AppSnackbar.error('??? ?? ????? ?????: $e');
     }
   }
 
@@ -53,10 +53,10 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
         address: event.address,
         phone: event.phone,
       );
-      AppSnackbar.success('تم تحديث بيانات الفرع');
+      AppSnackbar.success('?? ????? ?????? ?????');
       add(const LoadBranches());
     } catch (e) {
-      AppSnackbar.error('فشل في تحديث الفرع: $e');
+      AppSnackbar.error('??? ?? ????? ?????: $e');
     }
   }
 
@@ -64,10 +64,13 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
     _access.require('branches.write');
     try {
       await _adminService.deleteBranch(event.id);
-      AppSnackbar.success('تم حذف الفرع');
+      AppSnackbar.success('?? ??? ?????');
       add(const LoadBranches());
     } catch (e) {
-      AppSnackbar.error('فشل في حذف الفرع: $e');
+      AppSnackbar.error('??? ?? ??? ?????: $e');
     }
   }
 }
+
+
+

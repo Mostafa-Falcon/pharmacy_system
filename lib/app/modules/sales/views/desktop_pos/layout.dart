@@ -6,14 +6,14 @@ import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 import 'package:collection/collection.dart';
 
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../../core/utils/format_utils.dart';
 import '../../../../routes/app_routes.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/customer_model.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
-import 'package:pharmacy_system/app/modules/sales/models/cashier_shift_model.dart';
+import 'package:pharmacy_system/app/core/models/contacts/customer_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
+import 'package:pharmacy_system/app/core/models/sales/cashier_shift_model.dart';
 import '../../../../core/constants/app_strings.dart';
 
 import '../../bloc/pos_bloc.dart';
@@ -110,8 +110,8 @@ class _DesktopLayoutState extends State<DesktopLayout> {
                                       child: BlocBuilder<CatalogCubit, CatalogState>(
                                         builder: (context, catalogState) {
                                           return MedicineSearchField(
-                                            label: AppStrings.barcodeOrNameSearch,
-                                            hint: AppStrings.startTypingOrScan,
+                                            label: SalesStrings.barcodeOrNameSearch,
+                                            hint: SalesStrings.startTypingOrScan,
                                             customItems: catalogState.medicines,
                                             onSelected: (med) => _onMedicineSelected(context, med),
                                             onChanged: (v) => context.read<CatalogCubit>().updateSearch(v),
@@ -205,21 +205,21 @@ class _DesktopLayoutState extends State<DesktopLayout> {
         children: [
           IconButton(
             icon: Icon(Icons.menu_rounded, color: isDark ? scheme.onSurface : Colors.white, size: 22),
-            tooltip: AppStrings.quickNavTooltip,
+            tooltip: SalesStrings.quickNavTooltip,
             onPressed: () => widget.scaffoldKey.currentState?.openDrawer(),
           ),
           SizedBox(width: 8.w),
           _headerPill(
             context,
             icon: Icons.home_rounded,
-            text: AppStrings.homeAction,
+            text: SalesStrings.homeAction,
             onTap: () => context.go('/home'),
           ),
           SizedBox(width: 12.w),
           _headerPill(
             context,
             icon: state.showProducts ? Icons.visibility_off_rounded : Icons.visibility_rounded,
-            text: state.showProducts ? AppStrings.posHideProducts : AppStrings.posShowProducts,
+            text: state.showProducts ? SalesStrings.posHideProducts : SalesStrings.posShowProducts,
             color: state.showProducts ? AppColors.warning : null,
             onTap: () => bloc.add(const PosToggleCatalog()),
           ),
@@ -236,7 +236,7 @@ class _DesktopLayoutState extends State<DesktopLayout> {
                   _headerPill(
                     context,
                     icon: isOpen ? Icons.lock_open_rounded : Icons.lock_clock_rounded,
-                    text: isOpen ? AppStrings.shiftInfoFormat.replaceFirst('%s', shift.shiftNumber.toString()).replaceFirst('%s', FormatUtils.shiftDuration(shift.openedAt)) : AppStrings.shiftIsClosed,
+                    text: isOpen ? SalesStrings.shiftInfoFormat.replaceFirst('%s', shift.shiftNumber.toString()).replaceFirst('%s', FormatUtils.shiftDuration(shift.openedAt)) : SalesStrings.shiftIsClosed,
                     color: isOpen ? AppColors.success : AppColors.error,
                     onTap: () => context.go(Routes.SALES_CASHIER_SHIFTS),
                   ),
@@ -244,7 +244,7 @@ class _DesktopLayoutState extends State<DesktopLayout> {
                     SizedBox(width: 8.w),
                     IconButton(
                       icon: Icon(Icons.lock_rounded, color: isDark ? scheme.onSurface.withValues(alpha: 0.7) : Colors.white70, size: 18.sp),
-                      tooltip: AppStrings.closeShiftTitle,
+                      tooltip: SalesStrings.closeShiftTitle,
                       onPressed: () => _showCloseShiftDialog(context, shift, state),
                     ),
                   ],
@@ -315,29 +315,29 @@ class _DesktopLayoutState extends State<DesktopLayout> {
     showDialog(
       context: context,
       builder: (ctx) => ReusableDialog(
-        title: AppStrings.closeShiftTitle,
+        title: SalesStrings.closeShiftTitle,
         children: [
-          ReusableText('${AppStrings.sidebarCashierShifts} #${shift.shiftNumber}', style: const TextStyle(fontWeight: FontWeight.bold)),
+          ReusableText('${HomeStrings.sidebarCashierShifts} #${shift.shiftNumber}', style: const TextStyle(fontWeight: FontWeight.bold)),
           SizedBox(height: AppSpacing.sm),
-          TotalsRow(label: AppStrings.cashSalesLabel, value: FormatUtils.currency(cashSales)),
+          TotalsRow(label: SalesStrings.cashSalesLabel, value: FormatUtils.currency(cashSales)),
           Divider(height: AppSpacing.md),
-          TotalsRow(label: AppStrings.expectedCashLabel, value: FormatUtils.currency(expectedCash), color: AppColors.primary, bold: true),
+          TotalsRow(label: SalesStrings.expectedCashLabel, value: FormatUtils.currency(expectedCash), color: AppColors.primary, bold: true),
           SizedBox(height: AppSpacing.md),
           ReusableInput(
             controller: cashController,
-            label: AppStrings.actualCashLabel,
+            label: SalesStrings.actualCashLabel,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
           ),
           SizedBox(height: AppSpacing.sm),
           ReusableInput(
             controller: notesController,
-            label: AppStrings.optionalNotesLabel,
+            label: SalesStrings.optionalNotesLabel,
             maxLines: 2,
           ),
           SizedBox(height: 16.h),
           DialogActions(
-            cancelText: AppStrings.cancel,
-            confirmText: AppStrings.closeShiftTitle,
+            cancelText: GeneralStrings.cancel,
+            confirmText: SalesStrings.closeShiftTitle,
             onCancel: () => Navigator.of(ctx).pop(),
             onConfirm: () {
               final countedCash = double.tryParse(cashController.text) ?? 0;
@@ -352,13 +352,13 @@ class _DesktopLayoutState extends State<DesktopLayout> {
 
   Widget _buildPriceGroupDropdown(BuildContext context, PosState state) {
     return ReusableDropdown<String>(
-      hintText: AppStrings.defaultSellPriceGroup,
+      hintText: SalesStrings.defaultSellPriceGroup,
       value: state.selectedPriceGroup,
       items: const ['default', 'wholesale', 'semi_wholesale'],
       itemAsString: (v) => switch (v) {
-        'default' => AppStrings.regularPriceLabel,
-        'wholesale' => AppStrings.wholesalePriceLabel,
-        'semi_wholesale' => AppStrings.semiWholesalePriceLabel,
+        'default' => SalesStrings.regularPriceLabel,
+        'wholesale' => SalesStrings.wholesalePriceLabel,
+        'semi_wholesale' => SalesStrings.semiWholesalePriceLabel,
         _ => '',
       },
       onChanged: (v) {
@@ -380,16 +380,16 @@ class _DesktopLayoutState extends State<DesktopLayout> {
       mainAxisSize: MainAxisSize.min,
       children: [
         ReusableDropdown<CustomerModel?>(
-          hintText: AppStrings.fastCashCustomer,
+          hintText: SalesStrings.fastCashCustomer,
           value: selectedCustomer,
           items: [null, ...customers],
           itemAsString: (c) {
-            if (c == null) return AppStrings.fastCashCustomer;
-            final name = c.name.trim().isEmpty ? AppStrings.unnamedCustomer : c.name;
+            if (c == null) return SalesStrings.fastCashCustomer;
+            final name = c.name.trim().isEmpty ? SalesStrings.unnamedCustomer : c.name;
             final phone = c.phone?.isNotEmpty == true ? ' - ${c.phone}' : '';
             final isJoint = state.suppliers.any((s) => s.id == c.id);
-            final type = isJoint ? AppStrings.jointSupplierCustomer : (c.kind == CustomerKind.regular ? '(${AppStrings.cartPaymentCredit})' : '(${AppStrings.enumCustomerCash})');
-            final limit = c.creditLimit > 0 ? AppStrings.creditLimitFormat.replaceFirst('%s', c.creditLimit.toStringAsFixed(0)) : '';
+            final type = isJoint ? SalesStrings.jointSupplierCustomer : (c.kind == CustomerKind.regular ? '(${SalesStrings.cartPaymentCredit})' : '(${GeneralStrings.enumCustomerCash})');
+            final limit = c.creditLimit > 0 ? SalesStrings.creditLimitFormat.replaceFirst('%s', c.creditLimit.toStringAsFixed(0)) : '';
             return '$name$phone $type$limit';
           },
           onChanged: (v) {
@@ -426,7 +426,7 @@ class _DesktopLayoutState extends State<DesktopLayout> {
               Icon(Icons.account_balance_wallet_rounded, size: 12.sp, color: AppColors.error),
               SizedBox(width: 4.w),
               ReusableText(
-                AppStrings.balanceFormat.replaceFirst('%s', FormatUtils.currency(state.customerBalance)),
+                SalesStrings.balanceFormat.replaceFirst('%s', FormatUtils.currency(state.customerBalance)),
                 style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold, color: AppColors.error),
               ),
             ],
@@ -436,3 +436,8 @@ class _DesktopLayoutState extends State<DesktopLayout> {
     );
   }
 }
+
+
+
+
+

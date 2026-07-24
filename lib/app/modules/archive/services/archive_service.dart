@@ -1,21 +1,21 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:pharmacy_system/app/core/data/database/database.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/archive_records_dao.dart';
-import 'package:pharmacy_system/app/core/data/database/daos/medicines_dao.dart';
+import 'package:pharmacy_system/app/core/data/database/daos/inventory_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/customers_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/suppliers_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/supplier_customers_dao.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/customer_groups_dao.dart';
 import '../../../core/injection.dart';
 import 'package:pharmacy_system/app/modules/archive/models/archive_record_model.dart';
-import 'package:pharmacy_system/app/core/data/services/sync/sync_service.dart';
+import 'package:pharmacy_system/app/core/sync/sync_service.dart';
 import 'package:pharmacy_system/app/core/data/services/auth/auth_service.dart';
 import '../../../core/utils/app_utils.dart';
 
 class ArchiveService {
   static ArchiveRecordsDao get _dao => sl<ArchiveRecordsDao>();
-  static MedicinesDao get _medicinesDao => sl<MedicinesDao>();
+  static InventoryDao get _InventoryDao => sl<InventoryDao>();
   static CustomersDao get _customersDao => sl<CustomersDao>();
   static SuppliersDao get _suppliersDao => sl<SuppliersDao>();
   static SupplierCustomersDao get _supplierCustomersDao => sl<SupplierCustomersDao>();
@@ -195,7 +195,7 @@ class ArchiveService {
       switch (record.entityType) {
         case 'medicine':
           targetTable = 'medicines';
-          await _medicinesDao.restore(record.entityId);
+          await _InventoryDao.restore(record.entityId);
           break;
         case 'customer':
           targetTable = 'customers';
@@ -277,7 +277,7 @@ class ArchiveService {
       switch (record.entityType) {
         case 'medicine':
           targetTable = 'medicines';
-          await _medicinesDao.hardDelete(record.entityId);
+          await _InventoryDao.hardDelete(record.entityId);
           break;
         case 'customer':
           targetTable = 'customers';
@@ -338,7 +338,7 @@ class ArchiveService {
     }
   }
 
-  // ─── Converters ───
+  // --- Converters ---
 
   static ArchiveRecordModel _toModel(ArchiveRecord d) {
     return ArchiveRecordModel(
@@ -389,4 +389,8 @@ class ArchiveService {
     return '${now.microsecondsSinceEpoch}_${now.millisecondsSinceEpoch}';
   }
 }
+
+
+
+
 

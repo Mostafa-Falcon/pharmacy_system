@@ -1,10 +1,10 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import '../bloc/bulk_price/bulk_price_update_bloc.dart';
 
 class BulkPriceUpdateView extends StatefulWidget {
@@ -41,8 +41,8 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
       },
       builder: (context, state) {
         return StandardModuleLayout(
-          title: AppStrings.bulkPriceUpdateTitle,
-          subtitle: AppStrings.bulkPriceUpdateDesc,
+          title: InventoryStrings.bulkPriceUpdateTitle,
+          subtitle: InventoryStrings.bulkPriceUpdateDesc,
           content: SingleChildScrollView(
             padding: EdgeInsets.all(AppSpacing.xl.w),
             child: Center(
@@ -52,7 +52,7 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
                   children: [
                     // Card 1: Scope Selection (Apply To)
                     _buildStepCard(
-                      title: 'تطبيق على (النطاق)',
+                      title: '????? ??? (??????)',
                       icon: Icons.filter_list_rounded,
                       child: _buildCategorySection(state),
                     ),
@@ -60,7 +60,7 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
 
                     // Card 2: Parameters (Field & Operation)
                     _buildStepCard(
-                      title: 'البيانات المطلوبة ونوع العملية',
+                      title: '???????? ???????? ???? ???????',
                       icon: Icons.settings_suggest_rounded,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,7 +75,7 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
 
                     // Card 3: Execution (Value & Apply)
                     _buildStepCard(
-                      title: 'تحديد القيمة والتنفيذ',
+                      title: '????? ?????? ????????',
                       icon: Icons.bolt_rounded,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,7 +121,7 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         _segmentButton(
-          label: AppStrings.bulkPriceUpdateAllItems,
+          label: InventoryStrings.bulkPriceUpdateAllItems,
           isSelected: state.selectedCategory == null,
           onTap: () => context.read<BulkPriceUpdateBloc>().add(BulkPriceUpdateApply(
             field: state.selectedField,
@@ -130,13 +130,13 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
           )),
         ),
         if (state.categories.isNotEmpty) ...[
-          ReusableText('أو اختر تصنيف:', style: AppTextStyles.caption(context)),
+          ReusableText('?? ???? ?????:', style: AppTextStyles.caption(context)),
           SizedBox(
             width: 250.w,
             child: ReusableDropdown<String>(
               items: state.categories,
               value: state.selectedCategory,
-              hintText: AppStrings.bulkPriceUpdateCategoryHint,
+              hintText: InventoryStrings.bulkPriceUpdateCategoryHint,
               itemAsString: (s) => s,
               onChanged: (v) {
                 if (v != null) {
@@ -159,23 +159,23 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ReusableText('الحقل المطلوب تعديله:', style: AppTextStyles.bodyBold(context)),
+        ReusableText('????? ??????? ??????:', style: AppTextStyles.bodyBold(context)),
         SizedBox(height: 12.h),
         Wrap(
           spacing: 10.w,
           children: [
             _segmentButton(
-              label: AppStrings.bulkPriceUpdateFieldSellPrice,
+              label: InventoryStrings.bulkPriceUpdateFieldSellPrice,
               isSelected: state.selectedField == 'sellPrice',
               onTap: () => _updateApply(state, field: 'sellPrice'),
             ),
             _segmentButton(
-              label: AppStrings.bulkPriceUpdateFieldBuyPrice,
+              label: InventoryStrings.bulkPriceUpdateFieldBuyPrice,
               isSelected: state.selectedField == 'buyPrice',
               onTap: () => _updateApply(state, field: 'buyPrice'),
             ),
             _segmentButton(
-              label: AppStrings.bulkPriceUpdateFieldBoth,
+              label: InventoryStrings.bulkPriceUpdateFieldBoth,
               isSelected: state.selectedField == 'both',
               onTap: () => _updateApply(state, field: 'both'),
             ),
@@ -189,17 +189,17 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ReusableText('نوع العملية الحسابية:', style: AppTextStyles.bodyBold(context)),
+        ReusableText('??? ??????? ????????:', style: AppTextStyles.bodyBold(context)),
         SizedBox(height: 12.h),
         Wrap(
           spacing: 10.w,
           runSpacing: 10.h,
           children: [
-            _segmentButton(label: AppStrings.bulkPriceUpdateOpSet, isSelected: state.selectedOperation == 'set', onTap: () => _updateApply(state, op: 'set')),
-            _segmentButton(label: AppStrings.bulkPriceUpdateOpIncrease, isSelected: state.selectedOperation == 'increase', onTap: () => _updateApply(state, op: 'increase')),
-            _segmentButton(label: AppStrings.bulkPriceUpdateOpDecrease, isSelected: state.selectedOperation == 'decrease', onTap: () => _updateApply(state, op: 'decrease')),
-            _segmentButton(label: AppStrings.bulkPriceUpdateOpIncreasePercent, isSelected: state.selectedOperation == 'increasePercent', onTap: () => _updateApply(state, op: 'increasePercent')),
-            _segmentButton(label: AppStrings.bulkPriceUpdateOpDecreasePercent, isSelected: state.selectedOperation == 'decreasePercent', onTap: () => _updateApply(state, op: 'decreasePercent')),
+            _segmentButton(label: InventoryStrings.bulkPriceUpdateOpSet, isSelected: state.selectedOperation == 'set', onTap: () => _updateApply(state, op: 'set')),
+            _segmentButton(label: InventoryStrings.bulkPriceUpdateOpIncrease, isSelected: state.selectedOperation == 'increase', onTap: () => _updateApply(state, op: 'increase')),
+            _segmentButton(label: InventoryStrings.bulkPriceUpdateOpDecrease, isSelected: state.selectedOperation == 'decrease', onTap: () => _updateApply(state, op: 'decrease')),
+            _segmentButton(label: InventoryStrings.bulkPriceUpdateOpIncreasePercent, isSelected: state.selectedOperation == 'increasePercent', onTap: () => _updateApply(state, op: 'increasePercent')),
+            _segmentButton(label: InventoryStrings.bulkPriceUpdateOpDecreasePercent, isSelected: state.selectedOperation == 'decreasePercent', onTap: () => _updateApply(state, op: 'decreasePercent')),
           ],
         ),
       ],
@@ -222,8 +222,8 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
       children: [
         Expanded(
           child: ReusableInput(
-            label: isPercent ? AppStrings.bulkPriceUpdatePercentage : AppStrings.bulkPriceUpdateValue,
-            hint: isPercent ? 'مثال: 10' : '0.00',
+            label: isPercent ? InventoryStrings.bulkPriceUpdatePercentage : InventoryStrings.bulkPriceUpdateValue,
+            hint: isPercent ? '????: 10' : '0.00',
             controller: _valueController,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             prefixIcon: Icon(isPercent ? Icons.percent_rounded : Icons.payments_rounded, size: 20),
@@ -238,7 +238,7 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
               color: AppColors.info.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppRadius.md.r),
             ),
-            child: ReusableText('سيتم احتساب النسبة من السعر الحالي', style: AppTextStyles.caption(context).copyWith(color: AppColors.info)),
+            child: ReusableText('???? ?????? ?????? ?? ????? ??????', style: AppTextStyles.caption(context).copyWith(color: AppColors.info)),
           ),
         ],
       ],
@@ -259,7 +259,7 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
           SizedBox(width: 12.w),
           Expanded(
             child: ReusableText(
-              'سيتم تعديل أسعار ${state.affectedCount} صنف بناءً على اختياراتك الحالية.',
+              '???? ????? ????? ${state.affectedCount} ??? ????? ??? ????????? ???????.',
               style: AppTextStyles.body(context).copyWith(fontWeight: FontWeight.bold),
             ),
           ),
@@ -273,7 +273,7 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
       children: [
         Expanded(
           child: ReusableButton(
-            text: AppStrings.bulkPriceUpdateApply,
+            text: InventoryStrings.bulkPriceUpdateApply,
             prefixIcon: Icons.check_circle_rounded,
             size: ButtonSize.large,
             isLoading: state.isLoading,
@@ -283,7 +283,7 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
         ),
         SizedBox(width: 16.w),
         ReusableButton(
-          text: 'إعادة تعيين',
+          text: '????? ?????',
           type: ButtonType.outlined,
           onPressed: () {
             _valueController.clear();
@@ -297,14 +297,14 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
   void _confirmApply(BuildContext context, BulkPriceUpdateState state) {
     ReusableDialog.show(
       context,
-      title: 'تأكيد التعديل الجماعي',
+      title: '????? ??????? ???????',
       headerIcon: const Icon(Icons.warning_amber_rounded, color: AppColors.warning),
       children: [
-        ReusableText('هل أنت متأكد من رغبتك في تعديل أسعار ${state.affectedCount} صنف؟'),
-        ReusableText('هذه العملية ستؤثر على كافة الفروع وستقوم بتحديث السحابة تلقائياً.', style: AppTextStyles.caption(context).copyWith(color: AppColors.error)),
+        ReusableText('?? ??? ????? ?? ????? ?? ????? ????? ${state.affectedCount} ????'),
+        ReusableText('??? ??????? ????? ??? ???? ?????? ?????? ?????? ??????? ????????.', style: AppTextStyles.caption(context).copyWith(color: AppColors.error)),
         SizedBox(height: 24.h),
         DialogActions(
-          confirmText: 'نعم، قم بالتعديل الآن',
+          confirmText: '???? ?? ???????? ????',
           confirmType: ButtonType.primary,
           onConfirm: () {
             Navigator.pop(context);
@@ -339,3 +339,7 @@ class _BulkPriceUpdateViewState extends State<BulkPriceUpdateView> {
     );
   }
 }
+
+
+
+

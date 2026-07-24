@@ -4,17 +4,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
-import 'package:pharmacy_system/app/modules/sales/models/return_model.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
+import 'package:pharmacy_system/app/core/models/sales/return_model.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
 import '../../../core/utils/format_utils.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/injection.dart';
 import 'package:pharmacy_system/app/core/data/services/admin/branch_data_service.dart';
 import '../bloc/purchase_return_bloc.dart';
 import '../bloc/purchase_return_event.dart';
 import '../bloc/purchase_return_state.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
 import 'add_purchase_return_view.dart';
 
 class PurchaseReturnListView extends StatefulWidget {
@@ -156,7 +156,7 @@ class _PurchaseReturnListViewState extends State<PurchaseReturnListView> with Si
         ),
         const Spacer(),
         ReusableButton(
-          text: AppStrings.back,
+          text: GeneralStrings.back,
           type: ButtonType.outlined,
           prefixIcon: Icons.arrow_back_rounded,
           onPressed: () => context.pop(),
@@ -196,13 +196,13 @@ class _PurchaseReturnListViewState extends State<PurchaseReturnListView> with Si
           Row(
             children: [
               FilterDropdown.string(
-                label: AppStrings.supplierLabel,
+                label: InventoryStrings.supplierLabel,
                 items: const ['الكل'],
                 onChanged: (v) {},
               ),
               SizedBox(width: AppSpacing.md.w),
               FilterDropdown.string(
-                label: AppStrings.reasonLabel,
+                label: PurchasesStrings.reasonLabel,
                 items: const ['الكل', 'منتهي الصلاحية', 'تالف', 'خطأ في الصنف'],
                 onChanged: (v) {},
               ),
@@ -237,7 +237,7 @@ class _PurchaseReturnListViewState extends State<PurchaseReturnListView> with Si
       ),
       ReusableTableColumn<ReturnModel>(
         id: 'date',
-        title: AppStrings.date,
+        title: GeneralStrings.date,
         width: 160.w,
         isSortable: true,
         textBuilder: (r) => DateFormat('yyyy/MM/dd HH:mm').format(r.createdAt),
@@ -269,14 +269,14 @@ class _PurchaseReturnListViewState extends State<PurchaseReturnListView> with Si
       ),
       ReusableTableColumn<ReturnModel>(
         id: 'reason',
-        title: AppStrings.reasonLabel,
+        title: PurchasesStrings.reasonLabel,
         width: 130.w,
         cellBuilder: (r) {
           final label = switch (r.reason) {
-            ReturnReason.expired => AppStrings.reasonExpired,
-            ReturnReason.damaged => AppStrings.reasonDamaged,
-            ReturnReason.wrongItem => AppStrings.reasonWrongItem,
-            _ => AppStrings.reasonOther,
+            ReturnReason.expired => PurchasesStrings.reasonExpired,
+            ReturnReason.damaged => PurchasesStrings.reasonDamaged,
+            ReturnReason.wrongItem => PurchasesStrings.reasonWrongItem,
+            _ => PurchasesStrings.reasonOther,
           };
           return StatusBadge(label: label, color: AppColors.warning);
         },
@@ -290,14 +290,14 @@ class _PurchaseReturnListViewState extends State<PurchaseReturnListView> with Si
       ),
       ReusableTableColumn<ReturnModel>(
         id: 'qty',
-        title: AppStrings.quantity,
+        title: SalesStrings.quantityLabel,
         width: 80.w,
         isNumeric: true,
         textBuilder: (r) => '${r.items.length}.00',
       ),
       ReusableTableColumn<ReturnModel>(
         id: 'added_by',
-        title: AppStrings.addedBy,
+        title: SalesStrings.addedBy,
         width: 120.w,
         textBuilder: (r) => 'المسؤول',
       ),
@@ -356,7 +356,7 @@ class _PurchaseReturnListViewState extends State<PurchaseReturnListView> with Si
           SizedBox(
             width: 250.w,
             child: ReusableInput(
-              hint: AppStrings.search,
+              hint: GeneralStrings.search,
               prefixIcon: const Icon(Icons.search),
               onChanged: (v) {},
             ),
@@ -383,3 +383,8 @@ class _PurchaseReturnListViewState extends State<PurchaseReturnListView> with Si
     );
   }
 }
+
+
+
+
+

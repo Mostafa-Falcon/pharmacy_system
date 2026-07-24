@@ -1,5 +1,5 @@
-﻿import 'package:equatable/equatable.dart';
-import 'package:pharmacy_system/app/core/presentation/widgets/shareds/sidebar.dart';
+import 'package:equatable/equatable.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/shareds/sidebar.dart';
 import 'package:pharmacy_system/app/modules/auth/models/user_model.dart';
 
 enum ShellStatus { initial, loading, loaded, error }
@@ -60,4 +60,7 @@ class ShellState extends Equatable {
     error,
   ];
 }
+
+
+
 

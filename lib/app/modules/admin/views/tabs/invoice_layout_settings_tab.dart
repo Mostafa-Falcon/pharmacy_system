@@ -33,7 +33,7 @@ class _InvoiceLayoutSettingsTabState extends State<InvoiceLayoutSettingsTab> {
       description: AdminStrings.invoiceLayoutDescription,
       children: [
         SettingsFieldBuilders.buildToggle(
-          AppStrings.adminAutoPrint,
+          AdminStrings.adminAutoPrint,
           _autoPrint,
           (v) {
             setState(() => _autoPrint = v);
@@ -121,3 +121,6 @@ class _InvoiceLayoutSettingsTabState extends State<InvoiceLayoutSettingsTab> {
     );
   }
 }
+
+
+

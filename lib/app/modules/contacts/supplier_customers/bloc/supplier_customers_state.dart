@@ -1,5 +1,5 @@
-﻿import 'package:equatable/equatable.dart';
-import 'package:pharmacy_system/app/modules/contacts/models/supplier_customer_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:pharmacy_system/app/core/models/contacts/supplier_customer_model.dart';
 
 enum SupplierCustomersStatus { initial, loading, loaded, error }
 
@@ -70,15 +70,15 @@ class SupplierCustomersState extends Equatable {
 
   String getFilterLabel(String filter) {
     switch (filter) {
-      case 'all': return 'الكل';
-      case 'active': return 'نشط';
-      case 'inactive': return 'غير نشط';
-      case 'credit_customer': return 'عميل آجل';
-      case 'cash_customer': return 'عميل نقدي';
-      case 'individual': return 'فرد';
-      case 'company': return 'شركة';
-      case 'with_balance': return 'لديه رصيد';
-      case 'no_balance': return 'بدون رصيد';
+      case 'all': return '????';
+      case 'active': return '???';
+      case 'inactive': return '??? ???';
+      case 'credit_customer': return '???? ???';
+      case 'cash_customer': return '???? ????';
+      case 'individual': return '???';
+      case 'company': return '????';
+      case 'with_balance': return '???? ????';
+      case 'no_balance': return '???? ????';
       default: return filter;
     }
   }
@@ -101,4 +101,7 @@ class SupplierCustomersState extends Equatable {
   @override
   List<Object?> get props => [status, error, allSuppliers, filteredSuppliers, searchQuery, selectedFilter, currentBalances, selectedParty, combinedLedger, isLoadingLedger, isSuccess, transactionSummary];
 }
+
+
+
 

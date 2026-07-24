@@ -2,15 +2,15 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pharmacy_system/app/core/constants/app_strings.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_search_extension.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_search_extension.dart';
 
-import 'package:pharmacy_system/app/core/presentation/widgets/index.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/medicine_model.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_colors.dart';
-import 'package:pharmacy_system/app/core/presentation/theme/app_sizes.dart';
+import 'package:pharmacy_system/app/shared/presentation/widgets/index.dart';
+import 'package:pharmacy_system/app/core/models/inventory/medicine_model.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_colors.dart';
+import 'package:pharmacy_system/app/core/constants/ui/app_sizes.dart';
 import '../bloc/medicines_bloc.dart';
 
-/// واجهة صحة المخزون والتنبيهات — تصميم فاخر بدون مساحات ميتة (World-Class Inventory Health Dashboard)
+/// ????? ??? ??????? ?????????? — ????? ???? ???? ?????? ???? (World-Class Inventory Health Dashboard)
 class InventoryHealthView extends StatelessWidget {
   const InventoryHealthView({super.key});
 
@@ -80,7 +80,7 @@ class _InventoryHealthViewState extends State<_InventoryHealthBody> {
     final scheme = Theme.of(context).colorScheme;
 
     return HomeShell(
-      title: AppStrings.inventoryHealthTitle,
+      title: InventoryStrings.inventoryHealthTitle,
       child: Container(
         color: scheme.surfaceContainerLow.withValues(alpha: 0.15),
         padding: EdgeInsets.all(20.w),
@@ -96,11 +96,11 @@ class _InventoryHealthViewState extends State<_InventoryHealthBody> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // 1. كروت الملخصات 100% Full-Width Responsive Row
+                    // 1. ???? ???????? 100% Full-Width Responsive Row
                     _buildSummaryCards(medicines, constraints.maxWidth),
                     SizedBox(height: 16.h),
 
-                    // 2. المحتوى الرئيسي متكافئ التوزيع (Sidebar + Data Panel)
+                    // 2. ??????? ??????? ?????? ??????? (Sidebar + Data Panel)
                     Expanded(
                       child: isLoading
                           ? const Center(child: LoadingIndicator())
@@ -117,11 +117,11 @@ class _InventoryHealthViewState extends State<_InventoryHealthBody> {
                               : Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // القائمة الجانبية الأنيقة بالتنبيهات والشارات
+                                    // ??????? ???????? ??????? ?????????? ????????
                                     _buildSidebarRail(scheme, medicines),
                                     SizedBox(width: 16.w),
 
-                                    // اللوحة الرئيسية لعرض الأدوية والبحث البصري
+                                    // ?????? ???????? ???? ??????? ?????? ??????
                                     Expanded(
                                       child: _buildItemsContentSection(scheme, medicines),
                                     ),
@@ -151,15 +151,15 @@ class _InventoryHealthViewState extends State<_InventoryHealthBody> {
         if (isWide) {
           return Row(
             children: [
-              Expanded(child: _HealthCard(title: AppStrings.expiredItems, count: expiredCount, color: AppColors.error, icon: Icons.event_busy_rounded, isSelected: _selectedSectionIndex == 0, onTap: () => setState(() => _selectedSectionIndex = 0))),
+              Expanded(child: _HealthCard(title: InventoryStrings.expiredItems, count: expiredCount, color: AppColors.error, icon: Icons.event_busy_rounded, isSelected: _selectedSectionIndex == 0, onTap: () => setState(() => _selectedSectionIndex = 0))),
               SizedBox(width: 10.w),
-              Expanded(child: _HealthCard(title: AppStrings.expires30Days, count: exp30Count, color: AppColors.error, icon: Icons.schedule_rounded, isSelected: _selectedSectionIndex == 1, onTap: () => setState(() => _selectedSectionIndex = 1))),
+              Expanded(child: _HealthCard(title: InventoryStrings.expires30Days, count: exp30Count, color: AppColors.error, icon: Icons.schedule_rounded, isSelected: _selectedSectionIndex == 1, onTap: () => setState(() => _selectedSectionIndex = 1))),
               SizedBox(width: 10.w),
-              Expanded(child: _HealthCard(title: AppStrings.expires90Days, count: exp90Count, color: AppColors.warning, icon: Icons.warning_amber_rounded, isSelected: _selectedSectionIndex == 2, onTap: () => setState(() => _selectedSectionIndex = 2))),
+              Expanded(child: _HealthCard(title: InventoryStrings.expires90Days, count: exp90Count, color: AppColors.warning, icon: Icons.warning_amber_rounded, isSelected: _selectedSectionIndex == 2, onTap: () => setState(() => _selectedSectionIndex = 2))),
               SizedBox(width: 10.w),
-              Expanded(child: _HealthCard(title: AppStrings.lowStockItems, count: lowStockCount, color: AppColors.warning, icon: Icons.trending_down_rounded, isSelected: _selectedSectionIndex == 3, onTap: () => setState(() => _selectedSectionIndex = 3))),
+              Expanded(child: _HealthCard(title: InventoryStrings.lowStockItems, count: lowStockCount, color: AppColors.warning, icon: Icons.trending_down_rounded, isSelected: _selectedSectionIndex == 3, onTap: () => setState(() => _selectedSectionIndex = 3))),
               SizedBox(width: 10.w),
-              Expanded(child: _HealthCard(title: AppStrings.outOfStockItems, count: outOfStockCount, color: AppColors.error, icon: Icons.remove_shopping_cart_rounded, isSelected: _selectedSectionIndex == 4, onTap: () => setState(() => _selectedSectionIndex = 4))),
+              Expanded(child: _HealthCard(title: InventoryStrings.outOfStockItems, count: outOfStockCount, color: AppColors.error, icon: Icons.remove_shopping_cart_rounded, isSelected: _selectedSectionIndex == 4, onTap: () => setState(() => _selectedSectionIndex = 4))),
             ],
           );
         }
@@ -168,9 +168,9 @@ class _InventoryHealthViewState extends State<_InventoryHealthBody> {
           spacing: 10.w,
           runSpacing: 10.h,
           children: [
-            SizedBox(width: (constraints.maxWidth - 20.w) / 3, child: _HealthCard(title: AppStrings.expiredItems, count: expiredCount, color: AppColors.error, icon: Icons.event_busy_rounded, isSelected: _selectedSectionIndex == 0, onTap: () => setState(() => _selectedSectionIndex = 0))),
-            SizedBox(width: (constraints.maxWidth - 20.w) / 3, child: _HealthCard(title: AppStrings.expires30Days, count: exp30Count, color: AppColors.error, icon: Icons.schedule_rounded, isSelected: _selectedSectionIndex == 1, onTap: () => setState(() => _selectedSectionIndex = 1))),
-            SizedBox(width: (constraints.maxWidth - 20.w) / 3, child: _HealthCard(title: AppStrings.expires90Days, count: exp90Count, color: AppColors.warning, icon: Icons.warning_amber_rounded, isSelected: _selectedSectionIndex == 2, onTap: () => setState(() => _selectedSectionIndex = 2))),
+            SizedBox(width: (constraints.maxWidth - 20.w) / 3, child: _HealthCard(title: InventoryStrings.expiredItems, count: expiredCount, color: AppColors.error, icon: Icons.event_busy_rounded, isSelected: _selectedSectionIndex == 0, onTap: () => setState(() => _selectedSectionIndex = 0))),
+            SizedBox(width: (constraints.maxWidth - 20.w) / 3, child: _HealthCard(title: InventoryStrings.expires30Days, count: exp30Count, color: AppColors.error, icon: Icons.schedule_rounded, isSelected: _selectedSectionIndex == 1, onTap: () => setState(() => _selectedSectionIndex = 1))),
+            SizedBox(width: (constraints.maxWidth - 20.w) / 3, child: _HealthCard(title: InventoryStrings.expires90Days, count: exp90Count, color: AppColors.warning, icon: Icons.warning_amber_rounded, isSelected: _selectedSectionIndex == 2, onTap: () => setState(() => _selectedSectionIndex = 2))),
           ],
         );
       },
@@ -182,15 +182,15 @@ class _InventoryHealthViewState extends State<_InventoryHealthBody> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _buildCategoryChip(0, AppStrings.expiredItemsDetailed, Icons.event_busy_rounded, AppColors.error, medicines),
+          _buildCategoryChip(0, InventoryStrings.expiredItemsDetailed, Icons.event_busy_rounded, AppColors.error, medicines),
           SizedBox(width: 8.w),
-          _buildCategoryChip(1, AppStrings.expires30DaysDetailed, Icons.schedule_rounded, AppColors.error, medicines),
+          _buildCategoryChip(1, InventoryStrings.expires30DaysDetailed, Icons.schedule_rounded, AppColors.error, medicines),
           SizedBox(width: 8.w),
-          _buildCategoryChip(2, AppStrings.expires90DaysDetailed, Icons.warning_amber_rounded, AppColors.warning, medicines),
+          _buildCategoryChip(2, InventoryStrings.expires90DaysDetailed, Icons.warning_amber_rounded, AppColors.warning, medicines),
           SizedBox(width: 8.w),
-          _buildCategoryChip(3, AppStrings.lowStockItemsDetailed, Icons.trending_down_rounded, AppColors.warning, medicines),
+          _buildCategoryChip(3, InventoryStrings.lowStockItemsDetailed, Icons.trending_down_rounded, AppColors.warning, medicines),
           SizedBox(width: 8.w),
-          _buildCategoryChip(4, AppStrings.outOfStockItemsDetailed, Icons.remove_shopping_cart_rounded, AppColors.error, medicines),
+          _buildCategoryChip(4, InventoryStrings.outOfStockItemsDetailed, Icons.remove_shopping_cart_rounded, AppColors.error, medicines),
         ],
       ),
     );
@@ -252,16 +252,16 @@ class _InventoryHealthViewState extends State<_InventoryHealthBody> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
             child: ReusableText(
-              'أقسام المراقبة والتنبيهات',
+              '????? ???????? ??????????',
               style: AppTextStyles.caption(context).copyWith(fontWeight: FontWeight.bold, color: scheme.onSurfaceVariant),
             ),
           ),
           Divider(height: 12.h, color: scheme.outlineVariant.withValues(alpha: 0.2)),
-          _buildRailItem(0, AppStrings.expiredItemsDetailed, Icons.event_busy_rounded, AppColors.error, medicines),
-          _buildRailItem(1, AppStrings.expires30DaysDetailed, Icons.schedule_rounded, AppColors.error, medicines),
-          _buildRailItem(2, AppStrings.expires90DaysDetailed, Icons.warning_amber_rounded, AppColors.warning, medicines),
-          _buildRailItem(3, AppStrings.lowStockItemsDetailed, Icons.trending_down_rounded, AppColors.warning, medicines),
-          _buildRailItem(4, AppStrings.outOfStockItemsDetailed, Icons.remove_shopping_cart_rounded, AppColors.error, medicines),
+          _buildRailItem(0, InventoryStrings.expiredItemsDetailed, Icons.event_busy_rounded, AppColors.error, medicines),
+          _buildRailItem(1, InventoryStrings.expires30DaysDetailed, Icons.schedule_rounded, AppColors.error, medicines),
+          _buildRailItem(2, InventoryStrings.expires90DaysDetailed, Icons.warning_amber_rounded, AppColors.warning, medicines),
+          _buildRailItem(3, InventoryStrings.lowStockItemsDetailed, Icons.trending_down_rounded, AppColors.warning, medicines),
+          _buildRailItem(4, InventoryStrings.outOfStockItemsDetailed, Icons.remove_shopping_cart_rounded, AppColors.error, medicines),
         ],
       ),
     );
@@ -407,28 +407,28 @@ class _InventoryHealthViewState extends State<_InventoryHealthBody> {
           ),
           SizedBox(height: 16.h),
           ReusableText(
-            _searchController.text.isNotEmpty ? AppStrings.noMatchingResults : 'المخزون ممتازة وصحي 100%',
+            _searchController.text.isNotEmpty ? SalesStrings.noMatchingResults : '??????? ?????? ???? 100%',
             style: AppTextStyles.title(context).copyWith(fontWeight: FontWeight.bold, color: scheme.onSurface),
           ),
           SizedBox(height: 8.h),
           ReusableText(
             _searchController.text.isNotEmpty
-                ? 'لم يتم العثور على أدوية تطابق البحث في هذا القسم.'
-                : 'لا توجد أدوية منتهية الصلاحية أو نواقص حرجة في هذا القسم. جميع الأصناف مطابقة للمعايير.',
+                ? '?? ??? ?????? ??? ????? ????? ????? ?? ??? ?????.'
+                : '?? ???? ????? ?????? ???????? ?? ????? ???? ?? ??? ?????. ???? ??????? ?????? ????????.',
             style: AppTextStyles.body(context).copyWith(color: scheme.onSurfaceVariant),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 24.h),
 
-          // كروت الفحص السريع الداعمة لمظهر لوحة تحكم فاخرة (Zero Dead Space)
+          // ???? ????? ?????? ??????? ????? ???? ???? ????? (Zero Dead Space)
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _HeroBadgePill(icon: Icons.shield_rounded, label: 'صلاحيات سليمة', color: AppColors.success, scheme: scheme),
+              _HeroBadgePill(icon: Icons.shield_rounded, label: '??????? ?????', color: AppColors.success, scheme: scheme),
               SizedBox(width: 12.w),
-              _HeroBadgePill(icon: Icons.inventory_rounded, label: 'أرصدة آمنة', color: AppColors.primary, scheme: scheme),
+              _HeroBadgePill(icon: Icons.inventory_rounded, label: '????? ????', color: AppColors.primary, scheme: scheme),
               SizedBox(width: 12.w),
-              _HeroBadgePill(icon: Icons.tune_rounded, label: 'حدود الأمان مضبوطة', color: AppColors.info, scheme: scheme),
+              _HeroBadgePill(icon: Icons.tune_rounded, label: '???? ?????? ??????', color: AppColors.info, scheme: scheme),
             ],
           ),
         ],
@@ -603,14 +603,14 @@ class _HealthItem extends StatelessWidget {
                     Icon(Icons.inventory_2_outlined, size: 14.sp, color: scheme.onSurfaceVariant),
                     SizedBox(width: 4.w),
                     ReusableText(
-                      '${AppStrings.stockBalanceLabel}${medicine.quantity} ${AppStrings.unit}',
+                      '${InventoryStrings.stockBalanceLabel}${medicine.quantity} ${GeneralStrings.unit}',
                       style: AppTextStyles.caption(context).copyWith(color: scheme.onSurfaceVariant, fontWeight: FontWeight.w600),
                     ),
                     SizedBox(width: 16.w),
                     Icon(Icons.notifications_active_outlined, size: 14.sp, color: color),
                     SizedBox(width: 4.w),
                     ReusableText(
-                      '${AppStrings.safetyLimitLabel}${medicine.minStock}',
+                      '${InventoryStrings.safetyLimitLabel}${medicine.minStock}',
                       style: AppTextStyles.caption(context).copyWith(color: color, fontWeight: FontWeight.w600),
                     ),
                   ],
@@ -623,7 +623,7 @@ class _HealthItem extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
               decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(4.r)),
               child: ReusableText(
-                '${AppStrings.expiryLabel}${medicine.expiryDate!.day}/${medicine.expiryDate!.month}/${medicine.expiryDate!.year}',
+                '${InventoryStrings.expiryLabel}${medicine.expiryDate!.day}/${medicine.expiryDate!.month}/${medicine.expiryDate!.year}',
                 style: AppTextStyles.caption(context).copyWith(color: color, fontWeight: FontWeight.bold, fontSize: 11.sp),
               ),
             ),
@@ -632,10 +632,10 @@ class _HealthItem extends StatelessWidget {
           SizedBox(
             height: 36.h,
             child: ReusableButton(
-              text: AppStrings.quickPurchaseRequest,
+              text: InventoryStrings.quickPurchaseRequest,
               prefixIcon: Icons.add_shopping_cart_rounded,
               onPressed: () {
-                AppSnackbar.info(AppStrings.openingShortageInvoicesFormat.replaceFirst('%s', medicine.name), title: AppStrings.advancedPurchaseRequest);
+                AppSnackbar.info(InventoryStrings.openingShortageInvoicesFormat.replaceFirst('%s', medicine.name), title: InventoryStrings.advancedPurchaseRequest);
               },
               type: ButtonType.outlined,
             ),
@@ -645,4 +645,10 @@ class _HealthItem extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
 

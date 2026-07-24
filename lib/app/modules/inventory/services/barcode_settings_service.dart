@@ -1,7 +1,7 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'package:pharmacy_system/app/core/injection.dart';
 import 'package:pharmacy_system/app/core/data/database/daos/app_settings_dao.dart';
-import 'package:pharmacy_system/app/modules/inventory/models/barcode_settings_model.dart';
+import 'package:pharmacy_system/app/core/models/inventory/barcode_settings_model.dart';
 
 class BarcodeSettingsService {
   static Future<BarcodeSettingsModel> getSettings() async {
@@ -21,4 +21,7 @@ class BarcodeSettingsService {
     await dao.set('barcode_settings', jsonEncode(settings.toJson()));
   }
 }
+
+
+
 
