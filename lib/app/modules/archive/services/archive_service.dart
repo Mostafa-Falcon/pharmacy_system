@@ -8,13 +8,13 @@ class ArchiveService {
   ArchiveService._();
   factory ArchiveService() => _instance;
 
-  AppDatabase get _db => sl<AppDatabase>();
+  static AppDatabase get _db => sl<AppDatabase>();
 
-  Future<void> archiveRecord({
+  static Future<void> archiveRecord({
     required String entityType,
     required String entityId,
     required String entityName,
-    required String deletedById,
+    String deletedById = 'system',
     String? deletedByName,
     String? branchId,
     Map<String, dynamic>? entityData,
